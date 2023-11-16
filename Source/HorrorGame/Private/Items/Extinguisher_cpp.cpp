@@ -1,6 +1,7 @@
 // CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
 
 #include "Items/Extinguisher_cpp.h"
+#include "HorrorGame/HorrorGameCharacter.h"
 
 // Sets default values
 AExtinguisher_cpp::AExtinguisher_cpp()

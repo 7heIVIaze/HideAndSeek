@@ -1,6 +1,7 @@
 // CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
 
 #include "Items/Cutter_cpp.h"
+#include "HorrorGame/HorrorGameCharacter.h"
 
 // Sets default values
 ACutter_cpp::ACutter_cpp()
@@ -34,6 +35,7 @@ void ACutter_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	Player->AddCutter();
 	if (Player->bCanItemGet)
 	{
+		Player->CutterDurability = Durability;
 		Destroy();
 	}
 }

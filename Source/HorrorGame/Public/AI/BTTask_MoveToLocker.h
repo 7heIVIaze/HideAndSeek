@@ -16,6 +16,25 @@ class HORRORGAME_API UBTTask_MoveToLocker : public UBTTaskNode
 {
 	GENERATED_BODY()
 	
+	UPROPERTY(Category = Node, EditAnywhere, meta = (ClampMin = "0.0", UIMin = "0.0"))
+		float AcceptableRadius;
+
+	UPROPERTY(Category = Node, EditAnywhere)
+		bool bAllowPartialPath = true;
+
+	UPROPERTY(Category = Node, EditAnywhere)
+		bool bTrackMovingGoal = true;
+
+	UPROPERTY(Category = Node, EditAnywhere)
+		bool bProjectGoalLocation = true;
+
+	UPROPERTY(Category = Node, EditAnywhere)
+		bool bAllowStrafe = true;
+
+	UPROPERTY(Category = Node, VisibleInstanceOnly)
+		bool bStopOverlap = true;
+
+	bool bUsePathfinding = true;
 public:
 	UBTTask_MoveToLocker();
 

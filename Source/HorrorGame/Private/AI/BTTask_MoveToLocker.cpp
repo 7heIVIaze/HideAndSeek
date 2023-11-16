@@ -19,7 +19,7 @@
 UBTTask_MoveToLocker::UBTTask_MoveToLocker()
 {
 	NodeName = TEXT("MoveToLocker");
-	bNotifyTick = false;
+	bNotifyTick = true;
 }
 
 EBTNodeResult::Type UBTTask_MoveToLocker::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
@@ -28,12 +28,12 @@ EBTNodeResult::Type UBTTask_MoveToLocker::ExecuteTask(UBehaviorTreeComponent& Ow
 
 	AAIController* AIController = OwnerComp.GetAIOwner();
 
-	if (AIController == nullptr)
+	if (AIController == nullptr) // AI 컴포넌트의 Controller가 없다면 실패를 리턴시킨다.
 	{
 		return EBTNodeResult::Failed;
 	}
 
-	return EBTNodeResult::InProgress;
+	return EBTNodeResult::InProgress; // 동작 수행은 Tick Task를 통해 관리하므로 InProgress를 리턴시켜 아직 수행 중임을 알림.
 }
 
 void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
@@ -42,86 +42,96 @@ void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 
 	AAIController* AIController = OwnerComp.GetAIOwner();
 
-	if (ACreatureAI* ReaperAI = Cast<ACreatureAI>(AIController))
+	if (AIController) // AI Controller가 있는 경우에만 아래의 동작 수행
 	{
-		AReaper_cpp* Reaper = Cast<AReaper_cpp>(ReaperAI->GetPawn());
-
-		if (nullptr == Reaper)
+		if (ACreatureAI* ReaperAI = Cast<ACreatureAI>(AIController))
 		{
-			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-			return;
+			AReaper_cpp* Reaper = Cast<AReaper_cpp>(ReaperAI->GetPawn());
+
+			if (nullptr == Reaper)
+			{
+				FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+				return;
+			}
+
+			Target = Cast<AActor>(ReaperAI->GetBlackboard()->GetValueAsObject(ACreatureAI::TargetKey));
+
+			if (nullptr == Target) // 타겟이 없으면 Fail 리턴시키고 task 종료시킴
+			{
+				FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+				return;
+			}
+
+			ReaperAI->MoveToActor(Target, AcceptableRadius, bStopOverlap, bUsePathfinding,
+				bAllowStrafe, ReaperAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+
+			if (Reaper->GetAnimFinish())
+			{
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				return;
+			}
 		}
 
-		Target = Cast<AActor>(ReaperAI->GetBlackboard()->GetValueAsObject(ACreatureAI::TargetKey));
-
-		if (nullptr == Target)
+		if (AAIController_Runner* RunnerAI = Cast<AAIController_Runner>(AIController))
 		{
-			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-			return;
+			ARunner_cpp* Runner = Cast<ARunner_cpp>(RunnerAI->GetPawn());
+
+			if (nullptr == Runner)
+			{
+				FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+				return;
+			}
+
+			Target = Cast<AActor>(RunnerAI->GetBlackboard()->GetValueAsObject(AAIController_Runner::TargetKey));
+
+			if (nullptr == Target)
+			{
+				FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+				return;
+			}
+
+			RunnerAI->MoveToActor(Target, AcceptableRadius, bStopOverlap, bUsePathfinding,
+				bAllowStrafe, RunnerAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+
+			if (Runner->GetAnimFinish())
+			{
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				return;
+			}
 		}
 
-		UAIBlueprintHelperLibrary::SimpleMoveToActor(ReaperAI, Target);
-
-		
-		if (Reaper->GetAnimFinish())
+		if (AAIController_Brute* BruteAI = Cast<AAIController_Brute>(AIController))
 		{
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-			return;
+			ABrute_cpp* Brute = Cast<ABrute_cpp>(BruteAI->GetPawn());
+
+			if (nullptr == Brute)
+			{
+				FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+				return;
+			}
+
+			Target = Cast<AActor>(BruteAI->GetBlackboard()->GetValueAsObject(AAIController_Brute::TargetKey));
+
+			if (nullptr == Target)
+			{
+				FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+				return;
+			}
+
+			BruteAI->MoveToActor(Target, AcceptableRadius, bStopOverlap, bUsePathfinding,
+				bAllowStrafe, BruteAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+
+			if (Brute->GetAnimFinish())
+			{
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				return;
+			}
 		}
 	}
-
-	if (AAIController_Runner* RunnerAI = Cast<AAIController_Runner>(AIController))
+	else // AI Controller가 없으면 Fail을 리턴
 	{
-		ARunner_cpp* Runner = Cast<ARunner_cpp>(RunnerAI->GetPawn());
-
-		if (nullptr == Runner)
-		{
-			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-			return;
-		}
-
-		Target = Cast<AActor>(RunnerAI->GetBlackboard()->GetValueAsObject(AAIController_Runner::TargetKey));
-
-		if (nullptr == Target)
-		{
-			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-			return;
-		}
-
-		UAIBlueprintHelperLibrary::SimpleMoveToActor(RunnerAI, Target);
-
-		if (Runner->GetAnimFinish())
-		{
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-			return;
-		}
-	}
-
-	if (AAIController_Brute* BruteAI = Cast<AAIController_Brute>(AIController))
-	{
-		ABrute_cpp* Brute = Cast<ABrute_cpp>(BruteAI->GetPawn());
-
-		if (nullptr == Brute)
-		{
-			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-			return;
-		}
-
-		Target = Cast<AActor>(BruteAI->GetBlackboard()->GetValueAsObject(AAIController_Brute::TargetKey));
-
-		if (nullptr == Target)
-		{
-			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-			return;
-		}
-
-		UAIBlueprintHelperLibrary::SimpleMoveToActor(BruteAI, Target);
-
-		if (Brute->GetAnimFinish())
-		{
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-			return;
-		}
+		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+		return;
 	}
 
 	/*ACreatureAI* ReaperAI = Cast<ACreatureAI>(OwnerComp.GetAIOwner());

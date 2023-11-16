@@ -3,6 +3,7 @@
 #include "Items/Bell_cpp.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
+#include "HorrorGame/HorrorGameCharacter.h"
 
 // Sets default values
 ABell_cpp::ABell_cpp()

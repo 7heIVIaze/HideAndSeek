@@ -1104,7 +1104,7 @@ bool AHorrorGameCharacter::GetLineTraceSingle(AActor* &HitActor)
 	FHitResult OutHit;
 	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
 	FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
-	FVector End = (ForwardVector * 160.0f) + Start;
+	FVector End = (ForwardVector * 200.0f) + Start;
 
 
 	bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility);

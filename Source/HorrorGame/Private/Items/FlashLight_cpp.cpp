@@ -1,6 +1,7 @@
 // CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
 
 #include "Items/FlashLight_cpp.h"
+#include "HorrorGame/HorrorGameCharacter.h"
 
 // Sets default values
 AFlashLight_cpp::AFlashLight_cpp()

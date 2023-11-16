@@ -3,6 +3,7 @@
 #include "Altar_cpp.h"
 #include "HorrorGame/HorrorGameCharacter.h"
 #include "AI/Reaper_cpp.h"
+#include "End_Mirror.h"
 
 // Sets default values
 AAltar_cpp::AAltar_cpp()
@@ -65,6 +66,10 @@ void AAltar_cpp::OnInteract(class AHorrorGameCharacter* Player)
 		Sword->SetVisibility(true);
 		Mirror->SetVisibility(true);
 		Bell->SetVisibility(true);
+		if (IsValid(EndingMirror)) // Ending Mirror가 존재한 상황이면
+		{
+			EndingMirror->SetIsCleared(true);
+		}
 	}
 	else
 	{

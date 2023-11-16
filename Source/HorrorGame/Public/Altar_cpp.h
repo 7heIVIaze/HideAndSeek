@@ -36,6 +36,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Object")
 		class AReaper_cpp* CurrentReaper;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object")
+		class AEnd_Mirror* EndingMirror;
+
 	UPROPERTY()
 		float RespawnTimer;
 

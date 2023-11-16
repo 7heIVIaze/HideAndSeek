@@ -1,6 +1,7 @@
 // CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
 
 #include "Items/Timer_cpp.h"
+#include "HorrorGame/HorrorGameCharacter.h"
 
 // Sets default values
 ATimer_cpp::ATimer_cpp()
