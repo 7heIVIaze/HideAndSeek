@@ -1,9 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
 
 #include "MetalDoor_cpp.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
+#include "HorrorGame/HorrorGameCharacter.h"
 
 // Sets default values
 AMetalDoor_cpp::AMetalDoor_cpp()
@@ -55,7 +55,40 @@ void AMetalDoor_cpp::Tick(float DeltaTime)
 	OpenAndClose.TickTimeline(DeltaTime);
 }
 
-void AMetalDoor_cpp::OnInteract()
+void AMetalDoor_cpp::OnInteract(class AHorrorGameCharacter* Player)
+{
+	if (!bIsDoorLocked)
+	{
+		if (bIsDoorClosed)
+		{
+			USoundCue* DoorSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/MetalDoorSoundCue"));
+			if (DoorSound)
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, DoorSound, GetActorLocation());
+			}
+			OpenAndClose.Play();
+			Door->SetCollisionProfileName("LockedDoor");
+		}
+		else
+		{
+			USoundCue* DoorSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/MetalDoorSound2Cue"));
+			if (DoorSound)
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, DoorSound, GetActorLocation());
+			}
+			OpenAndClose.Reverse();
+			Door->SetCollisionProfileName("UnLockedDoor");
+		}
+
+		bIsDoorClosed = !bIsDoorClosed;
+	}
+	else
+	{
+		Player->SetErrorText(TEXT("Locked"), 3);
+	}
+}
+
+void AMetalDoor_cpp::AIInteract()
 {
 	if (!bIsDoorLocked)
 	{
@@ -90,7 +123,7 @@ void AMetalDoor_cpp::OpenDoor(float Value)
 	Door->SetRelativeRotation(Rotator);
 }
 
-void AMetalDoor_cpp::UseInteract()
+void AMetalDoor_cpp::UseInteract(class AHorrorGameCharacter* Player)
 {
 	if (bIsDoorLocked)
 	{

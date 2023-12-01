@@ -1,9 +1,11 @@
 // CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
 
 #include "Items/Bell_cpp.h"
+#include "EngineUtils.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
 #include "HorrorGame/HorrorGameCharacter.h"
+#include "Altar_cpp.h"
 
 // Sets default values
 ABell_cpp::ABell_cpp()
@@ -32,6 +34,11 @@ void ABell_cpp::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	UWorld* World = GetWorld();
+	for (TActorIterator<AAltar_cpp>entity(World); entity; ++entity)
+	{
+		Altar = *entity;
+	}
 }
 
 //// Called every frame
@@ -52,6 +59,7 @@ void ABell_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	Player->AddBell();
 	if (Player->bCanItemGet)
 	{
+		Altar->UnSealedObjectNumber(1);
 		Destroy();
 	}
 }

@@ -15,12 +15,19 @@ public:
 	// Sets default values for this actor's properties
 	ASword_cpp();
 
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
 public:
 	UPROPERTY(VisibleAnywhere, Category = "Root")
 		class USceneComponent* DefaultSceneRoot;
 
 	UPROPERTY(VisibleAnywhere, Category = "Sword")
 		TObjectPtr<UStaticMeshComponent> Sword;
+
+	UPROPERTY(VisibleAnywhere, Category = "Mirror")
+		class AAltar_cpp* Altar;
 
 public:	
 	void OnInteract(class AHorrorGameCharacter* Player) override;

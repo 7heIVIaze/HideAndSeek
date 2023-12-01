@@ -29,6 +29,9 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Mirror")
 		TObjectPtr<class UStaticMeshComponent> MirrorMesh;
 
+	UPROPERTY(VisibleAnywhere, Category = "Mirror")
+		class AAltar_cpp* Altar;
+
 public:
 	void OnInteract(class AHorrorGameCharacter* Player) override;
 

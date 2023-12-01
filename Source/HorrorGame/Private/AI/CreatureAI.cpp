@@ -14,11 +14,13 @@
 #include "AI/Reaper_cpp.h"
 
 const FName ACreatureAI::PatrolTargetKey(TEXT("PatrolTarget"));
+const FName ACreatureAI::NoiseTargetKey(TEXT("NoiseTargetKey"));
 const FName ACreatureAI::HomePosKey(TEXT("HomePos"));
 const FName ACreatureAI::PatrolPosKey(TEXT("PatrolPos"));
 const FName ACreatureAI::TargetKey(TEXT("Target"));
 const FName ACreatureAI::TargetLocation(TEXT("TargetLocation"));
 const FName ACreatureAI::CanSeePlayer(TEXT("CanSeePlayer"));
+// const FName ACreatureAI::SprintDetected(TEXT("SprintDetected"));
 const FName ACreatureAI::NoiseDetected(TEXT("NoiseDetected"));
 const FName ACreatureAI::Stunned(TEXT("Stunned"));
 const FName ACreatureAI::LockerLighting(TEXT("LockerLighting"));
@@ -52,36 +54,27 @@ void ACreatureAI::BeginPlay()
 	Super::BeginPlay();
 
 	CurrentStatus = Sealed::Sealed;
-	// RunBehaviorTree(BTAsset);
-	// Behavior_Tree_Component->StartTree(*BTAsset);
 }
 
-//void ACreatureAI::Tick(float DeltaSeconds)
-//{
-//
-//}
 
 void ACreatureAI::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-	//UBlackboardComponent* BlackboardComp = Blackboard;
-	//if (UseBlackboard(BBAsset, BlackboardComp))
-	//{
-	//	// Save Current Location in HomePosKey of Blackboard
-	//	BlackboardComp->SetValueAsVector(HomePosKey, InPawn->GetActorLocation());
-	//	if (!RunBehaviorTree(BTAsset))
-	//	{
-	//		UE_LOG(LogTemp, Warning, TEXT("AIController couldn't run behavior tree!"))
-	//	}
-	//}
-	/*if (BlackboardComp)
-	{
-		BlackboardComp->InitializeBlackboard(*BTAsset->BlackboardAsset);
-	}*/
+	
 	if (UseBlackboard(BBAsset, BlackboardComp))
 	{
 		RunBehaviorTree(BTAsset);
 	}
+}
+
+void ACreatureAI::StopAI()
+{
+	// Super::OnUnPossess();
+
+	UBehaviorTreeComponent* BehaviorTreeComp = Cast<UBehaviorTreeComponent>(BrainComponent);
+	if (BehaviorTreeComp == nullptr) return;
+
+	BehaviorTreeComp->StopTree(EBTStopMode::Safe);
 }
 
 UBlackboardComponent* ACreatureAI::GetBlackboard() const
@@ -231,11 +224,5 @@ void ACreatureAI::SetCurrentSealStatus(Sealed Status)
 
 Sealed ACreatureAI::GetCurrentSealStatus()
 {
-	//UAIPerceptionComponent* AIPerceptionComponent = GetAIPerceptionComponent();
- //   if (AIPerceptionComponent)
- //   {
- //       // AI Sight 센스 다시 활성화
- //       AIPerceptionComponent->RequestStimuliListenerUpdate();
- //   }
 	return CurrentStatus;
 }

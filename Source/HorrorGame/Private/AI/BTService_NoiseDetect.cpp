@@ -11,6 +11,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "DrawDebugHelpers.h"
 #include "Items/TimerProjectile_cpp.h"
+#include "Items/ThrownTimer_cpp.h"
 #include "Alarm.h"
 
 UBTService_NoiseDetect::UBTService_NoiseDetect()
@@ -56,14 +57,15 @@ void UBTService_NoiseDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 		{
 			for (FOverlapResult OverlapResult : OverlapResults) // 여러 감지된 것들 중 하나씩 확인해봄
 			{
-				if (auto TimerActor = Cast<ATimerProjectile_cpp>(OverlapResult.GetActor())) // 감지된 액터가 Timer Projectile(던져진 타이머)일 경우
+				//if (auto TimerActor = Cast<ATimerProjectile_cpp>(OverlapResult.GetActor())) // 감지된 액터가 Timer Projectile(던져진 타이머)일 경우
+				if (auto TimerActor = Cast<AThrownTimer_cpp>(OverlapResult.GetActor())) // 감지된 액터가 Timer Projectile(던져진 타이머)일 경우
 				{
 
 					if (TimerActor->GetPlaySound()) // 현재 타이머가 울리고 있다면
 					{
 						ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::NoiseDetected, true); // Noise Detect 값을 true로 설정하고
 						ReaperAI->GetBlackboard()->SetValueAsVector(ACreatureAI::TargetLocation, TimerActor->GetActorLocation()); // 해당 타이머의 위치를 타겟 로케이션으로 줌(그쪽으로 무빙하게)
-						ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::PatrolTargetKey, TimerActor); // 혹시나 하여 TimerActor를 패트롤 타겟으로 해서 그쪽으로 움직이게
+						ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::NoiseTargetKey, TimerActor); // 혹시나 하여 TimerActor를 패트롤 타겟으로 해서 그쪽으로 움직이게
 						// 타켓 키로 설정하면 Trace가 활성화되므로 이게 맞음
 					}
 				}
@@ -74,33 +76,35 @@ void UBTService_NoiseDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 					{
 						ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::NoiseDetected, true);
 						ReaperAI->GetBlackboard()->SetValueAsVector(ACreatureAI::TargetLocation, Alarm->GetActorLocation());
-						ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::PatrolTargetKey, Alarm);
+						ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::NoiseTargetKey, Alarm);
 					}
-				}
+				}	
 				
 				else if (auto Player = Cast<AHorrorGameCharacter>(OverlapResult.GetActor())) // 만약에 감지된 액터가 Player라면
 				{
-					if ((Player->GetIsSprinting())) // Player가 뛰고 있는 상황에만
+					if (Player->GetIsSprinting()) // Player가 뛰고 있는 상황에만
 					{
 						if (!bDetected) // 이전에 감지된 상태가 아니면
 						{
 							ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::NoiseDetected, true); // 감지 여부를 true로 하고
+							//ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::SprintDetected, true); // 감지 여부를 true로 하고
 							ReaperAI->GetBlackboard()->SetValueAsVector(ACreatureAI::TargetLocation, Player->GetActorLocation()); // 해당 위치로 움직이게 설정
 						}
 					}
 
-					/*if ((Player->bIsBellSoundOn)) // 방울을 울리는 경우에 감지해서 가도록 하려고 했으나, 밸런스적인 측면에서 제거
+					if (Player->GetIsScreaming()) // 플레이어가 패닉으로 소리를 지를 때
 					{
 						ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::NoiseDetected, true);
+						//ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::SprintDetected, true);
 						ReaperAI->GetBlackboard()->SetValueAsVector(ACreatureAI::TargetLocation, Player->GetActorLocation());
-					}*/
+					}
 				}
 			}
 		}
-		else // 아무것도 감지되지 않은 상태이면
-		{
-			ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::NoiseDetected, false); // false로 설정함
-		}
+		//else // 아무것도 감지되지 않은 상태이면
+		//{
+		//	ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::NoiseDetected, false); // false로 설정함
+		//}
 	}
 
 	else if (AAIController_Runner* RunnerAI = Cast<AAIController_Runner>(AIController)) // AI Controller가 Runner Controller일 경우
@@ -135,13 +139,14 @@ void UBTService_NoiseDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 		{
 			for (FOverlapResult OverlapResult : OverlapResults) // 여러 값들 중에서 하나씩 확인
 			{
-				if (auto TimerActor = Cast<ATimerProjectile_cpp>(OverlapResult.GetActor())) // 감지된 액터가 TimerProjectile(던져진 타이머)라면
+				//if (auto TimerActor = Cast<ATimerProjectile_cpp>(OverlapResult.GetActor())) // 감지된 액터가 TimerProjectile(던져진 타이머)라면
+				if (auto TimerActor = Cast<AThrownTimer_cpp>(OverlapResult.GetActor())) // 감지된 액터가 TimerProjectile(던져진 타이머)라면
 				{
 					if (TimerActor->GetPlaySound()) // 현재 타이머가 울리고 있으면 소리를 감지하고 타이머 위치로 이동하게 설정
 					{
 						RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::NoiseDetected, true);
 						RunnerAI->GetBlackboard()->SetValueAsVector(AAIController_Runner::TargetLocation, TimerActor->GetActorLocation());
-						RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::PatrolTargetKey, TimerActor); // 혹시나해서 패트롤 타겟을 Timer로 설정
+						RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::NoiseTargetKey, TimerActor); // 혹시나해서 패트롤 타겟을 Timer로 설정
 					}
 				}
 
@@ -151,33 +156,35 @@ void UBTService_NoiseDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 					{
 						RunnerAI->GetBlackboard()->SetValueAsBool(ACreatureAI::NoiseDetected, true);
 						RunnerAI->GetBlackboard()->SetValueAsVector(ACreatureAI::TargetLocation, Alarm->GetActorLocation());
-						RunnerAI->GetBlackboard()->SetValueAsObject(ACreatureAI::PatrolTargetKey, Alarm);
+						RunnerAI->GetBlackboard()->SetValueAsObject(ACreatureAI::NoiseTargetKey, Alarm);
 					}
 				}
 				
 				else if (auto Player = Cast<AHorrorGameCharacter>(OverlapResult.GetActor())) // 그 외 Player가 감지된 경우엔
 				{
-					if ((Player->GetIsSprinting())) // 플레이어가 뛰고 있는 상황에만 감지
+					if (Player->GetIsSprinting()) // 플레이어가 뛰고 있는 상황에만 감지
 					{
 						if (!bDetected) // 그것도 이전에 아무것도 감지된 것이 없는 상태일 경우에
 						{
 							RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::NoiseDetected, true);
+							//RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::SprintDetected, true);
 							RunnerAI->GetBlackboard()->SetValueAsVector(AAIController_Runner::TargetLocation, Player->GetActorLocation());
 						}
 					}
 
-					/*if ((Player->bIsBellSoundOn)) // 방울을 울릴 때도 감지하게 하려 했으나 밸런스 측면에서 삭제 결정
+					if (Player->GetIsScreaming()) // 플레이어가 패닉으로 소리를 지를 때
 					{
 						RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::NoiseDetected, true);
+						//RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::SprintDetected, true);
 						RunnerAI->GetBlackboard()->SetValueAsVector(AAIController_Runner::TargetLocation, Player->GetActorLocation());
-					}*/
+					}
 				}
 			}
 		}
-		else // 아무것도 감지된 것이 없을 때 false로 설정.
-		{
-			RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::NoiseDetected, false);
-		}
+		//else // 아무것도 감지된 것이 없을 때 false로 설정.
+		//{
+		//	RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::NoiseDetected, false);
+		//}
 	}
 
 	else if (AAIController_Brute* BruteAI = Cast<AAIController_Brute>(AIController)) // AI Controller가 Brute Controller일 경우에
@@ -213,13 +220,14 @@ void UBTService_NoiseDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 		{
 			for (FOverlapResult OverlapResult : OverlapResults) // 감지된 객체들을 하나씩 확인
 			{
-				if (auto TimerActor = Cast<ATimerProjectile_cpp>(OverlapResult.GetActor())) // 감지된 액터가 던져진 타이머일 경우
+				//if (auto TimerActor = Cast<ATimerProjectile_cpp>(OverlapResult.GetActor())) // 감지된 액터가 던져진 타이머일 경우
+				if (auto TimerActor = Cast<AThrownTimer_cpp>(OverlapResult.GetActor())) // 감지된 액터가 던져진 타이머일 경우
 				{
 					if (TimerActor->GetPlaySound()) // 해당 타이머가 울리고 있는 경우에 감지
 					{
 						BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::NoiseDetected, true);
 						BruteAI->GetBlackboard()->SetValueAsVector(AAIController_Brute::TargetLocation, TimerActor->GetActorLocation());
-						BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::PatrolTargetKey, TimerActor);
+						BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::NoiseTargetKey, TimerActor);
 					}
 				}
 
@@ -229,17 +237,18 @@ void UBTService_NoiseDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 					{
 						BruteAI->GetBlackboard()->SetValueAsBool(ACreatureAI::NoiseDetected, true);
 						BruteAI->GetBlackboard()->SetValueAsVector(ACreatureAI::TargetLocation, Alarm->GetActorLocation());
-						BruteAI->GetBlackboard()->SetValueAsObject(ACreatureAI::PatrolTargetKey, Alarm);
+						BruteAI->GetBlackboard()->SetValueAsObject(ACreatureAI::NoiseTargetKey, Alarm);
 					}
 				}
 
 				else if (auto Player = Cast<AHorrorGameCharacter>(OverlapResult.GetActor())) // 감지된 액터가 Player일 경우
 				{
-					if ((Player->GetIsSprinting())) // Player가 뛰고 있는 상황에만 감지하여 이동하게 설정
+					if (Player->GetIsSprinting()) // Player가 뛰고 있는 상황에만 감지하여 이동하게 설정
 					{
 						if (!bDetected) // 이전에 감지된 것이 없는 경우에만 감지하게 + 처음 뛴 위치로만 이동하게 설정
 						{
 							BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::NoiseDetected, true);
+							//BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::SprintDetected, true);
 							BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::TargetKey, Player);
 							BruteAI->GetBlackboard()->SetValueAsVector(AAIController_Brute::TargetLocation, Player->GetActorLocation());
 						}
@@ -251,6 +260,7 @@ void UBTService_NoiseDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 							if (Brute->bIsRangeChange) // 이미 Awaken 상태라면 소리를 감지하고 Player의 위치로 이동하게 설정
 							{
 								BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::NoiseDetected, true);
+								//BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::SprintDetected, true);
 								BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::TargetKey, Player);
 								BruteAI->GetBlackboard()->SetValueAsVector(AAIController_Brute::TargetLocation, Player->GetActorLocation());
 							}
@@ -262,22 +272,30 @@ void UBTService_NoiseDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 						}
 					}
 
+					if (Player->GetIsScreaming()) // 플레이어가 패닉으로 소리를 지를 때
+					{
+						BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::NoiseDetected, true);
+						//BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::SprintDetected, true);
+						BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::TargetKey, Player);
+						BruteAI->GetBlackboard()->SetValueAsVector(AAIController_Brute::TargetLocation, Player->GetActorLocation());
+					}
+
 					/*if ((Player->bIsBellSoundOn)) // 방울을 울리는 상황에도 감지하게 설정하려 했으나, 밸런스 측면에서 삭제하기로 결정
 					{
 						BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::NoiseDetected, true);
 						BruteAI->GetBlackboard()->SetValueAsVector(AAIController_Brute::TargetLocation, Player->GetActorLocation());
 					}*/
 				}
-				else // Overlap된 객체가 존재하지만 위의 경우에 모두 해당 안 될 때는 false로 바꿔줘서 초기화시켜줌
-				{
-					BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::NoiseDetected, false);
-				}
+				//else // Overlap된 객체가 존재하지만 위의 경우에 모두 해당 안 될 때는 false로 바꿔줘서 초기화시켜줌
+				//{
+				//	BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::NoiseDetected, false);
+				//}
 			}
 		}
-		else // 아무 것도 감지된 객체가 없으면 감지여부를 false로 설정함 <= 이 부분과 관련해서 뭔가 문제 발생하는거 같음. 수정 필요
-		{
-			BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::NoiseDetected, false);
-		}
+		//else // 아무 것도 감지된 객체가 없으면 감지여부를 false로 설정함 <= 이 부분과 관련해서 뭔가 문제 발생하는거 같음. 수정 필요
+		//{
+		//	BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::NoiseDetected, false);
+		//}
 	}
 
 	/*

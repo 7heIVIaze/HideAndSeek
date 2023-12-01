@@ -1,10 +1,10 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
 
 
 #include "ClassroomDoorActor_cpp.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "HorrorGame/HorrorGameCharacter.h"
 
 // Sets default values
 AClassroomDoorActor_cpp::AClassroomDoorActor_cpp()
@@ -74,7 +74,7 @@ void AClassroomDoorActor_cpp::Tick(float DeltaTime)
 	OpenAndClose.TickTimeline(DeltaTime);
 }
 
-void AClassroomDoorActor_cpp::OnInteract()
+void AClassroomDoorActor_cpp::OnInteract(class AHorrorGameCharacter* Player)
 {
 	if (!bIsDoorLocked)
 	{
@@ -95,6 +95,10 @@ void AClassroomDoorActor_cpp::OnInteract()
 		}
 
 		bIsDoorClosed = !bIsDoorClosed;
+	}
+	else
+	{
+		Player->SetErrorText(TEXT("Locked"), 3);
 	}
 }
 
@@ -126,7 +130,7 @@ void AClassroomDoorActor_cpp::AIInteract()
 	}
 }
 
-void AClassroomDoorActor_cpp::UseInteract()
+void AClassroomDoorActor_cpp::UseInteract(class AHorrorGameCharacter* Player)
 {
 	if (bIsDoorLocked)
 	{

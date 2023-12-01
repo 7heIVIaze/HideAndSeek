@@ -27,7 +27,7 @@ void UStaminaWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 
 void UStaminaWidget::SetStamina(int32 iValue)
 {
-	float fPercent = (float)iValue / 200.0f;
+	float fPercent = (float)iValue / 400.0f;
 	Stamina->SetPercent(fPercent);
 }
 

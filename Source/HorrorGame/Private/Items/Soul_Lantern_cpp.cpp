@@ -65,30 +65,33 @@ void ASoul_Lantern_cpp::Tick(float DeltaTime)
 
 	if (bIsLightOn)
 	{
-		FVector CurrentLocation = GetActorLocation();
-		CurrentLocation.Z = 0.f; // 정확한 Z축을 구하기 위한 Cross Product 계산을 위해 0으로 설정
+		FVector ToTarget = AltarLocation - LightNiagara->GetComponentLocation();
+		FRotator LookAtRotation = FRotator(0.f, ToTarget.Rotation().Yaw, 0.f);
+		LightNiagara->SetWorldRotation(LookAtRotation);
+		//FVector CurrentLocation = GetActorLocation();
+		//CurrentLocation.Z = 0.f; // 정확한 Z축을 구하기 위한 Cross Product 계산을 위해 0으로 설정
 
-		FVector Direction = (AltarLocation - CurrentLocation).GetSafeNormal(); // 현재 랜턴(플레이어)의 위치와 목적지 위치 사이의 노말 벡터
-		FVector Forward = GetActorForwardVector(); // 현재 랜턴의 forward 벡터
+		//FVector Direction = (AltarLocation - CurrentLocation).GetSafeNormal(); // 현재 랜턴(플레이어)의 위치와 목적지 위치 사이의 노말 벡터
+		//FVector Forward = GetActorForwardVector(); // 현재 랜턴의 forward 벡터
 
-		float Dot = FVector::DotProduct(Forward, Direction); // 두 벡터 사이의 내적을 구함
-		float Theta = FMath::Acos(Dot); // 내적값을 arc cos을 통해서 theta(각도)를 구함
+		//float Dot = FVector::DotProduct(Forward, Direction); // 두 벡터 사이의 내적을 구함
+		//float Theta = FMath::Acos(Dot); // 내적값을 arc cos을 통해서 theta(각도)를 구함
 
-		Theta = FMath::RadiansToDegrees(Theta); // 기존의 Theta의 값이 Radian 값이기 때문에 Rotator를 위해 Degree값으로 변경
-		FVector Cross = FVector::CrossProduct(Forward, Direction); // 회전축 구하기
-		FRotator NewRotation(0.f);
+		//Theta = FMath::RadiansToDegrees(Theta); // 기존의 Theta의 값이 Radian 값이기 때문에 Rotator를 위해 Degree값으로 변경
+		//FVector Cross = FVector::CrossProduct(Forward, Direction); // 회전축 구하기
+		//FRotator NewRotation(0.f);
 
-		if (Cross.Z > 0)
-		{
-			NewRotation = FRotator(0.f, Theta, 0.f); // 양수면 오른쪽으로
-		}
-		else if(Cross.Z < 0)
-		{
-			NewRotation = FRotator(0.f, -Theta, 0.f); // 음수면 왼쪽으로
-		}
+		//if (Cross.Z > 0)
+		//{
+		//	NewRotation = FRotator(0.f, Theta, 0.f); // 양수면 오른쪽으로
+		//}
+		//else if(Cross.Z < 0)
+		//{
+		//	NewRotation = FRotator(0.f, -Theta, 0.f); // 음수면 왼쪽으로
+		//}
 
-		// FRotator NewRotation = Direction.Rotation();
-		LightNiagara->SetRelativeRotation(NewRotation);
+		//// FRotator NewRotation = Direction.Rotation();
+		//LightNiagara->SetRelativeRotation(NewRotation);
 	}
 }
 

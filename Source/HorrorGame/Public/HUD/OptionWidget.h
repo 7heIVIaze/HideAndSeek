@@ -155,18 +155,18 @@ public:
 	UPROPERTY()
 		class UButton* Resolution8Button;
 
-	UPROPERTY()
+	/*UPROPERTY()
 		class UButton* Resolution9Button;
 
 	UPROPERTY()
-		class UButton* Resolution10Button;
+		class UButton* Resolution10Button;*/
 
 	// Window Mode Buttons
 	UPROPERTY()
 		class UButton* WindowedButton;
 
-	UPROPERTY()
-		class UButton* WinFullButton;
+	/*UPROPERTY()
+		class UButton* WinFullButton;*/
 
 	UPROPERTY()
 		class UButton* FullScreenButton;
@@ -207,6 +207,9 @@ public:
 		bool bMotionBlur;
 
 	UPROPERTY()
+		FString CurrentResolution;
+
+	UPROPERTY()
 		int32 GraphicMenuNavIndex = 0;
 
 	UPROPERTY()
@@ -217,6 +220,21 @@ public:
 
 	UPROPERTY()
 		GraphicsType CurrentGraphicsMode;
+
+	UPROPERTY()
+		class UGameUserSettings* UserSetting;
+
+private:
+	bool bWindowed;
+	bool bFullScreen;
+	bool bResolution1;
+	bool bResolution2;
+	bool bResolution3;
+	bool bResolution4;
+	bool bResolution5;
+	bool bResolution6;
+	bool bResolution7;
+	bool bResolution8;
 
 public:
 	// Main Button Functions
@@ -305,7 +323,7 @@ public:
 	UFUNCTION()
 		void OnHoveredResolution8Button();
 
-	UFUNCTION()
+	/*UFUNCTION()
 		void OnClickResolution9Button();
 
 	UFUNCTION()
@@ -315,7 +333,7 @@ public:
 		void OnClickResolution10Button();
 
 	UFUNCTION()
-		void OnHoveredResolution10Button();
+		void OnHoveredResolution10Button();*/
 
 	// Window Mode Buttons Function
 	UFUNCTION()
@@ -324,11 +342,11 @@ public:
 	UFUNCTION()
 		void OnHoveredWindowedButton();
 
-	UFUNCTION()
+	/*UFUNCTION()
 		void OnClickWinFullButton();
 
 	UFUNCTION()
-		void OnHoveredWinFullButton();
+		void OnHoveredWinFullButton();*/
 
 	UFUNCTION()
 		void OnClickFullScreenButton();
@@ -336,6 +354,19 @@ public:
 	UFUNCTION()
 		void OnHoveredFullScreenButton();
 
+	/*UFUNCTION(BlueprintCallable)
+		void GraphicMenu(int32 CurrentIndex);*/
+
+	UFUNCTION(BlueprintCallable)
+		void SelectWindowMode(bool bWindowedMode, bool bFullScreenMode, int32 CurrentIndex);
+
+	UFUNCTION(BlueprintCallable)
+		void SelectResolutionMode(bool bResolution1Mode, bool bResolution2Mode, bool bResolution3Mode, bool bResolution4Mode, 
+			bool bResolution5Mode, bool bResolution6Mode, bool bResolution7Mode, bool bResolution8Mode, int32 CurrentIndex);
+
+	UFUNCTION()
+		void CheckCurrentResolution(const FString ForCheckResolution);
+	
 	// Brightness Setting
 	UFUNCTION()
 		void SetBrightness(int32 value);

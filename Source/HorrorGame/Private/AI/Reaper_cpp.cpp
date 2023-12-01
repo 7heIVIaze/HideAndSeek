@@ -23,6 +23,7 @@
 #include "HorrorGamePlayerController.h"
 #include "ClassroomDoorActor_cpp.h"
 #include "Door_cpp.h"
+#include "MetalDoor_cpp.h"
 #include "Alarm.h"
 #include "Animation/AnimSequence.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -60,7 +61,8 @@ AReaper_cpp::AReaper_cpp()
 	InteractBox = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractBox"));
 	InteractBox->SetupAttachment(GetMesh());
 	InteractBox->SetBoxExtent(FVector(5.f, 5.f, 5.f));
-	InteractBox->OnComponentBeginOverlap.AddDynamic(this, &AReaper_cpp::DoorBeginOverlap);
+	InteractBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//InteractBox->OnComponentBeginOverlap.AddDynamic(this, &AReaper_cpp::DoorBeginOverlap);
 
 	KillBox = CreateDefaultSubobject<UBoxComponent>(TEXT("KillBox"));
 	KillBox->SetupAttachment(GetMesh());
@@ -88,15 +90,18 @@ AReaper_cpp::AReaper_cpp()
 	AIControllerClass = ACreatureAI::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AReaper_cpp::CheckBoxBeginOverlap);
+	// GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AReaper_cpp::CheckBoxBeginOverlap);
 	GetCapsuleComponent()->SetWorldLocation(FVector(0.f, 0.f, 70.f));
-	GetMesh()->SetCollisionProfileName("Creature");
+	GetMesh()->SetCollisionProfileName("OverlapAllDynamic");
 	
 	static ConstructorHelpers::FObjectFinder<UAnimSequence>anim(TEXT("/Game/ParagonSevarog/Characters/Heroes/Sevarog/Animations/LevelStart"));
 	if (anim.Succeeded())
 	{
 		Anim = anim.Object;
 	}
+
+	bIsCollectMode = true;
+	UnSealedItemNumber = 0;
 }
 
 // Called when the game starts or when spawned
@@ -106,11 +111,21 @@ void AReaper_cpp::BeginPlay()
 
 	// GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AReaper_cpp::CatchBeginOverlap);
 
+	UWorld* world = GetWorld();
+	if (bIsCollectMode)
+	{
+		for (TActorIterator<APatrolPoint_cpp> entity(world); entity; ++entity)
+		{
+			PatrolPointLists.Add(*entity);
+		}
+		Player = Cast<AHorrorGameCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	}
+
 	ReaperSound->SetSound(PatrolSound);
 	Index = 0;
 	MapName = UGameplayStatics::GetCurrentLevelName(GetWorld());
-	Player = Cast<AHorrorGameCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	ReaperController = Cast<ACreatureAI>(GetController());
+	ReaperController->SetCurrentSealStatus(Sealed::OneUnsealed);
 }
 
 // Called every frame
@@ -130,9 +145,9 @@ void AReaper_cpp::Tick(float DeltaTime)
 		}
 	}
 	
-	if (IsValid(Player))
+	if (bIsCollectMode) // 오브젝트 수집 모드이라면
 	{
-		switch (Player->GetObjectNumbers())
+		switch (UnSealedItemNumber)
 		{
 		case 0: // 아직 아무런 사신의 물품을 얻지 못했을 때
 			ReaperController->SetCurrentSealStatus(Sealed::Sealed);
@@ -147,7 +162,6 @@ void AReaper_cpp::Tick(float DeltaTime)
 		default: // 사신의 물품을 세 개 이상 얻었을 때
 			ReaperController->SetCurrentSealStatus(Sealed::Unsealed);
 			ReaperController->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, Player);
-
 		}
 	}
 
@@ -328,9 +342,11 @@ void AReaper_cpp::SoundBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 			ReaperSound->Play();
 			if (!PlayerActor->bIsCooldown)
 			{
-				PlayerActor->Patience += 5;
+				PlayerActor->AddPatience(1);
 			}
-			
+			GetMesh()->SetCollisionProfileName("AICharacters");
+			InteractBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+			InteractBox->OnComponentBeginOverlap.AddDynamic(this, &AReaper_cpp::DoorBeginOverlap);
 		}
 
 		if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
@@ -380,6 +396,9 @@ void AReaper_cpp::SoundEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* O
 				PlayerActor->FlashLight->SetIntensity(PlayerActor->FlashIntensity);
 				PlayerActor->SetCameraComponentNoise(0);
 			}
+			GetMesh()->SetCollisionProfileName("OverlapAllDynamic");
+			InteractBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+			InteractBox->OnComponentBeginOverlap.RemoveDynamic(this, &AReaper_cpp::DoorBeginOverlap);
 		}
 
 		if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
@@ -426,7 +445,14 @@ void AReaper_cpp::DoorBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 		{
 			if (Door->bIsDoorClosed)
 			{
-				Door->OnInteract();
+				Door->AIInteract();
+			}
+		}
+		else if (auto MetalDoor = Cast<AMetalDoor_cpp>(OtherActor))
+		{
+			if (MetalDoor->bIsDoorClosed)
+			{
+				MetalDoor->AIInteract();
 			}
 		}
 	}
@@ -445,43 +471,29 @@ void AReaper_cpp::CheckBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 
 FVector AReaper_cpp::GetPatrolPoint()
 {
-	UWorld* world = GetWorld();
-	FVector ResultLocation = GetActorLocation();
-	// ACreatureAI* AIController = Cast<ACreatureAI>(GetController());
-	if (MapName != TEXT("Prologue"))
-	{
-		int randIdx = FMath::RandRange(0, 24);
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Map Name is not Prologue")));
-		for(TActorIterator<APatrolPoint_cpp> entity(world); entity; ++entity)
-		{
-			// TArray<UObject*>components;
-		
-			if (entity->GetActorLabel() == PatrolPointList[randIdx].ToString()) {
-				ResultLocation = entity->GetActorLocation();
-				CurrentPatrolPoint = *entity;
-				ReaperController->GetBlackboard()->SetValueAsObject(ACreatureAI::PatrolTargetKey, CurrentPatrolPoint);
-				break;
-			}
-		}
-	}
-	else
-	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("Map Name is Prologue")));
-		for (TActorIterator<APatrolPoint_cpp> entity(world); entity; ++entity)
-		{
-			// TArray<UObject*>components;
+	/*UWorld* world = GetWorld();
+	FVector ResultLocation = GetActorLocation();*/
+	ACreatureAI* AIController = Cast<ACreatureAI>(GetController());
+	FVector ResultLocation(0.f);
 
-			if (entity->GetActorLabel() == PatrolPointList[Index].ToString()) {
-				ResultLocation = entity->GetActorLocation();
-				CurrentPatrolPoint = *entity;
-				ReaperController->GetBlackboard()->SetValueAsObject(ACreatureAI::PatrolTargetKey, CurrentPatrolPoint);
-				Index++;
-				break;
-			}
+	if (bIsCollectMode) // 현재 레벨이 오브젝트 수집 레벨일 때
+	{
+		int randIdx = FMath::RandRange(0, PatrolPointLists.Num() - 1); // 0에서 PatrolPointLists의 마지막 인덱스까지 중 랜덤 숫자 하나 뽑기
+		CurrentPatrolPoint = PatrolPointLists[randIdx];
+		ResultLocation = CurrentPatrolPoint->GetActorLocation();
+		ReaperController->GetBlackboard()->SetValueAsObject(ACreatureAI::PatrolTargetKey, CurrentPatrolPoint);
+	}
+	else // 정해진 길을 따라 가는 레벨일 때
+	{
+		CurrentPatrolPoint = PatrolPointLists[Index++]; // 현재 인덱스의 패트롤 포인트 인스턴스를 지정해주고 인덱스 증가
+		ResultLocation = CurrentPatrolPoint->GetActorLocation();
+		ReaperController->GetBlackboard()->SetValueAsObject(ACreatureAI::PatrolTargetKey, CurrentPatrolPoint);
+		if (Index == PatrolPointLists.Num()) // 만약 인덱스가 PatrolPointLists의 최대 인덱스를 넘어가면
+		{
+			Index = 0; // 다시 0으로 초기화
 		}
 	}
+
 	return ResultLocation;
 }
 
@@ -555,55 +567,6 @@ bool AReaper_cpp::GetAnimFinish()
 	return bAnimFinish;
 }
 
-//void AReaper_cpp::CatchBeginOverlap(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
-//{
-//	UE_LOG(LogTemp, Warning, TEXT("Something Catch"));
-//	ACreatureAI* AIController = Cast<ACreatureAI>(GetController());
-//	bool HideCatch = false;
-//	if (AIController != nullptr)
-//	{
-//		HideCatch = AIController->GetBlackboard()->GetValueAsBool(ACreatureAI::LockerLighting);
-//	}
-//
-//	if (auto Cabinet = Cast<ACabinet_cpp>(Hit.GetActor()))
-//	{
-//		if (bIsChase && HideCatch)
-//		{
-//			if(GEngine)
-//				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Cabinet Catch")));
-//			SetIsCatch(true);
-//			if(GetAnimFinish())
-//				Cabinet->BreakCabinet();
-//			//SetIsCatch(false);
-//		}
-//	}
-//	if (auto Wardrobe = Cast<AWardrobe_cpp>(Hit.GetActor()))
-//	{
-//		if (bIsChase && HideCatch)
-//		{
-//			if (GEngine)
-//				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Wardrobe Catch")));
-//			SetIsCatch(true);
-//			if(GetAnimFinish())
-//				Wardrobe->BreakWardrobe();
-//			//SetIsCatch(false);
-//		}
-//	}
-//	if (auto Character = Cast<AHorrorGameCharacter>(Hit.GetActor()))
-//	{
-//		if (Character->GetPlayerStatus() == Player_Status::Survive && !Character->GetIsHiding())
-//		{
-//			if (GEngine)
-//				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Player Catch")));
-//			Character->SetPlayerStatus(Player_Status::Catched);
-//			Character->GetCameraComponent()->SetRelativeRotation(FRotator(0.f, GetActorForwardVector().Rotation().Yaw, 0.f));
-//				
-//			SetIsCatch(true);
-//
-//		}
-//	}
-//}
-
 void AReaper_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherIndexBody, bool bFromSweep, const FHitResult& SweepResult)
 {
 	UE_LOG(LogTemp, Warning, TEXT("Something Catch"));
@@ -655,7 +618,7 @@ void AReaper_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 			{
 				if (Character->GetPlayerStatus() == Player_Status::Survive && !Character->GetIsHiding())
 				{
-					if (CurrentStatus == Sealed::Sealed)
+					if (CurrentStatus == Sealed::Sealed) // 리퍼의 상태가 봉인된 상태면 패닉 게이지 증가시키고 소멸
 					{
 						Character->AddPatience(20);
 						Destroy();
@@ -691,6 +654,7 @@ void AReaper_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 						}
 						// Cast<AHorrorGamePlayerController>(Character->GetController())->SetControlRotation(NewRotation);
 
+						Character->bUseControllerRotationYaw = false;
 						Character->SetActorRotation(NewRotation);
 
 						SetIsCatch(true);
@@ -726,4 +690,41 @@ void AReaper_cpp::SetCreatureCollision(bool value)
 void AReaper_cpp::SetPlayerWatch(bool value)
 {
 	bIsPlayerWatch = value;
+}
+
+void AReaper_cpp::SetCurrentStatus(int32 Status)
+{
+	Sealed CurrentStatus = Sealed::Sealed;
+
+	switch (Status)
+	{
+		case 0:// Sealed
+		{
+			CurrentStatus = Sealed::Sealed;
+			break;
+		}
+		case 1: // OneUnsealed
+		{
+			CurrentStatus = Sealed::OneUnsealed;
+			break;
+		}
+		case 2: // TwoUnsealed
+		{
+			CurrentStatus = Sealed::TwoUnsealed;
+			break;
+		}
+		case 3: // Unsealed
+		{
+			CurrentStatus = Sealed::Unsealed;
+			break;
+		}
+		case 4: // Sealed but chase
+		{
+			CurrentStatus = Sealed::SealedButChase;
+			ReaperController->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, Player);
+			GetCharacterMovement()->MaxWalkSpeed = 220.f;
+			break;
+		}
+	}
+	ReaperController->SetCurrentSealStatus(CurrentStatus);
 }

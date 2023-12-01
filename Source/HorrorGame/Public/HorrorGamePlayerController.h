@@ -30,6 +30,9 @@ public:
 
 	void OnGamePause();
 
+	UFUNCTION(BlueprintCallable)
+	void OnGameClear();
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
@@ -42,6 +45,8 @@ protected:
 		TSubclassOf<UUserWidget>PauseWidgetClass;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = UI)
 		TSubclassOf<UUserWidget>LoadingWidgetClass;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = UI)
+		TSubclassOf<UUserWidget>ClearWidgetClass;
 
 private:
 
@@ -56,6 +61,9 @@ private:
 
 	UPROPERTY()
 		class UUserWidget* LoadingWidget;
+
+	UPROPERTY()
+		class UUserWidget* ClearWidget;
 
 	FInputModeGameOnly GameInputMode;
 	FInputModeUIOnly UIInputMode;

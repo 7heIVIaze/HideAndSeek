@@ -42,18 +42,6 @@ void ACreatureSpawner::BeginPlay()
 			UE_LOG(LogTemp, Warning, TEXT("ObjectToSpawn is Valid"));
 		}
 	}
-
-	//GetWorld()->GetTimerManager().SetTimer(_spawnTimerHandle, FTimerDelegate::CreateLambda([&]()
-	//{
-	//	// 코드 구현
-	//	for (TActorIterator<APatrolPoint_cpp> entity(world); entity; ++entity)
-	//	{
-	//		
-	//	}
-	//	world->SpawnActor<AReaper_cpp>(ObjectToSpawn->GeneratedClass, spawnLocation, rotator, spawnParams);
-	//	// TimerHandle 초기화
-	//	GetWorld()->GetTimerManager().ClearTimer(_spawnTimerHandle);
-	//}), 5.0f, false);	// 반복하려면 false를 true로 변경
 }
 
 void ACreatureSpawner::Tick(float DeltaTime)
@@ -119,11 +107,11 @@ void ACreatureSpawner::Tick(float DeltaTime)
 
 void ACreatureSpawner::CreatureSpawn()
 {
-	FActorSpawnParameters spawnParams;
+	FActorSpawnParameters SpawnParams;
 	//for (int i = 0; i < 2; ++i)
 	//{
 		// AReaper_cpp* reaper = world->SpawnActor<AReaper_cpp>(ObjectToSpawn[0], spawnLocation, rotator, spawnParams);
-		ARunner_cpp* runner = world->SpawnActor<ARunner_cpp>(ObjectToSpawn[0], spawnLocation, rotator, spawnParams);
-		ABrute_cpp* brute = world->SpawnActor<ABrute_cpp>(ObjectToSpawn[1], spawnLocation, rotator, spawnParams);
+	ARunner_cpp* runner = world->SpawnActor<ARunner_cpp>(ObjectToSpawn[0], spawnLocation, rotator, SpawnParams);
+	ABrute_cpp* brute = world->SpawnActor<ABrute_cpp>(ObjectToSpawn[1], spawnLocation, rotator, SpawnParams);
 	//}
 }

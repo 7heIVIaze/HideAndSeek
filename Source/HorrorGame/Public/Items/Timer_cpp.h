@@ -30,7 +30,7 @@ protected:
 
 public:	
 	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	//virtual void Tick(float DeltaTime) override;
 	// Functions
 	void OnInteract(class AHorrorGameCharacter* Player) override;
 	void UseInteract(class AHorrorGameCharacter* Player) override;

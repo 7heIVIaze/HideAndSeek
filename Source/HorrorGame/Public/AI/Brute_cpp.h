@@ -64,6 +64,12 @@ public:
 		TEXT("BP_PatrolPoint11"), TEXT("BP_PatrolPoint12"), TEXT("BP_PatrolPoint13"), TEXT("BP_PatrolPoint14"), TEXT("BP_PatrolPoint15"),
 		TEXT("BP_PatrolPoint16"), TEXT("BP_PatrolPoint17"), TEXT("BP_PatrolPoint18"), TEXT("BP_PatrolPoint19"), TEXT("BP_PatrolPoint20"),
 		TEXT("BP_PatrolPoint21"), TEXT("BP_PatrolPoint22"), TEXT("BP_PatrolPoint23"), TEXT("BP_PatrolPoint24"), TEXT("BP_PatrolPoint25") };
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PatrolPointList")
+		TArray<class APatrolPoint_cpp*> PatrolPointLists;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PatrolPointList")
+		bool bIsCollectMode; // Level1처럼 오브젝트를 모으는 챕터인가
 
 public:	
 	// Called every frame

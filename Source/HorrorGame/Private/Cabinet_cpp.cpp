@@ -220,7 +220,14 @@ void ACabinet_cpp::ToggleHide(class AHorrorGameCharacter* PlayerCharacter)
 		bIsHiding = true;
 		if (!PlayerCharacter->bIsPatienceReduce)
 		{
-			PlayerCharacter->PatienceToReduce = PlayerCharacter->Patience / 2;
+			if (PlayerCharacter->Patience > 0) // 패닉값이 0보다 클 경우에만 작동함
+			{
+				PlayerCharacter->PatienceToReduce = PlayerCharacter->Patience / 2;
+				if (PlayerCharacter->PatienceToReduce < 1) // 만약 감소값이 1 미만으로 떨어지면(즉 0.xxxx 라면)
+				{
+					PlayerCharacter->PatienceToReduce = 1; // 1로 고정
+				}
+			}
 			PlayerCharacter->bIsPatienceReduce = true;
 		}
 		/*PlayerCharacter->bIsHiding = true;

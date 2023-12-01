@@ -14,7 +14,7 @@ void UBatteryWidget_cpp::NativeConstruct()
 
 void UBatteryWidget_cpp::SetBatteryPercent(int32 value)
 {
-	float percent = (float)value / 100.0f;
+	float percent = (float)value / 200.0f;
 	Battery->SetPercent(percent);
 }
 

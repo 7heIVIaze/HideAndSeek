@@ -145,7 +145,7 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 			return;
 		}
 
-		FVector fTargetLastLocation = ReaperAI->GetBlackboardComponent()->GetValueAsVector(ACreatureAI::TargetLocation);
+		FVector fTargetLastLocation = ReaperAI->GetBlackboard()->GetValueAsVector(ACreatureAI::TargetLocation);
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(ReaperAI, fTargetLastLocation);
 		
 		// Move to last location of detected target.	
@@ -167,7 +167,7 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 
 		if (NavSystem->GetRandomPointInNavigableRadius(fTargetLastLocation, 200.0f, fNextPatrol))
 		{
-			ReaperAI->GetBlackboardComponent()->SetValueAsVector(ACreatureAI::PatrolPosKey, fNextPatrol.Location);
+			ReaperAI->GetBlackboard()->SetValueAsVector(ACreatureAI::PatrolPosKey, fNextPatrol.Location);
 
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			return;
@@ -186,7 +186,7 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 		}
 
 
-		FVector fTargetLastLocation = RunnerAI->GetBlackboardComponent()->GetValueAsVector(AAIController_Runner::TargetLocation);
+		FVector fTargetLastLocation = RunnerAI->GetBlackboard()->GetValueAsVector(AAIController_Runner::TargetLocation);
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(RunnerAI, fTargetLastLocation);
 
 		// Move to last location of detected target.	
@@ -210,7 +210,7 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 
 		if (NavSystem->GetRandomPointInNavigableRadius(fTargetLastLocation, 200.0f, fNextPatrol))
 		{
-			RunnerAI->GetBlackboardComponent()->SetValueAsVector(AAIController_Runner::PatrolPosKey, fNextPatrol.Location);
+			RunnerAI->GetBlackboard()->SetValueAsVector(AAIController_Runner::PatrolPosKey, fNextPatrol.Location);
 			
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			return;
@@ -228,7 +228,7 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 		}
 
 
-		FVector fTargetLastLocation = BruteAI->GetBlackboardComponent()->GetValueAsVector(AAIController_Brute::TargetLocation);
+		FVector fTargetLastLocation = BruteAI->GetBlackboard()->GetValueAsVector(AAIController_Brute::TargetLocation);
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(BruteAI, fTargetLastLocation);
 		
 		// Move to last location of detected target.	
@@ -252,7 +252,7 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 
 		if (NavSystem->GetRandomPointInNavigableRadius(fTargetLastLocation, 200.0f, fNextPatrol))
 		{
-			BruteAI->GetBlackboardComponent()->SetValueAsVector(AAIController_Brute::PatrolPosKey, fNextPatrol.Location);
+			BruteAI->GetBlackboard()->SetValueAsVector(AAIController_Brute::PatrolPosKey, fNextPatrol.Location);
 			
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			return;

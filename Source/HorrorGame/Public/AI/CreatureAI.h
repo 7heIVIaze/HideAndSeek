@@ -17,6 +17,7 @@ enum class Sealed : uint8
 	OneUnsealed UMETA(DisplayName = "One_Unsealed"),
 	TwoUnsealed UMETA(DisplayName = "Two_Unsealed"),
 	Unsealed UMETA(DisplayName = "All_Unsealed"),
+	SealedButChase UMETA(DisplayName = "SealedButChase"), // 프롤로그 용 상태
 };
 UCLASS()
 class HORRORGAME_API ACreatureAI : public AAIController
@@ -29,8 +30,15 @@ public:
 	void BeginPlay() override;
 	//virtual void Tick(float DeltaSeconds) override;
 	void OnPossess(APawn* InPawn) override;
-	//virtual void OnUnPossess() override;
+	
+	UFUNCTION(BlueprintCallable)
+		void StopAI();
+		// virtual void OnUnPossess() override;
+	UFUNCTION(BlueprintCallable)
 	class UBlackboardComponent* GetBlackboard() const;
+
+	/*UFUNCTION(BlueprintCallable)
+		class UBehaviorTreeComponent* GetBlackboard() const;*/
 
 	UFUNCTION()
 		void SetPerception();
@@ -49,6 +57,7 @@ public:
 		void SetCurrentSealStatus(Sealed Status);
 public:
 	static const FName PatrolTargetKey;
+	static const FName NoiseTargetKey;
 	static const FName HomePosKey;
 	static const FName PatrolPosKey;
 	static const FName TargetKey;

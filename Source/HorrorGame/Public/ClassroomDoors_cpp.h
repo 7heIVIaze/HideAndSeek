@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
 // This Actor is just manage boolean value of ClassroomDoor_cpp s. 
 // If a bIsDoorLocked value of One of ClassroomDoor_cpps is false, this actor make the other's value false.
 

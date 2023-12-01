@@ -30,6 +30,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Default")
 		TSubclassOf<class AReaper_cpp> ObjectToSpawn;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PatrolPointList")
+		TArray<class APatrolPoint_cpp*> PatrolPointLists;
 	
 	UPROPERTY()
 		bool bIsPlayerIn = false;

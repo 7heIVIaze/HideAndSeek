@@ -94,7 +94,7 @@ void UGameUI::AllWidgetInit()
 	SetInteractDotExplainText(TEXT(""));
 	SetInteractDot(false);
 	//GameUIWidget->SetBaseInterface(true);
-	SetStaminaHUD(200);
+	SetStaminaHUD(400);
 	SetBatteryWidget(false);
 	SetCutterHUD(5);
 	SetCutterWidget(false);

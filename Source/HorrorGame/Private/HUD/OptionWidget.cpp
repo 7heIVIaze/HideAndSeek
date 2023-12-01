@@ -14,6 +14,9 @@
 #include "StartWidget.h"
 #include "GameFramework/GameUserSettings.h"
 #include "Math/IntPoint.h"
+#include "Engine/Console.h"
+#include "HorrorGame/HorrorGameCharacter.h"
+#include "Camera/CameraComponent.h"
 
 void UOptionWidget::NativeConstruct()
 {
@@ -72,10 +75,10 @@ void UOptionWidget::NativeConstruct()
 	Resolution6Button = Cast<UButton>(GetWidgetFromName(TEXT("Resolution6Btn")));
 	Resolution7Button = Cast<UButton>(GetWidgetFromName(TEXT("Resolution7Btn")));
 	Resolution8Button = Cast<UButton>(GetWidgetFromName(TEXT("Resolution8Btn")));
-	Resolution9Button = Cast<UButton>(GetWidgetFromName(TEXT("Resolution9Btn")));
-	Resolution10Button = Cast<UButton>(GetWidgetFromName(TEXT("Resolution10Btn")));
+	/*Resolution9Button = Cast<UButton>(GetWidgetFromName(TEXT("Resolution9Btn")));
+	Resolution10Button = Cast<UButton>(GetWidgetFromName(TEXT("Resolution10Btn")));*/
 	WindowedButton = Cast<UButton>(GetWidgetFromName(TEXT("WindowBtn")));
-	WinFullButton = Cast<UButton>(GetWidgetFromName(TEXT("WindowFullBtn")));
+	// WinFullButton = Cast<UButton>(GetWidgetFromName(TEXT("WindowFullBtn")));
 	FullScreenButton = Cast<UButton>(GetWidgetFromName(TEXT("FullScreenBtn")));
 	AntiAliasBox = Cast<UCheckBox>(GetWidgetFromName(TEXT("AntiCheckbox")));
 	ShadowBox = Cast<UCheckBox>(GetWidgetFromName(TEXT("ShadowCheckbox")));
@@ -155,8 +158,8 @@ void UOptionWidget::NativeConstruct()
 	{
 		Resolution8Button->OnClicked.AddDynamic(this, &UOptionWidget::OnClickResolution8Button);
 		Resolution8Button->OnHovered.AddDynamic(this, &UOptionWidget::OnHoveredResolution8Button);
-	}
-	if (IsValid(Resolution9Button))
+	}	
+	/*if (IsValid(Resolution9Button))
 	{
 		Resolution9Button->OnClicked.AddDynamic(this, &UOptionWidget::OnClickResolution9Button);
 		Resolution9Button->OnHovered.AddDynamic(this, &UOptionWidget::OnHoveredResolution9Button);
@@ -165,17 +168,17 @@ void UOptionWidget::NativeConstruct()
 	{
 		Resolution10Button->OnClicked.AddDynamic(this, &UOptionWidget::OnClickResolution10Button);
 		Resolution10Button->OnHovered.AddDynamic(this, &UOptionWidget::OnHoveredResolution10Button);
-	}
+	}*/
 	if (IsValid(WindowedButton))
 	{
 		WindowedButton->OnClicked.AddDynamic(this, &UOptionWidget::OnClickWindowedButton);
 		WindowedButton->OnHovered.AddDynamic(this, &UOptionWidget::OnHoveredWindowedButton);
 	}
-	if (IsValid(WinFullButton))
+	/*if (IsValid(WinFullButton))
 	{
 		WinFullButton->OnClicked.AddDynamic(this, &UOptionWidget::OnClickWinFullButton);
 		WinFullButton->OnHovered.AddDynamic(this, &UOptionWidget::OnHoveredWinFullButton);
-	}
+	}*/
 	if (IsValid(FullScreenButton))
 	{
 		FullScreenButton->OnClicked.AddDynamic(this, &UOptionWidget::OnClickFullScreenButton);
@@ -186,9 +189,65 @@ void UOptionWidget::NativeConstruct()
 		MenuNumber = MainBox->GetChildrenCount();
 	}
 
-	bIsAntiAliasing = AntiAliasBox->IsChecked();
-	bShadowSetting = ShadowBox->IsChecked();
-	bMotionBlur = MotionBlurBox->IsChecked();
+	if (GEngine)
+	{
+		UserSetting = GEngine->GetGameUserSettings();
+	}
+
+	if (UserSetting->GetAntiAliasingQuality() == 3)
+	{
+		bIsAntiAliasing = true;
+	}
+	else
+	{
+		bIsAntiAliasing = false;
+	}
+	AntiAliasBox->SetIsChecked(bIsAntiAliasing);
+
+	//bIsAntiAliasing = AntiAliasBox->IsChecked();
+
+	if (UserSetting->GetShadowQuality() == 3)
+	{
+		bShadowSetting = true;
+	}
+	else
+	{
+		bShadowSetting = false;
+	}
+
+	ShadowBox->SetIsChecked(bShadowSetting);
+	//bShadowSetting = ShadowBox->IsChecked();
+
+	//if()
+	// bMotionBlur = MotionBlurBox->IsChecked();
+	if (UserSetting->GetPostProcessingQuality() == 3)
+	{
+		bMotionBlur = true;
+	}
+	else
+	{
+		bMotionBlur = false;
+	}
+
+	MotionBlurBox->SetIsChecked(bMotionBlur);
+
+	if (UserSetting->GetFullscreenMode() == EWindowMode::Windowed)
+	{
+		bWindowed = true;
+		bFullScreen = false;
+	}
+	else if (UserSetting->GetFullscreenMode() == EWindowMode::Fullscreen)
+	{
+		bWindowed = false;
+		bFullScreen = true;
+	}
+
+	FIntPoint IntPoint = UserSetting->GetScreenResolution();
+	CurrentResolution = FString::FromInt(IntPoint.X) + TEXT("x") + FString::FromInt(IntPoint.Y);
+	CheckCurrentResolution(CurrentResolution);
+	
+	Brightness = 57;
+
 	UpdateButtonSlate();
 	SetCurrentMode(OptionType::None);
 	SetCurrentGraphicsMode(GraphicsType::Option);
@@ -309,6 +368,22 @@ void UOptionWidget::OnClickAntiAliasingButton()
 {
 	bIsAntiAliasing = !bIsAntiAliasing;
 	AntiAliasBox->SetIsChecked(bIsAntiAliasing);
+	
+	/*UGameUserSettings* UserSetting = nullptr;
+
+	if (GEngine)
+	{
+		UserSetting = GEngine->GetGameUserSettings();
+	}*/
+
+	if (UserSetting)
+	{
+		int32 Value = bIsAntiAliasing ? 3 : 0; // ShadowSetting이 true면 3, false면 0으로 설정
+		UserSetting->SetAntiAliasingQuality(Value);
+		UserSetting->ApplyNonResolutionSettings();
+		UserSetting->SaveSettings();
+	}
+
 	UpdateButtonSlate();
 }
 
@@ -322,6 +397,21 @@ void UOptionWidget::OnClickShadowButton()
 {
 	bShadowSetting = !bShadowSetting;
 	ShadowBox->SetIsChecked(bShadowSetting);
+	/*UGameUserSettings* UserSetting = nullptr;
+
+	if (GEngine)
+	{
+		UserSetting = GEngine->GetGameUserSettings();
+	}*/
+
+	if (UserSetting)
+	{
+		int32 Value = bShadowSetting ? 3 : 0; // ShadowSetting이 true면 3, false면 0으로 설정
+		UserSetting->SetShadowQuality(Value);
+		UserSetting->ApplyNonResolutionSettings();
+		UserSetting->SaveSettings();
+	}
+
 	UpdateButtonSlate();
 }
 
@@ -335,6 +425,22 @@ void UOptionWidget::OnClickMotionBlurButton()
 {
 	bMotionBlur = !bMotionBlur;
 	MotionBlurBox->SetIsChecked(bMotionBlur);
+	
+	if (UserSetting)
+	{
+		int32 Value = bMotionBlur ? 3 : 0; // MotionBlur가 true면 3, false면 0으로 설정
+		UserSetting->SetPostProcessingQuality(Value);
+		UserSetting->ApplySettings(false);
+	}
+	
+	FString Command = TEXT("r.MotionBlurQuality ");
+
+	FString Value = bMotionBlur ? TEXT("3") : TEXT("0"); // MotionBlur가 true면 4, false면 0으로 설정
+
+	Command.Append(Value);
+	GetWorld()->Exec(GetWorld(), *Command);
+
+	
 	UpdateButtonSlate();
 }
 
@@ -347,17 +453,25 @@ void UOptionWidget::OnHoveredMotionBlurButton()
 // Resolution Menu
 void UOptionWidget::OnClickResolution1Button()
 {
-	int32 x = 1024, y = 768;
-	UGameUserSettings* UserSetting = nullptr;
+	int32 x = 854, y = 480; // 16 : 9 VGA
+	/*UGameUserSettings* UserSetting = nullptr;
 	if (GEngine)
-		UserSetting = GEngine->GetGameUserSettings();
+		UserSetting = GEngine->GetGameUserSettings();*/
 
 	if (UserSetting)
 	{
 		UserSetting->SetScreenResolution(FIntPoint(x, y));
-		UserSetting->ApplyResolutionSettings(true);
+		UserSetting->ApplyResolutionSettings(false);
 		UserSetting->SaveSettings();
 	}
+	bResolution1 = true;
+	bResolution2 = false;
+	bResolution3 = false;
+	bResolution4 = false;
+	bResolution5 = false;
+	bResolution6 = false;
+	bResolution7 = false;
+	bResolution8 = false;
 }
 
 void UOptionWidget::OnHoveredResolution1Button()
@@ -368,17 +482,25 @@ void UOptionWidget::OnHoveredResolution1Button()
 
 void UOptionWidget::OnClickResolution2Button()
 {
-	int32 x = 1152, y = 864;
-	UGameUserSettings* UserSetting = nullptr;
+	int32 x = 1366, y = 768; // 16 : 9 XGA
+	/*UGameUserSettings* UserSetting = nullptr;
 	if (GEngine)
-		UserSetting = GEngine->GetGameUserSettings();
+		UserSetting = GEngine->GetGameUserSettings();*/
 
 	if (UserSetting)
 	{
 		UserSetting->SetScreenResolution(FIntPoint(x, y));
-		UserSetting->ApplyResolutionSettings(true);
+		UserSetting->ApplyResolutionSettings(false);
 		UserSetting->SaveSettings();
 	}
+	bResolution2 = true;
+	bResolution1 = false;
+	bResolution3 = false;
+	bResolution4 = false;
+	bResolution5 = false;
+	bResolution6 = false;
+	bResolution7 = false;
+	bResolution8 = false;
 }
 
 void UOptionWidget::OnHoveredResolution2Button()
@@ -389,17 +511,25 @@ void UOptionWidget::OnHoveredResolution2Button()
 
 void UOptionWidget::OnClickResolution3Button()
 {
-	int32 x = 1280, y = 720;
-	UGameUserSettings* UserSetting = nullptr;
+	int32 x = 1600, y = 900; // 16 : 9 
+	/*UGameUserSettings* UserSetting = nullptr;
 	if (GEngine)
-		UserSetting = GEngine->GetGameUserSettings();
+		UserSetting = GEngine->GetGameUserSettings();*/
 
 	if (UserSetting)
 	{
 		UserSetting->SetScreenResolution(FIntPoint(x, y));
-		UserSetting->ApplyResolutionSettings(true);
+		UserSetting->ApplyResolutionSettings(false);
 		UserSetting->SaveSettings();
 	}
+	bResolution3 = true;
+	bResolution1 = false;
+	bResolution2 = false;
+	bResolution4 = false;
+	bResolution5 = false;
+	bResolution6 = false;
+	bResolution7 = false;
+	bResolution8 = false;
 }
 
 void UOptionWidget::OnHoveredResolution3Button()
@@ -410,17 +540,25 @@ void UOptionWidget::OnHoveredResolution3Button()
 
 void UOptionWidget::OnClickResolution4Button()
 {
-	int32 x = 1280, y = 768;
-	UGameUserSettings* UserSetting = nullptr;
+	int32 x = 1920, y = 1080; // 16 : 9
+	/*UGameUserSettings* UserSetting = nullptr;
 	if (GEngine)
-		UserSetting = GEngine->GetGameUserSettings();
+		UserSetting = GEngine->GetGameUserSettings();*/
 
 	if (UserSetting)
 	{
 		UserSetting->SetScreenResolution(FIntPoint(x, y));
-		UserSetting->ApplyResolutionSettings(true);
+		UserSetting->ApplyResolutionSettings(false);
 		UserSetting->SaveSettings();
 	}
+	bResolution4 = true;
+	bResolution1 = false;
+	bResolution2 = false;
+	bResolution3 = false;
+	bResolution5 = false;
+	bResolution6 = false;
+	bResolution7 = false;
+	bResolution8 = false;
 }
 
 void UOptionWidget::OnHoveredResolution4Button()
@@ -431,17 +569,25 @@ void UOptionWidget::OnHoveredResolution4Button()
 
 void UOptionWidget::OnClickResolution5Button()
 {
-	int32 x = 1280, y = 800;
-	UGameUserSettings* UserSetting = nullptr;
+	int32 x = 1280, y = 800; // 16 : 10
+	/*UGameUserSettings* UserSetting = nullptr;
 	if (GEngine)
-		UserSetting = GEngine->GetGameUserSettings();
+		UserSetting = GEngine->GetGameUserSettings();*/
 
 	if (UserSetting)
 	{
 		UserSetting->SetScreenResolution(FIntPoint(x, y));
-		UserSetting->ApplyResolutionSettings(true);
+		UserSetting->ApplyResolutionSettings(false);
 		UserSetting->SaveSettings();
 	}
+	bResolution5 = true;
+	bResolution1 = false;
+	bResolution2 = false;
+	bResolution3 = false;
+	bResolution4 = false;
+	bResolution6 = false;
+	bResolution7 = false;
+	bResolution8 = false;
 }
 
 void UOptionWidget::OnHoveredResolution5Button()
@@ -452,17 +598,25 @@ void UOptionWidget::OnHoveredResolution5Button()
 
 void UOptionWidget::OnClickResolution6Button()
 {
-	int32 x = 1280, y = 960;
-	UGameUserSettings* UserSetting = nullptr;
+	int32 x = 1920, y = 1200; // 16 : 10
+	/*UGameUserSettings* UserSetting = nullptr;
 	if (GEngine)
-		UserSetting = GEngine->GetGameUserSettings();
+		UserSetting = GEngine->GetGameUserSettings();*/
 
 	if (UserSetting)
 	{
 		UserSetting->SetScreenResolution(FIntPoint(x, y));
-		UserSetting->ApplyResolutionSettings(true);
+		UserSetting->ApplyResolutionSettings(false);
 		UserSetting->SaveSettings();
 	}
+	bResolution6 = true;
+	bResolution1 = false;
+	bResolution2 = false;
+	bResolution3 = false;
+	bResolution4 = false;
+	bResolution5 = false;
+	bResolution7 = false;
+	bResolution8 = false;
 }
 
 void UOptionWidget::OnHoveredResolution6Button()
@@ -473,17 +627,25 @@ void UOptionWidget::OnHoveredResolution6Button()
 
 void UOptionWidget::OnClickResolution7Button()
 {
-	int32 x = 1280, y = 1024;
-	UGameUserSettings* UserSetting = nullptr;
+	int32 x = 2560, y = 1080; // 21 : 9
+	/*UGameUserSettings* UserSetting = nullptr;
 	if (GEngine)
-		UserSetting = GEngine->GetGameUserSettings();
+		UserSetting = GEngine->GetGameUserSettings();*/
 
 	if (UserSetting)
 	{
 		UserSetting->SetScreenResolution(FIntPoint(x, y));
-		UserSetting->ApplyResolutionSettings(true);
+		UserSetting->ApplyResolutionSettings(false);
 		UserSetting->SaveSettings();
 	}
+	bResolution7 = true;
+	bResolution1 = false;
+	bResolution2 = false;
+	bResolution3 = false;
+	bResolution4 = false;
+	bResolution5 = false;
+	bResolution6 = false;
+	bResolution8 = false;
 }
 
 void UOptionWidget::OnHoveredResolution7Button()
@@ -494,10 +656,10 @@ void UOptionWidget::OnHoveredResolution7Button()
 
 void UOptionWidget::OnClickResolution8Button()
 {
-	int32 x = 1366, y = 768;
-	UGameUserSettings* UserSetting = nullptr;
+	int32 x = 3440, y = 1440; // 21 : 9
+	/*UGameUserSettings* UserSetting = nullptr;
 	if (GEngine)
-		UserSetting = GEngine->GetGameUserSettings();
+		UserSetting = GEngine->GetGameUserSettings();*/
 
 	if (UserSetting)
 	{
@@ -505,6 +667,14 @@ void UOptionWidget::OnClickResolution8Button()
 		UserSetting->ApplyResolutionSettings(true);
 		UserSetting->SaveSettings();
 	}
+	bResolution8 = true;
+	bResolution1 = false;
+	bResolution2 = false;
+	bResolution3 = false;
+	bResolution4 = false;
+	bResolution5 = false;
+	bResolution6 = false;
+	bResolution7 = false;
 }
 
 void UOptionWidget::OnHoveredResolution8Button()
@@ -512,58 +682,62 @@ void UOptionWidget::OnHoveredResolution8Button()
 	SubMenuNavIndex = 7;
 	UpdateButtonSlate();
 }
-
-void UOptionWidget::OnClickResolution9Button()
-{
-	int32 x = 1600, y = 900;
-	UGameUserSettings* UserSetting = nullptr;
-	if (GEngine)
-		UserSetting = GEngine->GetGameUserSettings();
-	if (UserSetting)
-	{
-		UserSetting->SetScreenResolution(FIntPoint(x, y));
-		UserSetting->ApplyResolutionSettings(true);
-		UserSetting->SaveSettings();
-	}
-}
-
-void UOptionWidget::OnHoveredResolution9Button()
-{
-	SubMenuNavIndex = 8;
-	UpdateButtonSlate();
-}
-
-void UOptionWidget::OnClickResolution10Button()
-{
-	int32 x = 1920, y = 1080;
-	UGameUserSettings* UserSetting = nullptr;
-	if (GEngine)
-		UserSetting = GEngine->GetGameUserSettings();
-	if (UserSetting)
-	{
-		UserSetting->SetScreenResolution(FIntPoint(x, y));
-		UserSetting->ApplyResolutionSettings(true);
-		UserSetting->SaveSettings();
-	}
-}
-
-void UOptionWidget::OnHoveredResolution10Button()
-{
-	SubMenuNavIndex = 9;
-	UpdateButtonSlate();
-}
-
+//
+//void UOptionWidget::OnClickResolution9Button()
+//{
+//	int32 x = 1600, y = 900;
+//	UGameUserSettings* UserSetting = nullptr;
+//	if (GEngine)
+//		UserSetting = GEngine->GetGameUserSettings();
+//	if (UserSetting)
+//	{
+//		UserSetting->SetScreenResolution(FIntPoint(x, y));
+//		UserSetting->ApplyResolutionSettings(true);
+//		UserSetting->SaveSettings();
+//	}
+//}
+//
+//void UOptionWidget::OnHoveredResolution9Button()
+//{
+//	SubMenuNavIndex = 8;
+//	UpdateButtonSlate();
+//}
+//
+//void UOptionWidget::OnClickResolution10Button()
+//{
+//	int32 x = 1920, y = 1080;
+//	UGameUserSettings* UserSetting = nullptr;
+//	if (GEngine)
+//		UserSetting = GEngine->GetGameUserSettings();
+//	if (UserSetting)
+//	{
+//		UserSetting->SetScreenResolution(FIntPoint(x, y));
+//		UserSetting->ApplyResolutionSettings(true);
+//		UserSetting->SaveSettings();
+//	}
+//}
+//
+//void UOptionWidget::OnHoveredResolution10Button()
+//{
+//	SubMenuNavIndex = 9;
+//	UpdateButtonSlate();
+//}
+//
 void UOptionWidget::OnClickWindowedButton()
 {
-	UGameUserSettings* UserSetting = nullptr;
+	/*UGameUserSettings* UserSetting = nullptr;
 	if (GEngine)
-		UserSetting = GEngine->GetGameUserSettings();
+		UserSetting = GEngine->GetGameUserSettings();*/
 	if (UserSetting)
 	{
 		UserSetting->SetFullscreenMode(EWindowMode::Windowed);
-		UserSetting->ApplySettings(true);
-		UserSetting->SaveSettings();
+		UserSetting->ApplySettings(false);
+		/*UserSetting->ApplyNonResolutionSettings();
+		UserSetting->SaveSettings();*/
 	}
+	bWindowed = true;
+	bFullScreen = false;
+	UpdateButtonSlate();
 	// SetCurrentGraphicsMode(GraphicsType::None);
 }
 
@@ -573,50 +747,80 @@ void UOptionWidget::OnHoveredWindowedButton()
 	UpdateButtonSlate();
 }
 
-void UOptionWidget::OnClickWinFullButton()
-{
-	UGameUserSettings* UserSetting = nullptr;
-	if (GEngine)
-		UserSetting = GEngine->GetGameUserSettings();
-	if (UserSetting)
-	{
-		UserSetting->SetFullscreenMode(EWindowMode::WindowedFullscreen);
-		UserSetting->ApplySettings(true);
-		UserSetting->SaveSettings();
-	}
-	
-}
-
-void UOptionWidget::OnHoveredWinFullButton()
-{
-	SubMenuNavIndex = 1;
-	UpdateButtonSlate();
-}
+//void UOptionWidget::OnClickWinFullButton()
+//{
+//	UGameUserSettings* UserSetting = nullptr;
+//	if (GEngine)
+//		UserSetting = GEngine->GetGameUserSettings();
+//	if (UserSetting)
+//	{
+//		UserSetting->SetFullscreenMode(EWindowMode::WindowedFullscreen);
+//		UserSetting->ApplySettings(true);
+//		UserSetting->SaveSettings();
+//	}
+//	
+//}
+//
+//void UOptionWidget::OnHoveredWinFullButton()
+//{
+//	SubMenuNavIndex = 1;
+//	UpdateButtonSlate();
+//}
 
 void UOptionWidget::OnClickFullScreenButton()
 {
-	UGameUserSettings* UserSetting = nullptr;
+	/*UGameUserSettings* UserSetting = nullptr;
 	if (GEngine)
-		UserSetting = GEngine->GetGameUserSettings();
+		UserSetting = GEngine->GetGameUserSettings();*/
 	if (UserSetting)
 	{
 		UserSetting->SetFullscreenMode(EWindowMode::Fullscreen);
-		UserSetting->ApplySettings(true);
-		UserSetting->SaveSettings();
+		UserSetting->ApplySettings(false);
+		
+		// UserSetting->ApplyNonResolutionSettings();
+		// UserSetting->SaveSettings();
 	}
+	bFullScreen = true;
+	bWindowed = false;
+	UpdateButtonSlate();
 }
 
 void UOptionWidget::OnHoveredFullScreenButton()
 {
-	SubMenuNavIndex = 2;
+	SubMenuNavIndex = 1;
 	UpdateButtonSlate();
 }
 
 void UOptionWidget::SetBrightness(int32 value)
 {
 	Brightness += value;
+	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Brightness: %d"), Brightness));
+	float Percentage = Brightness / 100;
+	BrightnessBar->SetPercent(Percentage);
 
-	BrightnessBar->SetPercent(0.5f);
+	float NewBrightness = 0.5 + (Percentage * 3.0f);
+
+	FString CVarGamma = TEXT("r.Gamma ") + FString::SanitizeFloat(NewBrightness);
+	/*IConsoleVariable* CVarGamma = IConsoleManager::Get().FindConsoleVariable(TEXT("r.gamma"));
+	float NewBrightness = 0.5 + (Percentage * 3.0f);
+
+	CVarGamma->Set(NewBrightness);*/
+
+	GetWorld()->Exec(GetWorld(), *CVarGamma);
+	/*if (UserSetting)
+	{
+		UserSetting->SetOverallScalabilityLevel()
+	}*/
+
+	/*UBlueprintGeneratedClass* PlayerBlueprint = LoadObject<UBlueprintGeneratedClass>(nullptr, TEXT("/Game/FirstPerson/Blueprints/BP_FirstPersonCharacter"));
+	AHorrorGameCharacter* Player = Cast<AHorrorGameCharacter>(PlayerBlueprint);
+
+	Player->SetBrightness(Percentage);
+
+	UCameraComponent* Camera = Cast<UCameraComponent>(UGameplayStatics::GetActorOfClass(GetWorld(), UCameraComponent::StaticClass()));
+	Camera->PostProcessSettings.bOverride_ColorGamma = true;
+	Camera->PostProcessSettings.ColorGamma = FVector4(1.f, 1.f, 1.f, Percentage * 1.5f);*/
+	//AHorrorGameCharacter* Player = Cast<AHorrorGameCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), AHorrorGameCharacter::StaticClass()));
 }
 
 void UOptionWidget::UpdateButtonSlate()
@@ -735,93 +939,95 @@ void UOptionWidget::UpdateButtonSlate()
 
 		if (CurrentGraphicsMode == GraphicsType::Resolution)
 		{
-			switch (SubMenuNavIndex)
-			{
-			case 0:
-				Resolution1Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-				Resolution2Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution3Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution4Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution5Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution6Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution7Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution8Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution9Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution10Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				break;
-			case 1:
-				Resolution1Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution2Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-				Resolution3Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution4Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution5Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution6Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution7Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution8Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution9Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution10Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				break;
-			case 2:
-				Resolution1Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution2Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution3Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-				Resolution4Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution5Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution6Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution7Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution8Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution9Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution10Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				break;
-			case 3:
-				Resolution1Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution2Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution3Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution4Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-				Resolution5Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution6Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution7Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution8Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution9Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution10Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				break;
-			case 4:
-				Resolution1Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution2Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution3Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution4Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution5Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-				Resolution6Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution7Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution8Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution9Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution10Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				break;
-			case 5:
-				Resolution1Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution2Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution3Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution4Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution5Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution6Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-				Resolution7Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution8Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution9Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution10Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				break;
-			case 6:
-				Resolution1Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution2Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution3Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution4Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution5Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution6Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution7Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-				Resolution8Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution9Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				Resolution10Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				break;
-			case 7:
+			SelectResolutionMode(bResolution1, bResolution2, bResolution3, bResolution4, bResolution5,
+				bResolution6, bResolution7, bResolution8, SubMenuNavIndex);
+			//switch (SubMenuNavIndex)
+			//{
+			//case 0:
+			//	Resolution1Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			//	Resolution2Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution3Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution4Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution5Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution6Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution7Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	/*Resolution8Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution9Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution10Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));*/
+			//	break;
+			//case 1:
+			//	Resolution1Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution2Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			//	Resolution3Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution4Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution5Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution6Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution7Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	/*Resolution8Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution9Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution10Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));*/
+			//	break;
+			//case 2:
+			//	Resolution1Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution2Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution3Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			//	Resolution4Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution5Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution6Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution7Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	/*Resolution8Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution9Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution10Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));*/
+			//	break;
+			//case 3:
+			//	Resolution1Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution2Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution3Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution4Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			//	Resolution5Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution6Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution7Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	/*Resolution8Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution9Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution10Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));*/
+			//	break;
+			//case 4:
+			//	Resolution1Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution2Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution3Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution4Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution5Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			//	Resolution6Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution7Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	/*Resolution8Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution9Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution10Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));*/
+			//	break;
+			//case 5:
+			//	Resolution1Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution2Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution3Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution4Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution5Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution6Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			//	Resolution7Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	/*Resolution8Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution9Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution10Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));*/
+			//	break;
+			//case 6:
+			//	Resolution1Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution2Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution3Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution4Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution5Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution6Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution7Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			//	/*Resolution8Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution9Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	Resolution10Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));*/
+			//	break;
+			/*case 7:
 				Resolution1Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
 				Resolution2Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
 				Resolution3Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
@@ -856,49 +1062,292 @@ void UOptionWidget::UpdateButtonSlate()
 				Resolution8Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
 				Resolution9Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
 				Resolution10Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-				break;
-			}
+				break;*/
+			//}
 		}
 		else
 		{
-			Resolution1Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			SelectResolutionMode(bResolution1, bResolution2, bResolution3, bResolution4, bResolution5,
+				bResolution6, bResolution7, bResolution8, -1);
+			/*Resolution1Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
 			Resolution2Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
 			Resolution3Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
 			Resolution4Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
 			Resolution5Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
 			Resolution6Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			Resolution7Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			Resolution8Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			Resolution9Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			Resolution10Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			Resolution7Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));*/
+			/*Resolution8Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+				Resolution9Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+				Resolution10Button->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));*/
 		}
 
 		if (CurrentGraphicsMode == GraphicsType::Window)
 		{
-			switch (SubMenuNavIndex)
-			{
-			case 0:
-				WindowedButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-				WinFullButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				FullScreenButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				break;
-			case 1:
-				WindowedButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				WinFullButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-				FullScreenButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				break;
-			case 2:
-				WindowedButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				WinFullButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-				FullScreenButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-				break;
-			}
+			SelectWindowMode(bWindowed, bFullScreen, SubMenuNavIndex);
+			//switch (SubMenuNavIndex)
+			//{
+			//case 0:
+			//	WindowedButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			//	//WinFullButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	FullScreenButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	break;
+			///*case 1:
+			//	WindowedButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	WinFullButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			//	FullScreenButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	break;*/
+			////case 2:
+			//case 1:
+			//	WindowedButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	//WinFullButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//	FullScreenButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			//	break;
+			//}
+
 		}
 		else
 		{
-			WindowedButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			WinFullButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			FullScreenButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			SelectWindowMode(bWindowed, bFullScreen, -1);
+			//WindowedButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//WinFullButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			//FullScreenButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+		}
+	}
+}
+
+void UOptionWidget::SelectWindowMode(bool bWindowedMode, bool bFullScreenMode, int32 CurrentIndex)
+{
+	if (bWindowedMode)
+	{
+		if (CurrentIndex == 0)
+		{
+			WindowedButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+		}
+		else
+		{
+			WindowedButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+		}
+	}
+	else
+	{
+		if (CurrentIndex == 0)
+		{
+			WindowedButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+		}
+		else
+		{
+			WindowedButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		}
+	}
+
+	if (bFullScreenMode)
+	{
+		if (CurrentIndex == 1)
+		{
+			FullScreenButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+		}
+		else
+		{
+			FullScreenButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+		}
+	}
+	else
+	{
+		if (CurrentIndex == 1)
+		{
+			FullScreenButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+		}
+		else
+		{
+			FullScreenButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		}
+	}
+}
+
+void UOptionWidget::SelectResolutionMode(bool bResolution1Mode, bool bResolution2Mode, bool bResolution3Mode, bool bResolution4Mode,
+	bool bResolution5Mode, bool bResolution6Mode, bool bResolution7Mode, bool bResolution8Mode, int32 CurrentIndex)
+{
+	if (bResolution1Mode)
+	{
+		if (CurrentIndex == 0)
+		{
+			Resolution1Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+		}
+		else
+		{
+			Resolution1Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+		}
+	}
+	else
+	{
+		if (CurrentIndex == 0)
+		{
+			Resolution1Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+		}
+		else
+		{
+			Resolution1Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		}
+	}
+
+	if (bResolution2Mode)
+	{
+		if (CurrentIndex == 1)
+		{
+			Resolution2Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+		}
+		else
+		{
+			Resolution2Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+		}
+	}
+	else
+	{
+		if (CurrentIndex == 1)
+		{
+			Resolution2Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+		}
+		else
+		{
+			Resolution2Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		}
+	}
+
+	if (bResolution2Mode)
+	{
+		if (CurrentIndex == 2)
+		{
+			Resolution3Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+		}
+		else
+		{
+			Resolution3Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+		}
+	}
+	else
+	{
+		if (CurrentIndex == 2)
+		{
+			Resolution3Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+		}
+		else
+		{
+			Resolution3Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		}
+	}
+
+	if (bResolution4Mode)
+	{
+		if (CurrentIndex == 3)
+		{
+			Resolution4Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+		}
+		else
+		{
+			Resolution4Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+		}
+	}
+	else
+	{
+		if (CurrentIndex == 3)
+		{
+			Resolution4Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+		}
+		else
+		{
+			Resolution4Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		}
+	}
+
+	if (bResolution5Mode)
+	{
+		if (CurrentIndex == 4)
+		{
+			Resolution5Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+		}
+		else
+		{
+			Resolution5Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+		}
+	}
+	else
+	{
+		if (CurrentIndex == 4)
+		{
+			Resolution5Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+		}
+		else
+		{
+			Resolution5Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		}
+	}
+
+	if (bResolution6Mode)
+	{
+		if (CurrentIndex == 5)
+		{
+			Resolution6Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+		}
+		else
+		{
+			Resolution6Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+		}
+	}
+	else
+	{
+		if (CurrentIndex == 5)
+		{
+			Resolution6Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+		}
+		else
+		{
+			Resolution6Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		}
+	}
+
+	if (bResolution7Mode)
+	{
+		if (CurrentIndex == 6)
+		{
+			Resolution7Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+		}
+		else
+		{
+			Resolution7Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+		}
+	}
+	else
+	{
+		if (CurrentIndex == 6)
+		{
+			Resolution7Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+		}
+		else
+		{
+			Resolution7Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		}
+	}
+
+	if (bResolution8Mode)
+	{
+		if (CurrentIndex == 7)
+		{
+			Resolution8Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+		}
+		else
+		{
+			Resolution8Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+		}
+	}
+	else
+	{
+		if (CurrentIndex == 7)
+		{
+			Resolution8Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+		}
+		else
+		{
+			Resolution8Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 		}
 	}
 }
@@ -911,6 +1360,51 @@ void UOptionWidget::SetCurrentMode(OptionType ModeType)
 void UOptionWidget::SetCurrentGraphicsMode(GraphicsType ModeType)
 {
 	CurrentGraphicsMode = ModeType;
+}
+
+void UOptionWidget::CheckCurrentResolution(const FString ForCheckResolution)
+{
+	bResolution1 = false;
+	bResolution2 = false;
+	bResolution3 = false;
+	bResolution4 = false;
+	bResolution5 = false;
+	bResolution6 = false;
+	bResolution7 = false;
+	bResolution8 = false;
+
+	if (ForCheckResolution.Equals(TEXT("854x480")))
+	{
+		bResolution1 = true;
+	}
+	else if (ForCheckResolution.Equals(TEXT("1366x768")))
+	{
+		bResolution2 = true;
+	}
+	else if (ForCheckResolution.Equals(TEXT("1600x900")))
+	{
+		bResolution3 = true;
+	}
+	else if (ForCheckResolution.Equals(TEXT("1920x1080")))
+	{
+		bResolution4 = true;
+	}
+	else if (ForCheckResolution.Equals(TEXT("1280x800")))
+	{
+		bResolution5 = true;
+	}
+	else if (ForCheckResolution.Equals(TEXT("1920x1200")))
+	{
+		bResolution6 = true;
+	}
+	else if (ForCheckResolution.Equals(TEXT("2560x1080")))
+	{
+		bResolution7 = true;
+	}
+	else if (ForCheckResolution.Equals(TEXT("3440x1440")))
+	{
+		bResolution8 = true;
+	}
 }
 
 FReply UOptionWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
@@ -931,12 +1425,15 @@ FReply UOptionWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEve
 			{
 			case 0:
 				OnClickPlaySettingButton();
+				UpdateButtonSlate();
 				break;
 			case 1:
 				OnClickGraphicsSettingButton();
+				UpdateButtonSlate();
 				break;
 			case 2:
 				OnClickKeyMappingButton();
+				UpdateButtonSlate();
 				break;
 			case 3:
 				OnClickBackButton();
@@ -999,12 +1496,12 @@ FReply UOptionWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEve
 				case 7:
 					OnClickResolution8Button();
 					break;
-				case 8:
+				/*case 8:
 					OnClickResolution9Button();
 					break;
 				case 9:
 					OnClickResolution10Button();
-					break;
+					break;*/
 				}
 				MenuNumber = MainBox->GetChildrenCount();
 				SetCurrentGraphicsMode(GraphicsType::None);
@@ -1016,10 +1513,11 @@ FReply UOptionWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEve
 				case 0:
 					OnClickWindowedButton();
 					break;
-				case 1:
+				/*case 1:
 					OnClickWinFullButton();
-					break;
-				case 2:
+					break;*/
+				//case 2:
+				case 1:
 					OnClickFullScreenButton();
 					break;
 				}
@@ -1142,13 +1640,13 @@ FReply UOptionWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEve
 			}
 			else if (CurrentGraphicsMode == GraphicsType::Brightness)
 			{
-				if (KeyType == "S" || KeyType == "Down" || KeyType == "D" || KeyType == "Right")
-				{
-					SetBrightness(1);
-				}
-				else if (KeyType == "W" || KeyType == "Up" || KeyType == "A" || KeyType == "Left")
+				if (KeyType == "S" || KeyType == "Down" || KeyType == "A" || KeyType == "Left")
 				{
 					SetBrightness(-1);
+				}
+				else if (KeyType == "W" || KeyType == "Up" || KeyType == "D" || KeyType == "Right")
+				{
+					SetBrightness(1);
 				}
 			}
 		}

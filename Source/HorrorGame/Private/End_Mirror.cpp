@@ -3,6 +3,7 @@
 #include "End_Mirror.h"
 #include "HorrorGame/HorrorGameCharacter.h"
 #include "Kismet/GameplayStatics.h"
+#include "HorrorGamePlayerController.h"
 
 // Sets default values
 AEnd_Mirror::AEnd_Mirror()
@@ -27,12 +28,13 @@ void AEnd_Mirror::BeginPlay()
 
 void AEnd_Mirror::OnInteract(class AHorrorGameCharacter* Player)
 {
-	if (bIsCleared)
+	if (bIsCleared) // 게임 클리어 시 Clear Widget 표시
 	{
-		FString levelName = TEXT("/Game/Levels/GameLevel/Start");
-		/*if(GameInstance)
-			GameInstance->StopSound();*/
-		UGameplayStatics::OpenLevel(GetWorld(), *levelName);
+		Cast<AHorrorGamePlayerController>(GetWorld()->GetFirstPlayerController())->OnGameClear();
+		//FString levelName = TEXT("/Game/Levels/GameLevel/Start");
+		///*if(GameInstance)
+		//	GameInstance->StopSound();*/
+		//UGameplayStatics::OpenLevel(GetWorld(), *levelName);
 	}
 }
 

@@ -22,6 +22,6 @@ class HORRORGAME_API IDoorInterface_cpp
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	virtual void OnInteract() = 0; // Door On Click Interact Function
-	virtual void UseInteract() = 0; // Door Item Use Interact Function
+	virtual void OnInteract(class AHorrorGameCharacter* Player) = 0; // Door On Click Interact Function
+	virtual void UseInteract(class AHorrorGameCharacter* Player) = 0; // Door Item Use Interact Function
 };

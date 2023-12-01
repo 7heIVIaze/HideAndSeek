@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
 
 #pragma once
 
@@ -65,13 +65,13 @@ public:
 	// Functions
 
 	UFUNCTION()
-		virtual void OnInteract() override;
+		virtual void OnInteract(class AHorrorGameCharacter* Player) override;
 
 	UFUNCTION()
 		void AIInteract();
 
 	UFUNCTION()
-		virtual void UseInteract() override;
+		virtual void UseInteract(class AHorrorGameCharacter* Player) override;
 
 	UFUNCTION()
 		void DoorOpen(float Value);

@@ -1,4 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim
+// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
 
 #include "HorrorGameCharacter.h"
 #include "HorrorGameProjectile.h"
@@ -21,7 +21,7 @@
 #include "AI/Brute_cpp.h"
 #include "HorrorGamePlayerController.h"
 #include "GameUI.h"
-// #include "UObject/ConstructorHelpers.h"
+#include "SwitchLever.h"
 #include "PatrolPoint_cpp.h"
 #include "WardrobeDrawer_cpp.h"
 #include "Wardrobe_cpp.h"
@@ -43,6 +43,7 @@
 #include "Items/Extinguisher_cpp.h"
 #include "Items/Soul_Lantern_cpp.h"
 #include "Items/PlayerSword_cpp.h"
+#include "Furniture/DistributionBox.h"
 #include "EngineUtils.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
@@ -76,8 +77,8 @@ AHorrorGameCharacter::AHorrorGameCharacter()
 	bIsCigarLightOn = false;
 	bFLIntenseDown = false;
 	bisSoundOn = false;
-	Stamina = 200;
-	FlashLightBattery = 100;
+	Stamina = 400;
+	FlashLightBattery = 200;
 	
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
@@ -147,12 +148,15 @@ AHorrorGameCharacter::AHorrorGameCharacter()
 	Sound = CreateDefaultSubobject<UAudioComponent>(TEXT("Sound"));
 	Sound->SetupAttachment(FirstPersonCameraComponent);
 
-	static ConstructorHelpers::FObjectFinder<USoundBase> RestSound(TEXT("/Game/Assets/Sounds/RunStop"));
+	SprintSound = CreateDefaultSubobject<UAudioComponent>(TEXT("SprintSound"));
+	SprintSound->SetupAttachment(FirstPersonCameraComponent);
+
+	/*static ConstructorHelpers::FObjectFinder<USoundBase> RestSound(TEXT("/Game/Assets/Sounds/RunStop"));
 	if (RestSound.Succeeded())
 	{
 		RunStop = RestSound.Object;
 		Sound->OnAudioFinished.AddDynamic(this, &AHorrorGameCharacter::BreatheSoundFinish);
-	}
+	}*/
 
 	// Sound when character turn on or off a flashlight
 	Turnon = CreateDefaultSubobject<UAudioComponent>(TEXT("TunronSound"));
@@ -162,6 +166,13 @@ AHorrorGameCharacter::AHorrorGameCharacter()
 	{
 		TurnOnSoundCue = TurnonSound.Object;
 	}
+
+	PanicSound = CreateDefaultSubobject<UAudioComponent>(TEXT("PanicSound"));
+	PanicSound->SetupAttachment(FirstPersonCameraComponent);
+
+	HeartBeat = CreateDefaultSubobject<UAudioComponent>(TEXT("HeartBeatSound"));
+	HeartBeat->SetupAttachment(FirstPersonCameraComponent);
+	HeartBeat->SetAutoActivate(false);
 
 	CigarLightOnSound = CreateDefaultSubobject<UAudioComponent>(TEXT("CigarLightOnSound"));
 	CigarLightOnSound->SetupAttachment(FirstPersonCameraComponent);
@@ -251,22 +262,6 @@ void AHorrorGameCharacter::BeginPlay()
 		}
 	}
 
-	if (GEngine)
-	{
-		FString checktext = TEXT("");
-		if (PostProcessMaterialInstance != nullptr)
-			checktext = TEXT("is not null");
-		else
-			checktext = TEXT("is null");
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("PostProcessMaterialInstance: %s"), *checktext));
-	}
-	
-	if (PostProcessMaterial)
-	{
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("PostProcessMaterial is here")));
-		// PostProcessMaterialInstance = UMaterialInstanceDynamic::Create(PostProcessMaterial, this);
-	}
 	/*if (GEngine)
 	{
 		FString checktext = TEXT("");
@@ -274,14 +269,21 @@ void AHorrorGameCharacter::BeginPlay()
 			checktext = TEXT("is not null");
 		else
 			checktext = TEXT("is null");
-		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("PostProcessMaterialInstance: %s"), *checktext));
+		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("PostProcessMaterialInstance: %s"), *checktext));
 	}*/
+	
+	//if (PostProcessMaterial)
+	//{
+	//	if (GEngine)
+	//		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("PostProcessMaterial is here")));
+	//	// PostProcessMaterialInstance = UMaterialInstanceDynamic::Create(PostProcessMaterial, this);
+	//}
 
 	CurrentItemNum = -1;
 
 	if (Sound->IsValidLowLevelFast())
 	{
-		Sound->SetSound(RunStop);
+		// Sound->SetSound(RunStop);
 		Sound->SetAutoActivate(false);
 	}
 	if (Turnon->IsValidLowLevelFast())
@@ -306,45 +308,8 @@ void AHorrorGameCharacter::BeginPlay()
 	PlayerStatus = Player_Status::Survive;
 	GameUIWidget = HorrorGamePlayerController->GetMainWidget();
 	
-	//if (GameUIClass != nullptr)
-	//{
-	//	//APlayerController* con = Cast<APlayerController>(Controller);
-	//	if (HorrorGamePlayerController == nullptr) return;
-	//	GameUIWidget = CreateWidget<UGameUI>(HorrorGamePlayerController, GameUIClass);
-	/*if (!GameUIWidget) {
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Red, FString::Printf(TEXT("There is no GameUIWidget")));
-		return;
-	}
-	else
-		if (GEngine)
-			GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Green, FString::Printf(TEXT("There is GameUIWidget")));*/
-	/*GameUIWidget->Player = this;
-	GameUIWidget->AllWidgetInit();*/
+	
 	LevelStart();
-	/*if (UGameplayStatics::GetCurrentLevelName(GetWorld()) == TEXT("Prologue"))
-	{
-		GameUIWidget->SetObjWidget(false);
-	}
-	else
-	{
-		GameUIWidget->SetObjWidget(true);
-	}*/
-	//GameUIWidget->Init();
-	////GameUIWidget->AddToViewport();
-	//GameUIWidget->SetInteractDotText(TEXT(""));
-	//GameUIWidget->SetInteractDotErrorText(TEXT(""));
-	//GameUIWidget->SetInteractDot(false);
-	////GameUIWidget->SetBaseInterface(true);
-	//GameUIWidget->SetStaminaHUD(Stamina);
-	//GameUIWidget->SetBatteryWidget(false);
-	//GameUIWidget->SetCutterHUD(CutterDurability);
-	//GameUIWidget->SetCutterWidget(false);
-	//GameUIWidget->SetExtHUD(ExtinguisherLeft);
-	//GameUIWidget->SetExtWidget(false);
-		//InteractDot = GameUIWidget->GetInteractDotWidget();
-	//}
-	//CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	if (CurveFloat)
 	{
@@ -354,12 +319,12 @@ void AHorrorGameCharacter::BeginPlay()
 		FlickeringLight.SetLooping(true);
 	}
 
-	/*if (PPMFloat)
+	if (PanicSoundCue)
 	{
-		FOnTimelineFloat TimelineProgress;
-		TimelineProgress.BindDynamic(this, &AHorrorGameCharacter::SetParameterValue);
-		RadiusTime.AddInterpFloat(PPMFloat, TimelineProgress);
-	}*/
+		PanicSound->SetAutoActivate(false);
+		PanicSound->SetSound(PanicSoundCue);
+		PanicSound->OnAudioFinished.AddDynamic(this, &AHorrorGameCharacter::SetPanicScreamEnd);
+	}
 }
 
 void AHorrorGameCharacter::Tick(float DeltaTime)
@@ -372,17 +337,6 @@ void AHorrorGameCharacter::Tick(float DeltaTime)
 	GetLineTraceSingle(HitActor);
 
 	FlickeringLight.TickTimeline(DeltaTime);
-	//RadiusTime.TickTimeline(DeltaTime);
-
-	/*if (LevelName == TEXT("Start"))
-	{
-		if (HorrorGamePlayerController != nullptr)
-		{
-			HorrorGamePlayerController->SetShowMouseCursor(true);
-			HorrorGamePlayerController->bEnableClickEvents = true;
-			HorrorGamePlayerController->bEnableMouseOverEvents = true;
-		}
-	}*/
 
 	if (PlayerStatus == Player_Status::Died)
 	{
@@ -419,9 +373,6 @@ void AHorrorGameCharacter::Tick(float DeltaTime)
 		if (cnt >= TextTimer)
 		{
 			SetExplainText(TEXT(""), 0);
-			/*GameUIWidget->SetInteractDotExplainText(TEXT(""));
-			TextTimer = 0;
-			cnt = 0.f;*/
 		}
 	}
 
@@ -432,9 +383,6 @@ void AHorrorGameCharacter::Tick(float DeltaTime)
 		if (ErrorTextCount >= ErrorTextTimer)
 		{
 			SetErrorText(TEXT(""), 0);
-			/*GameUIWidget->SetInteractDotErrorText(TEXT(""));
-			ErrorTextTimer = 0;
-			ErrorTextCount = 0.f;*/
 		}
 	}
 
@@ -469,45 +417,53 @@ void AHorrorGameCharacter::Tick(float DeltaTime)
 		}
 	}
 
-	if (bIsPatienceReduce)
+	if (bIsPatienceReduce) // 캐비닛이나 옷장에 숨은 경우로 패닉 게이지가 감소
 	{
 		AddPatience(-1);
-		if (Patience == PatienceToReduce)
+		if (Patience == PatienceToReduce) // 패닉 게이지가 줄어들 양만큼 줄어들었으면 줄어들 양을 초기화
 		{
 			PatienceToReduce = -1;
-			bIsPatienceReduce = false;
+			bIsPatienceReduce = false; // 감소 중이 아니라고 알려줌
 		}
 	}
-//	if (!bCanExtinguisherUse)
-//	{
-//		TArray<FOverlapResult>OverlapResults;
-//		bool bHit = GetWorld()->OverlapMultiByChannel(
-//			OverlapResults,
-//			GetActorLocation() + FirstPersonCameraComponent->GetForwardVector() * 600.f, 
-//			FRotationMatrix::MakeFromZ(FirstPersonCameraComponent->GetForwardVector()).ToQuat(),
-//			ECollisionChannel::ECC_EngineTraceChannel2,
-//			FCollisionShape::MakeCapsule(200.f, 600.f)
-//		);
-//
-//#if ENABLE_DRAW_DEBUG
-//		FVector TraceVec = GetActorForwardVector() * AttackRange;
-//		FVector Center = GetActorLocation() + TraceVec * 0.5f;
-//		//반지름
-//		float HalfHeight = AttackRange * 0.5f + AttackRadius;
-//		//캡슐 회전방향
-//		FQuat CapsuleRot = FRotationMatrix::MakeFromZ(TraceVec).ToQuat();
-//		//타겟 발견시 녹색,미발견시 빨강
-//		FColor DrawColor = bResult ? FColor::Green : FColor::Red;
-//		//생성후 삭제되기까지의 시간
-//		float DebugLifeTime = 5.0f;
-//
-//
-//		//캡슐 디버그 메쉬그리기
-//		DrawDebugCapsule(GetWorld(), Center, HalfHeight, AttackRadius, CapsuleRot, DrawColor, false, DebugLifeTime);
-//#endif
-//		if(bHit)
-//			OnSprayOverlap(OverlapResults);
-//	}
+
+	if (Patience == 100 && !bIsScreaming) // 패닉 게이지가 100까지 도달했을 경우엔 어그로를 끌게 됨
+	{
+		bIsScreaming = true;
+		PanicSound->Play();
+	} // 패닉이 100일 때 계속 소리를 내는 것을 방지하기 위해, Screaming하는 지 체크하여 하지 않을 경우에만 발동하도록 함
+	
+	if (bIsCrouch)
+	{
+		if (Stamina <= 399)
+		{
+			Stamina += 1;
+			GameUIWidget->SetStaminaHUD(Stamina);
+		}
+	}
+	else
+	{
+		if (bIsSprint)
+		{
+			if (Stamina > 0)
+			{
+				Stamina -= 2;
+				GameUIWidget->SetStaminaHUD(Stamina);
+			}
+			else
+			{
+				EndSprint();
+			}
+		}
+		else
+		{
+			if (Stamina <= 399)
+			{
+				Stamina += 1;
+				GameUIWidget->SetStaminaHUD(Stamina);
+			}
+		}
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -549,9 +505,6 @@ void AHorrorGameCharacter::SetupPlayerInputComponent(class UInputComponent* Play
 	//PlayerInputComponent->BindAction("ItemChange", IE_Pressed, this, &AHorrorGameCharacter::SelectItem);
 	PlayerInputComponent->BindAction("ItemLeftSelect", IE_Pressed, this, &AHorrorGameCharacter::ScrollUpItem);
 	PlayerInputComponent->BindAction("ItemRightSelect", IE_Pressed, this, &AHorrorGameCharacter::ScrollDownItem);
-
-	//PlayerInputComponent->BindAction("GamePause", IE_Pressed, this, &AHorrorGamePlayerController::OnGamePause);
-	//}
 }
 
 void AHorrorGameCharacter::Move(const FInputActionValue& Value)
@@ -634,34 +587,37 @@ void AHorrorGameCharacter::BeginSprint()
 		if (Stamina > 0)
 		{
 			bIsSprint = true;
-			/*if (bIsInWater)
-				GetCharacterMovement()->MaxWalkSpeed = 350.f * InWaterSpeedDown;
-			else
-				GetCharacterMovement()->MaxWalkSpeed = 350.0f;*/
 
-			if (bisSoundOn)
+			if (Sound->GetPlayState() == EAudioComponentPlayState::Playing)
+			{
+				Sound->Stop();
+			}
+
+			/*if (bisSoundOn)
 			{
 				Sound->Stop();
 				bisSoundOn = false;
-			}
+			}*/
+			SprintSound->Play();
 		}
-		StaminaChange();
-		//GetWorld()->GetTimerManager().SetTimer(_loopStaminaTimerHandle, this, &AHorrorGameCharacter::StaminaChange, 0.05f, false);
+		// StaminaChange();
 	}
 }
 
 void AHorrorGameCharacter::EndSprint()
 {
-	bIsSprint = false;
-	/*if(bIsInWater)
-		GetCharacterMovement()->MaxWalkSpeed = 180.0f * InWaterSpeedDown;
-	else
-		GetCharacterMovement()->MaxWalkSpeed = 180.0f;*/
-	if (!bisSoundOn && bIsSprint)
+	if (bIsSprint)
 	{
-		bisSoundOn = true;
 		Sound->Play();
 	}
+	bIsSprint = false;
+
+	if (SprintSound->GetPlayState() == EAudioComponentPlayState::Playing)
+	{
+		SprintSound->Stop();
+	}
+	// if (!bisSoundOn && bIsSprint)
+		// bisSoundOn = true;
 }
 
 
@@ -705,26 +661,14 @@ void AHorrorGameCharacter::StaminaChange()
 void AHorrorGameCharacter::BeginCrouch()
 {
 	Crouch();
-	/*if (bIsInWater)
-		GetCharacterMovement()->MaxWalkSpeedCrouched = 80.f * InWaterSpeedDown;
-	else
-		GetCharacterMovement()->MaxWalkSpeedCrouched = 80.f;*/
+	
 	bIsCrouch = true;
 }
 
 void AHorrorGameCharacter::EndCrouch()
 {
 	UnCrouch();
-	/*if (bIsInWater)
-	{
-		GetCharacterMovement()->MaxWalkSpeed = 180.f * InWaterSpeedDown;
-	}
-	else
-	{
-		if (!bIsSprint)
-			GetCharacterMovement()->MaxWalkSpeed = 180.f;
-		GetCharacterMovement()->MaxWalkSpeedCrouched = 80.f;
-	}*/
+	
 	bIsCrouch = false;
 }
 
@@ -738,10 +682,6 @@ void AHorrorGameCharacter::Interact()
 	{
 		if (HitActor)
 		{
-			FString ActorName = HitActor->GetName();
-			//if (ActorName.Contains(TEXT("Key_cpp"), ESearchCase::CaseSensitive, ESearchDir::FromEnd))
-			//if(HitActor->IsA<AKey_cpp>())
-
 			if (HitActor->GetClass()->ImplementsInterface(UInteractInterface::StaticClass()))
 			{
 				auto InterfaceVariable = Cast<IInteractInterface>(HitActor);
@@ -753,18 +693,12 @@ void AHorrorGameCharacter::Interact()
 				}
 			}
 
+			else if (HitActor->GetClass()->ImplementsInterface(UDoorInterface_cpp::StaticClass()))
+			{
+				auto InterfaceVariable = Cast<IDoorInterface_cpp>(HitActor);
 
-			//if(AKey_cpp* Key = Cast<AKey_cpp>(HitActor))
-			//{
-			//	//AKey_cpp* Key = Cast<AKey_cpp>(HitActor);
-			//	AddKey();
-			//	if (bCanItemGet)
-			//	{
-			//		Key->OnInteract(this);
-			//	}
-			//	else
-			//		bCanItemGet = true;
-			//}
+				InterfaceVariable->OnInteract(this);
+			}
 
 			else if (HitActor->GetClass()->ImplementsInterface(UHideInterface::StaticClass()))
 			{
@@ -788,61 +722,61 @@ void AHorrorGameCharacter::Interact()
 			}
 
 			//else if (ActorName.Contains(TEXT("Door_cpp"), ESearchCase::CaseSensitive, ESearchDir::FromEnd))
-			else if(ADoor_cpp* Door = Cast<ADoor_cpp>(HitActor))
-			{
-				/*ADoor_cpp* Door = Cast<ADoor_cpp>(HitActor);*/
-				if (Door->bIsDoorLocked)
-				{
-					ErrorInteractText = TEXT("Locked");
-					SetErrorText(ErrorInteractText, 3);
-					/*GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
-					ErrorTextTimer = 1;
-					ErrorTextCount = 0;
-					GetWorld()->GetTimerManager().SetTimer(_TextTimerHandle, FTimerDelegate::CreateLambda([&]() {
-						ErrorInteractText = TEXT("");
-						GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
-						GetWorld()->GetTimerManager().ClearTimer(_TextTimerHandle);
-					}), 1.0f, false);*/
-				}
-				Door->OnInteract();
-			}
+			//else if(ADoor_cpp* Door = Cast<ADoor_cpp>(HitActor))
+			//{
+			//	/*ADoor_cpp* Door = Cast<ADoor_cpp>(HitActor);*/
+			//	if (Door->bIsDoorLocked)
+			//	{
+			//		ErrorInteractText = TEXT("Locked");
+			//		SetErrorText(ErrorInteractText, 3);
+			//		/*GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
+			//		ErrorTextTimer = 1;
+			//		ErrorTextCount = 0;
+			//		GetWorld()->GetTimerManager().SetTimer(_TextTimerHandle, FTimerDelegate::CreateLambda([&]() {
+			//			ErrorInteractText = TEXT("");
+			//			GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
+			//			GetWorld()->GetTimerManager().ClearTimer(_TextTimerHandle);
+			//		}), 1.0f, false);*/
+			//	}
+			//	Door->OnInteract();
+			//}
 
 			//else if (ActorName.Contains(TEXT("ClassroomDoorActor_cpp"), ESearchCase::CaseSensitive, ESearchDir::FromEnd))
-			else if(AClassroomDoorActor_cpp* ClassroomDoor = Cast<AClassroomDoorActor_cpp>(HitActor))
-			{
-				/*AClassroomDoorActor_cpp* LockedDoor = Cast<AClassroomDoorActor_cpp>(HitActor);*/
-				if (ClassroomDoor->bIsDoorLocked)
-				{
-					ErrorInteractText = TEXT("Locked");
-					SetErrorText(ErrorInteractText, 3);
-					/*GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
-					ErrorTextTimer = 1;
-					ErrorTextCount = 0;
-					GetWorld()->GetTimerManager().SetTimer(_TextTimerHandle, FTimerDelegate::CreateLambda([&]() {
-						ErrorInteractText = TEXT("");
-						GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
-						GetWorld()->GetTimerManager().ClearTimer(_TextTimerHandle);
-					}), 1.0f, false);*/
-				}
-				ClassroomDoor->OnInteract();
-			}
+			//else if(AClassroomDoorActor_cpp* ClassroomDoor = Cast<AClassroomDoorActor_cpp>(HitActor))
+			//{
+			//	/*AClassroomDoorActor_cpp* LockedDoor = Cast<AClassroomDoorActor_cpp>(HitActor);*/
+			//	if (ClassroomDoor->bIsDoorLocked)
+			//	{
+			//		ErrorInteractText = TEXT("Locked");
+			//		SetErrorText(ErrorInteractText, 3);
+			//		/*GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
+			//		ErrorTextTimer = 1;
+			//		ErrorTextCount = 0;
+			//		GetWorld()->GetTimerManager().SetTimer(_TextTimerHandle, FTimerDelegate::CreateLambda([&]() {
+			//			ErrorInteractText = TEXT("");
+			//			GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
+			//			GetWorld()->GetTimerManager().ClearTimer(_TextTimerHandle);
+			//		}), 1.0f, false);*/
+			//	}
+			//	ClassroomDoor->OnInteract();
+			//}
 
 			//else if (ActorName.Contains(TEXT("LockerDoorActor_cpp"), ESearchCase::CaseSensitive, ESearchDir::FromEnd))
 			else if(ALockerDoorActor_cpp* Locker = Cast<ALockerDoorActor_cpp>(HitActor))
 			{
 				//ALockerDoorActor_cpp* Locker = Cast<ALockerDoorActor_cpp>(HitActor);
-				if (Locker->bIsLockerLocked)
-				{
-					ErrorInteractText = TEXT("Locked");
-					SetErrorText(ErrorInteractText, 3);
-					/*GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
-					GetWorld()->GetTimerManager().SetTimer(_TextTimerHandle, FTimerDelegate::CreateLambda([&]() {
-						ErrorInteractText = TEXT("");
-						GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
-						GetWorld()->GetTimerManager().ClearTimer(_TextTimerHandle);
-					}), 1.0f, false);*/
-				}
-				Locker->OnInteract();
+				//if (Locker->bIsLockerLocked)
+				//{
+				//	ErrorInteractText = TEXT("Locked");
+				//	SetErrorText(ErrorInteractText, 3);
+				//	/*GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
+				//	GetWorld()->GetTimerManager().SetTimer(_TextTimerHandle, FTimerDelegate::CreateLambda([&]() {
+				//		ErrorInteractText = TEXT("");
+				//		GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
+				//		GetWorld()->GetTimerManager().ClearTimer(_TextTimerHandle);
+				//	}), 1.0f, false);*/
+				//}
+				Locker->OnInteract(this);
 			}
 
 			//else if (ActorName.Contains(TEXT("Cabinet_cpp"), ESearchCase::CaseSensitive, ESearchDir::FromEnd))
@@ -857,85 +791,6 @@ void AHorrorGameCharacter::Interact()
 			//	}
 			//}
 
-			//else if (ActorName.Contains(TEXT("FlashLight_cpp"), ESearchCase::CaseSensitive, ESearchDir::FromEnd))
-			//else if(AFlashLight_cpp* FlashLightActor = Cast<AFlashLight_cpp>(HitActor))
-			//{
-			//	//AFlashLight_cpp* FlashLightActor = Cast<AFlashLight_cpp>(HitActor);
-			//	AddFlashLight();
-			//	if (bCanItemGet)
-			//	{
-			//		FlashLightActor->OnInteract(this);
-			//	}
-			//	else
-			//		bCanItemGet = true;
-			//}
-
-			//else if (ActorName.Contains(TEXT("CigarLighter_cpp"), ESearchCase::CaseSensitive, ESearchDir::FromEnd))
-			//else if(ACigarLighter_cpp* CigarLighterActor = Cast<ACigarLighter_cpp>(HitActor))
-			//{
-			//	//ACigarLighter_cpp* CigarLighterActor = Cast<ACigarLighter_cpp>(HitActor);
-			//	AddCigarLight();
-			//	if (bCanItemGet)
-			//	{
-			//		CigarLighterActor->OnInteract();
-			//	}
-			//	else
-			//		bCanItemGet = true;
-			//}
-
-			//else if (ActorName.Contains(TEXT("Extinguisher_cpp"), ESearchCase::CaseSensitive, ESearchDir::FromEnd))
-			//else if(AExtinguisher_cpp* ExtinguisherActor = Cast<AExtinguisher_cpp>(HitActor))
-			//{
-			//	//AExtinguisher_cpp* ExtinguisherActor = Cast<AExtinguisher_cpp>(HitActor);
-			//	AddExtinguisher();
-			//	if (bCanItemGet)
-			//	{
-			//		ExtinguisherActor->OnInteract(this);
-			//	}
-			//	else
-			//		bCanItemGet = true;
-			//}
-
-			//else if (ActorName.Contains(TEXT("Timer_cpp"), ESearchCase::CaseSensitive, ESearchDir::FromEnd))
-			//else if(ATimer_cpp* TimerActor = Cast<ATimer_cpp>(HitActor))
-			//{
-			//	//ATimer_cpp* TimerActor = Cast<ATimer_cpp>(HitActor);
-			//	AddTimer();
-			//	if (bCanItemGet)
-			//	{
-			//		TimerActor->OnInteract(this);
-			//	}
-			//	else
-			//		bCanItemGet = true;
-			//}
-
-			//else if (ActorName.Contains(TEXT("Sword_cpp"), ESearchCase::CaseSensitive, ESearchDir::FromEnd))
-			//else if(ASword_cpp* SwordActor = Cast<ASword_cpp>(HitActor))
-			//{
-			//	//auto SwordActor = Cast<ASword_cpp>(HitActor);
-			//	AddSword();
-			//	if (bCanItemGet)
-			//	{
-			//		SwordActor->OnInteract(this);
-			//	}
-			//	else
-			//		bCanItemGet = true;
-			//}
-
-			//else if (ActorName.Contains(TEXT("Cutter_cpp"), ESearchCase::CaseSensitive, ESearchDir::FromEnd))
-			//else if(ACutter_cpp* CutterActor = Cast<ACutter_cpp>(HitActor))
-			//{
-			//	//ACutter_cpp* CutterActor = Cast<ACutter_cpp>(HitActor);
-			//	CutterDurability = CutterActor->Durability;
-			//	AddCutter();
-			//	if (bCanItemGet)
-			//	{
-			//		CutterActor->OnInteract(this);
-			//	}
-			//	else
-			//		bCanItemGet = true;
-			//}
-
 			//else if (AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(HitActor))
 			//{
 			//	//AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(HitActor);
@@ -948,43 +803,21 @@ void AHorrorGameCharacter::Interact()
 			//	}
 			//}
 
-			/*else if (AMirror_cpp* BronzeMirror = Cast<AMirror_cpp>(HitActor))
-			{
-				AddMirror();
-				if (bCanItemGet)
-				{
-					BronzeMirror->OnInteract(this);
-				}
-				else
-					bCanItemGet = true;
-			}
-
-			else if (ABell_cpp* Bell = Cast<ABell_cpp>(HitActor))
-			{
-				AddBell();
-				if (bCanItemGet)
-				{
-					Bell->OnInteract(this);
-				}
-				else
-					bCanItemGet = true;
-			}*/
-
-			else if (AMetalDoor_cpp* MetalDoor = Cast<AMetalDoor_cpp>(HitActor))
-			{
-				if (MetalDoor->bIsDoorLocked)
-				{
-					ErrorInteractText = TEXT("Locked");
-					SetErrorText(ErrorInteractText, 3);
-					/*GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
-					GetWorld()->GetTimerManager().SetTimer(_TextTimerHandle, FTimerDelegate::CreateLambda([&]() {
-						ErrorInteractText = TEXT("");
-						GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
-						GetWorld()->GetTimerManager().ClearTimer(_TextTimerHandle);
-					}), 1.0f, false);*/
-				}
-				MetalDoor->OnInteract();
-			}
+			//else if (AMetalDoor_cpp* MetalDoor = Cast<AMetalDoor_cpp>(HitActor))
+			//{
+			//	if (MetalDoor->bIsDoorLocked)
+			//	{
+			//		ErrorInteractText = TEXT("Locked");
+			//		SetErrorText(ErrorInteractText, 3);
+			//		/*GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
+			//		GetWorld()->GetTimerManager().SetTimer(_TextTimerHandle, FTimerDelegate::CreateLambda([&]() {
+			//			ErrorInteractText = TEXT("");
+			//			GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
+			//			GetWorld()->GetTimerManager().ClearTimer(_TextTimerHandle);
+			//		}), 1.0f, false);*/
+			//	}
+			//	MetalDoor->OnInteract();
+			//}
 
 			else if (ADeskDrawer_cpp* DeskDrawer = Cast<ADeskDrawer_cpp>(HitActor))
 			{
@@ -995,17 +828,6 @@ void AHorrorGameCharacter::Interact()
 			{
 				HangingLight->OnInteract();
 			}
-
-			/*else if (ASoul_Lantern_cpp* SoulLantern = Cast<ASoul_Lantern_cpp>(HitActor))
-			{
-				AddLantern();
-				if (bCanItemGet)
-				{
-					SoulLantern->OnInteract(this);
-				}
-				else
-					bCanItemGet = true;
-			}*/
 
 			else if (AAlarm* Alarm = Cast<AAlarm>(HitActor))
 			{
@@ -1020,6 +842,16 @@ void AHorrorGameCharacter::Interact()
 			else if (AAltar_cpp* Altar = Cast<AAltar_cpp>(HitActor))
 			{
 				Altar->OnInteract(this);
+			}
+
+			else if (ASwitchLever* Lever = Cast<ASwitchLever>(HitActor))
+			{
+				Lever->OnInteract(this);
+			}
+
+			else if (ADistributionBox* DBox = Cast<ADistributionBox>(HitActor))
+			{
+				DBox->OnInteract(this);
 			}
 		}
 	}
@@ -1330,6 +1162,16 @@ bool AHorrorGameCharacter::GetLineTraceSingle(AActor* &HitActor)
 				}
 			}
 
+			else if (ADistributionBox* DBox = Cast<ADistributionBox>(HitActor))
+			{
+			if (!DBox->bIsPowered)
+			{
+				GameUIWidget->SetInteractDotText(TEXT("Power On"));
+				GameUIWidget->SetInteractDot(true);
+				return true;
+			}
+			}
+
 			else if (HitActor->IsA<ALightSwitch>())
 			{
 				GameUIWidget->SetInteractDotText(TEXT("Turn On"));
@@ -1340,6 +1182,13 @@ bool AHorrorGameCharacter::GetLineTraceSingle(AActor* &HitActor)
 			else if (HitActor->IsA<AAltar_cpp>())
 			{
 				GameUIWidget->SetInteractDotText(TEXT("Place the Reaper's Items"));
+				GameUIWidget->SetInteractDot(true);
+				return true;
+			}
+
+			else if (HitActor->IsA<ASwitchLever>())
+			{
+				GameUIWidget->SetInteractDotText(TEXT("Turn On/Off"));
 				GameUIWidget->SetInteractDot(true);
 				return true;
 			}
@@ -1450,12 +1299,14 @@ void AHorrorGameCharacter::SetCameraComponentNoise(int32 WhichStatus)
 		FirstPersonCameraComponent->PostProcessSettings.VignetteIntensity = 1.f;
 		FirstPersonCameraComponent->PostProcessSettings.bOverride_FilmGrainIntensity = true;
 		FirstPersonCameraComponent->PostProcessSettings.FilmGrainIntensity = 4.f;
+		HeartBeat->Play(); // 동시에 심장박동 소리도 재생
 		break;
 	case 2: // 추격 판정이 뜰 경우 노이즈 크게 함
 		FirstPersonCameraComponent->PostProcessSettings.bOverride_VignetteIntensity = true;
 		FirstPersonCameraComponent->PostProcessSettings.VignetteIntensity = 1.f;
 		FirstPersonCameraComponent->PostProcessSettings.bOverride_FilmGrainIntensity = true;
 		FirstPersonCameraComponent->PostProcessSettings.FilmGrainIntensity = 15.f;
+		HeartBeat->Stop(); // 추격 판정 시 박동 소리 없앰.
 		GetWorldTimerManager().SetTimer(NoiseTimer, FTimerDelegate::CreateLambda([&]() {
 			SetCameraComponentNoise(1); // 0.5초동안 노이즈 크게 하고 다시 1번 상태로 돌릴 것임
 		}), 0.5f, false);
@@ -1463,6 +1314,7 @@ void AHorrorGameCharacter::SetCameraComponentNoise(int32 WhichStatus)
 	default: // Creature가 근처에 없다면 카메라에 노이즈 해제함
 		FirstPersonCameraComponent->PostProcessSettings.bOverride_VignetteIntensity = false;
 		FirstPersonCameraComponent->PostProcessSettings.bOverride_FilmGrainIntensity = false;
+		HeartBeat->Play();
 	}
 }
 
@@ -1608,7 +1460,7 @@ void AHorrorGameCharacter::AddFlashLight()
 			{
 				isFind = true;
 				Item.ItemCount = 1;
-				FlashLightBattery = 100;
+				FlashLightBattery = 200;
 				break;
 			}
 		}
@@ -1628,7 +1480,7 @@ void AHorrorGameCharacter::AddFlashLight()
 				bCanItemGet = false;
 				return;
 			}
-			FlashLightBattery = 100;
+			FlashLightBattery = 200;
 			Inventory[++InventoryNum].ItemName = FlashLightData->ItemName;
 			Inventory[InventoryNum].ItemIcon = FlashLightData->ItemIcon;
 			Inventory[InventoryNum].Type = EItemType::ITEM_Useable;
@@ -2022,19 +1874,10 @@ void AHorrorGameCharacter::AddLantern()
 			{
 				ErrorInteractText = TEXT("Your Inventory is FULL!. You CANNOT get more items");
 				SetErrorText(ErrorInteractText, 3);
-				/*GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
-				GetWorld()->GetTimerManager().SetTimer(_TextTimerHandle, FTimerDelegate::CreateLambda([&]() {
-					ErrorInteractText = TEXT("");
-					GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
-					GetWorld()->GetTimerManager().ClearTimer(_TextTimerHandle);
-				}), 1.0f, false);*/
 				bCanItemGet = false;
 				return;
 			}
 
-			/*GameUIWidget->SetBatteryWidget(false);
-			GameUIWidget->SetExtWidget(false);*/
-			// CutterDurability = 5;
 			Inventory[++InventoryNum].ItemName = LanternData->ItemName;
 			Inventory[InventoryNum].ItemIcon = LanternData->ItemIcon;
 			Inventory[InventoryNum].Type = EItemType::ITEM_Useable;
@@ -2044,113 +1887,16 @@ void AHorrorGameCharacter::AddLantern()
 			//GameUIWidget->Init();
 			CurrentItem();
 		}
-		/*if (Inventory[CurrentItemNum].ItemName == CutterData->ItemName)
-		{
-			GameUIWidget->SetBatteryWidget(false);
-			GameUIWidget->SetExtWidget(false);
-			GameUIWidget->SetCutterWidget(true);
-		}*/
-		// GameUIWidget->SetCutterHUD(CutterDurability);
 	}
 }
 
 // Use Item Functions
 void AHorrorGameCharacter::UseCigarLight()
 {
-	//AActor* HitActor = nullptr;
-	//bool isHit = GetLineTraceSingle(HitActor);
-	//
-	//if (isHit)
-	//{
-	//	if (HitActor)
-	//	{
-	//		// FString ActorName = HitActor->GetName();
-	//
-	//		if (ACabinet_cpp* Cabinet = Cast<ACabinet_cpp>(HitActor))
-	//		{
-	//			// ACabinet_cpp* Cabinet = Cast<ACabinet_cpp>(HitActor);
-	//			if (bIsHiding)
-	//			{
-	//				Cabinet->SetCigarLightOn(); // Call Cabinet_cpp Hide Function
-	//			}
-	//			else
-	//			{
-	//				if (bIsCigarLightOn)
-	//				{
-	//					CigarLightOffSound->Play();
-	//					CigarLight->SetVisibility(false);
-	//					bIsCigarLightOn = false;
-	//				}
-	//				else
-	//				{
-	//					CigarLightOnSound->Play();
-	//				}
-	//			}
-	//		}
-	//		else if (AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(HitActor))
-	//		{
-	//			// AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(HitActor);
-	//			if (bIsHiding)
-	//			{
-	//				Wardrobe->SetCigarLightOn(); // Call Cabinet_cpp Hide Function
-	//			}
-	//			else
-	//			{
-	//				if (bIsCigarLightOn)
-	//				{
-	//					CigarLight->SetVisibility(false);
-	//					bIsCigarLightOn = false;
-	//					CigarLightOffSound->Play();
-	//				}
-	//				else
-	//				{
-	//					CigarLightOnSound->Play();
-	//				}
-	//			}
-	//		}
-	//		else
-	//		{
-	//			if (bIsCigarLightOn) {
-	//				CigarLight->SetVisibility(false);
-	//				bIsCigarLightOn = false;
-	//				CigarLightOffSound->Play();
-	//			}
-	//			else if (!bIsCigarLightOn)
-	//			{
-	//				CigarLightOnSound->Play();
-	//				/*GetWorld()->GetTimerManager().SetTimer(_CigarLightTimerHandle, FTimerDelegate::CreateLambda([&]()
-	//				{
-	//					CigarLight->SetVisibility(true);
-	//					bIsCigarLightOn = true;
-	//					GetWorldTimerManager().ClearTimer(_CigarLightTimerHandle);
-	//				}), 1.0f, false);*/
-	//			}
-	//		}
-	//	} // FlashLight Function when Player Hide on Locker
-	//}
-	//else
-	//{
-	//	if (bIsCigarLightOn) {
-	//		CigarLight->SetVisibility(false);
-	//		bIsCigarLightOn = false;
-	//		CigarLightOffSound->Play();
-	//	}
-	//	else if (!bIsCigarLightOn)
-	//	{
-	//		CigarLightOnSound->Play();
-	//		/*GetWorld()->GetTimerManager().SetTimer(_CigarLightTimerHandle, FTimerDelegate::CreateLambda([&]()
-	//		{
-	//			CigarLight->SetVisibility(true);
-	//			bIsCigarLightOn = true;
-	//			GetWorldTimerManager().ClearTimer(_CigarLightTimerHandle);
-	//		}), 1.0f, false);*/
-	//	}
-	//	CurrentItem();
-	//}
-
 	if (bIsCigarLightOn) {
 		CigarLight->SetVisibility(false);
 		bIsCigarLightOn = false;
+		
 		CigarLightOffSound->Play();
 	}
 	else if (!bIsCigarLightOn)
@@ -2168,77 +1914,6 @@ void AHorrorGameCharacter::CigarLightOn()
 
 void AHorrorGameCharacter::UseFlashLight()
 {
-	//AActor* HitActor = nullptr;
-	//bool isHit = GetLineTraceSingle(HitActor);
-	//
-	//if (isHit)
-	//{
-	//	if (HitActor)
-	//	{
-	//		// FString ActorName = HitActor->GetName();
-	//
-	//		if (ACabinet_cpp* Cabinet = Cast<ACabinet_cpp>(HitActor))
-	//		{
-	//			// ACabinet_cpp* Cabinet = Cast<ACabinet_cpp>(HitActor);
-	//			if (bIsHiding)
-	//			{
-	//				Cabinet->SetFlashLightOn(); // Call Cabinet_cpp Hide Function
-	//			}
-	//			else
-	//			{
-	//				bIsFlashLightOn = !bIsFlashLightOn;
-	//				FlashLight->SetVisibility(bIsFlashLightOn);
-	//				Turnon->Play();
-	//				FlashLightBatteryChange();
-	//			}
-	//		}
-	//		else if (AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(HitActor))
-	//		{
-	//			// AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(HitActor);
-	//			if (bIsHiding)
-	//			{
-	//				Wardrobe->SetFlashLightOn(); // Call Cabinet_cpp Hide Function
-	//			}
-	//			else
-	//			{
-	//				bIsFlashLightOn = !bIsFlashLightOn;
-	//				FlashLight->SetVisibility(bIsFlashLightOn);
-	//				Turnon->Play();
-	//				FlashLightBatteryChange();
-	//			}
-	//		}
-	//		else
-	//		{
-	//			if (bIsFlashLightOn) {
-	//				FlashLight->SetVisibility(false);
-	//				bIsFlashLightOn = false;
-	//			}
-	//			else if (!bIsFlashLightOn)
-	//			{
-	//				FlashLight->SetVisibility(true);
-	//				bIsFlashLightOn = true;
-	//			}
-	//			Turnon->Play();
-	//			FlashLightBatteryChange();
-	//		}
-	//	} // FlashLight Function when Player Hide on Locker
-	//}
-	//else
-	//{
-	//	if (bIsFlashLightOn) {
-	//		FlashLight->SetVisibility(false);
-	//		bIsFlashLightOn = false;
-	//	}
-	//	else if (!bIsFlashLightOn)
-	//	{
-	//		FlashLight->SetVisibility(true);
-	//		bIsFlashLightOn = true;
-	//	}
-	//	Turnon->Play();
-	//	FlashLightBatteryChange();
-	//	CurrentItem();
-	//}
-
 	if (bIsFlashLightOn) {
 		FlashLight->SetVisibility(false);
 		bIsFlashLightOn = false;
@@ -2263,57 +1938,78 @@ void AHorrorGameCharacter::UseKey()
 		if (HitActor)
 		{
 			// FString ActorName = HitActor->GetName();
-
-			if (ADoor_cpp* Door = Cast<ADoor_cpp>(HitActor))
+			if (HitActor->GetClass()->ImplementsInterface(UDoorInterface_cpp::StaticClass()))
 			{
-				// ADoor_cpp* Door = Cast<ADoor_cpp>(HitActor);
-				if (Door->bIsDoorLocked)
+				auto InterfaceVariable = Cast<IDoorInterface_cpp>(HitActor);
+				Inventory[CurrentItemNum].ItemCount--;
+				if (Inventory[CurrentItemNum].ItemCount == 0)
 				{
-					Inventory[CurrentItemNum].ItemCount--;
-					if (Inventory[CurrentItemNum].ItemCount == 0)
-					{
-						Inventory.RemoveAt(CurrentItemNum);
-						InventoryNum--;
-						CurrentItemNum--;
-						if (CurrentItemNum < 0 && InventoryNum >= 0)
-							CurrentItemNum = 0;
-						FHorrorGameItemData TempItem;
-						TempItem.Clear();
-						Inventory.Add(TempItem);
-					}
-					USoundCue* ObjectSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/UnLock"));
-					if (ObjectSound)
-					{
-						UGameplayStatics::PlaySoundAtLocation(this, ObjectSound, GetActorLocation());
-					}
-					Door->UseInteract();
+					Inventory.RemoveAt(CurrentItemNum);
+					InventoryNum--;
+					CurrentItemNum--;
+					if (CurrentItemNum < 0 && InventoryNum >= 0)
+						CurrentItemNum = 0;
+					FHorrorGameItemData TempItem;
+					TempItem.Clear();
+					Inventory.Add(TempItem);
 				}
+				USoundCue* ObjectSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/UnLock"));
+				if (ObjectSound)
+				{
+					UGameplayStatics::PlaySoundAtLocation(this, ObjectSound, GetActorLocation());
+				}
+				InterfaceVariable->UseInteract(this);
 			}
+			//if (ADoor_cpp* Door = Cast<ADoor_cpp>(HitActor))
+			//{
+			//	// ADoor_cpp* Door = Cast<ADoor_cpp>(HitActor);
+			//	if (Door->bIsDoorLocked)
+			//	{
+			//		Inventory[CurrentItemNum].ItemCount--;
+			//		if (Inventory[CurrentItemNum].ItemCount == 0)
+			//		{
+			//			Inventory.RemoveAt(CurrentItemNum);
+			//			InventoryNum--;
+			//			CurrentItemNum--;
+			//			if (CurrentItemNum < 0 && InventoryNum >= 0)
+			//				CurrentItemNum = 0;
+			//			FHorrorGameItemData TempItem;
+			//			TempItem.Clear();
+			//			Inventory.Add(TempItem);
+			//		}
+			//		USoundCue* ObjectSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/UnLock"));
+			//		if (ObjectSound)
+			//		{
+			//			UGameplayStatics::PlaySoundAtLocation(this, ObjectSound, GetActorLocation());
+			//		}
+			//		Door->UseInteract();
+			//	}
+			//}
 
-			else if (AClassroomDoorActor_cpp* ClassroomDoor = Cast<AClassroomDoorActor_cpp>(HitActor))
-			{
-				if (ClassroomDoor->bIsDoorLocked)
-				{
-					Inventory[CurrentItemNum].ItemCount--;
-					if (Inventory[CurrentItemNum].ItemCount == 0)
-					{
-						Inventory.RemoveAt(CurrentItemNum);
-						InventoryNum--;
-						CurrentItemNum--;
-						if (CurrentItemNum < 0 && InventoryNum >= 0)
-							CurrentItemNum = 0;
-						FHorrorGameItemData TempItem;
-						TempItem.Clear();
-						Inventory.Add(TempItem);
-					}
-					USoundCue* ObjectSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/UnLock"));
-					if (ObjectSound)
-					{
-						UGameplayStatics::PlaySoundAtLocation(this, ObjectSound, GetActorLocation());
-					}
-					ClassroomDoor->UseInteract();
-				}
-			}
+			//else if (AClassroomDoorActor_cpp* ClassroomDoor = Cast<AClassroomDoorActor_cpp>(HitActor))
+			//{
+			//	if (ClassroomDoor->bIsDoorLocked)
+			//	{
+			//		Inventory[CurrentItemNum].ItemCount--;
+			//		if (Inventory[CurrentItemNum].ItemCount == 0)
+			//		{
+			//			Inventory.RemoveAt(CurrentItemNum);
+			//			InventoryNum--;
+			//			CurrentItemNum--;
+			//			if (CurrentItemNum < 0 && InventoryNum >= 0)
+			//				CurrentItemNum = 0;
+			//			FHorrorGameItemData TempItem;
+			//			TempItem.Clear();
+			//			Inventory.Add(TempItem);
+			//		}
+			//		USoundCue* ObjectSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/UnLock"));
+			//		if (ObjectSound)
+			//		{
+			//			UGameplayStatics::PlaySoundAtLocation(this, ObjectSound, GetActorLocation());
+			//		}
+			//		ClassroomDoor->UseInteract();
+			//	}
+			//}
 
 			else if (ALockerDoorActor_cpp* LockerDoor = Cast<ALockerDoorActor_cpp>(HitActor))
 			{
@@ -2336,11 +2032,11 @@ void AHorrorGameCharacter::UseKey()
 					{
 						UGameplayStatics::PlaySoundAtLocation(this, ObjectSound, GetActorLocation());
 					}
-					LockerDoor->UseInteract();
+					LockerDoor->UseInteract(this);
 				}
 			}
 
-			else if (AMetalDoor_cpp* MetalDoor = Cast<AMetalDoor_cpp>(HitActor))
+			/*else if (AMetalDoor_cpp* MetalDoor = Cast<AMetalDoor_cpp>(HitActor))
 			{
 				if (MetalDoor->bIsDoorLocked)
 				{
@@ -2361,9 +2057,9 @@ void AHorrorGameCharacter::UseKey()
 					{
 						UGameplayStatics::PlaySoundAtLocation(this, ObjectSound, GetActorLocation());
 					}
-					MetalDoor->UseInteract();
+					MetalDoor->UseInteract(this);
 				}
-			}
+			}*/
 
 			CurrentItem();
 		}
@@ -2692,41 +2388,6 @@ void AHorrorGameCharacter::UseExtinguisher()
 	// SmokeComponent->ActivateSystem();
 	// UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), SmokeComponent, GetActorLocation());
 	//SmokeComponent->DeactivateImmediate();
-	//if (isHit)
-	//{
-	//	auto HitActor = OutHit.GetActor();
-	//	if (HitActor)
-	//	{
-	//		// if (HitActor->IsA<AReaper_cpp>())
-	//		if(AReaper_cpp* Reaper = Cast<AReaper_cpp>(HitActor))
-	//		{
-	//			// AReaper_cpp* Reaper = Cast<AReaper_cpp>(HitActor);
-	//			if (nullptr == Reaper) return;
-
-	//			if (!Reaper->GetIsStunned())
-	//			{
-	//				FVector playerLocation = GetActorLocation();
-	//				FVector ReaperLocation = Reaper->GetActorLocation();
-	//				Reaper->Stunning(FVector::Distance(playerLocation, ReaperLocation));
-	//			}
-	//		}
-	//	} // FlashLight Function when Player Hide on Locker
-	//}
-	//else
-	//{
-	//	/*if (bIsFlashLightOn) {
-	//		FlashLight->SetVisibility(false);
-	//		bIsFlashLightOn = false;
-	//	}
-	//	else if (!bIsFlashLightOn)
-	//	{
-	//		FlashLight->SetVisibility(true);
-	//		bIsFlashLightOn = true;
-	//	}
-	//	Turnon->Play();
-	//	FlashLightBatteryChange();*/
-	//	// GameUIWidget->Init();
-	//}
 	if (ExtinguisherLeft <= 0)
 	{
 		Inventory[CurrentItemNum].ItemCount--;
@@ -2768,7 +2429,7 @@ void AHorrorGameCharacter::UseCutter()
 					{
 						UGameplayStatics::PlaySoundAtLocation(this, CutSound, GetActorLocation());
 					}
-					LockerDoor->UseInteract();
+					LockerDoor->UseInteract(this);
 				}
 			}
 			else if (AClassroomDoorActor_cpp* ClassroomDoor = Cast<AClassroomDoorActor_cpp>(HitActor))
@@ -2777,7 +2438,7 @@ void AHorrorGameCharacter::UseCutter()
 				if (ClassroomDoor->bIsDoorLocked)
 				{
 					CutterDurability -= 1;
-					ClassroomDoor->UseInteract();
+					ClassroomDoor->UseInteract(this);
 					USoundCue* CutSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/BreakLock"));
 					if (CutSound)
 					{
@@ -2796,7 +2457,7 @@ void AHorrorGameCharacter::UseCutter()
 					{
 						UGameplayStatics::PlaySoundAtLocation(this, CutSound, GetActorLocation());
 					}
-					MetalDoor->UseInteract();
+					MetalDoor->UseInteract(this);
 				}
 			}
 		}
@@ -2861,7 +2522,7 @@ void AHorrorGameCharacter::FlashLightBatteryChange()
 
 		if (FlashLightBattery < 20 && !(bFLIntenseDown))
 		{
-			FlashLight->SetIntensity(5000.f);
+			FlashLight->SetIntensity(8000.f);
 			bFLIntenseDown = true;
 		}
 	}
@@ -3208,9 +2869,10 @@ void AHorrorGameCharacter::AddPatience(int32 value)
 {
 	
 	Patience += value;
-	if (Patience < 0)
+	if (Patience <= 0)
 		Patience = 0;
-	else if (Patience > 100)
+
+	if (Patience >= 100)
 		Patience = 100;
 	GameUIWidget->SetPatience(Patience);
 }
@@ -3417,19 +3079,12 @@ void AHorrorGameCharacter::OnSprayOverlap(const TArray<FOverlapResult>& OverlapR
 	}
 }
 
-//void AHorrorGameCharacter::SetCameraNoise(bool value)
-//{
-//	FPostProcessSettings* CameraPostProcess = &FirstPersonCameraComponent->PostProcessSettings;
-//	if (value)
-//	{
-//		CameraPostProcess->VignetteIntensity = 1.0f;
-//		
-//	}
-//	else
-//	{
-//		CameraPostProcess->VignetteIntensity = 0.4f;
-//	}
-//}
+void AHorrorGameCharacter::SetPanicScreamEnd()
+{
+	bIsScreaming = false;
+	PatienceToReduce = 0;
+	bIsPatienceReduce = true;
+}
 
 void AHorrorGameCharacter::LevelStart()
 {
@@ -3447,7 +3102,18 @@ bool AHorrorGameCharacter::GetIsTimeStop()
 	return bIsTimeStop;
 }
 
+bool AHorrorGameCharacter::GetIsScreaming()
+{
+	return bIsScreaming;
+}
+
 bool AHorrorGameCharacter::GetIsTimeStopChange()
 {
 	return bIsTimeStopChange;
+}
+
+void AHorrorGameCharacter::SetBrightness(float Value)
+{
+	FirstPersonCameraComponent->PostProcessSettings.bOverride_ColorGamma = true;
+	FirstPersonCameraComponent->PostProcessSettings.ColorGamma = FVector4(1.f, 1.f, 1.f, Value * 1.5f);
 }

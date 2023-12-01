@@ -59,6 +59,7 @@ void ALevelManager::Tick(float DeltaTime)
 					Spawners[i]->CreatureSpawn();
 				}
 				bIsCalled = true;
+				//SetActorTickEnabled(false);
 				Destroy();
 			}
 		}

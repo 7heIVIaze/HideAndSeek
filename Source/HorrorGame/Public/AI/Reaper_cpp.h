@@ -68,11 +68,20 @@ public:
 		TEXT("BP_PatrolPoint16"), TEXT("BP_PatrolPoint17"), TEXT("BP_PatrolPoint18"), TEXT("BP_PatrolPoint19"), TEXT("BP_PatrolPoint20"),
 		TEXT("BP_PatrolPoint21"), TEXT("BP_PatrolPoint22"), TEXT("BP_PatrolPoint23"), TEXT("BP_PatrolPoint24"), TEXT("BP_PatrolPoint25") };
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PatrolPointList")
+		TArray<class APatrolPoint_cpp*> PatrolPointLists;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PatrolPointList")
+		bool bIsCollectMode; // Level1처럼 오브젝트를 모으는 챕터인가
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Player")
 		class AHorrorGameCharacter* Player;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Controller")
 		class ACreatureAI* ReaperController;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Controller")
+		int32 UnSealedItemNumber;
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -188,4 +197,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		bool GetPatrolSuccess();
+
+	UFUNCTION(BlueprintCallable)
+		void SetCurrentStatus(int32 Status); // 0: Sealed, 1: OneUnsealed, 2: TwoUnsealed, 3: Unsealed, 4: SealedButChase
 };

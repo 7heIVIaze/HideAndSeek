@@ -21,6 +21,8 @@ public:
 	void BeginPlay() override;
 	void OnPossess(APawn* InPawn) override;
 	//virtual void OnUnPossess() override;
+	UFUNCTION(BlueprintCallable)
+		void StopAI();
 	class UBlackboardComponent* GetBlackboard() const;
 
 	UFUNCTION()
@@ -37,12 +39,14 @@ public:
 		void EndChase();
 public:
 	static const FName PatrolTargetKey;
+	static const FName NoiseTargetKey;
 	static const FName HomePosKey;
 	static const FName PatrolPosKey;
 	static const FName TargetKey;
 	static const FName TargetLocation;
 	static const FName CanSeePlayer;
 	static const FName NoiseDetected;
+	//static const FName SprintDetected;
 	static const FName Stunned;
 	static const FName LockerLighting;
 

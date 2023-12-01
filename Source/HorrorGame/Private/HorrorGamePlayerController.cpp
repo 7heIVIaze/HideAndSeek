@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
 
 #include "HorrorGamePlayerController.h"
 #include "GameUI.h"
@@ -31,6 +30,12 @@ AHorrorGamePlayerController::AHorrorGamePlayerController()
 	if (LoadingHUD.Succeeded())
 	{
 		LoadingWidgetClass = LoadingHUD.Class;
+	}
+	
+	static ConstructorHelpers::FClassFinder<UUserWidget>ClearHUD(TEXT("/Game/Assets/BluePrints/UI/BP_ClearWidget"));
+	if (ClearHUD.Succeeded())
+	{
+		ClearWidgetClass = ClearHUD.Class;
 	}
 
 	GameInputMode = FInputModeGameOnly();
@@ -64,6 +69,9 @@ void AHorrorGamePlayerController::BeginPlay()
 
 	if (nullptr == LoadingWidget)
 		LoadingWidget = CreateWidget<UUserWidget>(this, LoadingWidgetClass);
+
+	if (nullptr == ClearWidget)
+		ClearWidget = CreateWidget<UUserWidget>(this, ClearWidgetClass);
 
 	FString strText = UGameplayStatics::GetCurrentLevelName(GetWorld());
 	if (strText == TEXT("Level1"))
@@ -144,4 +152,13 @@ void AHorrorGamePlayerController::OnGamePause()
 	UIInputMode.SetWidgetToFocus(PauseWidget->TakeWidget());
 	ChangeInputMode(false);
 	SetPause(true);
+}
+
+void AHorrorGamePlayerController::OnGameClear()
+{
+	MainWidget->RemoveFromParent();
+	ClearWidget->AddToViewport();
+	UIInputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+	UIInputMode.SetWidgetToFocus(ClearWidget->TakeWidget());
+	ChangeInputMode(false);
 }

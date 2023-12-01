@@ -146,7 +146,10 @@ public: // Unreal Property
 	USoundBase* CigarLightOnSoundCue;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SoundCue")
-	USoundBase* CigarLightOffSoundCue;
+	class USoundCue* CigarLightOffSoundCue;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "SoundCue")
+		class USoundCue* PanicSoundCue; // 패닉 시 낼 소리
 
 	// About Item
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
@@ -163,6 +166,9 @@ public: // Unreal Property
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Patience")
 		bool bIsCooldown = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Patience")
+		bool bIsScreaming = false;
 
 	UPROPERTY()
 		bool bIsBellSoundOn = false;
@@ -200,7 +206,16 @@ public: // Unreal Component
 	TObjectPtr<UAudioComponent> Sound;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
+		TObjectPtr<UAudioComponent> SprintSound;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
 	TObjectPtr<UAudioComponent> Turnon;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
+		TObjectPtr<UAudioComponent> PanicSound;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
+		TObjectPtr<UAudioComponent> HeartBeat;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 		TObjectPtr<UAudioComponent> CigarLightOnSound;
@@ -500,7 +515,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 		bool GetAttackCheck();
 
-	/*UFUNCTION(BlueprintCallable)
-		void SetCameraNoise(bool value);*/
+	UFUNCTION(BlueprintCallable)
+		bool GetIsScreaming();
+
+	UFUNCTION(BlueprintCallable)
+		void SetPanicScreamEnd();
+
+	UFUNCTION(BlueprintCallable)
+		void SetBrightness(float Value);
 };
 

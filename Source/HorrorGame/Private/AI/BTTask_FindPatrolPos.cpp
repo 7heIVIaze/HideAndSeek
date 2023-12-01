@@ -32,20 +32,20 @@ EBTNodeResult::Type UBTTask_FindPatrolPos::ExecuteTask(UBehaviorTreeComponent& O
 			return EBTNodeResult::Failed;
 		}
 
-		UWorld* World = Reaper->GetWorld();
-		
-		if (nullptr == World) // Reaper가 World에 속해있지 않으면 Fail
-		{
-			return EBTNodeResult::Failed;
-		}
+		//UWorld* World = Reaper->GetWorld();
+		//
+		//if (nullptr == World) // Reaper가 World에 속해있지 않으면 Fail
+		//{
+		//	return EBTNodeResult::Failed;
+		//}
 
-		UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(World);
+		//UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(World);
 
-		// if cannot find Nav mesh return false
-		if (nullptr == NavSystem) // 현재 Level에 깔려있는 Nav Mesh가 없으면 Fail
-		{
-			return EBTNodeResult::Failed;
-		}
+		//// if cannot find Nav mesh return false
+		//if (nullptr == NavSystem) // 현재 Level에 깔려있는 Nav Mesh가 없으면 Fail
+		//{
+		//	return EBTNodeResult::Failed;
+		//}
 
 		//FVector const Origin = Reaper->GetActorLocation(); // 현재 Reaper의 위치
 		//FNavLocation NextPatrol;
@@ -66,19 +66,19 @@ EBTNodeResult::Type UBTTask_FindPatrolPos::ExecuteTask(UBehaviorTreeComponent& O
 			return EBTNodeResult::Failed;
 		}
 
-		UWorld* World = Runner->GetWorld();
-		
-		if (nullptr == World) // 현재 World에 Runner가 존재하지 않으면 Fail
-		{
-			return EBTNodeResult::Failed;
-		}
+		//UWorld* World = Runner->GetWorld();
+		//
+		//if (nullptr == World) // 현재 World에 Runner가 존재하지 않으면 Fail
+		//{
+		//	return EBTNodeResult::Failed;
+		//}
 
-		UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(World);
-		// if cannot find Nav mesh return false
-		if (nullptr == NavSystem) // 현재 Level에 Nav Mesh가 깔려있지 않으면 Fail
-		{
-			return EBTNodeResult::Failed;
-		}
+		//UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(World);
+		//// if cannot find Nav mesh return false
+		//if (nullptr == NavSystem) // 현재 Level에 Nav Mesh가 깔려있지 않으면 Fail
+		//{
+		//	return EBTNodeResult::Failed;
+		//}
 
 		/*FVector const Origin = Runner->GetActorLocation();
 		FNavLocation NextPatrol;*/
@@ -98,19 +98,19 @@ EBTNodeResult::Type UBTTask_FindPatrolPos::ExecuteTask(UBehaviorTreeComponent& O
 			return EBTNodeResult::Failed;
 		}
 
-		UWorld* World = Brute->GetWorld();
+		//UWorld* World = Brute->GetWorld();
 
-		if (nullptr == World) // Brute로부터 World 오브젝트를 가져오지 못했다면(즉 World에 Brute가 없다면) Fail
-		{
-			return EBTNodeResult::Failed;
-		}
+		//if (nullptr == World) // Brute로부터 World 오브젝트를 가져오지 못했다면(즉 World에 Brute가 없다면) Fail
+		//{
+		//	return EBTNodeResult::Failed;
+		//}
 
-		UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(World);
-		// if cannot find Nav mesh return false
-		if (nullptr == NavSystem) // 현재 Level에 Nav Mesh가 깔려 있지 않은 상태라면 Fail
-		{
-			return EBTNodeResult::Failed;
-		}
+		//UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(World);
+		//// if cannot find Nav mesh return false
+		//if (nullptr == NavSystem) // 현재 Level에 Nav Mesh가 깔려 있지 않은 상태라면 Fail
+		//{
+		//	return EBTNodeResult::Failed;
+		//}
 
 		/*FVector const Origin = Brute->GetActorLocation();
 		FNavLocation NextPatrol;*/

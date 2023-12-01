@@ -1,9 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
 
 #include "LockerDoorActor_cpp.h"
 #include "Components/AudioComponent.h"
 #include "Sound/SoundCue.h"
+#include "HorrorGame/HorrorGameCharacter.h"
 
 // Sets default values
 ALockerDoorActor_cpp::ALockerDoorActor_cpp()
@@ -99,7 +99,7 @@ void ALockerDoorActor_cpp::Tick(float DeltaTime)
 	OpenAndClose.TickTimeline(DeltaTime);
 }
 
-void ALockerDoorActor_cpp::OnInteract()
+void ALockerDoorActor_cpp::OnInteract(class AHorrorGameCharacter* Player)
 {
 	if (!bIsLockerLocked)
 	{
@@ -115,6 +115,10 @@ void ALockerDoorActor_cpp::OnInteract()
 		}
 		bIsLockerClosed = !bIsLockerClosed;
 	}
+	else
+	{
+		Player->SetErrorText(TEXT("Locked"), 3);
+	}
 }
 
 void ALockerDoorActor_cpp::OpenDoor(float Value)
@@ -123,7 +127,7 @@ void ALockerDoorActor_cpp::OpenDoor(float Value)
 	LockerDoorMesh->SetRelativeRotation(Rotator);
 }
 
-void ALockerDoorActor_cpp::UseInteract()
+void ALockerDoorActor_cpp::UseInteract(class AHorrorGameCharacter* Player)
 {
 	if (bIsLockerLocked)
 	{

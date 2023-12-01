@@ -32,10 +32,11 @@ ACutter_cpp::ACutter_cpp()
 void ACutter_cpp::OnInteract(class AHorrorGameCharacter* Player)
 {
 	Super::OnInteract(Player);
+	Player->CutterDurability = Durability;
 	Player->AddCutter();
 	if (Player->bCanItemGet)
 	{
-		Player->CutterDurability = Durability;
+		//Player->GameUIWidget->SetCutterHUD(Durability);
 		Destroy();
 	}
 }

@@ -52,6 +52,7 @@ void UStageSelectWidget::NativeConstruct()
 		BackButton->OnHovered.AddDynamic(this, &UStageSelectWidget::OnHoveredBackButton);
 	}
 
+
 	UpdateButtonSlate();
 }
 

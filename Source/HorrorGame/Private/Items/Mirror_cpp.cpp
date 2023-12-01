@@ -1,13 +1,14 @@
 // CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
 
 #include "Items/Mirror_cpp.h"
+#include "EngineUtils.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
-#include "EngineUtils.h"
 #include "HorrorGame/HorrorGameCharacter.h"
 #include "AI/Reaper_cpp.h"
 #include "AI/Brute_cpp.h"
 #include "AI/Runner_cpp.h"
+#include "Altar_cpp.h"
 
 // Sets default values
 AMirror_cpp::AMirror_cpp()
@@ -37,6 +38,11 @@ void AMirror_cpp::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	UWorld* World = GetWorld();
+	for (TActorIterator<AAltar_cpp>entity(World); entity; ++entity)
+	{
+		Altar = *entity;
+	}
 }
 
 // Called every frame
@@ -58,6 +64,7 @@ void AMirror_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	Player->AddMirror();
 	if (Player->bCanItemGet)
 	{
+		Altar->UnSealedObjectNumber(1);
 		Destroy();
 	}
 }

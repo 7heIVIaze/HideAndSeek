@@ -132,55 +132,59 @@ void UBTTask_PatrolMove::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 			// AActor* pTarget = Cast<AActor>(ReaperAI->GetBlackboard()->GetValueAsObject(ACreatureAI::TargetKey));
 			bool bCanSeePlayer = ReaperAI->GetBlackboard()->GetValueAsBool(ACreatureAI::CanSeePlayer);
 			bool bNoiseDetected = ReaperAI->GetBlackboard()->GetValueAsBool(ACreatureAI::NoiseDetected);
-		
-			if (bCanSeePlayer || bNoiseDetected) // 만약 플레이어를 추격하다가 플레이어를 놓쳤을 경우거나, 플레이어나 무언가가 내는 소리를 들었을 경우
+			//bool bSprintDetected = ReaperAI->GetBlackboard()->GetValueAsBool(ACreatureAI::SprintDetected);
+			float Distance = 200.f;
+			FVector ReaperLocation = Reaper->GetActorLocation(); // 리퍼의 Z 값은 132(132.400002)
+			
+
+			if (bCanSeePlayer) // 만약 플레이어를 추격하다가 플레이어를 놓쳤을 경우, 
 			{
-				// MoveReq.SetGoalLocation(PatrolLocation);
 				ReaperAI->MoveToLocation(PatrolLocation, AcceptableRadius, bStopOverlap, bUsePathfinding,
 					bProjectGoalLocation, bAllowStrafe, ReaperAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
-				// UAIBlueprintHelperLibrary::SimpleMoveToLocation(ReaperAI, vPatrolLocation);
-				
-				/*ReaperAI->MoveToLocation(vPatrolLocation, 5.f);
-
-				if (Result == EPathFollowingRequestResult::RequestSuccessful)
-				{
-					Reaper->SetPatrolSuccess(true);
-				}*/
+				Distance = FMath::Abs(FVector::Distance(PatrolLocation, ReaperLocation));
+				// 추격하다 놓친 상태에서는 FindPlayerLocation에서 랜덤 순찰 지점을 PatrolPosKey에 저장하므로 Location임
 			}
 			else // 플레이어를 추격 중이 아닌 상황일 경우
 			{
-				ReaperAI->MoveToActor(PatrolTarget, AcceptableRadius, bStopOverlap, bUsePathfinding,
-					bAllowStrafe, ReaperAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
-				// MoveReq.SetGoalActor(PatrolTarget);
-				//UAIBlueprintHelperLibrary::SimpleMoveToActor(ReaperAI, PatrolTarget);
-				/*UAITask_MoveTo* Result = UAITask_MoveTo::AIMoveTo(ReaperAI, , PatrolTarget);
-				if (Result->GetMoveResult() == EPathFollowingResult::Success)
+				if (bNoiseDetected) // 타이머나 알람이 울리는 소리를 들었을 경우
 				{
-					Reaper->SetPatrolSuccess(true);
-				}*/
-				/*if (Result == EPathFollowingRequestResult::RequestSuccessful)
-				{
-					Reaper->SetPatrolSuccess(true);
-				}*/
-			}
+					FVector TargetLocation = ReaperAI->GetBlackboard()->GetValueAsVector(ACreatureAI::TargetLocation); // 타겟 위치
+					AActor* NoiseTarget = Cast<AActor>(ReaperAI->GetBlackboard()->GetValueAsObject(ACreatureAI::NoiseTargetKey)); // 타겟
 
-			/*if (MoveReq.IsValid())
-			{
-				const FPathFollowingRequestResult RequestResult = ReaperAI->MoveTo(MoveReq);
-				if (RequestResult.Code == EPathFollowingRequestResult::RequestSuccessful)
-				{
-					FinishLatentTask(OwnerComp, EBTNodeResult::InProgress);
-					return;
+					if (NoiseTarget) // 소리 근원지 타겟 존재 시
+					{
+						ReaperAI->MoveToActor(NoiseTarget, AcceptableRadius, bStopOverlap, bUsePathfinding,
+							bAllowStrafe, ReaperAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+						ReaperLocation.Z = NoiseTarget->GetActorLocation().Z; // 그냥 액터의 Z 위치 동일화시킴
+						Distance = FMath::Abs(FVector::Distance(NoiseTarget->GetActorLocation(), ReaperLocation));
+					}
+					else
+					{
+						ReaperAI->MoveToLocation(TargetLocation, AcceptableRadius, bStopOverlap, bUsePathfinding,
+							bProjectGoalLocation, bAllowStrafe, ReaperAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+						ReaperLocation.Z = TargetLocation.Z; // 그냥 액터의 Z 위치 동일화시킴
+						Distance = FMath::Abs(FVector::Distance(TargetLocation, ReaperLocation));
+					}
+					// 소리를 들은 상태에서는 NoiseDetect에서 근원지를 TargetLocationKey에 저장하므로 Location임
 				}
-				else if (RequestResult.Code == EPathFollowingRequestResult::AlreadyAtGoal)
+				//else if (bSprintDetected) // 달리는 소리를 들었을 때
+				//{
+				//	FVector TargetLocation = ReaperAI->GetBlackboard()->GetValueAsVector(ACreatureAI::TargetLocation); // 타겟 위치
+				//	ReaperAI->MoveToLocation(TargetLocation, AcceptableRadius, bStopOverlap, bUsePathfinding,
+				//		bProjectGoalLocation, bAllowStrafe, ReaperAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+				//	Distance = FMath::Abs(FVector::Distance(TargetLocation, ReaperLocation));
+				//}
+				else // 그것이 아닌 상황은 진짜 PatrolPoint를 향해 가는 것
 				{
-					FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-					return;
+					ReaperAI->MoveToActor(PatrolTarget, AcceptableRadius, bStopOverlap, bUsePathfinding,
+						bAllowStrafe, ReaperAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+					ReaperLocation.Z -= 122.400002f;
+					Distance = FMath::Abs(FVector::Distance(PatrolTarget->GetActorLocation(), ReaperLocation));
+					// PatrolPoint는 PatrolTarget에 저장하니까 MoveToActor 사용
+					/*	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Current Target: %s, Distance: %f"), *PatrolTarget->GetActorLabel(), Distance));*/
 				}
-			}*/
-			FVector ReaperLocation = Reaper->GetActorLocation(); // 리퍼의 Z 값은 132(132.400002)
-			ReaperLocation.Z -= 122.400002f;
-			float Distance = FMath::Abs(FVector::Distance(PatrolLocation, ReaperLocation));
+				
+			}
 			
 			// 리퍼와 패트롤 포인트의 거리 차이는 90.8으로 나옴
 
@@ -212,44 +216,55 @@ void UBTTask_PatrolMove::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 
 			FVector PatrolLocation = RunnerAI->GetBlackboard()->GetValueAsVector(AAIController_Runner::PatrolPosKey);
 			AActor* PatrolTarget = Cast<AActor>(RunnerAI->GetBlackboard()->GetValueAsObject(AAIController_Runner::PatrolTargetKey));
-			//AActor* pTarget = Cast<AActor>(RunnerAI->GetBlackboard()->GetValueAsObject(AAIController_Runner::TargetKey));
-
-			//if (nullptr == pTarget)
-			//{
-			//	// RunnerAI->MoveToLocation(vPatrolLocation, 0.f, false, true);
-			//	UAIBlueprintHelperLibrary::SimpleMoveToActor(RunnerAI, PatrolTarget);
-			//}
+			
 			bool bCanSeePlayer = RunnerAI->GetBlackboard()->GetValueAsBool(AAIController_Runner::CanSeePlayer);
 			bool bNoiseDetected = RunnerAI->GetBlackboard()->GetValueAsBool(AAIController_Runner::NoiseDetected);
+			// bool bSprintDetected = RunnerAI->GetBlackboard()->GetValueAsBool(AAIController_Runner::SprintDetected);
 
-			if (bCanSeePlayer || bNoiseDetected) // 만약 플레이어를 추격하다가 플레이어를 놓쳤을 경우거나, 플레이어나 무언가가 내는 소리를 들었을 경우
+			FVector RunnerLocation = Runner->GetActorLocation(); // 러너의 Z 값은 100(100.15)
+			
+			float Distance = 200.f;
+
+			if (bCanSeePlayer) // 만약 플레이어를 추격하다가 플레이어를 놓쳤을 경우거나
 			{
 				RunnerAI->MoveToLocation(PatrolLocation, AcceptableRadius, bStopOverlap, bUsePathfinding,
 					bProjectGoalLocation, bAllowStrafe, RunnerAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
-				// UAIBlueprintHelperLibrary::SimpleMoveToLocation(RunnerAI, vPatrolLocation);
-				
-				/*UAITask_MoveTo* Result = UAITask_MoveTo::AIMoveTo(RunnerAI, FVector::ZeroVector, PatrolTarget);
-				if (Result->GetMoveResult() == EPathFollowingResult::Success)
-				{
-					Runner->SetPatrolSuccess(true);
-				}*/
+				Distance = FMath::Abs(FVector::Distance(PatrolLocation, RunnerLocation));
+				// 추격하다 놓친 상태에서는 FindPlayerLocation에서 랜덤 순찰 지점을 PatrolPosKey에 저장하므로 Location임
 			}
 			else // 플레이어를 추격 중이 아닌 상황일 경우
 			{
-			//	UAIBlueprintHelperLibrary::SimpleMoveToActor(RunnerAI, PatrolTarget);
-				RunnerAI->MoveToActor(PatrolTarget, AcceptableRadius, bStopOverlap, bUsePathfinding,
-					bAllowStrafe, RunnerAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
-				/*EPathFollowingRequestResult::Type Result = RunnerAI->MoveToActor(PatrolTarget, 0.f);
-				if (Result == EPathFollowingRequestResult::RequestSuccessful)
+				if (bNoiseDetected) // 타이머나 알람이 울리는 소리를 들었을 때
 				{
-					Runner->SetPatrolSuccess(true);
-				}*/
+					FVector TargetLocation = RunnerAI->GetBlackboard()->GetValueAsVector(AAIController_Runner::TargetLocation);
+					AActor* NoiseTarget = Cast<AActor>(RunnerAI->GetBlackboard()->GetValueAsObject(AAIController_Runner::NoiseTargetKey));
+					
+					if (NoiseTarget) // 타겟이 존재할 땐 MoveToActor
+					{
+						RunnerAI->MoveToActor(NoiseTarget, AcceptableRadius, bStopOverlap, bUsePathfinding,
+							bAllowStrafe, RunnerAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+						RunnerLocation.Z = NoiseTarget->GetActorLocation().Z; // 그냥 액터의 Z 위치 동일화시킴
+						Distance = FMath::Abs(FVector::Distance(NoiseTarget->GetActorLocation(), RunnerLocation));
+					}
+					else // 존재 안할 땐, MoveToLocation
+					{
+						RunnerAI->MoveToLocation(TargetLocation, AcceptableRadius, bStopOverlap, bUsePathfinding,
+							bProjectGoalLocation, bAllowStrafe, RunnerAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+						RunnerLocation.Z = TargetLocation.Z; // 그냥 액터의 Z 위치 동일화시킴
+						Distance = FMath::Abs(FVector::Distance(TargetLocation, RunnerLocation));
+					}
+					// 소리를 들은 상태에서는 NoiseDetect에서 근원지를 TargetLocationKey에 저장하므로 Location임
+				}
+				else // 그것이 아닌 상황은 진짜 PatrolPoint를 향해 가는 것
+				{
+					RunnerAI->MoveToActor(PatrolTarget, AcceptableRadius, bStopOverlap, bUsePathfinding,
+						bAllowStrafe, RunnerAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+					RunnerLocation.Z -= 90.15f;
+					Distance = FMath::Abs(FVector::Distance(PatrolTarget->GetActorLocation(), RunnerLocation));
+					// PatrolPoint는 PatrolTarget에 저장하니까 MoveToActor 사용
+				}
 			}
-
-			FVector RunnerLocation = Runner->GetActorLocation(); // 러너의 Z 값은 100(100.15)
-			RunnerLocation.Z -= 90.15f;
-
-			float Distance = FMath::Abs(FVector::Distance(PatrolLocation, RunnerLocation));
+			
 			// 러너와 패트롤 포인트의 거리 차이는 80으로 나옴
 
 			if (Distance <= 80.f)
@@ -280,45 +295,55 @@ void UBTTask_PatrolMove::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 
 			FVector PatrolLocation = BruteAI->GetBlackboard()->GetValueAsVector(AAIController_Brute::PatrolPosKey);
 			AActor* PatrolTarget = Cast<AActor>(BruteAI->GetBlackboard()->GetValueAsObject(AAIController_Brute::PatrolTargetKey));
-			//AActor* pTarget = Cast<AActor>(BruteAI->GetBlackboard()->GetValueAsObject(AAIController_Brute::TargetKey));
-
-			//if (nullptr == pTarget)
-			//{
-			//	// BruteAI->MoveToLocation(vPatrolLocation, 0.f, false, true);
-			//	UAIBlueprintHelperLibrary::SimpleMoveToActor(BruteAI, PatrolTarget);
-			//}
+			
 			bool bCanSeePlayer = BruteAI->GetBlackboard()->GetValueAsBool(AAIController_Brute::CanSeePlayer);
 			bool bNoiseDetected = BruteAI->GetBlackboard()->GetValueAsBool(AAIController_Brute::NoiseDetected);
 
-			if (bCanSeePlayer || bNoiseDetected) // 만약 플레이어를 추격하다가 플레이어를 놓쳤을 경우거나, 플레이어나 무언가가 내는 소리를 들었을 경우
+			FVector BruteLocation = Brute->GetActorLocation(); // 브루트의 Z 값은 100
+			
+			float Distance = 200.f;
+
+			if (bCanSeePlayer) // 만약 플레이어를 추격하다가 플레이어를 놓쳤을 경우거나
 			{
 				BruteAI->MoveToLocation(PatrolLocation, AcceptableRadius, bStopOverlap, bUsePathfinding,
 					bProjectGoalLocation, bAllowStrafe, BruteAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
-				
-				/*UAITask_MoveTo* Result = UAITask_MoveTo::AIMoveTo(BruteAI, FVector::ZeroVector, PatrolTarget);
-				if (Result->GetMoveResult() == EPathFollowingResult::Success)
-				{
-					Brute->SetPatrolSuccess(true);
-				}*/
-				// UAIBlueprintHelperLibrary::SimpleMoveToLocation(BruteAI, vPatrolLocation);
-				
+				BruteLocation.Z = PatrolLocation.Z;
+				Distance = FMath::Abs(FVector::Distance(PatrolLocation, BruteLocation));
+				// 추격하다 놓친 상태에서는 FindPlayerLocation에서 랜덤 순찰 지점을 PatrolPosKey에 저장하므로 Location임
 			}
 			else // 플레이어를 추격 중이 아닌 상황일 경우
 			{
-				// UAIBlueprintHelperLibrary::SimpleMoveToActor(BruteAI, PatrolTarget);
-				BruteAI->MoveToActor(PatrolTarget, AcceptableRadius, bStopOverlap, bUsePathfinding,
-					bAllowStrafe, BruteAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
-				/*EPathFollowingRequestResult::Type Result = BruteAI->MoveToActor(PatrolTarget, 0.f);
-				if (Result == EPathFollowingRequestResult::RequestSuccessful)
+				if (bNoiseDetected) // 플레이어나 무언가가 내는 소리를 들었을 경우
 				{
-					Brute->SetPatrolSuccess(true);
-				}*/
+					FVector TargetLocation = BruteAI->GetBlackboard()->GetValueAsVector(AAIController_Brute::TargetLocation);
+					AActor* NoiseTarget = Cast<AActor>(BruteAI->GetBlackboard()->GetValueAsObject(AAIController_Brute::NoiseTargetKey));
+					
+					if (NoiseTarget) // 타겟이 존재하면 MoveToActor로
+					{
+						BruteAI->MoveToActor(NoiseTarget, AcceptableRadius, bStopOverlap, bUsePathfinding,
+							bAllowStrafe, BruteAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+						BruteLocation.Z = NoiseTarget->GetActorLocation().Z;
+						Distance = FMath::Abs(FVector::Distance(NoiseTarget->GetActorLocation(), BruteLocation));
+					}
+					else
+					{
+						BruteAI->MoveToLocation(TargetLocation, AcceptableRadius, bStopOverlap, bUsePathfinding,
+							bProjectGoalLocation, bAllowStrafe, BruteAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+						BruteLocation.Z = TargetLocation.Z;
+						Distance = FMath::Abs(FVector::Distance(TargetLocation, BruteLocation));
+						// 소리를 들은 상태에서는 NoiseDetect에서 근원지를 TargetLocationKey에 저장하므로 Location임
+					}
+				}
+				else
+				{
+					BruteAI->MoveToActor(PatrolTarget, AcceptableRadius, bStopOverlap, bUsePathfinding,
+						bAllowStrafe, BruteAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+					BruteLocation.Z -= 90.f;
+					Distance = FMath::Abs(FVector::Distance(PatrolTarget->GetActorLocation(), BruteLocation));
+					// PatrolPoint는 PatrolTarget에 저장하니까 MoveToActor 사용
+				}
+				// 브루트와 패트롤 포인트의 거리 차이는 76으로 나옴
 			}
-
-			FVector BruteLocation = Brute->GetActorLocation(); // 브루트의 Z 값은 100
-			BruteLocation.Z -= 90.f;
-			float Distance = FMath::Abs(FVector::Distance(PatrolLocation, BruteLocation));
-			// 브루트와 패트롤 포인트의 거리 차이는 76으로 나옴
 			
 			if (Distance <= 80.f)
 			{
@@ -329,8 +354,8 @@ void UBTTask_PatrolMove::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 			{
 				Brute->SetPatrolSuccess(false);
 				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-				if (GEngine)
-					GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Brute Patrol Success")));
+				/*if (GEngine)
+					GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Brute Patrol Success")));*/
 				UE_LOG(LogTemp, Warning, TEXT("End Task"));
 				return;
 			}

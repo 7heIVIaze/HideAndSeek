@@ -84,18 +84,34 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 
 				else if (ACabinet_cpp* Cabinet = Cast<ACabinet_cpp>(OverlapResult.GetActor()))
 				{
-					if (Cabinet->bIsHiding && (Cabinet->bIsFlashLightOn || Cabinet->bIsCigarLightOn))
+					if (Cabinet->bIsHiding)
 					{
-						ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, Cabinet);
-						ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::LockerLighting, true);
+						if (Cabinet->bIsFlashLightOn || Cabinet->bIsCigarLightOn)
+						{
+							ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, Cabinet);
+							ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::LockerLighting, true);
+						}
+						else
+						{
+							ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, nullptr);
+							ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::LockerLighting, false);
+						}
 					}
 				}
 				else if (AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(OverlapResult.GetActor()))
 				{
-					if (Wardrobe->bIsHiding && (Wardrobe->bIsFlashLightOn || Wardrobe->bIsCigarLightOn))
+					if (Wardrobe->bIsHiding)
 					{
-						ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, Wardrobe);
-						ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::LockerLighting, true);
+						if (Wardrobe->bIsFlashLightOn || Wardrobe->bIsCigarLightOn)
+						{
+							ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, Wardrobe);
+							ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::LockerLighting, true);
+						}
+						else
+						{
+							ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, nullptr);
+							ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::LockerLighting, false);
+						}
 					}
 				}
 				else
@@ -170,18 +186,34 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 
 				else if (ACabinet_cpp* Cabinet = Cast<ACabinet_cpp>(OverlapResult.GetActor()))
 				{
-					if (Cabinet->bIsHiding && (Cabinet->bIsFlashLightOn || Cabinet->bIsCigarLightOn))
+					if (Cabinet->bIsHiding)
 					{
-						RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::TargetKey, Cabinet);
-						RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::LockerLighting, true);
+						if (Cabinet->bIsFlashLightOn || Cabinet->bIsCigarLightOn)
+						{
+							RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::TargetKey, Cabinet);
+							RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::LockerLighting, true);
+						}
+						else
+						{
+							RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::TargetKey, nullptr);
+							RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::LockerLighting, false);
+						}
 					}
 				}
 				else if (AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(OverlapResult.GetActor()))
 				{
-					if (Wardrobe->bIsHiding && (Wardrobe->bIsFlashLightOn || Wardrobe->bIsCigarLightOn))
+					if (Wardrobe->bIsHiding)
 					{
-						RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::TargetKey, Wardrobe);
-						RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::LockerLighting, true);
+						if (Wardrobe->bIsFlashLightOn || Wardrobe->bIsCigarLightOn)
+						{
+							RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::TargetKey, Wardrobe);
+							RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::LockerLighting, true);
+						}
+						else
+						{
+							RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::TargetKey, nullptr);
+							RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::LockerLighting, false);
+						}
 					}
 				}
 				else
@@ -257,18 +289,34 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 
 				else if (ACabinet_cpp* Cabinet = Cast<ACabinet_cpp>(OverlapResult.GetActor()))
 				{
-					if (Cabinet->bIsHiding && (Cabinet->bIsFlashLightOn || Cabinet->bIsCigarLightOn))
+					if (Cabinet->bIsHiding)
 					{
-						BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::TargetKey, Cabinet);
-						BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::LockerLighting, true);
+						if (Cabinet->bIsFlashLightOn || Cabinet->bIsCigarLightOn)
+						{
+							BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::TargetKey, Cabinet);
+							BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::LockerLighting, true);
+						}
+						else
+						{
+							BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::TargetKey, nullptr);
+							BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::LockerLighting, false);
+						}
 					}
 				}
 				else if (AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(OverlapResult.GetActor()))
 				{
-					if (Wardrobe->bIsHiding && (Wardrobe->bIsFlashLightOn || Wardrobe->bIsCigarLightOn))
+					if (Wardrobe->bIsHiding)
 					{
-						BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::TargetKey, Wardrobe);
-						BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::LockerLighting, true);
+						if (Wardrobe->bIsFlashLightOn || Wardrobe->bIsCigarLightOn)
+						{
+							BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::TargetKey, Wardrobe);
+							BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::LockerLighting, true);
+						}
+						else
+						{
+							BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::TargetKey, nullptr);
+							BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::LockerLighting, false);
+						}
 					}
 				}
 				else

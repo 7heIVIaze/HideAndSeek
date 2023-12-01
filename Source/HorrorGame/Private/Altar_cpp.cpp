@@ -43,6 +43,8 @@ AAltar_cpp::AAltar_cpp()
 	{
 		Bell->SetStaticMesh(SM_Bell.Object);
 	}
+
+	UnSealedItemNum = 0;
 }
 
 // Called when the game starts or when spawned
@@ -102,3 +104,11 @@ void AAltar_cpp::Tick(float DeltaTime)
 	}
 }
 
+void AAltar_cpp::UnSealedObjectNumber(int32 value)
+{
+	UnSealedItemNum += value;
+	if (CurrentReaper)
+	{
+		CurrentReaper->UnSealedItemNumber = UnSealedItemNum;
+	}
+}

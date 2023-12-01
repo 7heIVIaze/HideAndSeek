@@ -13,12 +13,14 @@
 #include "HorrorGame/HorrorGameCharacter.h"
 
 const FName AAIController_Brute::PatrolTargetKey(TEXT("PatrolTarget"));
+const FName AAIController_Brute::NoiseTargetKey(TEXT("NoiseTargetKey"));
 const FName AAIController_Brute::HomePosKey(TEXT("HomePos"));
 const FName AAIController_Brute::PatrolPosKey(TEXT("PatrolPos"));
 const FName AAIController_Brute::TargetKey(TEXT("Target"));
 const FName AAIController_Brute::TargetLocation(TEXT("TargetLocation"));
 const FName AAIController_Brute::CanSeePlayer(TEXT("CanSeePlayer"));
 const FName AAIController_Brute::NoiseDetected(TEXT("NoiseDetected"));
+//const FName AAIController_Brute::SprintDetected(TEXT("SprintDetected"));
 const FName AAIController_Brute::Stunned(TEXT("Stunned"));
 const FName AAIController_Brute::LockerLighting(TEXT("LockerLighting"));
 
@@ -63,6 +65,15 @@ void AAIController_Brute::OnPossess(APawn* InPawn)
 	}*/
 }
 
+void AAIController_Brute::StopAI()
+{
+	UBehaviorTreeComponent* BehaviorTreeComp = Cast<UBehaviorTreeComponent>(BrainComponent);
+	if (BehaviorTreeComp == nullptr) return;
+
+	BehaviorTreeComp->StopTree(EBTStopMode::Safe);
+}
+
+
 UBlackboardComponent* AAIController_Brute::GetBlackboard() const
 {
 	return BlackboardComp;
@@ -92,7 +103,7 @@ void AAIController_Brute::OnTargetDetected(AActor* Actor, FAIStimulus const Stim
 					GetBlackboard()->SetValueAsVector(TargetLocation, Player->GetActorLocation());
 				}
 
-				else // 아닐 경우 거리를 비교해서 800 이내에 있을 때만 감지
+				else // 아닐 경우 거리를 비교해서 400 이내에 있을 때만 감지
 				{
 					if (Distance <= NoLightSightRadius)
 					{

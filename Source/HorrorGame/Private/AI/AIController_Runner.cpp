@@ -13,12 +13,14 @@
 #include "HorrorGame/HorrorGameCharacter.h"
 
 const FName AAIController_Runner::PatrolTargetKey(TEXT("PatrolTarget"));
+const FName AAIController_Runner::NoiseTargetKey(TEXT("NoiseTargetKey"));
 const FName AAIController_Runner::HomePosKey(TEXT("HomePos"));
 const FName AAIController_Runner::PatrolPosKey(TEXT("PatrolPos"));
 const FName AAIController_Runner::TargetKey(TEXT("Target"));
 const FName AAIController_Runner::TargetLocation(TEXT("TargetLocation"));
 const FName AAIController_Runner::CanSeePlayer(TEXT("CanSeePlayer"));
 const FName AAIController_Runner::NoiseDetected(TEXT("NoiseDetected"));
+//const FName AAIController_Runner::SprintDetected(TEXT("SprintDetected"));
 const FName AAIController_Runner::Stunned(TEXT("Stunned"));
 const FName AAIController_Runner::LockerLighting(TEXT("LockerLighting"));
 
@@ -53,24 +55,20 @@ void AAIController_Runner::BeginPlay()
 void AAIController_Runner::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
-	//UBlackboardComponent* BlackboardComp = Blackboard;
-	//if (UseBlackboard(BBAsset, BlackboardComp))
-	//{
-	//	// Save Current Location in HomePosKey of Blackboard
-	//	BlackboardComp->SetValueAsVector(HomePosKey, InPawn->GetActorLocation());
-	//	if (!RunBehaviorTree(BTAsset))
-	//	{
-	//		UE_LOG(LogTemp, Warning, TEXT("AIController couldn't run behavior tree!"))
-	//	}
-	//}
+
 	if (UseBlackboard(BBAsset, BlackboardComp))
 	{
 		RunBehaviorTree(BTAsset);
 	}
-	/*if (BlackboardComp)
-	{
-		BlackboardComp->InitializeBlackboard(*BTAsset->BlackboardAsset);
-	}*/
+
+}
+
+void AAIController_Runner::StopAI()
+{
+	UBehaviorTreeComponent* BehaviorTreeComp = Cast<UBehaviorTreeComponent>(BrainComponent);
+	if (BehaviorTreeComp == nullptr) return;
+
+	BehaviorTreeComp->StopTree(EBTStopMode::Safe);
 }
 
 UBlackboardComponent* AAIController_Runner::GetBlackboard() const

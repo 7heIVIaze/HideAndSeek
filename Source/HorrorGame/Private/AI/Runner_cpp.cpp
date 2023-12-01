@@ -20,6 +20,7 @@
 #include "HorrorGamePlayerController.h"
 #include "ClassroomDoorActor_cpp.h"
 #include "Door_cpp.h"
+#include "MetalDoor_cpp.h"
 #include "Alarm.h"
 #include "Animation/AnimSequence.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -45,7 +46,8 @@ ARunner_cpp::ARunner_cpp()
 	InteractBox = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractBox"));
 	InteractBox->SetupAttachment(GetMesh());
 	InteractBox->SetBoxExtent(FVector(5.f, 5.f, 5.f));
-	InteractBox->OnComponentBeginOverlap.AddDynamic(this, &ARunner_cpp::DoorBeginOverlap);
+	InteractBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	//InteractBox->OnComponentBeginOverlap.AddDynamic(this, &ARunner_cpp::DoorBeginOverlap);
 
 	KillSphere = CreateDefaultSubobject<USphereComponent>(TEXT("KillBox"));
 	KillSphere->SetupAttachment(GetMesh());
@@ -56,14 +58,24 @@ ARunner_cpp::ARunner_cpp()
 	AIControllerClass = AAIController_Runner::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ARunner_cpp::CheckBoxBeginOverlap);
-	GetMesh()->SetCollisionProfileName("Creature");
+	//GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ARunner_cpp::CheckBoxBeginOverlap);
+	GetMesh()->SetCollisionProfileName("OverlapAllDynamic");
+	bIsCollectMode = true;
 }
 
 // Called when the game starts or when spawned
 void ARunner_cpp::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (bIsCollectMode)
+	{
+		UWorld* world = GetWorld();
+		for (TActorIterator<APatrolPoint_cpp> entity(world); entity; ++entity)
+		{
+			PatrolPointLists.Add(*entity);
+		}
+	}
 }
 
 // Called every frame
@@ -213,9 +225,11 @@ void ARunner_cpp::SoundBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 			//ReaperSound->Play();
 			if (!PlayerActor->bIsCooldown)
 			{
-				PlayerActor->Patience += 5;
+				PlayerActor->AddPatience(1);
 			}
-
+			GetMesh()->SetCollisionProfileName("AICharacters");
+			InteractBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+			InteractBox->OnComponentBeginOverlap.AddDynamic(this, &ARunner_cpp::DoorBeginOverlap);
 		}
 
 		if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
@@ -266,6 +280,9 @@ void ARunner_cpp::SoundEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* O
 			PlayerActor->FlashLight->SetIntensity(PlayerActor->FlashIntensity);
 			PlayerActor->SetCameraComponentNoise(0);
 		}
+		GetMesh()->SetCollisionProfileName("OverlapAllDynamic");
+		InteractBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+		InteractBox->OnComponentBeginOverlap.RemoveDynamic(this, &ARunner_cpp::DoorBeginOverlap);
 	}
 
 	if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
@@ -311,7 +328,14 @@ void ARunner_cpp::DoorBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 		{
 			if (Door->bIsDoorClosed)
 			{
-				Door->OnInteract();
+				Door->AIInteract();
+			}
+		}
+		else if (auto MetalDoor = Cast<AMetalDoor_cpp>(OtherActor))
+		{
+			if (MetalDoor->bIsDoorClosed)
+			{
+				MetalDoor->AIInteract();
 			}
 		}
 	}
@@ -330,21 +354,25 @@ void ARunner_cpp::CheckBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 
 FVector ARunner_cpp::GetPatrolPoint()
 {
-	int randIdx = FMath::RandRange(0, 24);
-	UWorld* world = GetWorld();
-	FVector ResultLocation = GetActorLocation();
 	AAIController_Runner* AIController = Cast<AAIController_Runner>(GetController());
-	for (TActorIterator<APatrolPoint_cpp> entity(world); entity; ++entity)
-	{
-		// TArray<UObject*>components;
+	int randIdx = FMath::RandRange(0, PatrolPointLists.Num() - 1); // 0에서 PatrolPointLists의 마지막 인덱스까지 중 랜덤 숫자 하나 뽑기
+	CurrentPatrolPoint = PatrolPointLists[randIdx];
+	FVector ResultLocation = CurrentPatrolPoint->GetActorLocation();
+	AIController->GetBlackboard()->SetValueAsObject(AAIController_Runner::PatrolTargetKey, CurrentPatrolPoint);
+	//int randIdx = FMath::RandRange(0, 24);
+	//UWorld* world = GetWorld();
+	//FVector ResultLocation = GetActorLocation();
+	//for (TActorIterator<APatrolPoint_cpp> entity(world); entity; ++entity)
+	//{
+	//	// TArray<UObject*>components;
 
-		if (entity->GetActorLabel() == PatrolPointList[randIdx].ToString()) {
-			ResultLocation = entity->GetActorLocation();
-			CurrentPatrolPoint = *entity;
-			AIController->GetBlackboard()->SetValueAsObject(AAIController_Runner::PatrolTargetKey, CurrentPatrolPoint);
-			break;
-		}
-	}
+	//	if (entity->GetActorLabel() == PatrolPointList[randIdx].ToString()) {
+	//		ResultLocation = entity->GetActorLocation();
+	//		CurrentPatrolPoint = *entity;
+	//		AIController->GetBlackboard()->SetValueAsObject(AAIController_Runner::PatrolTargetKey, CurrentPatrolPoint);
+	//		break;
+	//	}
+	//}
 	return ResultLocation;
 }
 

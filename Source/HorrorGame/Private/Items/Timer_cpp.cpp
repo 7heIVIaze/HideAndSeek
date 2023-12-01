@@ -7,7 +7,7 @@
 ATimer_cpp::ATimer_cpp()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	FVector DefaultLoc = FVector(0.f, 0.f, 0.f);
 	FVector DefaultScale = FVector(1.f, 1.f, 1.f);
 
@@ -36,11 +36,11 @@ void ATimer_cpp::BeginPlay()
 }
 
 // Called every frame
-void ATimer_cpp::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
+//void ATimer_cpp::Tick(float DeltaTime)
+//{
+//	Super::Tick(DeltaTime);
+//
+//}
 
 void ATimer_cpp::OnInteract(class AHorrorGameCharacter* Player) // Player Click Event
 {

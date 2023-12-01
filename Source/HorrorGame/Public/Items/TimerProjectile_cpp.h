@@ -26,13 +26,14 @@ public: // Properties
 	UPROPERTY(VisibleAnywhere, Category = "Timer")
 		UStaticMeshComponent* TimerMesh;
 
-	UPROPERTY(VisibleAnywhere, Category = "Sound")
-		UAudioComponent* TimerSound;
+	/*UPROPERTY(VisibleAnywhere, Category = "Sound")
+		UAudioComponent* TimerSound;*/
 
 	UPROPERTY(VisibleAnywhere, Category = "Movement")
 		UProjectileMovementComponent* ProjectileMovement;
 
-	FTimerHandle _TimerLifeHandle, _TimerSoundHandle;
+	bool bIsHit;
+	float count = 0;
 
 protected:
 	// Called when the game starts or when spawned
@@ -43,20 +44,27 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	
 	// Function
-	UFUNCTION()
-		void RangEnd();
+	/*UFUNCTION()
+		void RangEnd();*/
 
 	UFUNCTION()
 		void FireInDirection(const FVector& ShootDirection);
 
-	UFUNCTION()
+	/*UFUNCTION()
 		void SetPlaySound(bool bValue);
 
 	UFUNCTION()
-		bool GetPlaySound();
+		bool GetPlaySound();*/
 
-private:
-	UPROPERTY()
-		bool bPlaySound = false;
+	UFUNCTION()
+		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
 
+//private:
+//	UPROPERTY()
+//		bool bPlaySound = false;
+	
+public:
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Timer)
+		TSubclassOf<class AThrownTimer_cpp> Timer;
+		//TSubclassOf<class ATimerProjectile_cpp> Timer;
 };

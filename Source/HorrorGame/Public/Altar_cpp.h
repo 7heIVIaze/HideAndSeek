@@ -39,6 +39,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object")
 		class AEnd_Mirror* EndingMirror;
 
+	UPROPERTY(VisibleAnywhere, Category = Object)
+		int32 UnSealedItemNum; // 플레이어가 봉인 해제한 오브젝트 아이템의 개수
+
 	UPROPERTY()
 		float RespawnTimer;
 
@@ -59,4 +62,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void ReaperSpawn();
 
+	UFUNCTION(BlueprintCallable)
+		void UnSealedObjectNumber(int32 value);
 };

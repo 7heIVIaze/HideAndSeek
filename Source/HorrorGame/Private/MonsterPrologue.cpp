@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
 
 #include "MonsterPrologue.h"
 #include "Components/BoxComponent.h"
@@ -42,6 +42,12 @@ void AMonsterPrologue::PlayerEnterBeginOverlap(UPrimitiveComponent* OverlappedCo
 			
 				//AReaper_cpp* reaper = world->SpawnActor<AReaper_cpp>(ObjectToSpawn->GeneratedClass, spawnLocation, rotator, spawnParams);
 				AReaper_cpp* reaper = GetWorld()->SpawnActor<AReaper_cpp>(ObjectToSpawn, GetActorLocation(), FRotator(0.f, 0.f, 0.f), spawnParams);
+				reaper->bIsCollectMode = false;
+				/*for (auto PatrolPoint : PatrolPointLists)
+				{
+					reaper->PatrolPointLists.Add(PatrolPoint);
+				}*/
+				reaper->PatrolPointLists = PatrolPointLists;
 				bIsPlayerIn = true;
 			}
 		}
