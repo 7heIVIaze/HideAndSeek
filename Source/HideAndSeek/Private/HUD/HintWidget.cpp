@@ -162,9 +162,11 @@ void UHintWidget::OnArchive1ButtonClick()
 
 		HintState = EHintStates::AS_Detail;
 
-		CreatureName->SetText(FText::FromString(ReaperData->Title));
+		//CreatureName->SetText(FText::FromString(ReaperData->Title));
+		CreatureName->SetText(ReaperData->Title);
 		CreatureImage->SetBrushFromTexture(ReaperData->Image);
-		Detail->SetText(FText::FromString(ReaperData->Detail));
+		//Detail->SetText(FText::FromString(ReaperData->Detail));
+		Detail->SetText(ReaperData->Detail);
 		CreaturePanel->SetVisibility(ESlateVisibility::Visible);
 		Exit->SetVisibility(ESlateVisibility::Collapsed);
 	}
@@ -204,9 +206,11 @@ void UHintWidget::OnArchive2ButtonClick()
 
 		HintState = EHintStates::AS_Detail;
 
-		CreatureName->SetText(FText::FromString(RunnerData->Title));
+		//CreatureName->SetText(FText::FromString(RunnerData->Title));
+		CreatureName->SetText(RunnerData->Title);
 		CreatureImage->SetBrushFromTexture(RunnerData->Image);
-		Detail->SetText(FText::FromString(RunnerData->Detail));
+		//Detail->SetText(FText::FromString(RunnerData->Detail));
+		Detail->SetText(RunnerData->Detail);
 		CreaturePanel->SetVisibility(ESlateVisibility::Visible);
 		Exit->SetVisibility(ESlateVisibility::Collapsed);
 	}
@@ -246,9 +250,11 @@ void UHintWidget::OnArchive3ButtonClick()
 
 		HintState = EHintStates::AS_Detail;
 
-		CreatureName->SetText(FText::FromString(BruteData->Title));
+		//CreatureName->SetText(FText::FromString(BruteData->Title));
+		CreatureName->SetText(BruteData->Title);
 		CreatureImage->SetBrushFromTexture(BruteData->Image);
-		Detail->SetText(FText::FromString(BruteData->Detail));
+		//Detail->SetText(FText::FromString(BruteData->Detail));
+		Detail->SetText(BruteData->Detail);
 		CreaturePanel->SetVisibility(ESlateVisibility::Visible);
 		Exit->SetVisibility(ESlateVisibility::Collapsed);
 	}
@@ -288,9 +294,11 @@ void UHintWidget::OnArchive4ButtonClick()
 
 		HintState = EHintStates::AS_Detail;
 
-		CreatureName->SetText(FText::FromString(ShadowData->Title));
+		//CreatureName->SetText(FText::FromString(ShadowData->Title));
+		CreatureName->SetText(ShadowData->Title);
 		CreatureImage->SetBrushFromTexture(ShadowData->Image);
-		Detail->SetText(FText::FromString(ShadowData->Detail));
+		//Detail->SetText(FText::FromString(ShadowData->Detail));
+		Detail->SetText(ShadowData->Detail);	
 		CreaturePanel->SetVisibility(ESlateVisibility::Visible);
 		Exit->SetVisibility(ESlateVisibility::Collapsed);
 	}
@@ -330,7 +338,8 @@ void UHintWidget::OnArchive5ButtonClick()
 
 		HintState = EHintStates::AS_Detail;
 
-		HintText->SetText(FText::FromString(CharacteristicData->Detail));
+		//HintText->SetText(FText::FromString(CharacteristicData->Detail));
+		HintText->SetText(CharacteristicData->Detail);
 		HintPanel->SetVisibility(ESlateVisibility::Visible);
 		Exit->SetVisibility(ESlateVisibility::Collapsed);
 	}
@@ -369,7 +378,8 @@ void UHintWidget::OnArchive6ButtonClick()
 
 		HintState = EHintStates::AS_Detail;
 
-		HintText->SetText(FText::FromString(EscapeData->Detail));
+		//HintText->SetText(FText::FromString(EscapeData->Detail));
+		HintText->SetText(EscapeData->Detail);
 		HintPanel->SetVisibility(ESlateVisibility::Visible);
 		Exit->SetVisibility(ESlateVisibility::Collapsed);
 	}

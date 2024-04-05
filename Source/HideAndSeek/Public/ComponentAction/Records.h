@@ -16,6 +16,9 @@ public:
 		bool bIsCleared; // 클리어했는지 여부 확인
 
 	UPROPERTY()
+		int ChapterNumber; // 챕터 번호
+
+	UPROPERTY()
 		FString ClearTime; // 클리어 타임
 };
 

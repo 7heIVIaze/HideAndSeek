@@ -29,13 +29,13 @@ ADrawerClass::ADrawerClass()
 	Item->SetupAttachment(Drawer);
 	Item->SetRelativeLocation(FVector(0.0f, 0.0f, -15.0f));
 
-	Deco_Left = CreateDefaultSubobject<UChildActorComponent>(TEXT("Deco_Left"));
+	/*Deco_Left = CreateDefaultSubobject<UChildActorComponent>(TEXT("Deco_Left"));
 	Deco_Left->SetupAttachment(Drawer);
 	Deco_Left->SetRelativeLocation(FVector(0.0f, 0.0f, -15.0f));
 
 	Deco_Right = CreateDefaultSubobject<UChildActorComponent>(TEXT("Deco_Right"));
 	Deco_Right->SetupAttachment(Drawer);
-	Deco_Right->SetRelativeLocation(FVector(0.0f, 0.0f, -15.0f));
+	Deco_Right->SetRelativeLocation(FVector(0.0f, 0.0f, -15.0f));*/
 
 	//DrawerSound = CreateDefaultSubobject<UAudioComponent>(TEXT("DrawerSound"));
 	//static ConstructorHelpers::FObjectFinder<USoundBase>SoundMesh(TEXT("/Game/Assets/Sounds/Drawer_Opening"));
@@ -59,22 +59,22 @@ void ADrawerClass::BeginPlay()
 		bIsItemSpawned = true;
 	}
 
-	if (Decorators.Num() > 0)
-	{
-		float RandomProbability = FMath::RandRange(0.f, 1.f);
-		if (RandomProbability > 0.3f) // 30퍼센트보다 더 큰 확률이면(즉 70퍼센트로 데코 생성)
-		{
-			int32 randIdx = FMath::RandRange(0, Decorators.Num() - 1);
-			Deco_Left->SetChildActorClass(Decorators[randIdx]);
-		}
+	//if (Decorators.Num() > 0)
+	//{
+	//	float RandomProbability = FMath::RandRange(0.f, 1.f);
+	//	if (RandomProbability > 0.3f) // 30퍼센트보다 더 큰 확률이면(즉 70퍼센트로 데코 생성)
+	//	{
+	//		int32 randIdx = FMath::RandRange(0, Decorators.Num() - 1);
+	//		Deco_Left->SetChildActorClass(Decorators[randIdx]);
+	//	}
 
-		RandomProbability = FMath::RandRange(0.f, 1.f);
-		if (RandomProbability > 0.3f) // 30퍼센트보다 더 큰 확률이면(즉 70퍼센트로 데코 생성)
-		{
-			int32 randIdx = FMath::RandRange(0, Decorators.Num() - 1);
-			Deco_Right->SetChildActorClass(Decorators[randIdx]);
-		}
-	}
+	//	RandomProbability = FMath::RandRange(0.f, 1.f);
+	//	if (RandomProbability > 0.3f) // 30퍼센트보다 더 큰 확률이면(즉 70퍼센트로 데코 생성)
+	//	{
+	//		int32 randIdx = FMath::RandRange(0, Decorators.Num() - 1);
+	//		Deco_Right->SetChildActorClass(Decorators[randIdx]);
+	//	}
+	//}
 	
 	if (CurveFloat)
 	{

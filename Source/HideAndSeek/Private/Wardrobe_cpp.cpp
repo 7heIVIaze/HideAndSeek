@@ -147,11 +147,13 @@ void AWardrobe_cpp::UseInteract() // 안 씀
 
 	}
 
-	if (Player->GetCurrentItemName() == TEXT("FlashLight"))
+//	if (Player->GetCurrentItemName() == TEXT("FlashLight"))
+	if (Player->GetCurrentItemNumber() == 2)
 	{
 		SetFlashLightOn();
 	}
-	else if (Player->GetCurrentItemName() == TEXT("CigarLight"))
+	//else if (Player->GetCurrentItemName() == TEXT("CigarLight"))
+	else if (Player->GetCurrentItemNumber() == 1)
 	{
 		SetCigarLightOn();
 	}
@@ -202,6 +204,7 @@ void AWardrobe_cpp::ToggleHide(class AHorrorGameCharacter* PlayerCharacter)
 		PlayerCharacter->GetCharacterMovement()->StopMovementImmediately();
 		Camera->PostProcessSettings = PlayerCharacter->GetFirstPersonCameraComponent()->PostProcessSettings; // 노이즈 상황 등을 동일화
 		PlayerCharacter->SetActorHiddenInGame(true);
+		
 		//PlayerCharacter->SetActorEnableCollision(false);
 		PlayerController->SetViewTargetWithBlend(this, 0.2f);
 	}

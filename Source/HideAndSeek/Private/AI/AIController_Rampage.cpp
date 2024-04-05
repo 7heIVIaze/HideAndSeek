@@ -24,6 +24,7 @@ const FName AAIController_Rampage::NoiseDetected(TEXT("NoiseDetected"));
 const FName AAIController_Rampage::Stunned(TEXT("Stunned"));
 const FName AAIController_Rampage::LockerLighting(TEXT("LockerLighting"));
 const FName AAIController_Rampage::IsCinematic(TEXT("IsCinematic"));
+const FName AAIController_Rampage::CalledByBerith(TEXT("CalledByBerith"));
 
 AAIController_Rampage::AAIController_Rampage()
 {

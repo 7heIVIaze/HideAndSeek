@@ -41,6 +41,18 @@ APrologueGameMode::APrologueGameMode()
 		NervousCue = NervousCueAsset.Object;
 	}
 
+	static ConstructorHelpers::FObjectFinder<USoundCue>DiedCueAsset(TEXT("/Game/Assets/Sounds/SoundCues/DiedCue"));
+	if (DiedCueAsset.Succeeded())
+	{
+		DiedCue = DiedCueAsset.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>ClearCueAsset(TEXT("/Game/Assets/Sounds/SoundCues/ClearCue"));
+	if (ClearCueAsset.Succeeded())
+	{
+		ClearCue = ClearCueAsset.Object;
+	}
+
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
 	AudioComponent->SetAutoActivate(false);
 
@@ -84,4 +96,18 @@ void APrologueGameMode::StopNervousBackGroundMusic()
 	NervousAudioComponent->FadeOut(0.75f, 0.f);
 
 	AudioComponent->FadeIn(0.75f);
+}
+
+void APrologueGameMode::PlayDiedBackGroundMusic()
+{
+	AudioComponent->Stop();
+	AudioComponent->SetSound(DiedCue);
+	AudioComponent->Play();
+}
+
+void APrologueGameMode::PlayClearBackGroundMusic()
+{
+	AudioComponent->Stop();
+	AudioComponent->SetSound(ClearCue);
+	AudioComponent->Play();
 }

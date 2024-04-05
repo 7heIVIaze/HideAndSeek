@@ -26,8 +26,12 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Sword")
 		TObjectPtr<UStaticMeshComponent> Sword;
 
-	UPROPERTY(VisibleAnywhere, Category = "Mirror")
+	UPROPERTY(VisibleAnywhere, Category = "Altar")
 		class AAltar_cpp* Altar;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+		class USoundCue* ObjectSound;
+
 
 public:	
 	void OnInteract(class AHorrorGameCharacter* Player) override;

@@ -8,8 +8,8 @@ public class HideAndSeek : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "EnhancedInput", "UMG", "NavigationSystem", "AIModule", "GameplayTasks", "Niagara", "ApplicationCore", "MoviePlayer" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "HeadMountedDisplay", "EnhancedInput", "UMG", "NavigationSystem", "AIModule", "GameplayTasks", "Niagara", "ApplicationCore", "MoviePlayer", "StoveSDKPlugin" });
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "InputCore", "EnhancedInput", "RHI", "HeadMountedDisplay" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore", "InputCore", "EnhancedInput", "RHI", "HeadMountedDisplay", "StoveSDKPlugin" });
 	}
 }

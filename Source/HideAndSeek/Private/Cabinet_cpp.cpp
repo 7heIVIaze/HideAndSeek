@@ -174,11 +174,13 @@ void ACabinet_cpp::UseInteract() // 안 씀
 			return;
 	}
 
-	if (Player->GetCurrentItemName() == TEXT("FlashLight"))
+	//if (Player->GetCurrentItemName() == TEXT("FlashLight"))
+	if (Player->GetCurrentItemNumber() == 2)
 	{
 		SetFlashLightOn();
 	}
-	else if (Player->GetCurrentItemName() == TEXT("CigarLight"))
+	//else if (Player->GetCurrentItemName() == TEXT("CigarLight"))
+	else if (Player->GetCurrentItemNumber() == 1)
 	{
 		SetCigarLightOn();
 		//Turnon->Play();

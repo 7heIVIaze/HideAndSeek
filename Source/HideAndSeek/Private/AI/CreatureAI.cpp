@@ -139,7 +139,7 @@ void ACreatureAI::OnTargetDetected(AActor* Actor, FAIStimulus const Stimulus)
 			float Dist = FMath::Abs(FVector::Distance(ReaperLocation, PlayerLocation));
 			// 나중에 광원 종류 및 On 여부에 따라 감지 거리가 다르게 설정해야함
 			GetWorld()->GetTimerManager().ClearTimer(Timer);
-			if (CurrentStatus == Sealed::Unsealed) // 능력의 봉인이 해제된 상태라면(즉 플레이어가 오브젝트 3개를 먹은 상태라면)
+			if (CurrentStatus == Sealed::Unsealed || CurrentStatus == Sealed::TwoUnsealed) // 능력의 봉인이 해제된 상태라면(즉 플레이어가 오브젝트 3개를 먹은 상태라면)
 			{
 				Cast<AReaper_cpp>(GetPawn())->SetPlayerWatch(true);
 			}
@@ -167,7 +167,8 @@ void ACreatureAI::OnTargetDetected(AActor* Actor, FAIStimulus const Stimulus)
 								GetBlackboard()->SetValueAsVector(TargetLocation, player->GetActorLocation());
 							}
 						}
-						else if (CurrentStatus == Sealed::OneUnsealed) // 봉인이 하나 풀린 상태라면 1200으로 범위 증가
+						//else if (CurrentStatus == Sealed::OneUnsealed) // 봉인이 하나 풀린 상태라면 1200으로 범위 증가
+						else // 봉인이 하나 이상 풀린 상태라면 1200으로 범위 증가
 						{
 							if (Dist <= 1200.f) // 1200 이하 거리 이내에 있으면 어느 상황에서든 감지
 							{

@@ -7,6 +7,7 @@
 #include "End_Mirror.h"
 #include "GameUI.h"
 #include "HUD/TimerWidget.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values
 AAltar_cpp::AAltar_cpp()
@@ -64,6 +65,7 @@ void AAltar_cpp::BeginPlay()
 	Bell->SetVisibility(false);
 	RespawnTimer = 0.f;
 	bIsLevelStart = false;
+	PlayerCharacter = Cast<AHorrorGameCharacter>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetPawn());
 }
 
 void AAltar_cpp::OnInteract(class AHorrorGameCharacter* Player)
@@ -80,6 +82,95 @@ void AAltar_cpp::OnInteract(class AHorrorGameCharacter* Player)
 		Bell->SetVisibility(true);
 
 		Player->GameUIWidget->TimerWidget->StopTimer(); // 타이머 정지
+
+		for (int i = 0; i < Player->Inventory.Num(); ++i) // 플레이어의 인벤토리 순회하며 아이템 제거
+		{
+			if (Player->Inventory[i].ItemNumber == 5) // 칼인 경우
+			{
+				Player->SwordCount--;
+				Player->Inventory[i].ItemCount = Player->SwordCount;
+				if (Player->Inventory[i].ItemCount == 0)
+				{
+					Player->Inventory.RemoveAt(i);
+					Player->InventoryNum--;
+					Player->CurrentItemNum--;
+					if (Player->CurrentItemNum < 0 && Player->InventoryNum >= 0)
+					{
+						Player->CurrentItemNum = 0;
+					}
+
+					if (Player->InventoryNum < 0)
+					{
+						Player->CurrentItemNum = 0;
+					}
+
+					FHorrorGameItemData TempItem;
+					TempItem.Clear();
+					Player->Inventory.Add(TempItem);
+
+				}
+
+				Player->GameUIWidget->SetObjectCount(1, Player->SwordCount);
+				Player->CurrentItem();
+			}
+
+			if (Player->Inventory[i].ItemNumber == 6) // 방울인 경우
+			{
+				Player->BellCount--;
+				Player->Inventory[i].ItemCount = Player->BellCount;
+				if (Player->Inventory[i].ItemCount == 0)
+				{
+					Player->Inventory.RemoveAt(i);
+					Player->InventoryNum--;
+					Player->CurrentItemNum--;
+					if (Player->CurrentItemNum < 0 && Player->InventoryNum >= 0)
+					{
+						Player->CurrentItemNum = 0;
+					}
+
+					if (Player->InventoryNum < 0)
+					{
+						Player->CurrentItemNum = 0;
+					}
+
+					FHorrorGameItemData TempItem;
+					TempItem.Clear();
+					Player->Inventory.Add(TempItem);
+				}
+
+				Player->GameUIWidget->SetObjectCount(2, Player->BellCount);
+				Player->CurrentItem();
+			}
+
+			if (Player->Inventory[i].ItemNumber == 7) // 거울인 경우
+			{
+				Player->MirrorCount--;
+				Player->Inventory[i].ItemCount = Player->MirrorCount;
+				if (Player->Inventory[i].ItemCount == 0)
+				{
+					Player->Inventory.RemoveAt(i);
+					Player->InventoryNum--;
+					Player->CurrentItemNum--;
+					if (Player->CurrentItemNum < 0 && Player->InventoryNum >= 0)
+					{
+						Player->CurrentItemNum = 0;
+					}
+
+					if (Player->InventoryNum < 0)
+					{
+						Player->CurrentItemNum = 0;
+					}
+
+					FHorrorGameItemData TempItem;
+					TempItem.Clear();
+					Player->Inventory.Add(TempItem);
+				}
+
+				Player->GameUIWidget->SetObjectCount(3, Player->MirrorCount);
+				Player->CurrentItem();
+			}
+		}
+
 		if (IsValid(EndingMirror)) // Ending Mirror가 존재한 상황이면
 		{
 			EndingMirror->SetIsCleared(true);
@@ -122,5 +213,10 @@ void AAltar_cpp::UnSealedObjectNumber(int32 value)
 	if (CurrentReaper)
 	{
 		CurrentReaper->UnSealedItemNumber = UnSealedItemNum;
+	}
+
+	if (UnSealedItemNum == 3)
+	{
+		PlayerCharacter->OnAnnounce();
 	}
 }

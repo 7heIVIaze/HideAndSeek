@@ -14,7 +14,7 @@
 ACreatureSpawner::ACreatureSpawner()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = RootComp;
@@ -44,51 +44,51 @@ void ACreatureSpawner::BeginPlay()
 	}
 }
 
-void ACreatureSpawner::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-	FActorSpawnParameters spawnParams;
-	fPlayTime += DeltaTime;
-	if (count++ > 60)
-	{
-		//for (TActorIterator<APatrolPoint_cpp>entity(world); entity; ++entity)
-		//{
-		//	FString entityName = entity->GetActorLabel(); //->GetName();
-		//	UE_LOG(LogTemp, Warning, TEXT("%s"), *entityName);
-		//	entityName.RemoveFromStart(TEXT("BP_PatrolPoint"));
-		//	int32 idx = FCString::Atoi(*entityName);
-		//	UE_LOG(LogTemp, Warning, TEXT("%d"), idx);
-		//	if (idx > 0 || idx <= 25)
-		//		if (!IsAllLoaded[idx - 1])
-		//			IsAllLoaded[idx - 1] = true;
-		//}
-
-		//if (Check())
-		//{
-		//	FString strText = FString::Printf(TEXT("%2d:%2d"), (int32)fPlayTime / 60, (int32)fPlayTime % 60);
-		//	if (GEngine)
-		//		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, strText);
-		//	if (reaper_cnt++ > 3)
-		//		Destroy();
-		//	//AReaper_cpp* reaper = world->SpawnActor<AReaper_cpp>(ObjectToSpawn->GeneratedClass, spawnLocation, rotator, spawnParams);
-		//	AReaper_cpp* reaper = world->SpawnActor<AReaper_cpp>(ObjectToSpawn, spawnLocation, rotator, spawnParams);
-		//	/*if (reaper)
-		//	{
-		//		ULevel* CurrentLevel = world->GetCurrentLevel();
-		//		if (CurrentLevel)
-		//		{
-		//			CurrentLevel->Actors.Add(reaper);
-		//			reaper_cnt++;
-		//			return;
-		//		}
-		//	}*/
-		//	reaper_cnt++;
-		//}
-		count = 0;
-	}
-
-	
-}
+//void ACreatureSpawner::Tick(float DeltaTime)
+//{
+//	Super::Tick(DeltaTime);
+//	FActorSpawnParameters spawnParams;
+//	fPlayTime += DeltaTime;
+//	if (count++ > 60)
+//	{
+//		//for (TActorIterator<APatrolPoint_cpp>entity(world); entity; ++entity)
+//		//{
+//		//	FString entityName = entity->GetActorLabel(); //->GetName();
+//		//	UE_LOG(LogTemp, Warning, TEXT("%s"), *entityName);
+//		//	entityName.RemoveFromStart(TEXT("BP_PatrolPoint"));
+//		//	int32 idx = FCString::Atoi(*entityName);
+//		//	UE_LOG(LogTemp, Warning, TEXT("%d"), idx);
+//		//	if (idx > 0 || idx <= 25)
+//		//		if (!IsAllLoaded[idx - 1])
+//		//			IsAllLoaded[idx - 1] = true;
+//		//}
+//
+//		//if (Check())
+//		//{
+//		//	FString strText = FString::Printf(TEXT("%2d:%2d"), (int32)fPlayTime / 60, (int32)fPlayTime % 60);
+//		//	if (GEngine)
+//		//		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, strText);
+//		//	if (reaper_cnt++ > 3)
+//		//		Destroy();
+//		//	//AReaper_cpp* reaper = world->SpawnActor<AReaper_cpp>(ObjectToSpawn->GeneratedClass, spawnLocation, rotator, spawnParams);
+//		//	AReaper_cpp* reaper = world->SpawnActor<AReaper_cpp>(ObjectToSpawn, spawnLocation, rotator, spawnParams);
+//		//	/*if (reaper)
+//		//	{
+//		//		ULevel* CurrentLevel = world->GetCurrentLevel();
+//		//		if (CurrentLevel)
+//		//		{
+//		//			CurrentLevel->Actors.Add(reaper);
+//		//			reaper_cnt++;
+//		//			return;
+//		//		}
+//		//	}*/
+//		//	reaper_cnt++;
+//		//}
+//		count = 0;
+//	}
+//
+//	
+//}
 
 //bool ACreatureSpawner::Check()
 //{

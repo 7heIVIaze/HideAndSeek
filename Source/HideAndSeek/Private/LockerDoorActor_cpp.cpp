@@ -130,6 +130,7 @@ void ALockerDoorActor_cpp::UseInteract(class AHorrorGameCharacter* Player)
 {
 	if (bIsLockerLocked)
 	{
+		Player->bIsFinishUnlock = true;
 		bIsLockerLocked = false;
 		LockerLockMesh->DestroyComponent();
 	}

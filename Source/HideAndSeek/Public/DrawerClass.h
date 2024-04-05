@@ -29,11 +29,11 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = "Drawer")
 		TObjectPtr<UChildActorComponent> Item;
 
-	UPROPERTY(VisibleAnywhere, Category = "Drawer")
+	/*UPROPERTY(VisibleAnywhere, Category = "Drawer")
 		TObjectPtr<UChildActorComponent> Deco_Left;
 
 	UPROPERTY(VisibleAnywhere, Category = "Drawer")
-		TObjectPtr<UChildActorComponent> Deco_Right;
+		TObjectPtr<UChildActorComponent> Deco_Right;*/
 
 	UPROPERTY(VisibleAnywhere, Category = "Drawer")
 		TObjectPtr<UStaticMeshComponent> Drawer;
@@ -41,6 +41,9 @@ public:
 	/** Please add a variable description */
 	UPROPERTY(VisibleAnywhere, Category = "Drawer")
 		TObjectPtr<USceneComponent> DefaultSceneRoot;
+
+	UPROPERTY(EditAnywhere, Category = "Drawer")
+		TArray<TObjectPtr<UStaticMesh>> DrawerMeshes;
 
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
 	//	TObjectPtr<UAudioComponent> DrawerSound;
@@ -64,8 +67,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drawer")
 		TArray<TSubclassOf<class AItems>> Items;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drawer")
-		TArray<TSubclassOf<AActor>> Decorators;
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drawer")
+		TArray<TSubclassOf<AActor>> Decorators;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drawer")
 		TArray<float> ItemProbability;

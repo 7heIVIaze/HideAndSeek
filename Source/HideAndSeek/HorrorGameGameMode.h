@@ -21,6 +21,9 @@ public:
 		void StartBackGroundMusic();
 
 	UFUNCTION(BlueprintCallable)
+		void StopBackGroundMusic();
+
+	UFUNCTION(BlueprintCallable)
 		void PlayNervousBackGroundMusic();
 
 	UFUNCTION(BlueprintCallable)
@@ -37,6 +40,15 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void StopMirrorUseBackGroundMusic();
+
+	UFUNCTION(BlueprintCallable)
+		void PlayDiedBackGroundMusic();
+
+	UFUNCTION(BlueprintCallable)
+		void PlayClearBackGroundMusic();
+
+	UFUNCTION(BlueprintCallable)
+		void PlayEndingBackGroundMusic();
 //
 protected:
 	virtual void BeginPlay() override;
@@ -54,6 +66,9 @@ private:
 	class USoundCue* NervousCue;
 	class USoundCue* ChaseCue;
 	class USoundCue* MirrorUseCue;
+	class USoundCue* DiedCue;
+	class USoundCue* ClearCue;
+	class USoundCue* EndingCue;
 
 	// FOnPlayerNearCreatureDelegate OnPlayerNearCreature;
 };

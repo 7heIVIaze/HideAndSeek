@@ -98,6 +98,9 @@ public:
 	UPROPERTY()
 		bool bSealedButChase = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool IsBerith = false; // 베리스 호출로 불렸는지
+
 	UPROPERTY()
 		FString MapName;
 
@@ -115,8 +118,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void SetCreatureCollision(bool value);
 
-	/*UFUNCTION(BlueprintCallable)
-		void SetPlayerWatch(bool value);*/
+	UFUNCTION(BlueprintCallable)
+		void CalledByBerith();
 
 	/*void EndChase();*/
 
@@ -132,9 +135,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void SoundEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	/*UFUNCTION(BlueprintCallable)
-	void DoorBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);*/
-
 	UFUNCTION(BlueprintCallable)
 		void CheckBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
@@ -144,8 +144,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 		bool GetIsStunned();
 
-	/*UFUNCTION(BlueprintCallable)
-		void Exorcism();*/
+	UFUNCTION(BlueprintCallable)
+		void SetIsCinematic(bool inIsCinematic);
 
 	UFUNCTION(BlueprintCallable)
 		void SetPatrolSuccess(bool value);
@@ -178,6 +178,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		bool GetPatrolSuccess();
+
+	//UFUNCTION(BlueprintCallable)
+	//	void SetCurrentMode(int Status); // 0: Cinematic, 1: OneUnsealed, 2: TwoUnsealed, 3: Unsealed, 4: SealedButChase
 
 private:
 	UPROPERTY()

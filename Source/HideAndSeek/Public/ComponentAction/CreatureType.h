@@ -21,20 +21,20 @@ struct FCreatureData : public FTableRowBase
 	GENERATED_BODY()
 		
 public:
-	FCreatureData() : Type(ECreatureType::CT_None), Title(TEXT("")), Image(nullptr), Detail(TEXT("")) {}
+	FCreatureData() : Type(ECreatureType::CT_None), Title(NSLOCTEXT("FCreatureData", "NULL", "")), Image(nullptr), Detail(NSLOCTEXT("FCreatureData", "NULL", "")) {}
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 		TEnumAsByte<ECreatureType> Type;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		FString Title;
+		FText Title;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 		UTexture2D* Image;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		FString Detail;
+		FText Detail;
 };
 UCLASS()
 class HIDEANDSEEK_API ACreatureType : public AActor // 데이터 테이블용 더미 액터

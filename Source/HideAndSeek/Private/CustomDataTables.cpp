@@ -1,5 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
 
 #include "CustomDataTables.h"
 #include "HideAndSeek/HorrorGameCharacter.h"
@@ -11,7 +10,7 @@
 void FHorrorGameItemData::Clear()
 {
 	ItemNumber = 0;
-	ItemName = TEXT("");
+	ItemName = NSLOCTEXT("FHorrorGameItemData", "NULL", "");
 	ItemCount = 0;
 	ItemIcon = nullptr;
 	Type = ITEM_None;

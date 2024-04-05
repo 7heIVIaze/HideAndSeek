@@ -14,6 +14,7 @@ enum EItemType
 {
 	ITEM_None UMETA(DisplayName = "None"),
 	ITEM_Useable UMETA(DisplayName = "Useable"),
+	ITEM_Passive UMETA(DisplayName = "Passive"),
 };
 
 USTRUCT(BlueprintType)
@@ -22,7 +23,7 @@ struct FHorrorGameItemData : public FTableRowBase
 	GENERATED_USTRUCT_BODY()
 
 public:
-	FHorrorGameItemData() : ItemNumber(0), ItemName(TEXT("")), ItemCount(0), ItemIcon(nullptr), Type(EItemType::ITEM_None), ItemPath(TEXT("")), ItemDetail(TEXT("")), DetailKorean(TEXT("")) {}
+	FHorrorGameItemData() : ItemNumber(0), ItemName(NSLOCTEXT("FHorrorGameItemData", "NULL", "")), ItemCount(0), ItemIcon(nullptr), Type(EItemType::ITEM_None), ItemPath(TEXT("")), ItemDetail(NSLOCTEXT("FHorrorGameItemData", "NULL", "")) {}
 
 	void Clear();
 	void Use(AHorrorGameCharacter* Player);
@@ -32,7 +33,7 @@ public:
 	int32 ItemNumber;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	FString ItemName;
+	FText ItemName;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 	int32 ItemCount;
@@ -47,10 +48,8 @@ public:
 	FString ItemPath;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	FString ItemDetail;
+	FText ItemDetail;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		FString DetailKorean;
 };
 UCLASS()
 class HIDEANDSEEK_API ACustomDataTables : public AActor

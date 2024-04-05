@@ -54,6 +54,7 @@ public:
 	static const FName LockerLighting;
 	static const FName SealStatus;
 	static const FName IsCinematic;
+	static const FName CalledByBerith;
 
 	// AI Perception Variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

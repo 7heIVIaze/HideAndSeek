@@ -24,6 +24,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Text, meta = (MultiLine = true))
 		FText text;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Text)
+		int DocumentIndex;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Text)
+		class UDataTable* ArchiveData;
+
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Text)
+	//	FString DocumentType;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

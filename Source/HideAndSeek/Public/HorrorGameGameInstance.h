@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
 #include "ComponentAction/Records.h"
+#include "MyStoveSDKObject.h"
 #include "HorrorGameGameInstance.generated.h"
 
 struct FHorrorGameItemData;
@@ -30,6 +31,9 @@ public:
 
 	// void ShowStageSelectWidget(bool bIsShow);
 	void StopSound();
+
+	UPROPERTY()
+		UMyStoveSDKObject* _stoveSDKObject;
 
 	UFUNCTION(BlueprintCallable)
 		bool ClearedChapterSaveLogic(int32 inClearedChapter);

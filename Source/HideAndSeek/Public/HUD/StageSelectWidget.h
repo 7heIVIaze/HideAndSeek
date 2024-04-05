@@ -70,6 +70,9 @@ private:
 	UPROPERTY()
 		int32 MenuNumber;
 
+	//UPROPERTY()
+		//int32 ButtonNum;
+
 	UPROPERTY()
 		int32 ClearedChapter;
 

@@ -4,8 +4,10 @@
 #include "HideAndSeek/HorrorGameCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "HorrorGamePlayerController.h"
+#include "HideAndSeek/HorrorGameGameMode.h"
 #include "HorrorGameGameInstance.h"
 #include "HUD/TimerWidget.h"
+#include "Sound/SoundCue.h"
 #include "GameUI.h"
 
 // Sets default values
@@ -37,20 +39,29 @@ void AEnd_Mirror::BeginPlay()
 
 void AEnd_Mirror::OnInteract(class AHorrorGameCharacter* Player)
 {
-	if (Player->GetSwordNumbers() >= 1 && Player->GetMirrorNumbers() >= 1 && Player->GetBellNumbers() >= 1)
-	{ // 플레이어가 사신의 물품을 각각 1개 씩 더 챙긴 상태에서 인터랙트할 경우에,
-		if (HiddenTeleportPosition)
-		{
-			FVector TeleportPosition = HiddenTeleportPosition->GetComponentLocation();
-			Player->SetActorLocation(TeleportPosition);
-		}
-	}
-	else
+	if (bIsCleared) // 게임 클리어 시
 	{
-		if (CommonTeleportPosition)
+		if (InteractSound != nullptr) // 순간이동 소리가 있으면 재생시킴
 		{
-			FVector TeleportPosition = CommonTeleportPosition->GetComponentLocation();
-			Player->SetActorLocation(TeleportPosition);
+			UGameplayStatics::PlaySound2D(this, InteractSound);
+		}
+		Cast<AHorrorGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->StopBackGroundMusic();
+
+		if (Player->GetSwordNumbers() >= 1 && Player->GetMirrorNumbers() >= 1 && Player->GetBellNumbers() >= 1)
+		{ // 플레이어가 사신의 물품을 각각 1개 씩 더 챙긴 상태에서 인터랙트할 경우에,
+			if (HiddenTeleportPosition)
+			{
+				FVector TeleportPosition = HiddenTeleportPosition->GetComponentLocation();
+				Player->SetActorLocation(TeleportPosition);
+			}
+		}
+		else
+		{
+			if (CommonTeleportPosition)
+			{
+				FVector TeleportPosition = CommonTeleportPosition->GetComponentLocation();
+				Player->SetActorLocation(TeleportPosition);
+			}
 		}
 	}
 	//if (bIsCleared) // 게임 클리어 시 Clear Widget 표시

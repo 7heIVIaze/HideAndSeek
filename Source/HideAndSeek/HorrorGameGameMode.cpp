@@ -52,6 +52,24 @@ AHorrorGameGameMode::AHorrorGameGameMode()
 	{
 		MirrorUseCue = MirrorUseSound.Object;
 	}
+	
+	static ConstructorHelpers::FObjectFinder<USoundCue>DiedCueAsset(TEXT("/Game/Assets/Sounds/SoundCues/DiedCue"));
+	if (DiedCueAsset.Succeeded())
+	{
+		DiedCue = DiedCueAsset.Object;
+	}
+
+	static ConstructorHelpers::FObjectFinder<USoundCue>ClearSound(TEXT("/Game/Assets/Sounds/SoundCues/ClearCue"));
+	if (ClearSound.Succeeded())
+	{
+		ClearCue = ClearSound.Object;
+	}
+	
+	static ConstructorHelpers::FObjectFinder<USoundCue>EndingSound(TEXT("/Game/Assets/Sounds/SoundCues/EndingCue"));
+	if (EndingSound.Succeeded())
+	{
+		EndingCue = EndingSound.Object;
+	}
 
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
 	AudioComponent->SetAutoActivate(false);
@@ -114,6 +132,11 @@ void AHorrorGameGameMode::StartBackGroundMusic()
 	AudioComponent->Play();
 }
 
+void AHorrorGameGameMode::StopBackGroundMusic()
+{
+	AudioComponent->Stop();
+}
+
 void AHorrorGameGameMode::PlayNervousBackGroundMusic()
 {
 	AudioComponent->FadeOut(2.f, 0.f);
@@ -153,4 +176,25 @@ void AHorrorGameGameMode::StopMirrorUseBackGroundMusic()
 	AudioComponent->Stop();
 	AudioComponent->SetSound(MainCue);
 	PlayNervousBackGroundMusic();
+}
+
+void AHorrorGameGameMode::PlayDiedBackGroundMusic() // 사망 시 재생할 사운드
+{
+	AudioComponent->Stop();
+	AudioComponent->SetSound(DiedCue);
+	AudioComponent->Play();
+}
+
+void AHorrorGameGameMode::PlayClearBackGroundMusic() // 클리어 시 재생할 사운드
+{
+	AudioComponent->Stop();
+	AudioComponent->SetSound(ClearCue);
+	AudioComponent->Play();
+}
+
+void AHorrorGameGameMode::PlayEndingBackGroundMusic() // 엔딩 시 재생할 사운드
+{
+	AudioComponent->Stop();
+	AudioComponent->SetSound(EndingCue);
+	AudioComponent->Play();
 }

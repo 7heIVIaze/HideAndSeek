@@ -535,7 +535,7 @@ void ABrute_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 		HideCatch = AIController->GetBlackboard()->GetValueAsBool(AAIController_Brute::LockerLighting);
 	}
 
-	if (!bIsStunned)
+	if (!bIsStunned && !bIsDied)
 	{
 		if (OtherActor != this && OtherActor != nullptr && OtherComp != nullptr)
 		{
@@ -599,13 +599,13 @@ void ABrute_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 						if (!SaveData->CatchedByBrute)
 						{
 							SaveData->CatchedByBrute = true;
+							Character->SetArchiveGetText(NSLOCTEXT("ABrute_cpp", "Kill_By_Brute", "Brute\nis added in archive"));
 							SaveData->SaveData();
 						}
 					}
 
 					//Character->SetActorRotation(NewRotation);
 					Character->OnFocus(GetActorLocation());
-					Character->SetArchiveGetText(NSLOCTEXT("ABrute_cpp", "Kill_By_Brute", "Brute\nis added in archive"));
 
 					SetIsCatch(true);
 

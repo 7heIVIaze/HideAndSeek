@@ -5,6 +5,7 @@
 #include "HorrorGamePlayerController.h"
 #include "ComponentAction/HorrorGameSaveGame.h"
 #include "Kismet/GameplayStatics.h"
+#include "ComponentAction/CollectArchives.h"
 
 // Sets default values
 APaper::APaper()
@@ -17,7 +18,6 @@ APaper::APaper()
 
 	PaperMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Paper"));
 	PaperMesh->SetupAttachment(RootComp);
-
 }
 
 // Called when the game starts or when spawned
@@ -30,28 +30,33 @@ void APaper::BeginPlay()
 void APaper::OnInteract(class AHorrorGameCharacter* Player)
 {
 	AHorrorGamePlayerController* PlayerController = Cast<AHorrorGamePlayerController>(Player->GetController());
-	
-	FString Key = *FTextInspector::GetKey(text); // FText의 Key 값을 가져옴
-	TArray<FString>Value;
+	FCollectArchivesData* DocumentData = ArchiveData->FindRow<FCollectArchivesData>(*FString::FromInt(DocumentIndex), TEXT(""));
 
-	Key.ParseIntoArray(Value, TEXT("#"), false);
+	//FString Key = *FTextInspector::GetKey(text); // FText의 Key 값을 가져옴
+	//TArray<FString>Value;
 
-	FString Type = Value[0]; // 해당 문서의 타입
-	int32 Number = FCString::Atoi(*Value[1]); // 해당 문서의 번호
+	//Key.ParseIntoArray(Value, TEXT("#"), false);
 
-	PlayerController->OnDocumentWidget(text, Type);
+	// FString Type = Value[0]; // 해당 문서의 타입
+	FString Type = TEXT(""); // 해당 문서의 타입
+
+	//int32 Number = FCString::Atoi(*Value[1]); // 해당 문서의 번호
+
+	//PlayerController->OnDocumentWidget(text, Type);
 
 	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 	{
-
-		if (Type.Equals("Article")) // 해당 문서의 타입이 기사면
+		//if (Type.Equals("Article")) // 해당 문서의 타입이 기사면
+		if(DocumentData->Type == EDocumentType::DOCS_Article)
 		{
+			Type = TEXT("Article");
 			/*while (SaveData->Article.Num() < Number)
 			{
 				SaveData->Article.Add(TEXT("???"));
 			}
 			SaveData->Article[Number - 1] = text.ToString();*/
-			switch (Number)
+			//switch (Number)
+			switch(DocumentData->Number) // 문서 번호
 			{
 			case 1:
 				if (!SaveData->Article1)
@@ -90,14 +95,17 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 			}
 		}
 		
-		else if (Type.Equals("Diary")) // 해당 문서의 타입이 일기장이면
+		//else if (Type.Equals("Diary")) // 해당 문서의 타입이 일기장이면
+		else if (DocumentData->Type == EDocumentType::DOCS_Diary)
 		{
+			Type = TEXT("Diary");
 			/*while (SaveData->Diary.Num() < Number)
 			{
 				SaveData->Diary.Add(TEXT("???"));
 			}
 			SaveData->Diary[Number - 1] = text.ToString();*/
-			switch (Number)
+			//switch (Number)
+			switch (DocumentData->Number)
 			{
 			case 1:
 				if (!SaveData->Diary1)
@@ -136,14 +144,17 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 			}
 		}
 
-		else if (Type.Equals("Letter")) // 해당 문서의 타입이 메시지면
+		//else if (Type.Equals("Letter")) // 해당 문서의 타입이 메시지면
+		else if (DocumentData->Type == EDocumentType::DOCS_Letter)
 		{
+			Type = TEXT("Letter");
 			/*while (SaveData->Message.Num() < Number)
 			{
 				SaveData->Message.Add(TEXT("???"));
 			}
 			SaveData->Message[Number - 1] = text.ToString();*/
-			switch (Number)
+			//switch (Number)
+			switch (DocumentData->Number)
 			{
 			case 1:
 				if (!SaveData->Letter1_Berith1)
@@ -221,4 +232,6 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 
 		SaveData->SaveData();
 	}
+
+	PlayerController->OnDocumentWidget(DocumentData->Detail_EN, Type);
 }

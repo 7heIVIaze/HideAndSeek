@@ -154,6 +154,7 @@ void AClassroomDoorActor_cpp::UseInteract(class AHorrorGameCharacter* Player)
 {
 	if (bIsDoorLocked)
 	{
+		Player->bIsFinishUnlock = true;
 		bIsDoorLocked = false;
 		Lock->DestroyComponent();
 		CD_Manager->SetDoorUnlock();

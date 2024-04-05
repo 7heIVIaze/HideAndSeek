@@ -30,4 +30,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = PlayerToSpawn)
 		TObjectPtr<class AHorrorGameCharacter>Player;
+
+	/*UFUNCTION(BlueprintCallable)
+		void TeleportPlayer(AActor* Player);*/
 };

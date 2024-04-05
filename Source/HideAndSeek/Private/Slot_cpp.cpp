@@ -50,7 +50,7 @@ void USlot_cpp::Refresh()
 				Icon->SetVisibility(ESlateVisibility::Visible);
 				Have->SetVisibility(ESlateVisibility::Visible);
 				Have->SetText(FText::FromString(FString::FromInt(Count)));
-				if (SlotNum == Player->GetCurrentItemNumber())
+				if (SlotNum == Player->CurrentItemNum)//->GetCurrentItemNumber())
 				{
 					Select_Border_Top->SetBrushColor(FLinearColor::FLinearColor(1.f, 1.f, 1.f, 1.f));
 					Select_Border_Left->SetBrushColor(FLinearColor::FLinearColor(1.f, 1.f, 1.f, 1.f));

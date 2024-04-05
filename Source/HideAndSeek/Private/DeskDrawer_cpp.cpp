@@ -42,6 +42,12 @@ void ADeskDrawer_cpp::BeginPlay()
 		TimelineProgress.BindDynamic(this, &ADeskDrawer_cpp::OpenDrawer);
 		OpenAndClose.AddInterpFloat(CurveFloat, TimelineProgress);
 	}
+
+	if (DrawerMeshes.Num() > 0)
+	{
+		int RandIdx = FMath::RandRange(0, DrawerMeshes.Num() - 1);
+		Drawer->SetStaticMesh(DrawerMeshes[RandIdx]);
+	}
 }
 
 // Called every frame

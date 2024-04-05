@@ -33,6 +33,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Chapter)
 		int32 ClearChapterNum; // 클리어한 챕터 변수
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sound)
+		TObjectPtr<class USoundCue> InteractSound; // 순간이동 소리
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -45,4 +48,5 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void SetIsCleared(const bool value);
+
 };

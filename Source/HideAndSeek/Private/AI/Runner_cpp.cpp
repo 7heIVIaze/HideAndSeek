@@ -483,7 +483,7 @@ void ARunner_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 
 	if (OtherActor != this && OtherActor != nullptr && OtherComp != nullptr)
 	{
-		if (!bIsStunned)
+		if (!bIsStunned && !bIsDied)
 		{
 			if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
 			{
@@ -545,13 +545,13 @@ void ARunner_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 						if (!SaveData->CatchedByRunner)
 						{
 							SaveData->CatchedByRunner = true;
+							Character->SetArchiveGetText(NSLOCTEXT("ARunner_cpp", "Kill_By_Runner", "Runner\nis added in archive"));
 							SaveData->SaveData();
 						}
 					}
 
 					//Character->SetActorRotation(NewRotation);
 					Character->OnFocus(GetActorLocation());
-					Character->SetArchiveGetText(NSLOCTEXT("ARunner_cpp", "Kill_By_Runner", "Runner\nis added in archive"));
 
 					SetIsCatch(true);
 

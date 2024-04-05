@@ -37,6 +37,9 @@ public:
 	void OnGameClear(FString inClearedTime);
 
 	UFUNCTION(BlueprintCallable)
+		void ShowEnding(int EndType); // 0: BadEnding, 1: NormalEnding, 2: TrueEnding
+
+	UFUNCTION(BlueprintCallable)
 		void OnDocumentWidget(FText inText, FString inType); // 문서 위젯
 
 protected:
@@ -55,6 +58,12 @@ protected:
 		TSubclassOf<UUserWidget>ClearWidgetClass;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = UI)
 		TSubclassOf<UUserWidget>DocumentWidgetClass;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = UI)
+		TSubclassOf<UUserWidget>BadEndingWidgetClass;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = UI)
+		TSubclassOf<UUserWidget>NormalEndingWidgetClass;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = UI)
+		TSubclassOf<UUserWidget>TrueEndingWidgetClass;
 
 private:
 	UPROPERTY()
@@ -74,6 +83,9 @@ private:
 
 	UPROPERTY()
 		class UDocumentWidget* DocumentWidget;
+
+	UPROPERTY()
+		class UUserWidget* EndingWidget;
 
 	FInputModeGameOnly GameInputMode;
 	FInputModeUIOnly UIInputMode;

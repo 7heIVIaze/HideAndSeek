@@ -21,17 +21,23 @@ struct FCollectArchivesData : public FTableRowBase
 	GENERATED_BODY()
 
 public:
-	FCollectArchivesData() : Type(EDocumentType::DOCS_Article), Detail_EN(TEXT("")), Detail_KR(TEXT("")) {}
+	FCollectArchivesData() : Type(EDocumentType::DOCS_Article), Detail_EN(NSLOCTEXT("FCollectArchivesData", "NULL", "")) {}
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 		TEnumAsByte<EDocumentType> Type;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		FString Detail_EN;
+		int Number;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		FString Detail_KR;
+		FText Detail_EN;
+
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+		FText Detail_KR;*/
+
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", meta = (MultiLine = true))
+		FText FirstGetText;*/
 };
 UCLASS()
 class HIDEANDSEEK_API ACollectArchives : public AActor

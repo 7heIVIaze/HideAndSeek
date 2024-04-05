@@ -10,9 +10,11 @@
 #include "AI/CreatureAI.h"
 #include "AI/AIController_Runner.h"
 #include "AI/AIController_Brute.h"
+#include "AI/AIController_Rampage.h"
 #include "AI/Reaper_cpp.h"
 #include "AI/Runner_cpp.h"
 #include "AI/Brute_cpp.h"
+#include "AI/Rampage_cpp.h"
 
 
 UBTTask_Trace::UBTTask_Trace()
@@ -56,6 +58,19 @@ EBTNodeResult::Type UBTTask_Trace::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 		ABrute_cpp* Brute = Cast<ABrute_cpp>(BruteAI->GetPawn());
 
 		if (nullptr == Brute)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Creature Initialize Failed"));
+			return EBTNodeResult::Failed;
+		}
+
+		return EBTNodeResult::InProgress;
+	}
+
+	if (AAIController_Rampage* RampageAI = Cast<AAIController_Rampage>(AIController))
+	{
+		ARampage_cpp* Rampage = Cast<ARampage_cpp>(RampageAI->GetPawn());
+
+		if (nullptr == Rampage)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Creature Initialize Failed"));
 			return EBTNodeResult::Failed;
@@ -213,11 +228,53 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 
 		if (Brute->GetAnimFinish())
 		{
-			if (GEngine)
+			/*if (GEngine)
 				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Brute Animation Finish")));
-			
+			*/
 			BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::TargetKey, nullptr);
 			BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::CanSeePlayer, false);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			return;
+		}
+	}
+
+	if (AAIController_Rampage* RampageAI = Cast<AAIController_Rampage>(AIController))
+	{
+		ARampage_cpp* Rampage = Cast<ARampage_cpp>(RampageAI->GetPawn());
+
+		if (nullptr == Rampage)
+		{
+			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+			return;
+		}
+
+		AHorrorGameCharacter* pTarget = nullptr;
+
+		pTarget = Cast<AHorrorGameCharacter>(RampageAI->GetBlackboard()->GetValueAsObject(AAIController_Rampage::TargetKey));
+
+		FVector TargetLocation = RampageAI->GetBlackboard()->GetValueAsVector(AAIController_Rampage::TargetLocation);
+
+		if (nullptr == pTarget) // if no target
+		{
+			//UAIBlueprintHelperLibrary::SimpleMoveToLocation(BruteAI, TargetLocation);
+			RampageAI->MoveToLocation(TargetLocation, AcceptableRadius, bStopOverlap, bUsePathfinding,
+				bProjectGoalLocation, bAllowStrafe, RampageAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			return;
+		}
+
+		auto PlayerController = Cast<APlayerController>(pTarget->GetController());
+
+		// move to actor
+		// UAIBlueprintHelperLibrary::SimpleMoveToActor(BruteAI, pTarget);
+		RampageAI->MoveToActor(pTarget, AcceptableRadius, bStopOverlap, bUsePathfinding,
+			bAllowStrafe, RampageAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+
+		if (Rampage->GetAnimFinish())
+		{
+			RampageAI->GetBlackboard()->SetValueAsObject(AAIController_Rampage::TargetKey, nullptr);
+			RampageAI->GetBlackboard()->SetValueAsBool(AAIController_Rampage::CanSeePlayer, false);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			return;
 		}

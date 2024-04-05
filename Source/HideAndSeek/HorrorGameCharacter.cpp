@@ -53,6 +53,7 @@
 #include "NiagaraSystem.h"
 #include "MetalDoor_cpp.h"
 #include "DeskDrawer_cpp.h"
+#include "End_Mirror.h"
 #include "HangingLight.h"
 #include "Alarm.h"
 #include "DoorInterface_cpp.h"
@@ -84,6 +85,7 @@ AHorrorGameCharacter::AHorrorGameCharacter()
 	bisSoundOn = false;
 	Stamina = 400;
 	FlashLightBattery = 200;
+	bIsCleared = false;
 	
 	// Set size for collision capsule
 	GetCapsuleComponent()->InitCapsuleSize(55.f, 96.0f);
@@ -343,6 +345,12 @@ void AHorrorGameCharacter::Tick(float DeltaTime)
 
 	GetLineTraceSingle(HitActor);
 
+	if (bIsHiding) // 숨은 상태라면 계속 유지하게 설정
+	{
+		SetActorLocation(BeforeHideLocation);
+		SetActorRotation(BeforeHideRotation);
+	}
+
 	FlickeringLight.TickTimeline(DeltaTime);
 	RotateCameraTimeline.TickTimeline(DeltaTime);
 	SprintCameraTimeline.TickTimeline(DeltaTime);
@@ -392,6 +400,25 @@ void AHorrorGameCharacter::Tick(float DeltaTime)
 		if (ErrorTextCount >= ErrorTextTimer)
 		{
 			SetErrorText(NSLOCTEXT("AHorrorGameCharacter", "None_Error", ""), 0);
+		}
+	}
+
+	if (bIsArchiveTextOn)
+	{
+		ArchiveTextTimer += DeltaTime;
+
+		if (ArchiveTextTimer >= 10.f)
+		{
+			if (PlayerStatus == Player_Status::Died)
+			{
+				HorrorGamePlayerController->SetDeadUIText(FText::FromString(TEXT("")));
+			}
+			else
+			{
+				GameUIWidget->SetArchiveGetText(FText::FromString(TEXT("")));
+			}
+			bIsArchiveTextOn = false;
+			ArchiveTextTimer = 0.f;
 		}
 	}
 
@@ -757,6 +784,11 @@ void AHorrorGameCharacter::Interact()
 				auto InterfaceVariable = Cast<IHideInterface>(HitActor);
 
 				InterfaceVariable->OnInteract(this);
+				if (bIsHiding) // 숨은 상태가 되면
+				{
+					BeforeHideLocation = GetActorLocation();
+					BeforeHideRotation = GetActorRotation();
+				}
 			}
 
 			else if (AWardrobeDrawer_cpp* WardDrawer = Cast<AWardrobeDrawer_cpp>(HitActor))
@@ -838,7 +870,10 @@ void AHorrorGameCharacter::Interact()
 
 			else if (AAltar_cpp* Altar = Cast<AAltar_cpp>(HitActor))
 			{
-				Altar->OnInteract(this);
+				if (!bIsCleared)
+				{
+					Altar->OnInteract(this);
+				}
 			}
 
 			else if (ASwitchLever* Lever = Cast<ASwitchLever>(HitActor))
@@ -855,9 +890,12 @@ void AHorrorGameCharacter::Interact()
 			{
 				Paper->OnInteract(this);
 			}
+			else if (AEnd_Mirror* EndMirror = Cast<AEnd_Mirror>(HitActor))
+			{
+				EndMirror->OnInteract(this);
+			}
 		}
 	}
-	
 }
 
 void AHorrorGameCharacter::ItemUse()
@@ -866,53 +904,63 @@ void AHorrorGameCharacter::ItemUse()
 	{
 		FHorrorGameItemData& CurrentItem = Inventory[CurrentItemNum]; // Get Selected Item
 
-		if (CurrentItem.ItemName.Contains(TEXT("CigarLight")))
+		//if (CurrentItem.ItemName.Contains(TEXT("CigarLight")))
+		if (CurrentItem.ItemNumber == 1) // CigarLighter
 		{
 			UseCigarLight();
 		}
 
-		else if (CurrentItem.ItemName.Contains(TEXT("FlashLight")))
+		//else if (CurrentItem.ItemName.Contains(TEXT("FlashLight")))
+		else if (CurrentItem.ItemNumber == 2) // FlashLight
 		{
 			UseFlashLight();
 		}
 
-		else if (CurrentItem.ItemName.Contains(TEXT("Key")))
+		//else if (CurrentItem.ItemName.Contains(TEXT("Key")))
+		else if (CurrentItem.ItemNumber == 3) // Key
 		{
 			UseKey();
 		}
 
-		else if (CurrentItem.ItemName.Contains(TEXT("Timer")))
+		//else if (CurrentItem.ItemName.Contains(TEXT("Timer")))
+		else if (CurrentItem.ItemNumber == 4) // Timer
 		{
 			UseTimer();
 		}
 
-		else if (CurrentItem.ItemName.Contains(TEXT("Sword")))
+		//else if (CurrentItem.ItemName.Contains(TEXT("Sword")))
+		else if (CurrentItem.ItemNumber == 5) // Sword
 		{
 			UseSword();
 		}
 
-		else if (CurrentItem.ItemName.Contains(TEXT("Bell")))
+		//else if (CurrentItem.ItemName.Contains(TEXT("Bell")))
+		else if (CurrentItem.ItemNumber == 6) // Bell
 		{
 			UseBell();
 		}
 
-		else if (CurrentItem.ItemName.Contains(TEXT("Mirror")))
+		//else if (CurrentItem.ItemName.Contains(TEXT("Mirror")))
+		else if (CurrentItem.ItemNumber == 7) // Mirror
 		{
 			UseMirror();
 		}
 
-		else if (CurrentItem.ItemName.Contains(TEXT("Extinguisher")))
+		//else if (CurrentItem.ItemName.Contains(TEXT("Extinguisher")))
+		else if (CurrentItem.ItemNumber == 8) // Extinguisher
 		{
 			if(bCanExtinguisherUse)
 				UseExtinguisher();
 		}
 
-		else if (CurrentItem.ItemName.Contains(TEXT("Cutter")))
+		//else if (CurrentItem.ItemName.Contains(TEXT("Cutter")))
+		else if (CurrentItem.ItemNumber == 9) // Cutter
 		{
 			UseCutter();
 		}
 
-		else if (CurrentItem.ItemName.Contains(TEXT("Lantern")))
+		//else if (CurrentItem.ItemName.Contains(TEXT("Lantern")))
+		else if (CurrentItem.ItemNumber == 10) // Lantern
 		{
 			AActor* ChildActor = Lantern->GetChildActor();
 			if (ASoul_Lantern_cpp* SoulLantern = Cast<ASoul_Lantern_cpp>(ChildActor))
@@ -938,7 +986,7 @@ bool AHorrorGameCharacter::GetLineTraceSingle(AActor* &HitActor)
 	FHitResult OutHit;
 	FVector Start = FirstPersonCameraComponent->GetComponentLocation();
 	FVector ForwardVector = FirstPersonCameraComponent->GetForwardVector();
-	FVector End = (ForwardVector * 200.0f) + Start;
+	FVector End = (ForwardVector * TraceLength) + Start;
 
 
 	bool isHit = GetWorld()->LineTraceSingleByChannel(OutHit, Start, End, ECC_Visibility);
@@ -1025,9 +1073,12 @@ bool AHorrorGameCharacter::GetLineTraceSingle(AActor* &HitActor)
 
 			else if (HitActor->IsA<AAltar_cpp>()) // 제단일 경우
 			{
-				GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Altar", "Place the Reaper's Items"));
-				GameUIWidget->SetInteractDot(true);
-				return true;
+				if (!bIsCleared)
+				{
+					GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Altar", "Place the Reaper's Items"));
+					GameUIWidget->SetInteractDot(true);
+					return true;
+				}
 			}
 
 			else if (HitActor->IsA<ASwitchLever>()) // 레버일 경우
@@ -1040,6 +1091,13 @@ bool AHorrorGameCharacter::GetLineTraceSingle(AActor* &HitActor)
 			else if (HitActor->IsA<APaper>()) // 종이일 경우
 			{
 				GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Paper", "Look"));
+				GameUIWidget->SetInteractDot(true);
+				return true;
+			}
+
+			else if (HitActor->IsA<AEnd_Mirror>()) // 엔딩용 거울일 경우
+			{
+				GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Mirror", "Go To Berith"));
 				GameUIWidget->SetInteractDot(true);
 				return true;
 			}
@@ -1067,9 +1125,9 @@ void AHorrorGameCharacter::SetCameraComponentNoise(int32 WhichStatus)
 	{
 	case 1: // 근처에 Creature가 있는 상황이면, 카메라에 노이즈 걸 것임
 		FirstPersonCameraComponent->PostProcessSettings.bOverride_VignetteIntensity = true;
-		FirstPersonCameraComponent->PostProcessSettings.VignetteIntensity = 2.f;
+		FirstPersonCameraComponent->PostProcessSettings.VignetteIntensity = 1.f;
 		FirstPersonCameraComponent->PostProcessSettings.bOverride_FilmGrainIntensity = true;
-		FirstPersonCameraComponent->PostProcessSettings.FilmGrainIntensity = 2.f;
+		FirstPersonCameraComponent->PostProcessSettings.FilmGrainIntensity = 1.f;
 		if (!bIsTimeStop) // 거울을 사용하지 않은 상태여야 재생안함
 		{
 			if (AHorrorGameGameMode* HorrorGameGameMode = Cast<AHorrorGameGameMode>(GameMode))
@@ -1093,18 +1151,60 @@ void AHorrorGameCharacter::SetCameraComponentNoise(int32 WhichStatus)
 			SetCameraComponentNoise(1); // 0.5초동안 노이즈 크게 하고 다시 1번 상태로 돌릴 것임
 		}), 0.5f, false);
 		break;
+	case 3: // 시네마틱용
+		FirstPersonCameraComponent->PostProcessSettings.bOverride_VignetteIntensity = true;
+		FirstPersonCameraComponent->PostProcessSettings.VignetteIntensity = 1.f;
+		FirstPersonCameraComponent->PostProcessSettings.bOverride_FilmGrainIntensity = true;
+		FirstPersonCameraComponent->PostProcessSettings.FilmGrainIntensity = 1.f;
+		break;
+	case 4: // 시네마틱용
+		FirstPersonCameraComponent->PostProcessSettings.bOverride_VignetteIntensity = false;
+		FirstPersonCameraComponent->PostProcessSettings.bOverride_FilmGrainIntensity = false;
+		break;
 	default: // Creature가 근처에 없다면 카메라에 노이즈 해제함
 		FirstPersonCameraComponent->PostProcessSettings.bOverride_VignetteIntensity = false;
 		FirstPersonCameraComponent->PostProcessSettings.bOverride_FilmGrainIntensity = false;
 		if (!bIsTimeStop)
 		{
-			if (AHorrorGameGameMode* HorrorGameGameMode = Cast<AHorrorGameGameMode>(GameMode))
+			if (PlayerStatus == Player_Status::Survive || PlayerStatus == Player_Status::Stunned) // 생존 또는 스턴 상태일 때만, 작동하도록
 			{
-				HorrorGameGameMode->StopNervousBackGroundMusic();
+				if (AHorrorGameGameMode* HorrorGameGameMode = Cast<AHorrorGameGameMode>(GameMode))
+				{
+					HorrorGameGameMode->StopNervousBackGroundMusic();
+				}
+				else if (APrologueGameMode* PrologueGameMode = Cast<APrologueGameMode>(GameMode))
+				{
+					PrologueGameMode->StopNervousBackGroundMusic();
+				}
 			}
-			else if (APrologueGameMode* PrologueGameMode = Cast<APrologueGameMode>(GameMode))
+			else if (PlayerStatus == Player_Status::Died)
 			{
-				PrologueGameMode->StopNervousBackGroundMusic();
+				if (AHorrorGameGameMode* HorrorGameGameMode = Cast<AHorrorGameGameMode>(GameMode))
+				{
+					HorrorGameGameMode->PlayDiedBackGroundMusic();
+				}
+				else if (APrologueGameMode* PrologueGameMode = Cast<APrologueGameMode>(GameMode))
+				{
+					PrologueGameMode->PlayDiedBackGroundMusic();
+				}
+			}
+			else if (PlayerStatus == Player_Status::Clear)
+			{
+				if (AHorrorGameGameMode* HorrorGameGameMode = Cast<AHorrorGameGameMode>(GameMode))
+				{
+					HorrorGameGameMode->PlayClearBackGroundMusic();
+				}
+				else if (APrologueGameMode* PrologueGameMode = Cast<APrologueGameMode>(GameMode))
+				{
+					PrologueGameMode->PlayClearBackGroundMusic();
+				}
+			}
+			else if (PlayerStatus == Player_Status::Ending)
+			{
+				if (AHorrorGameGameMode* HorrorGameGameMode = Cast<AHorrorGameGameMode>(GameMode))
+				{
+					HorrorGameGameMode->PlayEndingBackGroundMusic();
+				}
 			}
 			//HeartBeat->Stop();
 		}
@@ -1191,8 +1291,10 @@ void AHorrorGameCharacter::ScrollUpItem()
 	CurrentItemNum++;
 	if (CurrentItemNum > InventoryNum) CurrentItemNum = 0;
 	
-	if (GetCurrentItemName() != TEXT("FlashLight") && bIsFlashLightOn) UseFlashLight();
-	if (GetCurrentItemName() != TEXT("CigarLight") && bIsCigarLightOn) UseCigarLight();
+	//if (GetCurrentItemName() != TEXT("FlashLight") && bIsFlashLightOn) UseFlashLight();
+	if (GetCurrentItemNumber() != 2 && bIsFlashLightOn) UseFlashLight();
+	//if (GetCurrentItemName() != TEXT("CigarLight") && bIsCigarLightOn) UseCigarLight();
+	if (GetCurrentItemNumber() != 1 && bIsCigarLightOn) UseCigarLight();
 
 	CurrentItem();
 }
@@ -1202,8 +1304,10 @@ void AHorrorGameCharacter::ScrollDownItem()
 	CurrentItemNum--;
 	if (CurrentItemNum < 0 && InventoryNum >= 0) CurrentItemNum = InventoryNum;
 	
-	if (GetCurrentItemName() != TEXT("FlashLight") && bIsFlashLightOn) UseFlashLight();
-	if (GetCurrentItemName() != TEXT("CigarLight") && bIsCigarLightOn) UseCigarLight();
+	//if (GetCurrentItemName() != TEXT("FlashLight") && bIsFlashLightOn) UseFlashLight();
+	if (GetCurrentItemNumber() != 2 && bIsFlashLightOn) UseFlashLight();
+	//if (GetCurrentItemName() != TEXT("CigarLight") && bIsCigarLightOn) UseCigarLight();
+	if (GetCurrentItemNumber() != 1 && bIsCigarLightOn) UseCigarLight();
 
 	CurrentItem();
 	
@@ -1217,7 +1321,7 @@ void AHorrorGameCharacter::AddCigarLight()
 	{
 		for (auto Item : Inventory) // 인벤토리에 있는지 선 체크
 		{
-			if (Item.ItemName == CigarLightData->ItemName)
+			if (Item.ItemNumber == CigarLightData->ItemNumber)
 			{
 				isFind = true;
 				break;
@@ -1240,6 +1344,7 @@ void AHorrorGameCharacter::AddCigarLight()
 				return;
 			}
 			Inventory[++InventoryNum].ItemName = CigarLightData->ItemName;
+			Inventory[InventoryNum].ItemNumber = CigarLightData->ItemNumber;
 			Inventory[InventoryNum].ItemIcon = CigarLightData->ItemIcon;
 			Inventory[InventoryNum].Type = EItemType::ITEM_Useable;
 			Inventory[InventoryNum].ItemCount = 1;
@@ -1265,7 +1370,7 @@ void AHorrorGameCharacter::AddFlashLight()
 	{
 		for (auto Item : Inventory) // 인벤토리에 해당 아이템이 존재하는 지 체크함
 		{
-			if (Item.ItemName == FlashLightData->ItemName)
+			if (Item.ItemNumber == FlashLightData->ItemNumber)
 			{
 				isFind = true;
 				Item.ItemCount = 1;
@@ -1292,6 +1397,7 @@ void AHorrorGameCharacter::AddFlashLight()
 			
 			FlashLightBattery = 200;
 			Inventory[++InventoryNum].ItemName = FlashLightData->ItemName;
+			Inventory[InventoryNum].ItemNumber = FlashLightData->ItemNumber;
 			Inventory[InventoryNum].ItemIcon = FlashLightData->ItemIcon;
 			Inventory[InventoryNum].Type = EItemType::ITEM_Useable;
 			Inventory[InventoryNum].ItemCount = 1;
@@ -1320,7 +1426,7 @@ void AHorrorGameCharacter::AddKey()
 	{
 		for (auto Item = Inventory.CreateIterator(); Item; ++Item) // 인벤토리에 해당 아이템 존재 여부 확인
 		{
-			if (Item->ItemName == KeyData->ItemName)
+			if (Item->ItemNumber == KeyData->ItemNumber)
 			{
 				isFind = true;
 				Item->ItemCount++;
@@ -1345,6 +1451,7 @@ void AHorrorGameCharacter::AddKey()
 			}
 
 			Inventory[++InventoryNum].ItemName = KeyData->ItemName;
+			Inventory[InventoryNum].ItemNumber = KeyData->ItemNumber;
 			Inventory[InventoryNum].ItemIcon = KeyData->ItemIcon;
 			Inventory[InventoryNum].Type = EItemType::ITEM_Useable;
 			Inventory[InventoryNum].ItemCount += 1;
@@ -1370,7 +1477,7 @@ void AHorrorGameCharacter::AddTimer()
 	{
 		for (auto Item = Inventory.CreateIterator(); Item; ++Item) // 인벤토리에 해당 아이템 존재 여부 확인
 		{
-			if (Item->ItemName == TimerData->ItemName)
+			if (Item->ItemNumber == TimerData->ItemNumber)
 			{
 				isFind = true;
 				Item->ItemCount++;
@@ -1395,6 +1502,7 @@ void AHorrorGameCharacter::AddTimer()
 			}
 
 			Inventory[++InventoryNum].ItemName = TimerData->ItemName;
+			Inventory[InventoryNum].ItemNumber = TimerData->ItemNumber;
 			Inventory[InventoryNum].ItemIcon = TimerData->ItemIcon;
 			Inventory[InventoryNum].Type = EItemType::ITEM_Useable;
 			Inventory[InventoryNum].ItemCount += 1;
@@ -1422,7 +1530,7 @@ void AHorrorGameCharacter::AddSword()
 	{
 		for (auto Item = Inventory.CreateIterator(); Item; ++Item) // 인벤토리 내부에 Sword가 있는 경우
 		{
-			if (Item->ItemName == SwordData->ItemName) // Sword
+			if (Item->ItemNumber == SwordData->ItemNumber) // Sword
 			{
 				isFind = true;
 				SwordCount++;
@@ -1448,12 +1556,18 @@ void AHorrorGameCharacter::AddSword()
 			}
 
 			Inventory[++InventoryNum].ItemName = SwordData->ItemName;
+			Inventory[InventoryNum].ItemNumber = SwordData->ItemNumber;
 			Inventory[InventoryNum].ItemIcon = SwordData->ItemIcon;
 			Inventory[InventoryNum].Type = EItemType::ITEM_Useable;
 			SwordCount = 1;
 			Inventory[InventoryNum].ItemCount = SwordCount;
 			if (CurrentItemNum < 0)
 				CurrentItemNum = 0;
+
+			//if (!bIsPlayerSwordGet) // 검을 처음 얻은 상태가 아니라면
+			//{
+			//	bIsPlayerSwordGet = true; // 갱신
+			//}
 		}
 
 		//GameUIWidget->Init();
@@ -1472,7 +1586,7 @@ void AHorrorGameCharacter::AddBell()
 	{
 		for (auto Item = Inventory.CreateIterator(); Item; ++Item) // 인벤토리 내부에 Bell이 있는 경우
 		{
-			if (Item->ItemName == BellData->ItemName)
+			if (Item->ItemNumber == BellData->ItemNumber)
 			{
 				isFind = true;
 				BellCount++;
@@ -1498,12 +1612,24 @@ void AHorrorGameCharacter::AddBell()
 			}
 
 			Inventory[++InventoryNum].ItemName = BellData->ItemName;
+			Inventory[InventoryNum].ItemNumber = BellData->ItemNumber;
 			Inventory[InventoryNum].ItemIcon = BellData->ItemIcon;
 			Inventory[InventoryNum].Type = EItemType::ITEM_Useable;
 			BellCount = 1;
 			Inventory[InventoryNum].ItemCount = BellCount;
 			if (CurrentItemNum < 0)
 				CurrentItemNum = 0;
+
+			//if (!bIsPlayerBellGet) // 방울을 처음 얻은 상태가 아니라면
+			//{
+			//	bIsPlayerBellGet = true; // 갱신
+			//}
+
+			//if (bIsPlayerSwordGet && bIsPlayerMirrorGet && bIsPlayerBellGet) // 한 번씩 검, 거울, 방울을 얻은 상태라면
+			//{
+			//	SetExplainText(NSLOCTEXT("AHorrorGameCharacter", "Reaper_Unseal", "Some ominous sound comes..."), 3);
+			//	// 번역은 "뭔가 불길한 소리가 들려온다."로
+			//}
 		}
 
 		CurrentItem();
@@ -1521,7 +1647,7 @@ void AHorrorGameCharacter::AddMirror()
 	{
 		for (auto Item = Inventory.CreateIterator(); Item; ++Item) // 인벤토리에 Mirror가 있는 경우
 		{
-			if (Item->ItemName == MirrorData->ItemName)
+			if (Item->ItemNumber == MirrorData->ItemNumber)
 			{
 				isFind = true;
 				MirrorCount++;
@@ -1547,12 +1673,24 @@ void AHorrorGameCharacter::AddMirror()
 			}
 
 			Inventory[++InventoryNum].ItemName = MirrorData->ItemName;
+			Inventory[InventoryNum].ItemNumber = MirrorData->ItemNumber;
 			Inventory[InventoryNum].ItemIcon = MirrorData->ItemIcon;
 			Inventory[InventoryNum].Type = EItemType::ITEM_Useable;
 			MirrorCount = 1;
 			Inventory[InventoryNum].ItemCount = MirrorCount;
 			if (CurrentItemNum < 0)
 				CurrentItemNum = 0;
+
+			//if (!bIsPlayerMirrorGet) // 거울을 처음 얻은 상태가 아니라면
+			//{
+			//	bIsPlayerMirrorGet = true; // 갱신
+			//}
+
+			//if (bIsPlayerSwordGet && bIsPlayerMirrorGet && bIsPlayerBellGet) // 한 번씩 검, 거울, 방울을 얻은 상태라면
+			//{
+			//	SetExplainText(NSLOCTEXT("AHorrorGameCharacter", "Reaper_Unseal", "Some ominous sound comes..."), 3);
+			//	// 번역은 "뭔가 불길한 소리가 들려온다."로
+			//}
 		}
 		//GameUIWidget->Init();
 		CurrentItem();
@@ -1569,7 +1707,7 @@ void AHorrorGameCharacter::AddExtinguisher()
 	{
 		for (auto Item : Inventory) // 인벤토리에 해당 아이템이 있는지 확인
 		{
-			if (Item.ItemName == ExtinguisherData->ItemName)
+			if (Item.ItemNumber == ExtinguisherData->ItemNumber)
 			{
 				isFind = true;
 				Item.ItemCount = 1;
@@ -1599,6 +1737,7 @@ void AHorrorGameCharacter::AddExtinguisher()
 			GameUIWidget->SetCutterWidget(false);*/
 			ExtinguisherLeft = 100;
 			Inventory[++InventoryNum].ItemName = ExtinguisherData->ItemName;
+			Inventory[InventoryNum].ItemNumber = ExtinguisherData->ItemNumber;
 			Inventory[InventoryNum].ItemIcon = ExtinguisherData->ItemIcon;
 			Inventory[InventoryNum].Type = EItemType::ITEM_Useable;
 			Inventory[InventoryNum].ItemCount = 1;
@@ -1632,7 +1771,7 @@ void AHorrorGameCharacter::AddCutter()
 	{
 		for (auto Item : Inventory) // 인벤토리에 해당 아이템 있는지 확인
 		{
-			if (Item.ItemName == CutterData->ItemName)
+			if (Item.ItemNumber == CutterData->ItemNumber)
 			{
 				isFind = true;
 				Item.ItemCount = 1;
@@ -1662,6 +1801,7 @@ void AHorrorGameCharacter::AddCutter()
 			GameUIWidget->SetExtWidget(false);*/
 			// CutterDurability = 5;
 			Inventory[++InventoryNum].ItemName = CutterData->ItemName;
+			Inventory[InventoryNum].ItemNumber = CutterData->ItemNumber;
 			Inventory[InventoryNum].ItemIcon = CutterData->ItemIcon;
 			Inventory[InventoryNum].Type = EItemType::ITEM_Useable;
 			Inventory[InventoryNum].ItemCount = 1;
@@ -1696,7 +1836,7 @@ void AHorrorGameCharacter::AddLantern()
 	{
 		for (auto Item : Inventory)
 		{
-			if (Item.ItemName == LanternData->ItemName) // 인벤토리에 해당 아이템 있는지 확인
+			if (Item.ItemNumber == LanternData->ItemNumber) // 인벤토리에 해당 아이템 있는지 확인
 			{
 				isFind = true;
 				//Item.ItemCount = 1;
@@ -1729,6 +1869,7 @@ void AHorrorGameCharacter::AddLantern()
 				UGameplayStatics::PlaySound2D(this, ItemGetSoundCue);
 			}
 			Inventory[++InventoryNum].ItemName = LanternData->ItemName;
+			Inventory[InventoryNum].ItemNumber = LanternData->ItemNumber;
 			Inventory[InventoryNum].ItemIcon = LanternData->ItemIcon;
 			Inventory[InventoryNum].Type = EItemType::ITEM_Useable;
 			Inventory[InventoryNum].ItemCount = 1;
@@ -1791,7 +1932,19 @@ void AHorrorGameCharacter::UseKey()
 			if (HitActor->GetClass()->ImplementsInterface(UDoorInterface_cpp::StaticClass()))
 			{
 				auto InterfaceVariable = Cast<IDoorInterface_cpp>(HitActor);
-				Inventory[CurrentItemNum].ItemCount--;
+				//USoundCue* ObjectSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/UnLock"));
+				if (KeySoundCue)
+				{
+					UGameplayStatics::PlaySoundAtLocation(this, KeySoundCue, GetActorLocation());
+				}
+				InterfaceVariable->UseInteract(this);
+
+				if (bIsFinishUnlock)
+				{
+					Inventory[CurrentItemNum].ItemCount--;
+					bIsFinishUnlock = false;
+				}
+
 				if (Inventory[CurrentItemNum].ItemCount == 0)
 				{
 					Inventory.RemoveAt(CurrentItemNum);
@@ -1804,18 +1957,12 @@ void AHorrorGameCharacter::UseKey()
 
 					if (InventoryNum < 0)
 					{
-						CurrentItemNum = -1;
+						CurrentItemNum = 0;
 					}
 					FHorrorGameItemData TempItem;
 					TempItem.Clear();
 					Inventory.Add(TempItem);
 				}
-				//USoundCue* ObjectSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/UnLock"));
-				if (KeySoundCue)
-				{
-					UGameplayStatics::PlaySoundAtLocation(this, KeySoundCue, GetActorLocation());
-				}
-				InterfaceVariable->UseInteract(this);
 			}
 			//if (ADoor_cpp* Door = Cast<ADoor_cpp>(HitActor))
 			//{
@@ -1872,7 +2019,19 @@ void AHorrorGameCharacter::UseKey()
 			{
 				if (LockerDoor->bIsLockerLocked)
 				{
-					Inventory[CurrentItemNum].ItemCount--;
+					//USoundCue* ObjectSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/UnLock"));
+					if (KeySoundCue)
+					{
+						UGameplayStatics::PlaySoundAtLocation(this, KeySoundCue, GetActorLocation());
+					}
+					LockerDoor->UseInteract(this);
+					
+					if (bIsFinishUnlock)
+					{
+						Inventory[CurrentItemNum].ItemCount--;
+						bIsFinishUnlock = false;
+					}
+
 					if (Inventory[CurrentItemNum].ItemCount == 0)
 					{
 						Inventory.RemoveAt(CurrentItemNum);
@@ -1884,12 +2043,6 @@ void AHorrorGameCharacter::UseKey()
 						TempItem.Clear();
 						Inventory.Add(TempItem);
 					}
-					//USoundCue* ObjectSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/UnLock"));
-					if (KeySoundCue)
-					{
-						UGameplayStatics::PlaySoundAtLocation(this, KeySoundCue, GetActorLocation());
-					}
-					LockerDoor->UseInteract(this);
 				}
 			}
 
@@ -1963,7 +2116,7 @@ void AHorrorGameCharacter::UseTimer()
 
 		if (InventoryNum < 0)
 		{
-			CurrentItemNum = -1;
+			CurrentItemNum = 0;
 		}
 	}
 	FHorrorGameItemData TempItem;
@@ -2059,7 +2212,7 @@ void AHorrorGameCharacter::UseBell()
 
 		if (InventoryNum < 0)
 		{
-			CurrentItemNum = -1;
+			CurrentItemNum = 0;
 		}
 		FHorrorGameItemData TempItem;
 		TempItem.Clear();
@@ -2110,7 +2263,7 @@ void AHorrorGameCharacter::UseMirror() // 타임 스톱의 개념(사실은 거�
 
 		if (InventoryNum < 0)
 		{
-			CurrentItemNum = -1;
+			CurrentItemNum = 0;
 		}
 	
 		FHorrorGameItemData TempItem;
@@ -2132,10 +2285,10 @@ void AHorrorGameCharacter::UseExtinguisher()
 
 	SmokeComponent->Activate(true);
 	bCanExtinguisherUse = false;
-	USoundCue* ExtinguisherSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/SpraySoundCue"));
-	if (ExtinguisherSound)
+	//USoundCue* ExtinguisherSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/SpraySoundCue"));
+	if (ExtinguisherCue)
 	{
-		UGameplayStatics::PlaySoundAtLocation(this, ExtinguisherSound, GetActorLocation());
+		UGameplayStatics::PlaySoundAtLocation(this, ExtinguisherCue, GetActorLocation());
 	}
 	FTimerHandle SmokeTimer;
 
@@ -2218,7 +2371,7 @@ void AHorrorGameCharacter::UseExtinguisher()
 
 				if (InventoryNum < 0)
 				{
-					CurrentItemNum = -1;
+					CurrentItemNum = 0;
 				}
 			}
 			FHorrorGameItemData TempItem;
@@ -2273,13 +2426,18 @@ void AHorrorGameCharacter::UseCutter()
 				// ALockerDoorActor_cpp* LockerDoor = Cast<ALockerDoorActor_cpp>(HitActor);
 				if (LockerDoor->bIsLockerLocked)
 				{
-					CutterDurability -= 1;
 				//	USoundCue* CutSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/BreakLock"));
 					if (CutterSoundCue)
 					{
 						UGameplayStatics::PlaySoundAtLocation(this, CutterSoundCue, GetActorLocation());
 					}
 					LockerDoor->UseInteract(this);
+
+					if (bIsFinishUnlock)
+					{
+						CutterDurability -= 1;
+						bIsFinishUnlock = false;
+					}
 				}
 			}
 			else if (AClassroomDoorActor_cpp* ClassroomDoor = Cast<AClassroomDoorActor_cpp>(HitActor))
@@ -2287,12 +2445,17 @@ void AHorrorGameCharacter::UseCutter()
 				// AClassroomDoorActor_cpp* ClassroomDoor = Cast<AClassroomDoorActor_cpp>(HitActor);
 				if (ClassroomDoor->bIsDoorLocked)
 				{
-					CutterDurability -= 1;
 					ClassroomDoor->UseInteract(this);
 				//	USoundCue* CutSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/BreakLock"));
 					if (CutterSoundCue)
 					{
 						UGameplayStatics::PlaySoundAtLocation(this, CutterSoundCue, GetActorLocation());
+					}
+
+					if (bIsFinishUnlock)
+					{
+						CutterDurability -= 1;
+						bIsFinishUnlock = false;
 					}
 				}
 			}
@@ -2301,13 +2464,18 @@ void AHorrorGameCharacter::UseCutter()
 			{
 				if (MetalDoor->bIsDoorLocked)
 				{
-					CutterDurability -= 1;
 				//	USoundCue* CutSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/BreakLock"));
 					if (CutterSoundCue)
 					{
 						UGameplayStatics::PlaySoundAtLocation(this, CutterSoundCue, GetActorLocation());
 					}
 					MetalDoor->UseInteract(this);
+
+					if (bIsFinishUnlock)
+					{
+						CutterDurability -= 1;
+						bIsFinishUnlock = false;
+					}
 				}
 			}
 		}
@@ -2328,7 +2496,7 @@ void AHorrorGameCharacter::UseCutter()
 
 			if (InventoryNum < 0)
 			{
-				CurrentItemNum = -1;
+				CurrentItemNum = 0;
 			}
 		}
 		FHorrorGameItemData TempItem;
@@ -2375,7 +2543,7 @@ void AHorrorGameCharacter::FlashLightBatteryChange()
 
 				if (InventoryNum < 0)
 				{
-					CurrentItemNum = -1;
+					CurrentItemNum = 0;
 				}
 			}
 			FHorrorGameItemData TempItem;
@@ -2399,9 +2567,11 @@ void AHorrorGameCharacter::FlashLightBatteryChange()
 
 void AHorrorGameCharacter::CurrentItem()
 {
-	FString currentItemName = GetCurrentItemName();
+	int32 currentItemNumber = GetCurrentItemNumber();
+	//GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Yellow, FString::Printf(TEXT("Current Item Number: %d"), currentItemNumber));
 
-	if (currentItemName == TEXT("FlashLight"))
+	//if (currentItemName == TEXT("FlashLight"))
+	if (currentItemNumber == 2) // FlashLight
 	{
 		GameUIWidget->SetBatteryWidget(true);
 	}
@@ -2410,7 +2580,8 @@ void AHorrorGameCharacter::CurrentItem()
 		GameUIWidget->SetBatteryWidget(false);
 	}
 
-	if (currentItemName == TEXT("Extinguisher"))
+	//if (currentItemName == TEXT("Extinguisher"))
+	if (currentItemNumber == 8) // Extinguisher
 	{
 		GameUIWidget->SetExtWidget(true);
 	}
@@ -2419,7 +2590,8 @@ void AHorrorGameCharacter::CurrentItem()
 		GameUIWidget->SetExtWidget(false);
 	}
 
-	if (currentItemName == TEXT("Cutter"))
+	//if (currentItemName == TEXT("Cutter"))
+	if (currentItemNumber == 9) // Cutter
 	{
 		GameUIWidget->SetCutterWidget(true);
 	}
@@ -2428,7 +2600,8 @@ void AHorrorGameCharacter::CurrentItem()
 		GameUIWidget->SetCutterWidget(false);
 	}
 
-	if (currentItemName == TEXT("SoulLantern"))
+	//if (currentItemName == TEXT("SoulLantern"))
+	if (currentItemNumber == 10) // SoulLantern
 	{
 		Lantern->SetHiddenInGame(false);
 	}
@@ -2443,7 +2616,8 @@ void AHorrorGameCharacter::CurrentItem()
 		Lantern->SetHiddenInGame(true);
 	}
 
-	if (currentItemName == TEXT("Mirror"))
+	//if (currentItemName == TEXT("Mirror"))
+	if (currentItemNumber == 7) // Mirror
 	{
 		Mirror->SetHiddenInGame(false);
 	}
@@ -2452,7 +2626,8 @@ void AHorrorGameCharacter::CurrentItem()
 		Mirror->SetHiddenInGame(true);
 	}
 
-	if (currentItemName == TEXT("Sword"))
+	//if (currentItemName == TEXT("Sword"))
+	if (currentItemNumber == 5) // Sword
 	{
 		Sword->SetHiddenInGame(false);
 	}
@@ -2478,14 +2653,15 @@ int32 AHorrorGameCharacter::GetFlashLightBattery()
 
 int32 AHorrorGameCharacter::GetCurrentItemNumber()
 {
-	return CurrentItemNum;
+	int32 CurrentItemNumber = Inventory[CurrentItemNum].ItemNumber;
+	return CurrentItemNumber;
 }
 
-FString AHorrorGameCharacter::GetCurrentItemName()
+FText AHorrorGameCharacter::GetCurrentItemName()
 {
 	if(CurrentItemNum >= 0 && CurrentItemNum <= InventoryNum)
 		return Inventory[CurrentItemNum].ItemName;
-	return "";
+	return NSLOCTEXT("AHorrorGameCharacter", "NULL", "");
 }
 
 int32 AHorrorGameCharacter::GetExtinguisherLeft()
@@ -2552,19 +2728,19 @@ void AHorrorGameCharacter::SetPlayerStatus(Player_Status Value)
 
 		switch (PlayerStatus)
 		{
-			case Player_Status::Loading:
+			case Player_Status::Loading: // 로딩 중
 			{
 				DisableInput(HorrorGamePlayerController);
 			
 				break;
 			}
-			case Player_Status::Survive:
+			case Player_Status::Survive: // 시작
 			{
 				EnableInput(HorrorGamePlayerController);
 
 				break;
 			}
-			case Player_Status::Chased:
+			case Player_Status::Chased: // 추격 시
 			{
 				SetCameraComponentNoise(2);
 				if (!bIsCooldown)
@@ -2573,25 +2749,34 @@ void AHorrorGameCharacter::SetPlayerStatus(Player_Status Value)
 				}
 				break;
 			}
-			case Player_Status::Catched:
+			case Player_Status::Catched: // 잡혔을 경우
 			{
 				SetActorEnableCollision(false);
 				DisableInput(HorrorGamePlayerController);
 				break;
 			}
-			case Player_Status::Stunned:
+			case Player_Status::Stunned: // 리퍼에 의해 기절 시
 			{
 				DisableInput(HorrorGamePlayerController);
 				GetCharacterMovement()->StopMovementImmediately();
 				break;
 			}
-			case Player_Status::Died:
+			case Player_Status::Died: // 사망
 			{
 				SetActorEnableCollision(false);
 				GetMesh()->SetHiddenInGame(true);
 				DisableInput(HorrorGamePlayerController);
 				GameUIWidget->SetTimerStop(true);
 				HorrorGamePlayerController->ShowDeadUI();
+				break;
+			}
+			case Player_Status::Clear: // 클리어 및 엔딩
+			{
+				SetActorEnableCollision(false);
+				GetMesh()->SetHiddenInGame(true);
+				DisableInput(HorrorGamePlayerController);
+				GameUIWidget->SetTimerStop(true);
+				//HorrorGamePlayerController->ShowDeadUI();
 				break;
 			}
 		}
@@ -2714,7 +2899,7 @@ void AHorrorGameCharacter::AttackCheck(bool value)
 
 				if (InventoryNum < 0)
 				{
-					CurrentItemNum = -1;
+					CurrentItemNum = 0;
 				}
 				FHorrorGameItemData TempItem;
 				TempItem.Clear();
@@ -2937,7 +3122,7 @@ bool AHorrorGameCharacter::GetReaperLookPlayer()
 
 void AHorrorGameCharacter::SetArchiveGetText(FText inText)
 {
-	GetWorld()->GetTimerManager().ClearTimer(ArchiveTextTimer);
+	//GetWorld()->GetTimerManager().ClearTimer(ArchiveTextTimer);
 	
 	if (PlayerStatus == Player_Status::Died)
 	{
@@ -2947,11 +3132,13 @@ void AHorrorGameCharacter::SetArchiveGetText(FText inText)
 	{
 		GameUIWidget->SetArchiveGetText(inText);
 
-		GetWorld()->GetTimerManager().SetTimer(ArchiveTextTimer, FTimerDelegate::CreateLambda([&]() {
+		/*GetWorld()->GetTimerManager().SetTimer(ArchiveTextTimer, FTimerDelegate::CreateLambda([&]() {
 			GameUIWidget->SetArchiveGetText(FText::FromString(TEXT("")));
 			GetWorld()->GetTimerManager().ClearTimer(ArchiveTextTimer);
-		}), 10.f, false);
+		}), 10.f, false);*/
 	}
+	bIsArchiveTextOn = true;
+	ArchiveTextTimer = 0.f;
 }
 
 void AHorrorGameCharacter::OnFocus(FVector TargetLocation)
@@ -2982,4 +3169,10 @@ void AHorrorGameCharacter::OnSprintCameraView(float inLerpAlpha)
 	float FieldOfView = FMath::Lerp(90.f, 100.f, inLerpAlpha);
 
 	FirstPersonCameraComponent->SetFieldOfView(FieldOfView);
+}
+
+void AHorrorGameCharacter::OnAnnounce()
+{
+	SetExplainText(NSLOCTEXT("AHorrorGameCharacter", "Reaper_Unseal", "Some ominous sound comes..."), 3);
+	// 번역은 "뭔가 불길한 소리가 들려온다."로
 }

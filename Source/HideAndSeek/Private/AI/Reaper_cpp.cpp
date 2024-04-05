@@ -181,7 +181,7 @@ void AReaper_cpp::Tick(float DeltaTime)
 			break;
 		case 2: // 사신의 물품을 두 개 얻었을 때
 			ReaperController->SetCurrentSealStatus(Sealed::TwoUnsealed);
-			ReaperController->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, Player);
+			//ReaperController->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, Player);
 			break;
 		default: // 사신의 물품을 세 개 이상 얻었을 때
 			ReaperController->SetCurrentSealStatus(Sealed::Unsealed);
@@ -634,7 +634,7 @@ void AReaper_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 		CurrentStatus = ReaperController->GetCurrentSealStatus();
 	}
 
-	if (!bIsStunned)
+	if (!bIsStunned && !bIsDied)
 	{
 		if (OtherActor != this && OtherActor != nullptr && OtherComp != nullptr)
 		{
@@ -707,6 +707,7 @@ void AReaper_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 							if (!SaveData->CatchedByReaper)
 							{
 								SaveData->CatchedByReaper = true;
+								Character->SetArchiveGetText(NSLOCTEXT("AReaper_cpp", "Kill_By_Reaper", "Reaper\nis added in archive"));
 								SaveData->SaveData();
 							}
 						}
@@ -714,7 +715,6 @@ void AReaper_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 						/*Character->bUseControllerRotationYaw = false;
 						Character->SetActorRotation(NewRotation);*/
 						Character->OnFocus(GetActorLocation());
-						Character->SetArchiveGetText(NSLOCTEXT("AReaper_cpp", "Kill_By_Reaper", "Reaper\nis added in archive"));
 
 						SetIsCatch(true);
 					}

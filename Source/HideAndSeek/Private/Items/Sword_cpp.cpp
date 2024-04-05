@@ -51,7 +51,7 @@ void ASword_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	Player->AddSword();
 	if (Player->bCanItemGet)
 	{
-		USoundCue* ObjectSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/ObjectGet"));
+	//	USoundCue* ObjectSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/ObjectGet"));
 		if (ObjectSound)
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, ObjectSound, GetActorLocation());

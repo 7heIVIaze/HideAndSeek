@@ -14,6 +14,7 @@
 
 UHorrorGameGameInstance::UHorrorGameGameInstance()
 {
+	_stoveSDKObject = NewObject<UMyStoveSDKObject>();
 	ClearedChaptersNumber = 0;
 	BrightGamma = 2.2f; // 기본 감마 값은 2.2
 	MouseSensitive = 1.0f; // 기본 마우스 감도 값은 1.0
@@ -189,25 +190,38 @@ bool UHorrorGameGameInstance::ChapterClearSaveLogic(int32 inClearedChapter, FStr
 	//CurrentClearedTime = inClearTime;
 	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 	{
-		bool bSaveFailed = true;
+		bool bCanUpdate = true; // 갱신이 가능한지(처음 저장 또는 갱신)
+		FString ClearTime = inClearTime;
+		if (ClearTime.Len() == 8)
+		{
+			ClearTime = TEXT("00:") + ClearTime;
+		}
+
 		for (int i = 0; i < SaveData->ClearChapter.Num(); ++i)
 		{
-			if (i == inClearedChapter)
+			if (SaveData->ClearChapter[i].ChapterNumber == inClearedChapter)
 			{
-				if (SaveData->ClearChapter[i].ClearTime > inClearTime) // 이전 기록보다 더 짧은 기록을 냈다면
+				if (SaveData->ClearChapter[i].bIsCleared)
 				{
-					SaveData->ClearChapter[i].ClearTime = inClearTime; // 기록 갱신
-					bSaveFailed = false;
+					if (SaveData->ClearChapter[i].ClearTime > ClearTime) // 이전 기록보다 더 짧은 기록을 냈다면
+					{
+						SaveData->ClearChapter[i].ClearTime = ClearTime; // 기록 갱신
+						bCanUpdate = false;
+					}
+					else // 짧은 기록이 아니라면
+					{
+						bCanUpdate = false; // 갱신 안 되게 설정
+					}
 				}
 			}
 		}
-		if (bSaveFailed) // 처음 클리어하는 거라면
+		if (bCanUpdate) // 처음 클리어하는 거라면
 		{ 
 			FClearData newClearData;
 			newClearData.bIsCleared = true;
-			newClearData.ClearTime = inClearTime;
+			newClearData.ClearTime = ClearTime;
 			SaveData->ClearChapter.Emplace(newClearData);
-			SaveData->ClearTime.Add(inClearTime); // 갱신
+			SaveData->ClearTime.Add(ClearTime); // 갱신
 		}
 		SaveData->SaveData();
 		return true;

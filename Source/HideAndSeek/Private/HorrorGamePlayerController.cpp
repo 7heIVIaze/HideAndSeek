@@ -47,6 +47,24 @@ AHorrorGamePlayerController::AHorrorGamePlayerController()
 		DocumentWidgetClass = DocumentHUD.Class;
 	}
 
+	static ConstructorHelpers::FClassFinder<UUserWidget>BadEndHUD(TEXT("/Game/Assets/BluePrints/UI/BP_Ending1"));
+	if (BadEndHUD.Succeeded())
+	{
+		BadEndingWidgetClass = BadEndHUD.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<UUserWidget>NormalEndHUD(TEXT("/Game/Assets/BluePrints/UI/BP_Ending2"));
+	if (NormalEndHUD.Succeeded())
+	{
+		NormalEndingWidgetClass = NormalEndHUD.Class;
+	}
+
+	static ConstructorHelpers::FClassFinder<UUserWidget>TrueEndHUD(TEXT("/Game/Assets/BluePrints/UI/BP_Ending3"));
+	if (TrueEndHUD.Succeeded())
+	{
+		TrueEndingWidgetClass = TrueEndHUD.Class;
+	}
+
 	GameInputMode = FInputModeGameOnly();
 	UIInputMode = FInputModeUIOnly();
 }
@@ -153,12 +171,12 @@ void AHorrorGamePlayerController::ShowDeadUI()
 void AHorrorGamePlayerController::SetDeadUIText(FText inText)
 {
 	DeadWidget->SetArchiveGetText(inText);
-	FTimerHandle ArchiveTextTimer;
+	/*FTimerHandle ArchiveTextTimer;
 
 	GetWorld()->GetTimerManager().SetTimer(ArchiveTextTimer, FTimerDelegate::CreateLambda([&]() {
 		DeadWidget->SetArchiveGetText(FText::FromString(TEXT("")));
 		GetWorld()->GetTimerManager().ClearTimer(ArchiveTextTimer);
-	}), 10.f, false);
+	}), 10.f, false);*/
 }
 
 void AHorrorGamePlayerController::ShowMainUI()
@@ -237,4 +255,32 @@ void AHorrorGamePlayerController::OnDocumentWidget(FText inText, FString inType)
 	UIInputMode.SetWidgetToFocus(DocumentWidget->TakeWidget());
 	ChangeInputMode(false);
 	SetPause(true);
+}
+
+void AHorrorGamePlayerController::ShowEnding(int EndType)
+{
+	if (EndType == 0) // Bad Ending
+	{
+		EndingWidget = CreateWidget<UUserWidget>(this, BadEndingWidgetClass);
+		EndingWidget->AddToViewport();
+		UIInputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		UIInputMode.SetWidgetToFocus(EndingWidget->TakeWidget());
+		ChangeInputMode(false);
+	}
+	else if (EndType == 1) // Normal Ending
+	{
+		EndingWidget = CreateWidget<UUserWidget>(this, NormalEndingWidgetClass);
+		EndingWidget->AddToViewport();
+		UIInputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		UIInputMode.SetWidgetToFocus(EndingWidget->TakeWidget());
+		ChangeInputMode(false);
+	}
+	else if (EndType == 2) // True Ending
+	{
+		EndingWidget = CreateWidget<UUserWidget>(this, TrueEndingWidgetClass);
+		EndingWidget->AddToViewport();
+		UIInputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
+		UIInputMode.SetWidgetToFocus(EndingWidget->TakeWidget());
+		ChangeInputMode(false);
+	}
 }

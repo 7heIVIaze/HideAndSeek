@@ -111,7 +111,7 @@ void AMetalDoor_cpp::AIInteract(AActor* Creature)
 	{
 		if (bIsDoorLocked) // 만약 문이 잠긴 상황이라면
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Door Is Locked!")));
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Door Is Locked!")));
 			if (auto Reaper = Cast<AReaper_cpp>(Creature))
 			{
 				Reaper->SetIsStop(true);
@@ -174,6 +174,7 @@ void AMetalDoor_cpp::UseInteract(class AHorrorGameCharacter* Player)
 {
 	if (bIsDoorLocked)
 	{
+		Player->bIsFinishUnlock = true;
 		bIsDoorLocked = false;
 		//Door->SetCollisionProfileName("ClosedDoor");
 	}
@@ -193,7 +194,7 @@ void AMetalDoor_cpp::ChangeDoorCollision()
 
 void AMetalDoor_cpp::BreakDoor()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("BreakDoor Called!")));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("BreakDoor Called!")));
 
 	//FActorSpawnParameters spawnParams;
 	Door->SetSimulatePhysics(true);

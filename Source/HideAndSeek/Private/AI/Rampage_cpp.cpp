@@ -91,23 +91,12 @@ void ARampage_cpp::BeginPlay()
 	MapName = UGameplayStatics::GetCurrentLevelName(GetWorld());
 	RampageController = Cast<AAIController_Rampage>(GetController());
 
-	if (bIsCinematic) // 시네마틱 모드인 경우(챕터 2 클리어 후 등장한 경우)
-	{
-		RampageController->GetBlackboard()->SetValueAsBool(AAIController_Rampage::IsCinematic, bIsCinematic);
-		Player = Cast<AHorrorGameCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
-		RampageController->GetBlackboard()->SetValueAsObject(AAIController_Rampage::TargetKey, Player);
-	}
-	/*if (DissolveCurveFloat)
-	{
-		FOnTimelineFloat TimelineProgress;
-		FOnTimelineEvent TimelineFinish;
-		TimelineProgress.BindDynamic(this, &AReaper_cpp::ChangeMaterialInstance);
-		DissolveTimeline.AddInterpFloat(DissolveCurveFloat, TimelineProgress);
-
-		TimelineFinish.BindDynamic(this, &AReaper_cpp::DissolveFinish);
-		DissolveTimeline.SetTimelineFinishedFunc(TimelineFinish);
-		DissolveTimeline.SetLooping(false);
-	}*/
+	//if (bIsCinematic) // 시네마틱 모드인 경우(챕터 2 클리어 후 등장한 경우)
+	//{
+	//	RampageController->GetBlackboard()->SetValueAsBool(AAIController_Rampage::IsCinematic, bIsCinematic);
+	//	Player = Cast<AHorrorGameCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	//	RampageController->GetBlackboard()->SetValueAsObject(AAIController_Rampage::TargetKey, Player);
+	//}
 }
 
 // Called every frame
@@ -283,10 +272,19 @@ void ARampage_cpp::SetAnimFinish(bool Value)
 	//AHorrorGamePlayerController* PlayerController = Cast<AHorrorGamePlayerController>(World->GetFirstPlayerController());
 	//AHorrorGameCharacter* Player = Cast<AHorrorGameCharacter>(PlayerController->GetPawn());
 
-	if (Player->GetIsHiding())
-		Player->SetPlayerStatus(Player_Status::Survive);
+	if (bIsCinematic) // 시네마틱을 위한 씬에서 죽을 경우엔 노말 엔딩 출력
+	{
+		AHorrorGamePlayerController* PlayerController = Cast<AHorrorGamePlayerController>(Player->GetController());
+		Player->SetPlayerStatus(Player_Status::Clear);
+		//PlayerController->ShowEnding(1);
+	}
 	else
-		Player->SetPlayerStatus(Player_Status::Died);
+	{
+		if (Player->GetIsHiding())
+			Player->SetPlayerStatus(Player_Status::Survive);
+		else
+			Player->SetPlayerStatus(Player_Status::Died);
+	}
 }
 
 void ARampage_cpp::SoundBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
@@ -295,20 +293,27 @@ void ARampage_cpp::SoundBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 	{
 		if (auto PlayerActor = Cast<AHorrorGameCharacter>(OtherActor))
 		{
-			PlayerActor->CreatureNum++;
-			if (PlayerActor->CreatureNum > 0)
+			if (bIsCinematic)
 			{
-				PlayerActor->FlickeringLight.Play();
-				PlayerActor->SetCameraComponentNoise(1);
+				PlayerActor->SetCameraComponentNoise(3);
 			}
-			//ReaperSound->Play();
-			if (!PlayerActor->bIsCooldown)
+			else
 			{
-				PlayerActor->AddPatience(1);
+				PlayerActor->CreatureNum++;
+				if (PlayerActor->CreatureNum > 0)
+				{
+					PlayerActor->FlickeringLight.Play();
+					PlayerActor->SetCameraComponentNoise(1);
+				}
+				//ReaperSound->Play();
+				if (!PlayerActor->bIsCooldown)
+				{
+					PlayerActor->AddPatience(1);
+				}
+				GetMesh()->SetCollisionProfileName("AICharacters");
+				//InteractBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+				//InteractBox->OnComponentBeginOverlap.AddDynamic(this, &AReaper_cpp::DoorBeginOverlap);
 			}
-			GetMesh()->SetCollisionProfileName("AICharacters");
-			//InteractBox->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-			//InteractBox->OnComponentBeginOverlap.AddDynamic(this, &AReaper_cpp::DoorBeginOverlap);
 		}
 
 		if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
@@ -349,18 +354,25 @@ void ARampage_cpp::SoundEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 	{
 		if (auto PlayerActor = Cast<AHorrorGameCharacter>(OtherActor))
 		{
-			//ReaperSound->Stop();
-			PlayerActor->CreatureNum--;
-			if (PlayerActor->CreatureNum <= 0)
+			if (bIsCinematic)
 			{
-				PlayerActor->FlickeringLight.Stop();
-				PlayerActor->CigarLight->SetIntensity(PlayerActor->CigarIntensity);
-				PlayerActor->FlashLight->SetIntensity(PlayerActor->FlashIntensity);
-				PlayerActor->SetCameraComponentNoise(0);
+				PlayerActor->SetCameraComponentNoise(4);
 			}
-			//GetMesh()->SetCollisionProfileName("OverlapAllDynamic");
-			//InteractBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-			//InteractBox->OnComponentBeginOverlap.RemoveDynamic(this, &AReaper_cpp::DoorBeginOverlap);
+			else
+			{
+				//ReaperSound->Stop();
+				PlayerActor->CreatureNum--;
+				if (PlayerActor->CreatureNum <= 0)
+				{
+					PlayerActor->FlickeringLight.Stop();
+					PlayerActor->CigarLight->SetIntensity(PlayerActor->CigarIntensity);
+					PlayerActor->FlashLight->SetIntensity(PlayerActor->FlashIntensity);
+					PlayerActor->SetCameraComponentNoise(0);
+				}
+				//GetMesh()->SetCollisionProfileName("OverlapAllDynamic");
+				//InteractBox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+				//InteractBox->OnComponentBeginOverlap.RemoveDynamic(this, &AReaper_cpp::DoorBeginOverlap);
+			}
 		}
 
 		if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
@@ -512,11 +524,10 @@ void ARampage_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 		HideCatch = RampageController->GetBlackboard()->GetValueAsBool(AAIController_Rampage::LockerLighting);
 	}
 
-	if (!bIsStunned)
+	if (!IsBerith)
 	{
 		if (OtherActor != this && OtherActor != nullptr && OtherComp != nullptr)
 		{
-
 			if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
 			{
 				if (bIsChase && HideCatch)
@@ -550,12 +561,12 @@ void ARampage_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 						if (!SaveData->CatchedByReaper)
 						{
 							SaveData->CatchedByReaper = true;
+							//Character->SetArchiveGetText(NSLOCTEXT("ARampage_cpp", "Kill_By_Rampage", "Rampage\nis added in archive"));
 							SaveData->SaveData();
 						}
 					}*/
 
 					Character->OnFocus(GetActorLocation());
-					//Character->SetArchiveGetText(NSLOCTEXT("ARampage_cpp", "Kill_By_Rampage", "Rampage\nis added in archive"));
 
 					SetIsCatch(true);
 				}
@@ -565,6 +576,17 @@ void ARampage_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 			{
 				Alarm->AIInteract();
 			}
+		}
+	}
+	else
+	{
+		if (auto Character = Cast<AHorrorGameCharacter>(OtherActor))
+		{
+			AHorrorGamePlayerController* PlayerController = Cast<AHorrorGamePlayerController>(Character->GetController());
+			Character->SetPlayerStatus(Player_Status::Clear); // 엔딩을 보기 위해 클리어 상태로 설정
+			//Character->GetCharacterMovement()->StopMovementImmediately();
+			//Character->DisableInput(PlayerController);
+			//PlayerController->ShowEnding(0); // 베리스 호출로 탄생 시 베드 엔딩 
 		}
 	}
 }
@@ -596,33 +618,26 @@ bool ARampage_cpp::GetIsStop()
 	return bIsStop;
 }
 
-//void AReaper_cpp::ChangeMaterialInstance(float inValue)
-//{
-//	Super::ChangeMaterialInstance(inValue);
-//
-//	float Amount = FMath::Lerp(1.0f, 0.0f, inValue);
-//	//float MI_Amount = FMath::Lerp(1.0f, 0.0f, inValue);
-//
-//	for (int i = 0; i < MaterialInstances.Num(); ++i)
-//	{
-//		MaterialInstances[i]->SetScalarParameterValue(TEXT("Amount"), Amount);
-//	}
-//
-//	//MPC_Reaper->SetScalarParameterValue(TEXT("Amount"), Amount);
-//	//UMaterialParameterCollectionInstance* PCI_Reaper = GetWorld()->GetParameterCollectionInstance(MPC_Reaper);
-//	//PCI_Reaper->SetScalarParameterValue(TEXT("Amount"), Amount);
-//	//float NC_Amount = FMath::Lerp(1.0f, .0f, inValue);
-//	DissolveParticleSystem->SetVariableFloat(TEXT("Amount"), Amount);
-//}
+void ARampage_cpp::CalledByBerith()
+{
+	IsBerith = true;
+	RampageController->GetBlackboard()->SetValueAsBool(AAIController_Rampage::CalledByBerith, IsBerith);
+	if (IsBerith)
+	{
+		//KillBox->OnComponentBeginOverlap.RemoveDynamic(this, &ARampage_cpp::CatchBeginOverlap);
+		BoxCollision->OnComponentBeginOverlap.RemoveDynamic(this, &ARampage_cpp::SoundBeginOverlap);
+		BoxCollision->OnComponentEndOverlap.RemoveDynamic(this, &ARampage_cpp::SoundEndOverlap);
+	}
+}
 
-//void AReaper_cpp::DissolveFinish()
-//{
-//	Super::DissolveFinish();
-//
-//	DissolveParticleSystem->SetVariableFloat(TEXT("Width"), 0.0f);
-//
-//	DissolveParticleSystem->Deactivate();
-//
-//
-//	Destroy();
-//}
+void ARampage_cpp::SetIsCinematic(bool inIsCinematic)
+{
+	bIsCinematic = inIsCinematic;
+
+	if (bIsCinematic) // 시네마틱 모드인 경우(챕터 2 클리어 후 등장한 경우)
+	{
+		RampageController->GetBlackboard()->SetValueAsBool(AAIController_Rampage::IsCinematic, bIsCinematic);
+		Player = Cast<AHorrorGameCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+		RampageController->GetBlackboard()->SetValueAsObject(AAIController_Rampage::TargetKey, Player);
+	}
+}

@@ -20,6 +20,7 @@ void UStageSelectWidget::NativeConstruct()
 	}
 
 	int32 ButtonNum = ClearedChapter + 1;
+	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("ButtonNum: %d"), ButtonNum));
 	MenuBox = Cast<UVerticalBox>(GetWidgetFromName(TEXT("ChapterPanel")));
 	
 	if (nullptr != MenuBox)
@@ -136,8 +137,8 @@ void UStageSelectWidget::OnHoveredBackButton()
 
 void UStageSelectWidget::UpdateButtonSlate()
 {
-	/*if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("SelectWidget: MenuNavigation: %d"), MenuNavigationIndex));*/
+	//if (GEngine)
+	//	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("SelectWidget: MenuNavigation: %d"), MenuNavigationIndex));
 	switch (MenuNavigationIndex)
 	{
 	case 0:
@@ -152,7 +153,7 @@ void UStageSelectWidget::UpdateButtonSlate()
 		BackButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
 		LevelImg->SetBrushFromTexture(LevelSample[MenuNavigationIndex]);
 		break;
-	case 2:
+	case 5:
 		ChapOneButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
 		ChapTwoButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
 		BackButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
@@ -180,7 +181,7 @@ FReply UStageSelectWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FK
 		case 1:
 			OnClickChapTwoButton();
 			break;
-		case 2:
+		case 5:
 			OnClickBackButton();
 			break;
 		}
@@ -195,14 +196,26 @@ FReply UStageSelectWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FK
 				UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
 			}
 			MenuNavigationIndex++; // 일단 인덱스를 증가시키고
-			while (!CanButtonSelect[MenuNavigationIndex]) // 현재 가리키는 버튼이 사용 가능하면 종료함
+			if (MenuNavigationIndex > ClearedChapter) // 챕터 개수 이상으로 인덱스 초과시
 			{
-				MenuNavigationIndex++; // 가리킬 수 있는 버튼일 때까지 인덱스 증가하고
-				if (MenuNavigationIndex >= MenuNumber)
-				{
-					MenuNavigationIndex = 0; // 총 버튼 수를 초과하면 다시 0으로
-				}
+				MenuNavigationIndex = MenuNumber - 1; // Back으로
 			}
+			if (MenuNavigationIndex >= MenuNumber)
+			{
+				MenuNavigationIndex = 0; // 총 버튼 수를 초과하면 다시 0으로
+			}
+			//while (!CanButtonSelect[MenuNavigationIndex]) // 현재 가리키는 버튼이 사용 가능하면 종료함
+			//{
+			//	MenuNavigationIndex++; // 가리킬 수 있는 버튼일 때까지 인덱스 증가하고
+			//	//if (MenuNavigationIndex > ClearedChapter) // 챕터 개수 이상으로 인덱스 초과시
+			//	//{
+			//	//	MenuNavigationIndex = MenuNumber - 1; // Back으로
+			//	//}
+			//	if (MenuNavigationIndex >= MenuNumber)
+			//	{
+			//		MenuNavigationIndex = 0; // 총 버튼 수를 초과하면 다시 0으로
+			//	}
+			//}
 		}
 		else if (KeyType == "W" || KeyType == "Up")
 		{
@@ -211,14 +224,26 @@ FReply UStageSelectWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FK
 				UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
 			}
 			MenuNavigationIndex--; // 일단 인덱스 감소시키고
-			while (!CanButtonSelect[MenuNavigationIndex]) // 현재 가리키는 버튼이 사용가능하면 종료함
+			if (MenuNavigationIndex > ClearedChapter) // 감소시켰는데 챕터 개수 이상으로 인덱스 초과 시
 			{
-				MenuNavigationIndex--; // 가리킬 수 잇는 버튼일 때까지 인덱스 감소시키고
-				if (MenuNavigationIndex < 0)
-				{
-					MenuNavigationIndex = MenuNumber - 1; // 0 미만으로 떨어지면 다시 최대 인덱스로
-				}
+				MenuNavigationIndex = ClearedChapter;
 			}
+			if (MenuNavigationIndex < 0)
+			{
+				MenuNavigationIndex = MenuNumber - 1; // 0 미만으로 떨어지면 다시 최대 인덱스로
+			}
+			//while (!CanButtonSelect[MenuNavigationIndex]) // 현재 가리키는 버튼이 사용가능하면 종료함
+			//{
+			//	MenuNavigationIndex--; // 가리킬 수 잇는 버튼일 때까지 인덱스 감소시키고
+			//	//if (MenuNavigationIndex > ClearedChapter) // 감소시켰는데 챕터 개수 이상으로 인덱스 초과 시
+			//	//{
+			//	//	MenuNavigationIndex = ClearedChapter;
+			//	//}
+			//	if (MenuNavigationIndex < 0)
+			//	{
+			//		MenuNavigationIndex = MenuNumber - 1; // 0 미만으로 떨어지면 다시 최대 인덱스로
+			//	}
+			//}
 		}
 		UpdateButtonSlate();
 	}

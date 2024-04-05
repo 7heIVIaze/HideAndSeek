@@ -38,16 +38,17 @@ void ADistributionBox::OnInteract(class AHorrorGameCharacter* Player)
 {
 	if (BoxDoor != nullptr)
 	{
+		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("OnInteract!")));
 		if (BoxDoor->bIsDoorLocked)
 		{
-			Player->SetErrorText(NSLOCTEXT("ADistributionBox", "BoxDoorLocked", "Distribution box door is locked!"), 3);
+			Player->SetErrorText(NSLOCTEXT("ADistributionBox", "BoxDoorLocked", "Distribution box door is locked"), 3);
 		}
 
 		else
 		{
 			if (BoxDoor->bIsDoorClosed)
 			{
-				Player->SetErrorText(NSLOCTEXT("ADistributionBox", "BoxDoorClosed", "Distribution box door is closed!"), 3);
+				Player->SetErrorText(NSLOCTEXT("ADistributionBox", "BoxDoorClosed", "Distribution box door is closed"), 3);
 			}
 			else
 			{

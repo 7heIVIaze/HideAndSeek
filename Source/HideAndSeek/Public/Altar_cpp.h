@@ -37,6 +37,9 @@ public:
 		class AReaper_cpp* CurrentReaper;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object")
+		class AHorrorGameCharacter* PlayerCharacter;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object")
 		class AEnd_Mirror* EndingMirror;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")

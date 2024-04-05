@@ -485,6 +485,8 @@ void UGraphicsOption::OnClickResolution1Button()
 	bResolution6 = false;
 	bResolution7 = false;
 	bResolution8 = false;
+
+	UpdateButtonSlate();
 }
 
 void UGraphicsOption::OnHoveredResolution1Button()
@@ -534,6 +536,8 @@ void UGraphicsOption::OnClickResolution2Button()
 	bResolution6 = false;
 	bResolution7 = false;
 	bResolution8 = false;
+
+	UpdateButtonSlate();
 }
 
 void UGraphicsOption::OnHoveredResolution2Button()
@@ -583,6 +587,8 @@ void UGraphicsOption::OnClickResolution3Button()
 	bResolution6 = false;
 	bResolution7 = false;
 	bResolution8 = false;
+
+	UpdateButtonSlate();
 }
 
 void UGraphicsOption::OnHoveredResolution3Button()
@@ -633,6 +639,8 @@ void UGraphicsOption::OnClickResolution4Button()
 	bResolution6 = false;
 	bResolution7 = false;
 	bResolution8 = false;
+
+	UpdateButtonSlate();
 }
 
 void UGraphicsOption::OnHoveredResolution4Button()
@@ -683,6 +691,8 @@ void UGraphicsOption::OnClickResolution5Button()
 	bResolution6 = false;
 	bResolution7 = false;
 	bResolution8 = false;
+
+	UpdateButtonSlate();
 }
 
 void UGraphicsOption::OnHoveredResolution5Button()
@@ -733,6 +743,8 @@ void UGraphicsOption::OnClickResolution6Button()
 	bResolution6 = true;
 	bResolution7 = false;
 	bResolution8 = false;
+
+	UpdateButtonSlate();
 }
 
 void UGraphicsOption::OnHoveredResolution6Button()
@@ -783,6 +795,8 @@ void UGraphicsOption::OnClickResolution7Button()
 	bResolution6 = false;
 	bResolution7 = true;
 	bResolution8 = false;
+
+	UpdateButtonSlate();
 }
 
 void UGraphicsOption::OnHoveredResolution7Button()
@@ -833,6 +847,8 @@ void UGraphicsOption::OnClickResolution8Button()
 	bResolution6 = false;
 	bResolution7 = false;
 	bResolution8 = true;
+
+	UpdateButtonSlate();
 }
 
 void UGraphicsOption::OnHoveredResolution8Button()
@@ -1556,6 +1572,7 @@ FReply UGraphicsOption::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyE
 					break;*/
 			}
 			SetCurrentMode(GraphicsType::None);
+			UpdateButtonSlate();
 		}
 		else if (CurrentMode == GraphicsType::Window)
 		{
@@ -1573,10 +1590,12 @@ FReply UGraphicsOption::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyE
 				break;
 			}
 			SetCurrentMode(GraphicsType::None);
+			UpdateButtonSlate();
 		}
 		else if (CurrentMode == GraphicsType::Brightness)
 		{
 			SetCurrentMode(GraphicsType::None);
+			UpdateButtonSlate();
 		}
 	}
 	else

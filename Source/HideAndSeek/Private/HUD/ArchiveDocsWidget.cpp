@@ -373,15 +373,19 @@ void UArchiveDocsWidget::OnArchive1ButtonClick()
 		if (Item1_CigarLighter) // 라이터를 한 번이라도 습득해놓은 상태면 확인할 수 있도록
 		{
 			FHorrorGameItemData* CigarLightData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(1), TEXT("")); // 라이터 데이터
-			FString ItemName = CigarLightData->ItemName;
+			//FString ItemName = CigarLightData->ItemName;
+			FText ItemName = CigarLightData->ItemName;
 			UTexture2D* Texture = CigarLightData->ItemIcon;
-			FString ItemDetail = CigarLightData->ItemDetail;
+			//FString ItemDetail = CigarLightData->ItemDetail;
+			FText ItemDetail = CigarLightData->ItemDetail;
 			
 			ArchiveState = EArchiveStates::AS_Detail;
 
 			ItemImage->SetBrushFromTexture(Texture, true);
-			Title->SetText(FText::FromString(ItemName));
-			Detail->SetText(FText::FromString(ItemDetail));
+			//Title->SetText(FText::FromString(ItemName));
+			Title->SetText(ItemName);
+			//Detail->SetText(FText::FromString(ItemDetail));
+			Detail->SetText(ItemDetail);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -395,7 +399,8 @@ void UArchiveDocsWidget::OnArchive1ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Article1Data->Detail_EN));
+			//Document->SetText(FText::FromString(Article1Data->Detail_EN));
+			Document->SetText(Article1Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Document->SetColorAndOpacity(FColor::White);
 			Article->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
@@ -419,7 +424,8 @@ void UArchiveDocsWidget::OnArchive1ButtonClick()
 			
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Letter1Data->Detail_EN));
+			//Document->SetText(FText::FromString(Letter1Data->Detail_EN));
+			Document->SetText(Letter1Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Letter->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
@@ -458,7 +464,7 @@ void UArchiveDocsWidget::OnArchive1ButtonHover()
 	{
 		if (Article1) // 기사 1을 얻은 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article1", "Article dated January 4th obtained from the basement"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article1", "Article dated January 4th obtained from the 'Basement' Chapter"));
 		}
 		else
 		{
@@ -470,7 +476,7 @@ void UArchiveDocsWidget::OnArchive1ButtonHover()
 	{
 		if (Letter1_Berith1) // 베리스의 편지 1을 획득한 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter1", "First letter from Berith obtained from the basement"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter1", "First letter from Berith obtained from the 'Basement' Chapter"));
 		}
 		else
 		{
@@ -494,15 +500,19 @@ void UArchiveDocsWidget::OnArchive2ButtonClick()
 		if (Item2_FlashLight) // 라이터를 한 번이라도 습득해놓은 상태면 확인할 수 있도록
 		{
 			FHorrorGameItemData* FlashLightData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(2), TEXT("")); // 라이터 데이터
-			FString ItemName = FlashLightData->ItemName;
+			//FString ItemName = FlashLightData->ItemName;
+			FText ItemName = FlashLightData->ItemName;
 			UTexture2D* Texture = FlashLightData->ItemIcon;
-			FString ItemDetail = FlashLightData->ItemDetail;
+			//FString ItemDetail = FlashLightData->ItemDetail;
+			FText ItemDetail = FlashLightData->ItemDetail;
 
 			ArchiveState = EArchiveStates::AS_Detail;
 
 			ItemImage->SetBrushFromTexture(Texture, true);
-			Title->SetText(FText::FromString(ItemName));
-			Detail->SetText(FText::FromString(ItemDetail));
+			//Title->SetText(FText::FromString(ItemName));
+			Title->SetText(ItemName);
+			//Detail->SetText(FText::FromString(ItemDetail));
+			Detail->SetText(ItemDetail);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -515,7 +525,8 @@ void UArchiveDocsWidget::OnArchive2ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Article2Data->Detail_EN));
+			//Document->SetText(FText::FromString(Article2Data->Detail_EN));
+			Document->SetText(Article2Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Document->SetColorAndOpacity(FColor::White);
 			Article->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
@@ -539,7 +550,8 @@ void UArchiveDocsWidget::OnArchive2ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Letter2Data->Detail_EN));
+			//Document->SetText(FText::FromString(Letter2Data->Detail_EN));
+			Document->SetText(Letter2Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Letter->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
@@ -578,7 +590,7 @@ void UArchiveDocsWidget::OnArchive2ButtonHover()
 	{
 		if (Article2) // 기사 2을 얻은 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article2", "Article dated December 7th obtained from the First Floor"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article2", "Article dated December 7th obtained from 'The Deal' Chapter"));
 		}
 		else
 		{
@@ -590,7 +602,7 @@ void UArchiveDocsWidget::OnArchive2ButtonHover()
 	{
 		if (Letter2_Berith2) // 베리스의 편지 2을 획득한 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter2", "Second letter from Berith obtained from the First Floor"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter2", "Second letter from Berith obtained from 'The Deal' Chapter"));
 		}
 		else
 		{
@@ -614,15 +626,19 @@ void UArchiveDocsWidget::OnArchive3ButtonClick()
 		if (Item3_Key)
 		{
 			FHorrorGameItemData* KeyData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(3), TEXT("")); // 라이터 데이터
-			FString ItemName = KeyData->ItemName;
+			//FString ItemName = KeyData->ItemName;
+			FText ItemName = KeyData->ItemName;
 			UTexture2D* Texture = KeyData->ItemIcon;
-			FString ItemDetail = KeyData->ItemDetail;
+			//FString ItemDetail = KeyData->ItemDetail;
+			FText ItemDetail = KeyData->ItemDetail;
 
 			ArchiveState = EArchiveStates::AS_Detail;
 
 			ItemImage->SetBrushFromTexture(Texture, true);
-			Title->SetText(FText::FromString(ItemName));
-			Detail->SetText(FText::FromString(ItemDetail));
+			//Title->SetText(FText::FromString(ItemName));
+			Title->SetText(ItemName);
+			//Detail->SetText(FText::FromString(ItemDetail));
+			Detail->SetText(ItemDetail);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -635,7 +651,8 @@ void UArchiveDocsWidget::OnArchive3ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Article3Data->Detail_EN));
+			//Document->SetText(FText::FromString(Article3Data->Detail_EN));
+			Document->SetText(Article3Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Document->SetColorAndOpacity(FColor::White);
 			Article->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
@@ -659,7 +676,8 @@ void UArchiveDocsWidget::OnArchive3ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Letter3Data->Detail_EN));
+			//Document->SetText(FText::FromString(Letter3Data->Detail_EN));
+			Document->SetText(Letter3Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Letter->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
@@ -698,7 +716,7 @@ void UArchiveDocsWidget::OnArchive3ButtonHover()
 	{
 		if (Article3) // 기사 3을 얻은 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article3", "Article dated December 18th obtained from the First Floor"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article3", "Article dated December 18th obtained from 'The Deal' Chapter"));
 		}
 		else
 		{
@@ -710,7 +728,7 @@ void UArchiveDocsWidget::OnArchive3ButtonHover()
 	{
 		if (Letter3_Berith3) // 베리스의 편지 3을 획득한 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter3", "Third letter from Berith obtained from the First Floor"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter3", "Third letter from Berith obtained from 'The Deal' Chapter"));
 		}
 		else
 		{
@@ -734,15 +752,19 @@ void UArchiveDocsWidget::OnArchive4ButtonClick()
 		if (Item4_Timer)
 		{
 			FHorrorGameItemData* TimerData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(4), TEXT("")); // 라이터 데이터
-			FString ItemName = TimerData->ItemName;
+			//FString ItemName = TimerData->ItemName;
+			FText ItemName = TimerData->ItemName;
 			UTexture2D* Texture = TimerData->ItemIcon;
-			FString ItemDetail = TimerData->ItemDetail;
+			//FString ItemDetail = TimerData->ItemDetail;
+			FText ItemDetail = TimerData->ItemDetail;
 
 			ArchiveState = EArchiveStates::AS_Detail;
 
 			ItemImage->SetBrushFromTexture(Texture, true);
-			Title->SetText(FText::FromString(ItemName));
-			Detail->SetText(FText::FromString(ItemDetail));
+			//Title->SetText(FText::FromString(ItemName));
+			Title->SetText(ItemName);
+			//Detail->SetText(FText::FromString(ItemDetail));
+			Detail->SetText(ItemDetail);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -755,7 +777,8 @@ void UArchiveDocsWidget::OnArchive4ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Article4Data->Detail_EN));
+			//Document->SetText(FText::FromString(Article4Data->Detail_EN));
+			Document->SetText(Article4Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Document->SetColorAndOpacity(FColor::White);
 			Article->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
@@ -779,7 +802,8 @@ void UArchiveDocsWidget::OnArchive4ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Letter4Data->Detail_EN));
+			//Document->SetText(FText::FromString(Letter4Data->Detail_EN));
+			Document->SetText(Letter4Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Letter->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
@@ -818,7 +842,7 @@ void UArchiveDocsWidget::OnArchive4ButtonHover()
 	{
 		if (Article4) // 기사 4을 얻은 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article4", "Article dated January 11th obtained from the First Floor"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article4", "Article dated January 11th obtained from 'The Deal' Chapter"));
 		}
 		else
 		{
@@ -830,7 +854,7 @@ void UArchiveDocsWidget::OnArchive4ButtonHover()
 	{
 		if (Letter4_Berith4) // 베리스의 편지 4을 획득한 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter4", "Fourth letter from Berith obtained from the First Floor"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter4", "Fourth letter from Berith obtained from 'The Deal' Chapter"));
 		}
 		else
 		{
@@ -854,15 +878,19 @@ void UArchiveDocsWidget::OnArchive5ButtonClick()
 		if (Item6_BronzeBell)
 		{
 			FHorrorGameItemData* BronzeSwordData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(5), TEXT("")); // 라이터 데이터
-			FString ItemName = BronzeSwordData->ItemName;
+			//FString ItemName = BronzeSwordData->ItemName;
+			FText ItemName = BronzeSwordData->ItemName;
 			UTexture2D* Texture = BronzeSwordData->ItemIcon;
-			FString ItemDetail = BronzeSwordData->ItemDetail;
+			//FString ItemDetail = BronzeSwordData->ItemDetail;
+			FText ItemDetail = BronzeSwordData->ItemDetail;
 
 			ArchiveState = EArchiveStates::AS_Detail;
 
 			ItemImage->SetBrushFromTexture(Texture, true);
-			Title->SetText(FText::FromString(ItemName));
-			Detail->SetText(FText::FromString(ItemDetail));
+			Title->SetText(ItemName);
+			//Title->SetText(FText::FromString(ItemName));
+			Detail->SetText(ItemDetail);
+			//Detail->SetText(FText::FromString(ItemDetail));
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -875,7 +903,8 @@ void UArchiveDocsWidget::OnArchive5ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Article5Data->Detail_EN));
+			//Document->SetText(FText::FromString(Article5Data->Detail_EN));
+			Document->SetText(Article5Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Document->SetColorAndOpacity(FColor::White);
 			Article->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
@@ -899,7 +928,8 @@ void UArchiveDocsWidget::OnArchive5ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Letter5Data->Detail_EN));
+			//Document->SetText(FText::FromString(Letter5Data->Detail_EN));
+			Document->SetText(Letter5Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Letter->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
@@ -938,7 +968,7 @@ void UArchiveDocsWidget::OnArchive5ButtonHover()
 	{
 		if (Article5) // 기사 5을 얻은 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article5", "Article dated February 6th obtained from the First Floor"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article5", "Article dated February 6th obtained from 'The Deal' Chapter"));
 		}
 		else
 		{
@@ -950,7 +980,7 @@ void UArchiveDocsWidget::OnArchive5ButtonHover()
 	{
 		if (Letter5_Berith5) // 베리스의 편지 5을 획득한 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter5", "Fifth letter from Berith obtained from the Second Floor"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter5", "Fifth letter from Berith obtained from 'The True Color' Chapter"));
 		}
 		else
 		{
@@ -974,15 +1004,19 @@ void UArchiveDocsWidget::OnArchive6ButtonClick()
 		if (Item6_BronzeBell)
 		{
 			FHorrorGameItemData* BronzeBellData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(6), TEXT("")); // 라이터 데이터
-			FString ItemName = BronzeBellData->ItemName;
+			//FString ItemName = BronzeBellData->ItemName;
+			FText ItemName = BronzeBellData->ItemName;
 			UTexture2D* Texture = BronzeBellData->ItemIcon;
-			FString ItemDetail = BronzeBellData->ItemDetail;
+			//FString ItemDetail = BronzeBellData->ItemDetail;
+			FText ItemDetail = BronzeBellData->ItemDetail;
 
 			ArchiveState = EArchiveStates::AS_Detail;
 
 			ItemImage->SetBrushFromTexture(Texture, true);
-			Title->SetText(FText::FromString(ItemName));
-			Detail->SetText(FText::FromString(ItemDetail));
+			//Title->SetText(FText::FromString(ItemName));
+			Title->SetText(ItemName);
+			//Detail->SetText(FText::FromString(ItemDetail));
+			Detail->SetText(ItemDetail);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -995,7 +1029,8 @@ void UArchiveDocsWidget::OnArchive6ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Diary1Data->Detail_EN));
+			//Document->SetText(FText::FromString(Diary1Data->Detail_EN));
+			Document->SetText(Diary1Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Document->SetColorAndOpacity(FColor::Black);
 			Letter->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
@@ -1019,7 +1054,8 @@ void UArchiveDocsWidget::OnArchive6ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Letter6Data->Detail_EN));
+			//Document->SetText(FText::FromString(Letter6Data->Detail_EN));
+			Document->SetText(Letter6Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Letter->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
@@ -1058,7 +1094,7 @@ void UArchiveDocsWidget::OnArchive6ButtonHover()
 	{
 		if (Diary1) // 일기 1을 얻은 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary1", "Diary dated November 4th obtained from the basement"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary1", "Diary dated November 4th obtained from the 'Basement' Chapter"));
 		}
 		else
 		{
@@ -1070,7 +1106,7 @@ void UArchiveDocsWidget::OnArchive6ButtonHover()
 	{
 		if (Letter6_Berith6) // 베리스의 편지 6을 획득한 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter6", "Sixth letter from Berith obtained from the Second Floor"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter6", "Sixth letter from Berith obtained from 'The True Color' Chapter"));
 		}
 		else
 		{
@@ -1094,15 +1130,19 @@ void UArchiveDocsWidget::OnArchive7ButtonClick()
 		if (Item7_BronzeMirror)
 		{
 			FHorrorGameItemData* BronzeMirrorData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(7), TEXT("")); // 라이터 데이터
-			FString ItemName = BronzeMirrorData->ItemName;
+			//FString ItemName = BronzeMirrorData->ItemName;
+			FText ItemName = BronzeMirrorData->ItemName;
 			UTexture2D* Texture = BronzeMirrorData->ItemIcon;
-			FString ItemDetail = BronzeMirrorData->ItemDetail;
+			//FString ItemDetail = BronzeMirrorData->ItemDetail;
+			FText ItemDetail = BronzeMirrorData->ItemDetail;
 
 			ArchiveState = EArchiveStates::AS_Detail;
 
 			ItemImage->SetBrushFromTexture(Texture, true);
-			Title->SetText(FText::FromString(ItemName));
-			Detail->SetText(FText::FromString(ItemDetail));
+			//Title->SetText(FText::FromString(ItemName));
+			Title->SetText(ItemName);
+			//Detail->SetText(FText::FromString(ItemDetail));
+			Detail->SetText(ItemDetail);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -1115,7 +1155,8 @@ void UArchiveDocsWidget::OnArchive7ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Diary2Data->Detail_EN));
+			//Document->SetText(FText::FromString(Diary2Data->Detail_EN));
+			Document->SetText(Diary2Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Document->SetColorAndOpacity(FColor::Black);
 			Letter->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
@@ -1139,7 +1180,8 @@ void UArchiveDocsWidget::OnArchive7ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Letter7Data->Detail_EN));
+			//Document->SetText(FText::FromString(Letter7Data->Detail_EN));
+			Document->SetText(Letter7Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Letter->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
@@ -1178,7 +1220,7 @@ void UArchiveDocsWidget::OnArchive7ButtonHover()
 	{
 		if (Diary2) // 일기 2을 얻은 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary2", "Someone's diary obtained from the basement"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary2", "Someone's diary obtained from the 'Basement' Chapter"));
 		}
 		else
 		{
@@ -1190,7 +1232,7 @@ void UArchiveDocsWidget::OnArchive7ButtonHover()
 	{
 		if (Letter7_Gamigin1) // 가미긴의 편지 1을 획득한 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter7", "First letter from Gamigin obtained from the First Floor"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter7", "First letter from Gamigin obtained from 'The Deal' Chapter"));
 		}
 		else
 		{
@@ -1214,15 +1256,19 @@ void UArchiveDocsWidget::OnArchive8ButtonClick()
 		if (Item8_Extinguisher)
 		{
 			FHorrorGameItemData* ExtinguisherData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(8), TEXT("")); // 라이터 데이터
-			FString ItemName = ExtinguisherData->ItemName;
+			//FString ItemName = ExtinguisherData->ItemName;
+			FText ItemName = ExtinguisherData->ItemName;
 			UTexture2D* Texture = ExtinguisherData->ItemIcon;
-			FString ItemDetail = ExtinguisherData->ItemDetail;
+			//FString ItemDetail = ExtinguisherData->ItemDetail;
+			FText ItemDetail = ExtinguisherData->ItemDetail;
 
 			ArchiveState = EArchiveStates::AS_Detail;
 
 			ItemImage->SetBrushFromTexture(Texture, true);
-			Title->SetText(FText::FromString(ItemName));
-			Detail->SetText(FText::FromString(ItemDetail));
+			//Title->SetText(FText::FromString(ItemName));
+			Title->SetText(ItemName);
+			//Detail->SetText(FText::FromString(ItemDetail));
+			Detail->SetText(ItemDetail);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -1235,7 +1281,8 @@ void UArchiveDocsWidget::OnArchive8ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Diary3Data->Detail_EN));
+			//Document->SetText(FText::FromString(Diary3Data->Detail_EN));
+			Document->SetText(Diary3Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Document->SetColorAndOpacity(FColor::Black);
 			Letter->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
@@ -1259,7 +1306,8 @@ void UArchiveDocsWidget::OnArchive8ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Letter8Data->Detail_EN));
+			//Document->SetText(FText::FromString(Letter8Data->Detail_EN));
+			Document->SetText(Letter8Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Letter->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
@@ -1298,7 +1346,7 @@ void UArchiveDocsWidget::OnArchive8ButtonHover()
 	{
 		if (Diary3) // 일기 3을 얻은 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary3", "Diary dated January 3rd obtained from the First Floor"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary3", "Diary dated January 3rd obtained from 'The Deal' Chapter"));
 		}
 		else
 		{
@@ -1310,7 +1358,7 @@ void UArchiveDocsWidget::OnArchive8ButtonHover()
 	{
 		if (Letter8_Gamigin2) // 가미긴의 편지 2을 획득한 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter8", "Second letter from Gamigin obtained from the First Floor"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter8", "Second letter from Gamigin obtained from 'The Deal' Chapter"));
 		}
 		else
 		{
@@ -1334,15 +1382,19 @@ void UArchiveDocsWidget::OnArchive9ButtonClick()
 		if (Item9_Cutter)
 		{
 			FHorrorGameItemData* CutterData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(9), TEXT("")); // 라이터 데이터
-			FString ItemName = CutterData->ItemName;
+			//FString ItemName = CutterData->ItemName;
+			FText ItemName = CutterData->ItemName;
 			UTexture2D* Texture = CutterData->ItemIcon;
-			FString ItemDetail = CutterData->ItemDetail;
+			//FString ItemDetail = CutterData->ItemDetail;
+			FText ItemDetail = CutterData->ItemDetail;
 
 			ArchiveState = EArchiveStates::AS_Detail;
 
 			ItemImage->SetBrushFromTexture(Texture, true);
-			Title->SetText(FText::FromString(ItemName));
-			Detail->SetText(FText::FromString(ItemDetail));
+			//Title->SetText(FText::FromString(ItemName));
+			Title->SetText(ItemName);
+			//Detail->SetText(FText::FromString(ItemDetail));
+			Detail->SetText(ItemDetail);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -1355,7 +1407,8 @@ void UArchiveDocsWidget::OnArchive9ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Diary4Data->Detail_EN));
+			//Document->SetText(FText::FromString(Diary4Data->Detail_EN));
+			Document->SetText(Diary4Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Document->SetColorAndOpacity(FColor::Black);
 			Letter->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
@@ -1379,7 +1432,8 @@ void UArchiveDocsWidget::OnArchive9ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Letter9Data->Detail_EN));
+			//Document->SetText(FText::FromString(Letter9Data->Detail_EN));
+			Document->SetText(Letter9Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Letter->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
@@ -1418,7 +1472,7 @@ void UArchiveDocsWidget::OnArchive9ButtonHover()
 	{
 		if (Diary4) // 일기 4을 얻은 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary4", "Diary dated December 17th obtained from the First Floor"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary4", "Diary dated December 17th obtained from 'The Deal' Chapter"));
 		}
 		else
 		{
@@ -1430,7 +1484,7 @@ void UArchiveDocsWidget::OnArchive9ButtonHover()
 	{
 		if (Letter9_Gamigin3) // 가미긴의 편지 3을 획득한 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter9", "Third letter from Gamigin obtained from the First Floor"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter9", "Third letter from Gamigin obtained from 'The Deal' Chapter"));
 		}
 		else
 		{
@@ -1454,15 +1508,19 @@ void UArchiveDocsWidget::OnArchive10ButtonClick()
 		if (Item10_SoulLantern)
 		{
 			FHorrorGameItemData* SoulLanternData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(10), TEXT("")); // 라이터 데이터
-			FString ItemName = SoulLanternData->ItemName;
+			//FString ItemName = SoulLanternData->ItemName;
+			FText ItemName = SoulLanternData->ItemName;
 			UTexture2D* Texture = SoulLanternData->ItemIcon;
-			FString ItemDetail = SoulLanternData->ItemDetail;
+			//FString ItemDetail = SoulLanternData->ItemDetail;
+			FText ItemDetail = SoulLanternData->ItemDetail;
 
 			ArchiveState = EArchiveStates::AS_Detail;
 
 			ItemImage->SetBrushFromTexture(Texture, true);
-			Title->SetText(FText::FromString(ItemName));
-			Detail->SetText(FText::FromString(ItemDetail));
+			//Title->SetText(FText::FromString(ItemName));
+			Title->SetText(ItemName);
+			//Detail->SetText(FText::FromString(ItemDetail));
+			Detail->SetText(ItemDetail);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -1475,7 +1533,8 @@ void UArchiveDocsWidget::OnArchive10ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Diary5Data->Detail_EN));
+			//Document->SetText(FText::FromString(Diary5Data->Detail_EN));
+			Document->SetText(Diary5Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Document->SetColorAndOpacity(FColor::Black);
 			Letter->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
@@ -1499,7 +1558,8 @@ void UArchiveDocsWidget::OnArchive10ButtonClick()
 
 			ArchiveState = EArchiveStates::AS_DocumentDetail;
 
-			Document->SetText(FText::FromString(Letter10Data->Detail_EN));
+			//Document->SetText(FText::FromString(Letter10Data->Detail_EN));
+			Document->SetText(Letter10Data->Detail_EN);
 			DocumentPanel->SetVisibility(ESlateVisibility::Visible);
 			Letter->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
@@ -1538,7 +1598,7 @@ void UArchiveDocsWidget::OnArchive10ButtonHover()
 	{
 		if (Diary5) // 일기 5을 얻은 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary5", "Diary dated February 6th obtained from the Second Floor"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary5", "Diary dated February 6th obtained from 'The True Color' Chapter"));
 		}
 		else
 		{
@@ -1550,7 +1610,7 @@ void UArchiveDocsWidget::OnArchive10ButtonHover()
 	{
 		if (Letter10_Gamigin4) // 가미긴의 편지 4을 획득한 상태라면
 		{
-			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter10", "Fourth letter from Gamigin obtained from the Second Floor"));
+			ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter10", "Fourth letter from Gamigin obtained from the 'Mist Estate' Chapter"));
 		}
 		else
 		{
@@ -1600,7 +1660,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Article1) // 기사 1을 얻은 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article1", "Article dated January 4th obtained from the basement"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article1", "Article dated January 4th obtained from the 'Basement' Chapter"));
 			}
 			else
 			{
@@ -1611,7 +1671,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Letter1_Berith1) // 베리스의 편지 1을 획득한 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter1", "First letter from Berith obtained from the basement"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter1", "First letter from Berith obtained from the 'Basement' Chapter"));
 			}
 			else
 			{
@@ -1647,7 +1707,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Article1) // 기사 2을 얻은 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article2", "Article dated December 7th obtained from the First Floor"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article2", "Article dated December 7th obtained from 'The Deal' Chapter"));
 			}
 			else
 			{
@@ -1658,7 +1718,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Letter1_Berith1) // 베리스의 편지 1을 획득한 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter2", "Second letter from Berith obtained from the First Floor"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter2", "Second letter from Berith obtained from 'The Deal' Chapter"));
 			}
 			else
 			{
@@ -1694,7 +1754,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Article3) // 기사 3을 얻은 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article3", "Article dated December 18th obtained from the First Floor"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article3", "Article dated December 18th obtained from 'The Deal' Chapter"));
 			}
 			else
 			{
@@ -1705,7 +1765,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Letter3_Berith3) // 베리스의 편지 3을 획득한 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter3", "Third letter from Berith obtained from the First Floor"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter3", "Third letter from Berith obtained from 'The Deal' Chapter"));
 			}
 			else
 			{
@@ -1741,7 +1801,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Article4) // 기사 4을 얻은 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article4", "Article dated January 11th obtained from the First Floor"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article4", "Article dated January 11th obtained from 'The Deal' Chapter"));
 			}
 			else
 			{
@@ -1752,7 +1812,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Letter4_Berith4) // 베리스의 편지 4을 획득한 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter4", "Fourth letter from Berith obtained from the First Floor"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter4", "Fourth letter from Berith obtained from 'The Deal' Chapter"));
 			}
 			else
 			{
@@ -1788,7 +1848,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Article5) // 기사 5을 얻은 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article5", "Article dated February 6th obtained from the First Floor"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Article5", "Article dated February 6th obtained from 'The Deal' Chapter"));
 			}
 			else
 			{
@@ -1799,7 +1859,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Letter5_Berith5) // 베리스의 편지 5을 획득한 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter5", "Fifth letter from Berith obtained from the First Floor"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter5", "Fifth letter from Berith obtained from 'The True Color' Chapter"));
 			}
 			else
 			{
@@ -1835,7 +1895,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Diary1) // 일기 1을 얻은 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary1", "Diary dated November 4th obtained from the basement"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary1", "Diary dated November 4th obtained from the 'Basement' Chapter"));
 			}
 			else
 			{
@@ -1846,7 +1906,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Letter6_Berith6) // 베리스의 편지 6을 획득한 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter6", "Sixth letter from Berith obtained from the Second Floor"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter6", "Sixth letter from Berith obtained from 'The True Color' Chapter"));
 			}
 			else
 			{
@@ -1883,7 +1943,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Diary2) // 일기 2을 얻은 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary2", "Someone's diary obtained from the basement"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary2", "Someone's diary obtained from the 'Basement' Chapter"));
 			}
 			else
 			{
@@ -1894,7 +1954,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Letter7_Gamigin1) // 가미긴의 편지 1을 획득한 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter7", "First letter from Gamigin obtained from the First Floor"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter7", "First letter from Gamigin obtained from 'The Deal' Chapter"));
 			}
 			else
 			{
@@ -1930,7 +1990,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Diary3) // 일기 3을 얻은 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary3", "Diary dated January 3rd obtained from the First Floor"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary3", "Diary dated January 3rd obtained from 'The Deal' Chapter"));
 			}
 			else
 			{
@@ -1941,7 +2001,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Letter8_Gamigin2) // 가미긴의 편지 2을 획득한 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter8", "Second letter from Gamigin obtained from the First Floor"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter8", "Second letter from Gamigin obtained from 'The Deal' Chapter"));
 			}
 			else
 			{
@@ -1977,7 +2037,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Diary4) // 일기 4을 얻은 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary4", "Diary dated December 17th obtained from the First Floor"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary4", "Diary dated December 17th obtained from 'The Deal' Chapter"));
 			}
 			else
 			{
@@ -1988,7 +2048,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Letter9_Gamigin3) // 가미긴의 편지 3을 획득한 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter9", "Third letter from Gamigin obtained from the First Floor"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter9", "Third letter from Gamigin obtained from 'The Deal' Chapter"));
 			}
 			else
 			{
@@ -2024,7 +2084,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Diary5) // 일기 5을 얻은 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary5", "Diary dated February 6th obtained from the Second Floor"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Diary5", "Diary dated February 6th obtained from 'The True Color' Chapter"));
 			}
 			else
 			{
@@ -2035,7 +2095,7 @@ void UArchiveDocsWidget::UpdateButtonSlate()
 		{
 			if (Letter10_Gamigin4) // 가미긴의 편지 4을 획득한 상태라면
 			{
-				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter10", "Fourth letter from Gamigin obtained from the Second Floor"));
+				ExplainText->SetText(NSLOCTEXT("UArchiveDocsWidget", "Hover_Letter10", "Fourth letter from Gamigin obtained from the 'Mist Estate' Chapter"));
 			}
 			else
 			{

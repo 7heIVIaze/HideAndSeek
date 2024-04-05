@@ -20,6 +20,12 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void StopNervousBackGroundMusic();
+
+	UFUNCTION(BlueprintCallable)
+		void PlayDiedBackGroundMusic();
+
+	UFUNCTION(BlueprintCallable)
+		void PlayClearBackGroundMusic();
 	//
 protected:
 	virtual void BeginPlay() override;
@@ -36,4 +42,6 @@ private:
 
 	class USoundCue* MainCue;
 	class USoundCue* NervousCue;
+	class USoundCue* DiedCue;
+	class USoundCue* ClearCue;
 };

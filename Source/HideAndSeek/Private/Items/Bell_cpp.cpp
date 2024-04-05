@@ -55,7 +55,7 @@ void ABell_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	Player->AddBell();
 	if (Player->bCanItemGet)
 	{
-		USoundCue* ObjectSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/ObjectGet"));
+		//USoundCue* ObjectSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/ObjectGet"));
 		if (ObjectSound)
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, ObjectSound, GetActorLocation());

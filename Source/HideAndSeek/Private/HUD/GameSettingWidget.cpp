@@ -90,7 +90,7 @@ void UGameSettingWidget::NativeConstruct()
 
 	FString CurrentCulture = UKismetInternationalizationLibrary::GetCurrentCulture();
 
-	if (CurrentCulture.Equals(TEXT("ko")))
+	if (CurrentCulture.Equals(TEXT("ko")) || CurrentCulture.Equals(TEXT("ko-KR")))
 	{
 		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Current Culture is KR")));
 		bIsKorean = true;
@@ -201,7 +201,7 @@ void UGameSettingWidget::OnClickKoreanButton()
 	{
 		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
 	}
-	UKismetInternationalizationLibrary::SetCurrentCulture(TEXT("ko"), true);
+	UKismetInternationalizationLibrary::SetCurrentCulture(TEXT("ko-KR"), true);
 	bIsEnglish = false;
 	bIsKorean = true;
 	SetCurrentMode(CurrentType::None);
@@ -402,6 +402,9 @@ void UGameSettingWidget::OnChangeGlobalVolume(float inValue)
 	Volume += inValue;
 	Volume = FMath::Clamp(Volume, 0.f, 1.f); // 볼륨의 최대 크기가 0에서 1 사이로 설정되도록 함
 	VolumeSettingBar->SetPercent(Volume);
+
+	UGameplayStatics::SetSoundMixClassOverride(GetWorld(), SoundMix, SoundClass, Volume);
+	UGameplayStatics::PushSoundMixModifier(GetWorld(), SoundMix);
 }
 
 void UGameSettingWidget::OnChangeMouseSensitive(float inValue)

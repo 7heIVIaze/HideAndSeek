@@ -54,6 +54,12 @@ void ADrawer_cpp::BeginPlay()
 		TimelineProgress.BindDynamic(this, &ADrawer_cpp::OpenDrawer);
 		OpenAndClose.AddInterpFloat(CurveFloat, TimelineProgress); // 오류 해결 TObjectPtr이 아닌 FTimeline이 좋은 듯
 	}
+
+	if (DrawerMeshes.Num() > 0)
+	{
+		int RandIdx = FMath::RandRange(0, DrawerMeshes.Num() - 1);
+		Drawer->SetStaticMesh(DrawerMeshes[RandIdx]);
+	}
 }
 
 // Called every frame

@@ -19,7 +19,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-	virtual void Tick(float DeltaTime) override;
+	//virtual void Tick(float DeltaTime) override;
 
 private:
 	bool Check();
@@ -29,15 +29,15 @@ private:
 	bool IsAllLoaded[25] = { false, };
 
 	USceneComponent* RootComp;
-	int reaper_cnt = 0;
-	int count = 0;
+	//int reaper_cnt = 0;
+	//int count = 0;
 
 	UWorld* world;
 	FVector spawnLocation;
 	FRotator rotator;
 	FName path;
 
-	float fPlayTime = 0.f;
+	//float fPlayTime = 0.f;
 
 public:
 	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Default")

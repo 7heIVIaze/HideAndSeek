@@ -45,6 +45,8 @@ enum class Player_Status : uint8
 	Catched UMETA(DisplayName = "Catched"),
 	Stunned UMETA(DisplayName = "Stunned"),
 	Died UMETA(DisplayName = "Died"),
+	Clear UMETA(DisplayName = "Clear"),
+	Ending UMETA(DisplayName = "Ending"),
 };
 
 UCLASS(config=Game)
@@ -160,6 +162,9 @@ public: // Unreal Property
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "SoundCue")
 		class USoundCue* ItemGetSoundCue; // 아이템을 얻을 시 낼 소리
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "SoundCue")
+		class USoundCue* ExtinguisherCue; // 소화기 사용 소리
 
 	// About Item
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
@@ -280,6 +285,10 @@ public: // Unreal Component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LightBoolean")
 		int32 CreatureNum = 0; // Creature의 개수(불 깜박임을 위해서)
 
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RayCast")
+		float TraceLength = 150.f; // Raycast 용 사거리
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Door")
 		TObjectPtr<class UBoxComponent> DoorBoxComp;
 
@@ -289,6 +298,11 @@ public: // Unreal Component
 
 	UPROPERTY()
 		float MouseSensitive;
+
+	UPROPERTY()
+		bool bIsCleared;
+
+	bool bIsFinishUnlock = false;
 
 public: // Unreal Function
 
@@ -439,20 +453,23 @@ public: // Unreal Function
 		void SetArchiveGetText(FText inText);
 
 private:
-	FTimerHandle _loopStaminaTimerHandle, _loopLightTimerHandle, _MirrorTimerHandle, Timer, ArchiveTextTimer;
+	FTimerHandle _loopStaminaTimerHandle, _loopLightTimerHandle, _MirrorTimerHandle, Timer;// , ArchiveTextTimer;
 	// FTimerHandle _CigarLightTimerHandle;
 	int32 TextTimer = 0, ErrorTextTimer = 0;
-	float cnt = 0.f, ErrorTextCount = 0.f, StunTimer = 0.f, TimeStopTimer = 0.f, CooldownTimer = 0.f;
+	float cnt = 0.f, ErrorTextCount = 0.f, StunTimer = 0.f, TimeStopTimer = 0.f, CooldownTimer = 0.f, ArchiveTextTimer = 0.f;
 	float InWaterSpeedDown = 0.6f;
 	float ReaperWatchElapsedTime = 0.f; // 리퍼가 능력을 사용하기 시작한 시간
 	float PixelateIntensity = 0.f; // 리퍼가 능력을 사용해서 시야가 일그러지는 정도
+	//bool bIsPlayerSwordGet = false, bIsPlayerMirrorGet = false, bIsPlayerBellGet = false;
 
-	bool bIsInWater = false, bIsTimeStop = false, bIsTimeStopChange = false;
+	bool bIsInWater = false, bIsTimeStop = false, bIsTimeStopChange = false, bIsArchiveTextOn = false;
 	bool bShouldAttack = false;
 	bool bNotifyAttackStart = false;
 	bool bReaperWatchPlayer = false; // 리퍼가 능력을 사용하기 시작했는가?
 	
 	FRotator LookAtRotation;
+	FVector BeforeHideLocation;
+	FRotator BeforeHideRotation;
 
 	UPROPERTY()
 		UDataTable* ItemTable;
@@ -520,7 +537,7 @@ public:
 		int32 GetCurrentItemNumber();
 
 	UFUNCTION(BlueprintCallable, Category = "Inventory")
-		FString GetCurrentItemName();
+		FText GetCurrentItemName();
 
 	UFUNCTION(BlueprintCallable, Category = "Object")
 		int32 GetObjectNumbers();
@@ -581,5 +598,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void OnSprintCameraView(float inLerpAlpha);
+
+	UFUNCTION(BlueprintCallable)
+		void OnAnnounce();
 };
 
