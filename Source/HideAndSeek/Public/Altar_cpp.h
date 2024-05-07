@@ -30,6 +30,9 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Object")
 		TObjectPtr<UStaticMeshComponent> Bell;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SpawnPoint")
+		TObjectPtr<UStaticMeshComponent> SpawnPoint;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object")
 		TSubclassOf<class AReaper_cpp> Reaper;
 

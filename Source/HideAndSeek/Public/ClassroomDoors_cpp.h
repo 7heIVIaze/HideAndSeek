@@ -39,8 +39,8 @@ public: // properties
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Door")
 		TObjectPtr<class UBoxComponent> PlayerOverlapBox;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Door")
-		TObjectPtr<class UBoxComponent> CreatureOverlapBox;
+	/*UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Door")
+		TObjectPtr<class UBoxComponent> CreatureOverlapBox;*/
 
 	UPROPERTY(EditAnywhere, Category = "Lock")
 		bool bIsLocked;
@@ -76,8 +76,8 @@ public:
 	UFUNCTION()
 		void PlayerBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	UFUNCTION()
-		void CreatureBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	/*UFUNCTION()
+		void CreatureBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);*/
 
 	UFUNCTION()
 		void BreakDoor();

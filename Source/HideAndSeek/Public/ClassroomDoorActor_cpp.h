@@ -55,6 +55,9 @@ public: // Properties
 	UPROPERTY(BlueprintReadWrite)
 		bool bIsDoorBroken = false;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	bool bIsPlayerNear = false;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
 		class USoundCue* DoorSound;
 

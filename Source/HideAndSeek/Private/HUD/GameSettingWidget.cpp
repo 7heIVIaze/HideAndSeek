@@ -83,41 +83,47 @@ void UGameSettingWidget::NativeConstruct()
 		MouseSensitiveButton->OnUnhovered.AddDynamic(this, &UGameSettingWidget::OnUnhoveredMouseSensitiveButton);
 	}
 
-	bIsEnglish = false;
-	bIsKorean = false;
-	bIsTimerOn = true;
-	bIsCrossHairOn = true;
-
-	FString CurrentCulture = UKismetInternationalizationLibrary::GetCurrentCulture();
-
-	if (CurrentCulture.Equals(TEXT("ko")) || CurrentCulture.Equals(TEXT("ko-KR")))
+	if (BackBtn != nullptr)
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Current Culture is KR")));
-		bIsKorean = true;
+		BackBtn->OnClicked.AddDynamic(this, &UGameSettingWidget::OnClickBackButton);
+		BackBtn->OnHovered.AddDynamic(this, &UGameSettingWidget::OnHoveredBackButton);
+		BackBtn->OnUnhovered.AddDynamic(this, &UGameSettingWidget::OnUnhoveredBackButton);
 	}
-	else if (CurrentCulture.Equals(TEXT("en")))
-	{
-		bIsEnglish = true;
-		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Current Culture is EN")));
-	}
+
+	//bIsEnglish = false;
+	//bIsKorean = false;
+	//bIsTimerOn = true;
+	//bIsCrossHairOn = true;
+
+	//FString CurrentCulture = UKismetInternationalizationLibrary::GetCurrentCulture();
+
+	//if (CurrentCulture.Equals(TEXT("ko")) || CurrentCulture.Equals(TEXT("ko-KR")))
+	//{
+	//	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Current Culture is KR")));
+	//	bIsKorean = true;
+	//}
+	//else if (CurrentCulture.Equals(TEXT("en")))
+	//{
+	//	bIsEnglish = true;
+	//	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Current Culture is EN")));
+	//}
 
 	// GameInstance로부터 타이머 설정 값과 조준점 설정값 가져오기(GameInstance는 실행 시 Save 데이터를 읽어옴)
 	if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
 	{
-		bIsTimerOn = GameInstance->GetIsTimerOn();
-		bIsCrossHairOn = GameInstance->GetIsCrossHairOn();
-		Sensitive = GameInstance->GetMouseSensitive();
-		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Sensitivity: %f"), Sensitive));
-		Sensitive = Sensitive / 5.f;
-		Volume = GameInstance->GetVolume();
+		OptionSetting.bIsTimerOn = GameInstance->GetIsTimerOn();
+		OptionSetting.bIsCrossHairOn = GameInstance->GetIsCrossHairOn();
+		OptionSetting.MouseSensitive = GameInstance->GetMouseSensitive();
+		OptionSetting.Volume = GameInstance->GetVolume();
+		OptionSetting.Language = GameInstance->GetCurrentLanguage();
 	}
 
 //	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Sensitive Percent: %f"), Sensitive));
 
-	TimerOnCheckBox->SetIsChecked(bIsTimerOn);
-	CrossHairOnCheckBox->SetIsChecked(bIsCrossHairOn);
-	SensitiveSettingBar->SetPercent(Sensitive);
-	VolumeSettingBar->SetPercent(Volume);
+	TimerOnCheckBox->SetIsChecked(OptionSetting.bIsTimerOn);
+	CrossHairOnCheckBox->SetIsChecked(OptionSetting.bIsCrossHairOn);
+	SensitiveSettingBar->SetPercent(OptionSetting.MouseSensitive / 5.f);
+	VolumeSettingBar->SetPercent(OptionSetting.Volume / 2.f);
 
 	SetCurrentMode(CurrentType::None);
 }
@@ -157,8 +163,21 @@ void UGameSettingWidget::OnClickEnglishButton()
 		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
 	}
 	UKismetInternationalizationLibrary::SetCurrentCulture(TEXT("en"), true);
-	bIsEnglish = true;
-	bIsKorean = false;
+	OptionSetting.Language = ELanguage::LANG_En;
+	if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
+	{
+		bool bResult = GameInstance->OptionSettingSaveLogic(OptionSetting);
+		/*if (bResult)
+		{
+			TimerOnCheckBox->SetIsChecked(bIsTimerOn);
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error to save Timer settings")));
+		}*/
+	}
+	//bIsEnglish = true;
+	//bIsKorean = false;
 	SetCurrentMode(CurrentType::None);
 }
 
@@ -172,7 +191,7 @@ void UGameSettingWidget::OnHoveredEnglishButton()
 		}
 		SubMenuNavIndex = 0;
 		UpdateButtonSlate();
-		if (bIsEnglish)
+		if (OptionSetting.Language == ELanguage::LANG_En)
 		{
 			EnglishButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
 		}
@@ -185,7 +204,7 @@ void UGameSettingWidget::OnHoveredEnglishButton()
 
 void UGameSettingWidget::OnUnhoveredEnglishButton()
 {
-	if (bIsEnglish)
+	if (OptionSetting.Language == ELanguage::LANG_En)
 	{
 		EnglishButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
 	}
@@ -202,8 +221,21 @@ void UGameSettingWidget::OnClickKoreanButton()
 		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
 	}
 	UKismetInternationalizationLibrary::SetCurrentCulture(TEXT("ko-KR"), true);
-	bIsEnglish = false;
-	bIsKorean = true;
+	OptionSetting.Language = ELanguage::LANG_Ko;
+	if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
+	{
+		bool bResult = GameInstance->OptionSettingSaveLogic(OptionSetting);
+		/*if (bResult)
+		{
+			TimerOnCheckBox->SetIsChecked(bIsTimerOn);
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error to save Timer settings")));
+		}*/
+	}
+	/*bIsEnglish = false;
+	bIsKorean = true;*/
 	SetCurrentMode(CurrentType::None);
 }
 
@@ -217,7 +249,7 @@ void UGameSettingWidget::OnHoveredKoreanButton()
 		}
 		SubMenuNavIndex = 1;
 		UpdateButtonSlate();
-		if (bIsKorean)
+		if (OptionSetting.Language == ELanguage::LANG_Ko)
 		{
 			KoreanButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
 		}
@@ -230,7 +262,7 @@ void UGameSettingWidget::OnHoveredKoreanButton()
 
 void UGameSettingWidget::OnUnhoveredKoreanButton()
 {
-	if (bIsKorean)
+	if (OptionSetting.Language == ELanguage::LANG_Ko)
 	{
 		KoreanButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
 	}
@@ -274,18 +306,19 @@ void UGameSettingWidget::OnClickTimerButton()
 	{
 		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
 	}
-	bIsTimerOn = !bIsTimerOn;
+	OptionSetting.bIsTimerOn = !OptionSetting.bIsTimerOn;
 
 	if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
 	{
-		bool bResult = GameInstance->TimerOnSaveLogic(bIsTimerOn);
+		//bool bResult = GameInstance->TimerOnSaveLogic(bIsTimerOn);
+		bool bResult = GameInstance->OptionSettingSaveLogic(OptionSetting);
 		if (bResult)
 		{
-			TimerOnCheckBox->SetIsChecked(bIsTimerOn);
+			TimerOnCheckBox->SetIsChecked(OptionSetting.bIsTimerOn);
 		}
 		else
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error to save Timer settings")));
+			UE_LOG(LogTemp, Warning, TEXT("Error to save Timer settings"));
 		}
 	}
 }
@@ -315,18 +348,19 @@ void UGameSettingWidget::OnClickCrossHairButton()
 	{
 		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
 	}
-	bIsCrossHairOn = !bIsCrossHairOn;
+	OptionSetting.bIsCrossHairOn = !OptionSetting.bIsCrossHairOn;
 
 	if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
 	{
-		bool bResult = GameInstance->CrossHairOnSaveLogic(bIsCrossHairOn);
+		//bool bResult = GameInstance->CrossHairOnSaveLogic(bIsCrossHairOn);
+		bool bResult = GameInstance->OptionSettingSaveLogic(OptionSetting);
 		if (bResult)
 		{
-			CrossHairOnCheckBox->SetIsChecked(bIsCrossHairOn);
+			CrossHairOnCheckBox->SetIsChecked(OptionSetting.bIsCrossHairOn);
 		}
 		else
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error to save CrossHair settings")));
+			UE_LOG(LogTemp, Warning, TEXT("Error to save CrossHair settings"));
 		}
 	}
 }
@@ -384,7 +418,7 @@ void UGameSettingWidget::SetCurrentMode(CurrentType ModeType)
 
 	if (ModeType == CurrentType::None)
 	{
-		MenuNumber = 5;
+		MenuNumber = 6;
 	}
 	else if (ModeType == CurrentType::LanguageSetting)
 	{
@@ -399,11 +433,11 @@ void UGameSettingWidget::OnChangeGlobalVolume(float inValue)
 	{
 		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
 	}
-	Volume += inValue;
-	Volume = FMath::Clamp(Volume, 0.f, 1.f); // 볼륨의 최대 크기가 0에서 1 사이로 설정되도록 함
-	VolumeSettingBar->SetPercent(Volume);
+	OptionSetting.Volume += inValue;
+	OptionSetting.Volume = FMath::Clamp(OptionSetting.Volume, 0.f, 2.f); // 볼륨의 최대 크기가 0에서 1 사이로 설정되도록 함
+	VolumeSettingBar->SetPercent(OptionSetting.Volume / 2.f);
 
-	UGameplayStatics::SetSoundMixClassOverride(GetWorld(), SoundMix, SoundClass, Volume);
+	UGameplayStatics::SetSoundMixClassOverride(GetWorld(), SoundMix, SoundClass, OptionSetting.Volume * 2);
 	UGameplayStatics::PushSoundMixModifier(GetWorld(), SoundMix);
 }
 
@@ -413,9 +447,37 @@ void UGameSettingWidget::OnChangeMouseSensitive(float inValue)
 	{
 		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
 	}
-	Sensitive += inValue;
-	Sensitive = FMath::Clamp(Sensitive, 0.1f, 1.f);
-	SensitiveSettingBar->SetPercent(Sensitive);
+	OptionSetting.MouseSensitive += inValue;
+	OptionSetting.MouseSensitive = FMath::Clamp(OptionSetting.MouseSensitive, 0.f, 5.f);
+	SensitiveSettingBar->SetPercent(OptionSetting.MouseSensitive / 5.f);
+}
+
+void UGameSettingWidget::OnClickBackButton()
+{
+	if (IsValid(ButtonMoveSound))
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+	}
+	PlayAnimation(BackOptionAnim);
+}
+
+void UGameSettingWidget::OnHoveredBackButton()
+{
+	if (CurrentMode == CurrentType::None) // 현재 아무 것도 선택되지 않은 상태일 때만
+	{
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
+		}
+		MenuNavIndex = 5;
+		UpdateButtonSlate();
+		BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+	}
+}
+
+void UGameSettingWidget::OnUnhoveredBackButton()
+{
+	BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 }
 
 void UGameSettingWidget::AnimationFinished()
@@ -437,6 +499,7 @@ void UGameSettingWidget::UpdateButtonSlate()
 			TimerButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			CrossHairButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			MouseSensitiveButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			break;
 		case 1:
 			LanguageButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
@@ -444,6 +507,7 @@ void UGameSettingWidget::UpdateButtonSlate()
 			TimerButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			CrossHairButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			MouseSensitiveButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			break;
 		case 2:
 			LanguageButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
@@ -451,6 +515,7 @@ void UGameSettingWidget::UpdateButtonSlate()
 			TimerButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 			CrossHairButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			MouseSensitiveButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			break;
 		case 3:
 			LanguageButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
@@ -458,6 +523,7 @@ void UGameSettingWidget::UpdateButtonSlate()
 			TimerButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			CrossHairButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 			MouseSensitiveButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			break;
 		case 4:
 			LanguageButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
@@ -465,6 +531,15 @@ void UGameSettingWidget::UpdateButtonSlate()
 			TimerButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			CrossHairButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			MouseSensitiveButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			break;
+		case 5:
+			LanguageButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			VolumeButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			TimerButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			CrossHairButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			MouseSensitiveButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 			break;
 		}
 	}
@@ -475,11 +550,12 @@ void UGameSettingWidget::UpdateButtonSlate()
 		TimerButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 		CrossHairButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 		MouseSensitiveButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 	}
 
 	if (CurrentMode == CurrentType::LanguageSetting)
 	{
-		if (bIsEnglish)
+		if (OptionSetting.Language == ELanguage::LANG_En)
 		{
 			if (SubMenuNavIndex == 0)
 			{
@@ -502,7 +578,7 @@ void UGameSettingWidget::UpdateButtonSlate()
 			}
 		}
 
-		if (bIsKorean)
+		if (OptionSetting.Language == ELanguage::LANG_Ko)
 		{
 			if (SubMenuNavIndex == 1)
 			{
@@ -527,12 +603,12 @@ void UGameSettingWidget::UpdateButtonSlate()
 	}
 	else
 	{
-		if (bIsEnglish)
+		if (OptionSetting.Language == ELanguage::LANG_En)
 		{
 			EnglishButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
 			KoreanButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 		}
-		else if (bIsKorean)
+		else if (OptionSetting.Language == ELanguage::LANG_Ko)
 		{
 			EnglishButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			KoreanButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
@@ -573,6 +649,10 @@ FReply UGameSettingWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FK
 				OnClickMouseSensitiveButton();
 				UpdateButtonSlate();
 				break;
+			case 5:
+				OnClickBackButton();
+				UpdateButtonSlate();
+				break;
 			}
 		}
 
@@ -596,9 +676,9 @@ FReply UGameSettingWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FK
 			{
 				if (SoundMix != nullptr && SoundClass != nullptr)
 				{
-					UGameplayStatics::SetSoundMixClassOverride(GetWorld(), SoundMix, SoundClass, Volume);
+					UGameplayStatics::SetSoundMixClassOverride(GetWorld(), SoundMix, SoundClass, OptionSetting.Volume);
 					UGameplayStatics::PushSoundMixModifier(GetWorld(), SoundMix);
-					bool SaveResult = GameInstance->VolumeSaveLogic(Volume);
+					bool SaveResult = GameInstance->VolumeSaveLogic(OptionSetting.Volume);
 				}
 			}
 
@@ -609,9 +689,9 @@ FReply UGameSettingWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FK
 		{
 			if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
 			{
-				Sensitive = 5.f * Sensitive;
+				//OptionSetting.MouseSensitive = 5.f * OptionSetting.MouseSensitive;
 
-				bool SaveResult = GameInstance->MouseSensitiveSaveLogic(Sensitive);
+				bool SaveResult = GameInstance->MouseSensitiveSaveLogic(OptionSetting.MouseSensitive);
 			}
 			SetCurrentMode(CurrentType::None);
 		}
@@ -698,11 +778,11 @@ FReply UGameSettingWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FK
 		{
 			if (KeyType == "S" || KeyType == "Down" || KeyType == "A" || KeyType == "Left")
 			{
-				OnChangeMouseSensitive(-0.01);
+				OnChangeMouseSensitive(-0.05);
 			}
 			else if (KeyType == "W" || KeyType == "Up" || KeyType == "D" || KeyType == "Right")
 			{
-				OnChangeMouseSensitive(0.01);
+				OnChangeMouseSensitive(0.05);
 			}
 		}
 		UpdateButtonSlate();

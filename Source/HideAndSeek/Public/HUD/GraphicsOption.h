@@ -163,6 +163,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 		TObjectPtr<class USoundCue> ButtonMoveSound;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+		class UButton* BackBtn;
+
 private:
 	bool bWindowed;
 	bool bFullScreen;
@@ -364,7 +367,7 @@ public:
 		void CheckCurrentResolution(const FString ForCheckResolution);
 
 	// Brightness Setting
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		void SetBrightness(float Value);
 
 	UFUNCTION()
@@ -375,4 +378,13 @@ public:
 
 	UFUNCTION()
 		void UpdateButtonSlate();
+
+	UFUNCTION()
+		void OnClickBackButton();
+
+	UFUNCTION()
+		void OnHoveredBackButton();
+
+	UFUNCTION()
+		void OnUnhoveredBackButton();
 };

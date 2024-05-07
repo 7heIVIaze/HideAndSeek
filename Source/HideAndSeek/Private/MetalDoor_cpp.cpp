@@ -35,9 +35,9 @@ AMetalDoor_cpp::AMetalDoor_cpp()
 	PlayerOverlapBox->OnComponentBeginOverlap.AddDynamic(this, &AMetalDoor_cpp::PlayerBoxBeginOverlap);
 	PlayerOverlapBox->OnComponentEndOverlap.AddDynamic(this, &AMetalDoor_cpp::PlayerBoxEndOverlap);
 
-	CreatureOverlapBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CreatureOverlapBox"));
+	/*CreatureOverlapBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CreatureOverlapBox"));
 	CreatureOverlapBox->SetupAttachment(DefaultSceneRoot);
-	CreatureOverlapBox->OnComponentBeginOverlap.AddDynamic(this, &AMetalDoor_cpp::CreatureBoxBeginOverlap);
+	CreatureOverlapBox->OnComponentBeginOverlap.AddDynamic(this, &AMetalDoor_cpp::CreatureBoxBeginOverlap);*/
 
 	Door->SetCollisionProfileName("ClosedDoor");
 
@@ -107,41 +107,44 @@ void AMetalDoor_cpp::OnInteract(class AHorrorGameCharacter* Player)
 
 void AMetalDoor_cpp::AIInteract(AActor* Creature)
 {
-	if (!bIsDoorBroken) // 문이 부서진 상태가 아닌 상황이여야 상호작용 가능
+	if (bIsPlayerNear)
 	{
-		if (bIsDoorLocked) // 만약 문이 잠긴 상황이라면
+		if (!bIsDoorBroken) // 문이 부서진 상태가 아닌 상황이여야 상호작용 가능
 		{
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Door Is Locked!")));
-			if (auto Reaper = Cast<AReaper_cpp>(Creature))
+			if (bIsDoorLocked) // 만약 문이 잠긴 상황이라면
 			{
-				Reaper->SetIsStop(true);
-				InteractingCreatures.Add(Reaper);
-			}
-			else if (auto Runner = Cast<ARunner_cpp>(Creature))
-			{
-				Runner->SetIsStop(true);
-				InteractingCreatures.Add(Runner);
-			}
-			else if (auto Brute = Cast<ABrute_cpp>(Creature))
-			{
-				Brute->SetIsStop(true);
-				InteractingCreatures.Add(Brute);
-			}
-			BreakDoor();
-		}
-		else
-		{
-			if (bIsDoorClosed)
-			{
-				//		USoundCue* DoorSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/DoorOpenSoundCue"));
-				if (DoorOpenSound)
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Door Is Locked!")));
+				if (auto Reaper = Cast<AReaper_cpp>(Creature))
 				{
-					UGameplayStatics::PlaySoundAtLocation(this, DoorOpenSound, GetActorLocation());
+					Reaper->SetIsStop(true);
+					InteractingCreatures.Add(Reaper);
 				}
-				OpenAndClose.Play();
-				//	Door->SetCollisionProfileName("OpenedDoor");
-					// AI가 열린 문을 다시 닫지 않도록 하기 위해 OpenedDoor로 콜리전 변경함. 더불어 열린 문에 끼이지 않도록 하기 위함도 있음
-				bIsDoorClosed = false;
+				else if (auto Runner = Cast<ARunner_cpp>(Creature))
+				{
+					Runner->SetIsStop(true);
+					InteractingCreatures.Add(Runner);
+				}
+				else if (auto Brute = Cast<ABrute_cpp>(Creature))
+				{
+					Brute->SetIsStop(true);
+					InteractingCreatures.Add(Brute);
+				}
+				BreakDoor();
+			}
+			else
+			{
+				if (bIsDoorClosed)
+				{
+					//		USoundCue* DoorSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/DoorOpenSoundCue"));
+					if (DoorOpenSound)
+					{
+						UGameplayStatics::PlaySoundAtLocation(this, DoorOpenSound, GetActorLocation());
+					}
+					OpenAndClose.Play();
+					//	Door->SetCollisionProfileName("OpenedDoor");
+						// AI가 열린 문을 다시 닫지 않도록 하기 위해 OpenedDoor로 콜리전 변경함. 더불어 열린 문에 끼이지 않도록 하기 위함도 있음
+					bIsDoorClosed = false;
+				}
 			}
 		}
 	}
@@ -252,16 +255,16 @@ void AMetalDoor_cpp::PlayerBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AA
 	}
 }
 
-void AMetalDoor_cpp::CreatureBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if (OtherActor != nullptr && OtherComp != nullptr && OtherActor != this)
-	{
-		if (ACreatureClass* Creature = Cast<ACreatureClass>(OtherActor)) // 접촉된 크리쳐라면 발동
-		{
-			if (bIsPlayerNear) // 플레이어가 근처에 있어야 문이 크리쳐를 가로막기 때문에, 그 경우에만 발동하게 설정
-			{
-				AIInteract(Creature);
-			}
-		}
-	}
-}
+//void AMetalDoor_cpp::CreatureBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+//{
+//	if (OtherActor != nullptr && OtherComp != nullptr && OtherActor != this)
+//	{
+//		if (ACreatureClass* Creature = Cast<ACreatureClass>(OtherActor)) // 접촉된 크리쳐라면 발동
+//		{
+//			if (bIsPlayerNear) // 플레이어가 근처에 있어야 문이 크리쳐를 가로막기 때문에, 그 경우에만 발동하게 설정
+//			{
+//				AIInteract(Creature);
+//			}
+//		}
+//	}
+//}

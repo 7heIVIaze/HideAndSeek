@@ -34,9 +34,6 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
 		TObjectPtr<class USoundCue> PatrolSound;
 
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact")
-		TObjectPtr<class UBoxComponent> InteractBox;*/
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact")
 		TObjectPtr<class USphereComponent> KillSphere;
 
@@ -84,6 +81,9 @@ public:
 
 	virtual void DissolveFinish() override;
 
+	UFUNCTION(BlueprintCallable)
+	void OpenDoor();
+
 public:
 	UPROPERTY()
 		bool bIsPatrolSuccess = false;
@@ -106,10 +106,10 @@ public:
 	UPROPERTY()
 		float NoiseDetectRange = 2400.f;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		bool bCalledRangeChange = false;
 	
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 		bool bIsRangeChange = false;
 
 	UPROPERTY()
@@ -174,7 +174,7 @@ public:
 		void CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherIndexBody, bool bFromSweep, const FHitResult& SweepResult);
 	
 	UFUNCTION(BlueprintCallable)
-		void BroadCastChangeNoiseRange();
+		void BroadCastChangeNoiseRange(const bool value);
 
 	UFUNCTION(BlueprintCallable)
 		void ChangeNoiseRange(const bool value);

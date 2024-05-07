@@ -101,6 +101,9 @@ public:
 
 	virtual void DissolveFinish() override;
 
+	UFUNCTION(BlueprintCallable)
+	void OpenDoor();
+
 	/*void Move(const FInputActionValue& Value);
 
 	void Look(const FInputActionValue& Value);*/

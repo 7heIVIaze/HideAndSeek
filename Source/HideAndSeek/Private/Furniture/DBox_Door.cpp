@@ -83,6 +83,7 @@ void ADBox_Door::UseInteract(class AHorrorGameCharacter* Player)
 {
 	if (bIsDoorLocked)
 	{
+		Player->bIsFinishUnlock = true;
 		bIsDoorLocked = false;
 	}
 }

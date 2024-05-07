@@ -55,11 +55,11 @@ void ALightSwitch::SetSwitchStatus()
 	bIsSwitchOn = !bIsSwitchOn;
 	if (bIsSwitchOn)
 	{
-		SwitchMesh->SetRelativeRotation(FRotator(-9.f, 0.f, 0.f));
+		SwitchMesh->SetRelativeRotation(FRotator(0.f, 0.f, 0.f));
 	}
 	else
 	{	
-		SwitchMesh->SetRelativeRotation(FRotator(0.f, 0.f, 0.f));
+		SwitchMesh->SetRelativeRotation(FRotator(0.f, 10.f, 0.f));
 	}
 	SetLightsStatus();
 }

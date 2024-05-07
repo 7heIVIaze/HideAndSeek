@@ -40,9 +40,9 @@ void ACutter_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	{
 		if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 		{
-			if (!SaveData->Item9_Cutter) // 절단기를 처음 얻은 상태라면
+			if (!SaveData->CollectArchives.Item9_Cutter) // 절단기를 처음 얻은 상태라면
 			{
-				SaveData->Item9_Cutter = true;
+				SaveData->CollectArchives.Item9_Cutter = true;
 				Player->SetArchiveGetText(NSLOCTEXT("ACutter_cpp", "Get_Cutter", "Cutter\nis added in archive"));
 				SaveData->SaveData();
 			}

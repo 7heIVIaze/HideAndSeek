@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "ComponentAction/HorrorGameSaveGameBase.h"
 #include "Subsystems/GameInstanceSubsystem.h"
+#include "ComponentAction/Records.h"
 #include "HorrorGameSaveGameSubsystem.generated.h"
 
 /**

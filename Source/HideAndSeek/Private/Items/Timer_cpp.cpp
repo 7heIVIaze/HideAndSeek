@@ -53,9 +53,9 @@ void ATimer_cpp::OnInteract(class AHorrorGameCharacter* Player) // Player Click 
 	{
 		if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 		{
-			if (!SaveData->Item4_Timer) // 타이머를 처음 얻은 상태라면
+			if (!SaveData->CollectArchives.Item4_Timer) // 타이머를 처음 얻은 상태라면
 			{
-				SaveData->Item4_Timer = true;
+				SaveData->CollectArchives.Item4_Timer = true;
 				Player->SetArchiveGetText(NSLOCTEXT("ATimer_cpp", "Get_Timer", "Timer\nis added in archive"));
 				SaveData->SaveData();
 			}

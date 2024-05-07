@@ -69,9 +69,9 @@ void ACigarLighter_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	{
 		if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 		{
-			if (!SaveData->Item1_CigarLighter) // 라이터를 처음 얻은 상태라면
+			if (!SaveData->CollectArchives.Item1_CigarLighter) // 라이터를 처음 얻은 상태라면
 			{
-				SaveData->Item1_CigarLighter = true;
+				SaveData->CollectArchives.Item1_CigarLighter = true;
 				Player->SetArchiveGetText(NSLOCTEXT("ACigarLighter_cpp", "Get_Lighter", "Lighter\nis added in archive"));
 				SaveData->SaveData();
 			}

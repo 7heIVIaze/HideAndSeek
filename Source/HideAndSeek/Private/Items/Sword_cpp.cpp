@@ -59,9 +59,9 @@ void ASword_cpp::OnInteract(class AHorrorGameCharacter* Player)
 		Altar->UnSealedObjectNumber(1);
 		if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 		{
-			if (!SaveData->Item5_BronzeSword) // 청동 검을 처음 얻은 상태라면
+			if (!SaveData->CollectArchives.Item5_BronzeSword) // 청동 검을 처음 얻은 상태라면
 			{
-				SaveData->Item5_BronzeSword = true;
+				SaveData->CollectArchives.Item5_BronzeSword = true;
 				Player->SetArchiveGetText(NSLOCTEXT("ASword_cpp", "Get_Sword", "Bronze Sword\nis added in archive"));
 				SaveData->SaveData();
 			}

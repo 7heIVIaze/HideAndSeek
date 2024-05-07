@@ -60,9 +60,9 @@ void AMirror_cpp::OnInteract(class AHorrorGameCharacter* Player)
 		Altar->UnSealedObjectNumber(1);
 		if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 		{
-			if (!SaveData->Item7_BronzeMirror) // 청동 거울을 처음 얻은 상태라면
+			if (!SaveData->CollectArchives.Item7_BronzeMirror) // 청동 거울을 처음 얻은 상태라면
 			{
-				SaveData->Item7_BronzeMirror = true;
+				SaveData->CollectArchives.Item7_BronzeMirror = true;
 				Player->SetArchiveGetText(NSLOCTEXT("AMirror_cpp", "Get_Mirror", "Bronze Mirror\nis added in archive"));
 				SaveData->SaveData();
 			}

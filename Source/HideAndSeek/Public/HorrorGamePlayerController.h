@@ -34,7 +34,7 @@ public:
 	void OnGamePause();
 
 	UFUNCTION(BlueprintCallable)
-	void OnGameClear(FString inClearedTime);
+	void OnGameClear(FString inClearedTime, bool bIsRecordBreaking);
 
 	UFUNCTION(BlueprintCallable)
 		void ShowEnding(int EndType); // 0: BadEnding, 1: NormalEnding, 2: TrueEnding

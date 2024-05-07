@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "ComponentAction/HorrorGameSaveGameBase.h"
 #include "ComponentAction/Records.h"
+#include "ComponentAction/CollectArchives.h"
 #include "HorrorGameSaveGame.generated.h"
 
 /**
@@ -23,21 +24,16 @@ public:
 	UPROPERTY()
 		int32 ClearedChapter; // 클리어한 레벨
 
-	/*UPROPERTY()
-		TArray<FString>Article;
-
-	UPROPERTY()
-		TArray<FString>Diary;
-
-	UPROPERTY()
-		TArray<FString>Message;*/
-
 	UPROPERTY()
 		TArray<FString>ClearTime; // 클리어 타임
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 		TArray<FClearData>ClearChapter;
 
+	UPROPERTY(BlueprintReadWrite)
+		FOptionSettings OptionSetting;
+
+	/*
 	UPROPERTY(BlueprintReadWrite)
 		float BrightGamma; // 밝기 감마
 
@@ -55,7 +51,11 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 		bool bIsTimerOn; // 타이머 설정
+		*/
 
+	UPROPERTY(BlueprintReadWrite)
+		FCollectedArchives CollectArchives;
+	/*
 	// 아이템 관련 문서
 	UPROPERTY(BlueprintReadWrite)
 		bool Item1_CigarLighter; // 라이터
@@ -86,6 +86,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 		bool Item10_SoulLantern; // 영혼 랜턴
+
+	UPROPERTY(BlueprintReadWrite)
+		bool Item11_GlowStick; // 야광봉
 
 		// 신문 기사 문서
 	UPROPERTY(BlueprintReadWrite)
@@ -169,4 +172,5 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 		bool SeeHowToEscape; // 피하는 방법을 보았는가
+		*/
 };

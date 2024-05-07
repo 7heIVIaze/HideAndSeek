@@ -60,6 +60,8 @@ ABrute_cpp::ABrute_cpp()
 	KillSphere->SetRelativeScale3D(FVector(3.5f, 3.5f, 4.f));
 	KillSphere->OnComponentBeginOverlap.AddDynamic(this, &ABrute_cpp::CatchBeginOverlap);
 
+	WatchPoint = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayerWatchPoint"));
+
 	AIControllerClass = AAIController_Brute::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 	//GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ABrute_cpp::CheckBoxBeginOverlap);
@@ -105,6 +107,8 @@ void ABrute_cpp::Tick(float DeltaTime)
 
 	DissolveTimeline.TickTimeline(DeltaTime);
 
+	OpenDoor();
+
 	if (bIsStunned)
 	{
 		CurrentStunnedTime += DeltaTime;
@@ -119,7 +123,7 @@ void ABrute_cpp::Tick(float DeltaTime)
 		}
 	}
 
-	if (bCalledRangeChange)
+	/*if (bCalledRangeChange)
 	{
 		RangeChangeTime += DeltaTime;
 		if (RangeChangeTime >= 3.f)
@@ -128,7 +132,7 @@ void ABrute_cpp::Tick(float DeltaTime)
 			RangeChangeTime = 0.f;
 			ChangeNoiseRange(true);
 		}
-	}
+	}*/
 
 	if (bIsTimeStop)
 	{
@@ -212,6 +216,8 @@ void ABrute_cpp::StartChase()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("SetTrace: Start Chase Function called"));
 		bIsChase = true;
+		ChangeNoiseRange(false);
+		BroadCastChangeNoiseRange(false);
 		// ReaperSound->SetSound(DetectedSound);
 		// ReaperSound->Play();
 		GetCharacterMovement()->MaxWalkSpeed = 300.f;
@@ -596,16 +602,16 @@ void ABrute_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 
 					if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 					{
-						if (!SaveData->CatchedByBrute)
+						if (!SaveData->CollectArchives.CatchedByBrute)
 						{
-							SaveData->CatchedByBrute = true;
+							SaveData->CollectArchives.CatchedByBrute = true;
 							Character->SetArchiveGetText(NSLOCTEXT("ABrute_cpp", "Kill_By_Brute", "Brute\nis added in archive"));
 							SaveData->SaveData();
 						}
 					}
 
 					//Character->SetActorRotation(NewRotation);
-					Character->OnFocus(GetActorLocation());
+					Character->OnFocus(WatchPoint->GetComponentLocation());
 
 					SetIsCatch(true);
 
@@ -620,22 +626,37 @@ void ABrute_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 	}
 }
 
-void ABrute_cpp::BroadCastChangeNoiseRange()
+void ABrute_cpp::BroadCastChangeNoiseRange(const bool value)
 {
-	// GetCharacterMovement()->StopMovementImmediately();
-	bCalledRangeChange = true;
+	if (value)
+	{
+		//GetCharacterMovement()->StopMovementImmediately();
+		//Cast<AAIController_Brute>(GetController())->GetBlackboard()->SetValueAsBool(AAIController_Brute::ChangeDetectRange, true);
+		bCalledRangeChange = true;
+	}
+	else
+	{
+		//Cast<AAIController_Brute>(GetController())->GetBlackboard()->SetValueAsBool(AAIController_Brute::ChangeDetectRange, false);
+		bCalledRangeChange = false;
+		//ChangeNoiseRange(false);
+	}
 }
 
 void ABrute_cpp::ChangeNoiseRange(const bool value)
 {
 	if (value)
 	{
+		GetCharacterMovement()->StopMovementImmediately();
+		Cast<AAIController_Brute>(GetController())->GetBlackboard()->SetValueAsBool(AAIController_Brute::ChangeDetectRange, true);
+		UE_LOG(LogTemp, Warning, TEXT("Change Noise Range true Called!"));
 		NoiseDetectRange = 2800.f;
 		bIsRangeChange = value;
 	}
 
 	else
 	{
+		Cast<AAIController_Brute>(GetController())->GetBlackboard()->SetValueAsBool(AAIController_Brute::ChangeDetectRange, false);
+		UE_LOG(LogTemp, Warning, TEXT("Change Noise Range false Called!"));
 		NoiseDetectRange = 2400.f;
 		bIsRangeChange = value;
 	}
@@ -694,6 +715,38 @@ void ABrute_cpp::DissolveFinish()
 	
 	DissolveParticleSystem->Deactivate();
 
-
 	Destroy();
+}
+
+void ABrute_cpp::OpenDoor()
+{
+	FHitResult HitResult;
+	FVector Start = GetActorLocation();
+	FVector ForwardVector = GetActorForwardVector();
+	FVector End = (ForwardVector * 160.f) + Start;
+	AActor* HitActor = nullptr;
+
+	bool bIsHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility);
+	if (bIsHit)
+	{
+		if (HitResult.GetActor())
+		{
+			HitActor = HitResult.GetActor();
+
+			if (ADoor_cpp* Door = Cast<ADoor_cpp>(HitActor))
+			{
+				Door->AIInteract(this);
+			}
+
+			else if (AClassroomDoorActor_cpp* ClassroomDoor = Cast<AClassroomDoorActor_cpp>(HitActor))
+			{
+				ClassroomDoor->AIInteract(this);
+			}
+
+			else if (AMetalDoor_cpp* MetalDoor = Cast <AMetalDoor_cpp>(HitActor))
+			{
+				MetalDoor->AIInteract(this);
+			}
+		}
+	}
 }

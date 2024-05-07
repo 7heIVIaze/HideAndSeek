@@ -45,6 +45,7 @@
 #include "Items/CigarLighter_cpp.h"
 #include "Items/Extinguisher_cpp.h"
 #include "Items/Soul_Lantern_cpp.h"
+#include "Items/GlowStick_cpp.h"
 #include "Items/PlayerSword_cpp.h"
 #include "Furniture/DistributionBox.h"
 #include "Furniture/Paper.h"
@@ -177,9 +178,9 @@ AHorrorGameCharacter::AHorrorGameCharacter()
 	PanicSound = CreateDefaultSubobject<UAudioComponent>(TEXT("PanicSound"));
 	PanicSound->SetupAttachment(FirstPersonCameraComponent);
 
-	HeartBeat = CreateDefaultSubobject<UAudioComponent>(TEXT("HeartBeatSound"));
+	/*HeartBeat = CreateDefaultSubobject<UAudioComponent>(TEXT("HeartBeatSound"));
 	HeartBeat->SetupAttachment(FirstPersonCameraComponent);
-	HeartBeat->SetAutoActivate(false);
+	HeartBeat->SetAutoActivate(false);*/
 
 	CigarLightOnSound = CreateDefaultSubobject<UAudioComponent>(TEXT("CigarLightOnSound"));
 	CigarLightOnSound->SetupAttachment(FirstPersonCameraComponent);
@@ -370,6 +371,7 @@ void AHorrorGameCharacter::Tick(float DeltaTime)
 		StunTimer += DeltaTime;
 		if (StunTimer >= 1.5f)
 		{
+			StunTimer = 0.f;
 			SetPlayerStatus(Player_Status::Survive);
 		}
 	}
@@ -531,8 +533,12 @@ void AHorrorGameCharacter::Tick(float DeltaTime)
 		else if (ReaperWatchElapsedTime >= 3.0f)
 		{
 			ReaperWatchElapsedTime = 0.f;
-
+			if (StunSoundCue)
+			{
+				UGameplayStatics::PlaySound2D(this, StunSoundCue);
+			}
 			SetPlayerStatus(Player_Status::Stunned);
+			//FirstPersonCameraComponent->RemoveBlendable(PostProcessDynamicInstance);
 		//	SetReaperLookPlayer(false);
 		}
 	}
@@ -973,6 +979,12 @@ void AHorrorGameCharacter::ItemUse()
 			}*/
 			// UseLantern();
 		}
+
+		else if (CurrentItem.ItemNumber == 11) // GlowStick
+		{
+			UseGlowStick();
+		}
+
 	}
 }
 
@@ -1881,6 +1893,56 @@ void AHorrorGameCharacter::AddLantern()
 	}
 }
 
+void AHorrorGameCharacter::AddGlowStick()
+{
+	FHorrorGameItemData* GlowStickData = ItemTable->FindRow<FHorrorGameItemData>(*FString::FromInt(11), TEXT(""));
+	bool isFind = false;
+	if (GlowStickData)
+	{
+		for (auto Item = Inventory.CreateIterator(); Item; ++Item) // 인벤토리에 해당 아이템 존재 여부 확인
+		{
+			if (Item->ItemNumber == GlowStickData->ItemNumber)
+			{
+				isFind = true;
+				Item->ItemCount++;
+				break;
+			}
+		}
+
+		if (!isFind) // 없다고 판별나면
+		{
+			if (InventoryNum >= 8) // 가질 수 있는 양을 넘겼다면 못 얻음
+			{
+				ErrorInteractText = NSLOCTEXT("AHorrorGameCharacter", "Full_Inventory", "Your Inventory is FULL!. You CANNOT get more items");
+				SetErrorText(ErrorInteractText, 3);
+				/*GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
+				GetWorld()->GetTimerManager().SetTimer(_TextTimerHandle, FTimerDelegate::CreateLambda([&]() {
+					ErrorInteractText = TEXT("");
+					GameUIWidget->SetInteractDotErrorText(ErrorInteractText);
+					GetWorld()->GetTimerManager().ClearTimer(_TextTimerHandle);
+				}), 1.0f, false);*/
+				bCanItemGet = false;
+				return;
+			}
+
+			Inventory[++InventoryNum].ItemName = GlowStickData->ItemName;
+			Inventory[InventoryNum].ItemNumber = GlowStickData->ItemNumber;
+			Inventory[InventoryNum].ItemIcon = GlowStickData->ItemIcon;
+			Inventory[InventoryNum].Type = EItemType::ITEM_Useable;
+			Inventory[InventoryNum].ItemCount += 1;
+			if (CurrentItemNum < 0)
+				CurrentItemNum = 0;
+		}
+		if (bCanItemGet)
+		{
+			if (IsValid(ItemGetSoundCue))
+			{
+				UGameplayStatics::PlaySound2D(this, ItemGetSoundCue);
+			}
+		}
+		CurrentItem();
+	}
+}
 // Use Item Functions
 void AHorrorGameCharacter::UseCigarLight()
 {
@@ -2516,6 +2578,88 @@ void AHorrorGameCharacter::UseLantern()
 	}
 }
 
+void AHorrorGameCharacter::UseGlowStick()
+{
+	if (GlowStickClass)
+	{
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.Owner = this;
+		SpawnParams.Instigator = GetInstigator();
+		float Z = 110.f; // 122 - 110 = 12
+		
+		if (bIsCrouch)
+		{
+			Z = 45.f; // 56 - 45 = 11
+		}
+		FVector SpawnLocation = GetActorLocation() - FVector(0.f, 0.f, Z);
+			
+		AGlowStick_cpp* GlowStick = GetWorld()->SpawnActor<AGlowStick_cpp>(GlowStickClass, SpawnLocation, FRotator(0.f, 0.f, 0.f), SpawnParams);
+		if (GlowStick)
+		{
+			GlowStick->UseInteract(this);
+		}
+		//FVector LineTraceStart = GetActorLocation();
+		//FVector LineTraceEnd = GetActorLocation() - FVector::UpVector * 150.0f;
+
+		//FHitResult HitResult;
+		//TArray<AActor*> Ignore;
+		//Ignore.Add(GetMesh()->GetOwner());
+
+		//bool bDebug = true;
+
+		//EDrawDebugTrace::Type eDebug = EDrawDebugTrace::None;
+		//if (bDebug) eDebug = EDrawDebugTrace::ForDuration;
+		//TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes; // 히트 가능한 오브젝트 유형들.
+		//TEnumAsByte<EObjectTypeQuery> WorldStatic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldStatic);
+		//TEnumAsByte<EObjectTypeQuery> WorldDynamic = UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic);
+		//ObjectTypes.Add(WorldStatic);
+		//ObjectTypes.Add(WorldDynamic);
+
+		//bool bResult = UKismetSystemLibrary::LineTraceSingleForObjects(GetMesh()->GetWorld(), LineTraceStart, LineTraceEnd, ObjectTypes, true, Ignore, eDebug, HitResult, true);
+
+		//if (bResult)
+		//{
+		//	if (HitResult.GetActor() == nullptr)
+		//	{
+		//		return;
+		//	}
+
+		//	UE_LOG(LogTemp, Warning, TEXT("%s"), *HitResult.GetActor()->GetName());
+		//	FActorSpawnParameters SpawnParams;
+		//	SpawnParams.Owner = this;
+		//	SpawnParams.Instigator = GetInstigator();
+		//	FVector SpawnLocation = HitResult.GetActor()->GetActorLocation() + FVector(0.f, 0.f, 10.f);
+		//	
+		//	AGlowStick_cpp* GlowStick = GetWorld()->SpawnActor<AGlowStick_cpp>(GlowStickClass, SpawnLocation, FRotator(0.f, 0.f, 0.f), SpawnParams);
+		//	if (GlowStick)
+		//	{
+		//		GlowStick->UseInteract(this);
+		//	}
+		//}
+	}
+
+	Inventory[CurrentItemNum].ItemCount--;
+	if (Inventory[CurrentItemNum].ItemCount == 0)
+	{
+		Inventory.RemoveAt(CurrentItemNum);
+		InventoryNum--;
+		CurrentItemNum--;
+		if (CurrentItemNum < 0 && InventoryNum >= 0)
+		{
+			CurrentItemNum = 0;
+		}
+
+		if (InventoryNum < 0)
+		{
+			CurrentItemNum = 0;
+		}
+	}
+	FHorrorGameItemData TempItem;
+	TempItem.Clear();
+	Inventory.Add(TempItem);
+	CurrentItem();
+}
+
 // Battery Manage Function(Deprecated)
 void AHorrorGameCharacter::FlashLightBatteryChange()
 {
@@ -2653,6 +2797,10 @@ int32 AHorrorGameCharacter::GetFlashLightBattery()
 
 int32 AHorrorGameCharacter::GetCurrentItemNumber()
 {
+	if (CurrentItemNum < 0)
+	{
+		return 0;
+	}
 	int32 CurrentItemNumber = Inventory[CurrentItemNum].ItemNumber;
 	return CurrentItemNumber;
 }
@@ -3104,6 +3252,10 @@ void AHorrorGameCharacter::SetReaperLookPlayer(bool inReaperWatchPlayer)
 			if (inReaperWatchPlayer)
 			{
 				FirstPersonCameraComponent->AddOrUpdateBlendable(PostProcessDynamicInstance, 1.f);
+				if (ReaperSoundCue)
+				{
+					UGameplayStatics::PlaySound2D(this, ReaperSoundCue);
+				}
 			}
 			else
 			{
@@ -3144,6 +3296,9 @@ void AHorrorGameCharacter::SetArchiveGetText(FText inText)
 void AHorrorGameCharacter::OnFocus(FVector TargetLocation)
 {
 	FirstPersonCameraComponent->bUsePawnControlRotation = false;
+	
+	GetCharacterMovement()->StopMovementImmediately();
+	DisableInput(HorrorGamePlayerController);
 
 	FVector CameraLocation = FirstPersonCameraComponent->GetComponentLocation();
 	LookAtRotation = UKismetMathLibrary::FindLookAtRotation(CameraLocation, TargetLocation);
@@ -3161,6 +3316,7 @@ void AHorrorGameCharacter::OnFocusRotation(float inLerpAlpha)
 
 void AHorrorGameCharacter::OnFocusFinished()
 {
+	EnableInput(HorrorGamePlayerController);
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 }
 

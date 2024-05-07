@@ -39,9 +39,9 @@ void AExtinguisher_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	{
 		if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 		{
-			if (!SaveData->Item8_Extinguisher) // 소화기를 처음 얻은 상태라면
+			if (!SaveData->CollectArchives.Item8_Extinguisher) // 소화기를 처음 얻은 상태라면
 			{
-				SaveData->Item8_Extinguisher = true;
+				SaveData->CollectArchives.Item8_Extinguisher = true;
 				Player->SetArchiveGetText(NSLOCTEXT("AExtinguisher_cpp", "Get_Extinguisher", "Extinghuisher\nis added in archive"));
 				SaveData->SaveData();
 			}

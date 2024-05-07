@@ -63,9 +63,9 @@ void ABell_cpp::OnInteract(class AHorrorGameCharacter* Player)
 		Altar->UnSealedObjectNumber(1);
 		if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 		{
-			if (!SaveData->Item6_BronzeBell) // 청동 방울을 처음 얻은 상태라면
+			if (!SaveData->CollectArchives.Item6_BronzeBell) // 청동 방울을 처음 얻은 상태라면
 			{
-				SaveData->Item6_BronzeBell = true;
+				SaveData->CollectArchives.Item6_BronzeBell = true;
 				Player->SetArchiveGetText(NSLOCTEXT("ABell_cpp", "Get_Bell", "Bronze Bell\nis added in archive"));
 				SaveData->SaveData();
 			}

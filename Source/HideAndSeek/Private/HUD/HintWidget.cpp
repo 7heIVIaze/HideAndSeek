@@ -7,6 +7,7 @@
 #include "Components/Border.h"
 #include "ComponentAction/HorrorGameSaveGame.h"
 #include "Kismet/GameplayStatics.h"
+#include "StartGameMode.h"
 #include "HUD/ArchiveWidget.h"
 #include "Sound/SoundCue.h"
 
@@ -37,37 +38,37 @@ void UHintWidget::NativeConstruct()
 	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 	{
 
-		if (SaveData->CatchedByReaper)
+		if (SaveData->CollectArchives.CatchedByReaper)
 		{
 			CatchedByReaper = true;
 			Archive1Text->SetText(NSLOCTEXT("UHintWidget", "Archive_Reaper", "Grim Reaper"));
 		}
 
-		if (SaveData->CatchedByRunner)
+		if (SaveData->CollectArchives.CatchedByRunner)
 		{
 			CatchedByRunner = true;
 			Archive2Text->SetText(NSLOCTEXT("UHintWidget", "Archive_Runner", "Runner"));
 		}
 
-		if (SaveData->CatchedByBrute)
+		if (SaveData->CollectArchives.CatchedByBrute)
 		{
 			CatchedByBrute = true;
 			Archive3Text->SetText(NSLOCTEXT("UHintWidget", "Archive_Brute", "Brute"));
 		}
 
-		if (SaveData->CatchedByShadow)
+		if (SaveData->CollectArchives.CatchedByShadow)
 		{
 			CatchedByShadow = true;
 			Archive4Text->SetText(NSLOCTEXT("UHintWidget", "Archive_Shadow", "Shadow"));
 		}
 
-		if (SaveData->SeeCharacteristic)
+		if (SaveData->CollectArchives.SeeCharacteristic)
 		{
 			SeeCharacteristic = true;
 			Archive5Text->SetText(NSLOCTEXT("UHintWidget", "Archive_Characteristic", "Creature Characteristic"));
 		}
 
-		if (SaveData->SeeHowToEscape)
+		if (SaveData->CollectArchives.SeeHowToEscape)
 		{
 			SeeHowToEscape = true;
 			Archive6Text->SetText(NSLOCTEXT("UHintWidget", "Archive_HowToEscape", "How to escape"));
@@ -107,10 +108,20 @@ void UHintWidget::OnExitButtonClick()
 	{
 		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
 	}
-	FromWidget->bIsFocusable = true;
+
+	UArchiveWidget* FromWidget = CreateWidget<UArchiveWidget>(GetWorld(), ParentWidget);
+	FromWidget->AddToViewport();
+	//FromWidget->bIsFocusable = true;
 	auto Controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	FromWidget->SetUserFocus(Controller);
 	FromWidget->SetKeyboardFocus();
+	FromWidget->bIsStartGameMode = bIsStartGameMode;
+	if (bIsStartGameMode)
+	{
+		auto GameMode = Cast<AStartGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+		GameMode->SetCurrentWidget(FromWidget);
+	}
 	RemoveFromParent();
 }
 

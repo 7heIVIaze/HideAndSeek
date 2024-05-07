@@ -188,6 +188,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 		TObjectPtr<class USoundCue> ButtonMoveSound;
 
-	UPROPERTY(BlueprintReadWrite, Category = "UI")
-		TObjectPtr<class UArchiveWidget> FromWidget;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
+	TSubclassOf<UUserWidget> ParentWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
+	bool bIsStartGameMode = true;
 };

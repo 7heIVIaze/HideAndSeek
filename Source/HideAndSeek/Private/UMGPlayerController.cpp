@@ -2,6 +2,7 @@
 
 
 #include "UMGPlayerController.h"
+#include "GameFramework/PlayerState.h"
 
 void AUMGPlayerController::BeginPlay()
 {
@@ -12,6 +13,5 @@ void AUMGPlayerController::BeginPlay()
 	InputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 
 	SetInputMode(InputMode);
-	bShowMouseCursor = true;
-	
+	bShowMouseCursor = true;;
 }

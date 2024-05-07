@@ -216,11 +216,12 @@ void AHorrorGamePlayerController::OnGamePause()
 	SetPause(true);
 }
 
-void AHorrorGamePlayerController::OnGameClear(FString inClearedTime)
+void AHorrorGamePlayerController::OnGameClear(FString inClearedTime, bool bIsRecordBreaking)
 {
 	MainWidget->RemoveFromParent();
 	ClearWidget->AddToViewport();
 	ClearWidget->SetClearTime(inClearedTime);
+	ClearWidget->SetRecordBreakingText(bIsRecordBreaking);
 	UIInputMode.SetLockMouseToViewportBehavior(EMouseLockMode::DoNotLock);
 	UIInputMode.SetWidgetToFocus(ClearWidget->TakeWidget());
 	ChangeInputMode(false);

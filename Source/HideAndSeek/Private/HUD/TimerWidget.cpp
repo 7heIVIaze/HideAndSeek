@@ -10,6 +10,12 @@ void UTimerWidget::NativeConstruct()
 	Hour->SetVisibility(ESlateVisibility::Collapsed);
 
 }
+//
+//void UTimerWidget::NativeTick(const FGeometry& MyGeometry, float inDeltaTime)
+//{
+//	Super::NativeTick(MyGeometry, inDeltaTime);
+//	
+//}
 
 void UTimerWidget::Init()
 {
@@ -73,3 +79,13 @@ FString UTimerWidget::GetClearTime()
 	return FormatClearTime;
 }
 
+float UTimerWidget::GetIntClearTime()
+{
+	float FormatClearTime = 0.f;
+	FormatClearTime += (Miliseconds / 100.f);
+	FormatClearTime += (Seconds * 1.f);
+	FormatClearTime += (Minutes * 60.f);
+	FormatClearTime += (Hours * 60.f * 60.f);
+
+	return FormatClearTime;
+}

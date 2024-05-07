@@ -59,6 +59,8 @@ ARunner_cpp::ARunner_cpp()
 	KillSphere->SetRelativeScale3D(FVector(3.5f, 3.5f, 4.f));
 	KillSphere->OnComponentBeginOverlap.AddDynamic(this, &ARunner_cpp::CatchBeginOverlap);
 
+	WatchPoint = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayerWatchPoint"));
+
 	AIControllerClass = AAIController_Runner::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
@@ -100,6 +102,8 @@ void ARunner_cpp::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	DissolveTimeline.TickTimeline(DeltaTime);
+
+	OpenDoor();
 
 	if (bIsStunned)
 	{
@@ -542,16 +546,16 @@ void ARunner_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 
 					if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 					{
-						if (!SaveData->CatchedByRunner)
+						if (!SaveData->CollectArchives.CatchedByRunner)
 						{
-							SaveData->CatchedByRunner = true;
+							SaveData->CollectArchives.CatchedByRunner = true;
 							Character->SetArchiveGetText(NSLOCTEXT("ARunner_cpp", "Kill_By_Runner", "Runner\nis added in archive"));
 							SaveData->SaveData();
 						}
 					}
 
 					//Character->SetActorRotation(NewRotation);
-					Character->OnFocus(GetActorLocation());
+					Character->OnFocus(WatchPoint->GetComponentLocation());
 
 					SetIsCatch(true);
 
@@ -614,6 +618,38 @@ void ARunner_cpp::DissolveFinish()
 
 	DissolveParticleSystem->Deactivate();
 
-
 	Destroy();
+}
+
+void ARunner_cpp::OpenDoor()
+{
+	FHitResult HitResult;
+	FVector Start = GetActorLocation();
+	FVector ForwardVector = GetActorForwardVector();
+	FVector End = (ForwardVector * 160.f) + Start;
+	AActor* HitActor = nullptr;
+
+	bool bIsHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility);
+	if (bIsHit)
+	{
+		if (HitResult.GetActor())
+		{
+			HitActor = HitResult.GetActor();
+
+			if (ADoor_cpp* Door = Cast<ADoor_cpp>(HitActor))
+			{
+				Door->AIInteract(this);
+			}
+
+			else if (AClassroomDoorActor_cpp* ClassroomDoor = Cast<AClassroomDoorActor_cpp>(HitActor))
+			{
+				ClassroomDoor->AIInteract(this);
+			}
+
+			else if (AMetalDoor_cpp* MetalDoor = Cast <AMetalDoor_cpp>(HitActor))
+			{
+				MetalDoor->AIInteract(this);
+			}
+		}
+	}
 }

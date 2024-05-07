@@ -50,7 +50,7 @@ public:
 	static const FName TargetLocation;
 	static const FName CanSeePlayer;
 	static const FName NoiseDetected;
-	//static const FName SprintDetected;
+	static const FName ChangeDetectRange;
 	static const FName Stunned;
 	static const FName LockerLighting;
 

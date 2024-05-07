@@ -38,6 +38,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dissolve")
 		class UTexture* Texture;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "PlayerWatchPoint")
+	class UStaticMeshComponent* WatchPoint;
+
 public:
 	UFUNCTION(BlueprintCallable)
 		virtual void ChangeMaterialInstance(float inValue) {};

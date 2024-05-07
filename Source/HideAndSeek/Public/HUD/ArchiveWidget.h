@@ -95,6 +95,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 		TObjectPtr<class USoundCue> ButtonMoveSound;
 
-	UPROPERTY()
-		bool bIsStartGameMode;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
+	bool bIsStartGameMode = true;
 };

@@ -24,6 +24,7 @@ UHorrorGameSaveGameSubsystem* UHorrorGameSaveGameSubsystem::GetSaveGameSubsystem
 
 UHorrorGameSaveGameBase* UHorrorGameSaveGameSubsystem::LoadDataLogic(UClass* inClass, const FString& inUniqueID, int32 inUserIndex)
 {
+	UE_LOG(LogTemp, Warning, TEXT("SaveGameSubsystem Load Data Logic Called!"));
 	FString* FindPrefix = SlotNamePrefixMap.Find(inClass);
 	check(FindPrefix);
 
@@ -36,14 +37,20 @@ UHorrorGameSaveGameBase* UHorrorGameSaveGameSubsystem::LoadDataLogic(UClass* inC
 		Temp = UGameplayStatics::CreateSaveGameObject(inClass);
 		UHorrorGameSaveGame* TempSaveData = Cast<UHorrorGameSaveGame>(Temp);
 
-		TempSaveData->BrightGamma = 2.2f;
-		TempSaveData->MouseSensitive = 1.0f; // 기본 마우스 감도 값은 1.0
-		TempSaveData->Volume = 1.0f; // 기본 볼륨 값은 1.0
-		TempSaveData->bMotionBlur = true;
-		TempSaveData->bIsTimerOn = true;
-		TempSaveData->bIsCrossHairOn = true;
-		TempSaveData->ClearedChapter = 0;
-
+		TempSaveData->OptionSetting.BrightGamma = 2.2f;
+		TempSaveData->OptionSetting.MouseSensitive = 1.0f; // 기본 마우스 감도 값은 1.0
+		TempSaveData->OptionSetting.Volume = 1.0f; // 기본 볼륨 값은 1.0
+		TempSaveData->OptionSetting.bMotionBlur = true;
+		TempSaveData->OptionSetting.bIsTimerOn = true;
+		TempSaveData->OptionSetting.bIsCrossHairOn = true;
+		TempSaveData->OptionSetting.Language = ELanguage::LANG_En; // 기본 언어는 영어
+		//TempSaveData->ClearedChapter = 0;
+		TempSaveData->ClearChapter.Init(FClearData(), 5);
+		for (int i = 0; i < 5; ++i)
+		{
+			TempSaveData->ClearChapter[i].ChapterNumber = i;
+		}
+		TempSaveData->ClearChapter[0].bIsOpened = true;
 	}
 
 	UHorrorGameSaveGameBase* SaveData = Cast<UHorrorGameSaveGameBase>(Temp);

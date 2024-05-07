@@ -92,6 +92,8 @@ AReaper_cpp::AReaper_cpp()
 	}
 	ReaperSound->SetAutoActivate(false);
 
+	WatchPoint = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayerWatchPoint"));
+
 	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 
@@ -154,6 +156,8 @@ void AReaper_cpp::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	DissolveTimeline.TickTimeline(DeltaTime);
+	
+	OpenDoor();
 
 	if (bIsStunned)
 	{
@@ -200,10 +204,11 @@ void AReaper_cpp::Tick(float DeltaTime)
 	{
 		CastingTime += DeltaTime;
 
-		if (CastingTime >= 3)
+		if (CastingTime >= 4.f)
 		{
 			bIsCooldown = true;
 			CastingTime = 0.f;
+			SetPlayerWatch(bIsPlayerWatch);
 		}
 	}
 
@@ -211,10 +216,11 @@ void AReaper_cpp::Tick(float DeltaTime)
 	{
 		SkillCooldown += DeltaTime;
 
-		if (SkillCooldown >= 10)
+		if (SkillCooldown >= 25.f)
 		{
 			SkillCooldown = 0.f;
 			bIsCooldown = false;
+			SetPlayerWatch(bIsPlayerWatch);
 		}
 	}
 
@@ -519,10 +525,13 @@ FVector AReaper_cpp::GetPatrolPoint()
 
 	if (bIsCollectMode) // 현재 레벨이 오브젝트 수집 레벨일 때
 	{
-		int randIdx = FMath::RandRange(0, PatrolPointLists.Num() - 1); // 0에서 PatrolPointLists의 마지막 인덱스까지 중 랜덤 숫자 하나 뽑기
-		CurrentPatrolPoint = PatrolPointLists[randIdx];
-		ResultLocation = CurrentPatrolPoint->GetActorLocation();
-		ReaperController->GetBlackboard()->SetValueAsObject(ACreatureAI::PatrolTargetKey, CurrentPatrolPoint);
+		if (PatrolPointLists.Num() > 0)
+		{
+			int randIdx = FMath::RandRange(0, PatrolPointLists.Num() - 1); // 0에서 PatrolPointLists의 마지막 인덱스까지 중 랜덤 숫자 하나 뽑기
+			CurrentPatrolPoint = PatrolPointLists[randIdx];
+			ResultLocation = CurrentPatrolPoint->GetActorLocation();
+			ReaperController->GetBlackboard()->SetValueAsObject(ACreatureAI::PatrolTargetKey, CurrentPatrolPoint);
+		}
 	}
 	else // 정해진 길을 따라 가는 레벨일 때
 	{
@@ -671,6 +680,7 @@ void AReaper_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 				{
 					if (CurrentStatus == Sealed::Sealed) // 리퍼의 상태가 봉인된 상태면 패닉 게이지 증가시키고 소멸
 					{
+						Character->CreatureNum--;
 						Character->AddPatience(20);
 						Destroy();
 					}
@@ -704,9 +714,9 @@ void AReaper_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 						
 						if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 						{
-							if (!SaveData->CatchedByReaper)
+							if (!SaveData->CollectArchives.CatchedByReaper)
 							{
-								SaveData->CatchedByReaper = true;
+								SaveData->CollectArchives.CatchedByReaper = true;
 								Character->SetArchiveGetText(NSLOCTEXT("AReaper_cpp", "Kill_By_Reaper", "Reaper\nis added in archive"));
 								SaveData->SaveData();
 							}
@@ -714,7 +724,7 @@ void AReaper_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 
 						/*Character->bUseControllerRotationYaw = false;
 						Character->SetActorRotation(NewRotation);*/
-						Character->OnFocus(GetActorLocation());
+						Character->OnFocus(WatchPoint->GetComponentLocation());
 
 						SetIsCatch(true);
 					}
@@ -799,6 +809,7 @@ void AReaper_cpp::SetCurrentStatus(int32 Status)
 			bSealedButChase = true;
 			StartChase();
 			ReaperController->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, Player);
+			Player->SetCameraComponentNoise(2);
 			GetCharacterMovement()->MaxWalkSpeed = 220.f;
 			break;
 		}
@@ -843,6 +854,38 @@ void AReaper_cpp::DissolveFinish()
 
 	DissolveParticleSystem->Deactivate();
 
-
 	Destroy();
+}
+
+void AReaper_cpp::OpenDoor()
+{
+	FHitResult HitResult;
+	FVector Start = GetActorLocation();
+	FVector ForwardVector = GetActorForwardVector();
+	FVector End = (ForwardVector * 160.f) + Start;
+	AActor* HitActor = nullptr;
+
+	bool bIsHit = GetWorld()->LineTraceSingleByChannel(HitResult, Start, End, ECC_Visibility);
+	if (bIsHit)
+	{
+		if (HitResult.GetActor())
+		{
+			HitActor = HitResult.GetActor();
+
+			if (ADoor_cpp* Door = Cast<ADoor_cpp>(HitActor))
+			{
+				Door->AIInteract(this);
+			}
+
+			else if (AClassroomDoorActor_cpp* ClassroomDoor = Cast<AClassroomDoorActor_cpp>(HitActor))
+			{
+				ClassroomDoor->AIInteract(this);
+			}
+
+			else if (AMetalDoor_cpp* MetalDoor = Cast <AMetalDoor_cpp>(HitActor))
+			{
+				MetalDoor->AIInteract(this);
+			}
+		}
+	}
 }

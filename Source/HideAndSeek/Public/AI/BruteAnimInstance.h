@@ -25,6 +25,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void AnimNotify_BruteAttackEnd();
 
+	UFUNCTION(BlueprintCallable)
+	void AnimNotify_BruteChangeRangeStart();
+
+	UFUNCTION(BlueprintCallable)
+	void AnimNotify_BruteChangeRangeEnd();
+
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = "true"))
 		float Speed;
@@ -44,6 +50,11 @@ private:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = "true"))
 		bool bIsStunned;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = "true"))
+	bool bIsCalledRangeChange;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Pawn, Meta = (AllowPrivateAccess = "true"))
+	bool bIsRangeChange;
 public:
 	class ABrute_cpp* Brute;
 };

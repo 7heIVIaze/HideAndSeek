@@ -25,7 +25,7 @@ AClassroomDoorActor_cpp::AClassroomDoorActor_cpp()
 
 	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ClassDoor"));
 	DoorMesh->SetupAttachment(DefaultSceneRoot);
-	static ConstructorHelpers::FObjectFinder<UStaticMesh>CRDoorObj(TEXT("/Game/Assets/Furniture/newClassroomDoor"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh>CRDoorObj(TEXT("/Game/Assets/Furniture/ClassroomDoor"));
 	if (CRDoorObj.Succeeded())
 	{
 		DoorMesh->SetStaticMesh(CRDoorObj.Object);
@@ -109,42 +109,45 @@ void AClassroomDoorActor_cpp::OnInteract(class AHorrorGameCharacter* Player)
 
 void AClassroomDoorActor_cpp::AIInteract(AActor* Creature)
 {
-	if (!bIsDoorBroken) // 문이 부서진 상태가 아닌 상황이여야 상호작용 가능
+	if (bIsPlayerNear)
 	{
-		if (bIsDoorLocked) // 만약 문이 잠긴 상황이라면
+		if (!bIsDoorBroken) // 문이 부서진 상태가 아닌 상황이여야 상호작용 가능
 		{
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Door Is Locked!")));
-			if (auto Reaper = Cast<AReaper_cpp>(Creature))
+			if (bIsDoorLocked) // 만약 문이 잠긴 상황이라면
 			{
-				Reaper->SetIsStop(true);
-				InteractingCreatures.Add(Reaper);
-			}
-			else if (auto Runner = Cast<ARunner_cpp>(Creature))
-			{
-				Runner->SetIsStop(true);
-				InteractingCreatures.Add(Runner);
-			}
-			else if (auto Brute = Cast<ABrute_cpp>(Creature))
-			{
-				Brute->SetIsStop(true);
-				InteractingCreatures.Add(Brute);
-			}
-			BreakDoor();
-		}
-		else
-		{
-			if (bIsDoorClosed && bIsOtherDoorClosed) // 현재 문과 옆 문도 닫힌 상황이면
-			{
-				//		USoundCue* DoorSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/DoorOpenSoundCue"));
-				if (DoorSound)
+				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Door Is Locked!")));
+				if (auto Reaper = Cast<AReaper_cpp>(Creature))
 				{
-					UGameplayStatics::PlaySoundAtLocation(this, DoorSound, GetActorLocation());
+					Reaper->SetIsStop(true);
+					InteractingCreatures.Add(Reaper);
 				}
-				OpenAndClose.Play();
-				//	Door->SetCollisionProfileName("OpenedDoor");
-					// AI가 열린 문을 다시 닫지 않도록 하기 위해 OpenedDoor로 콜리전 변경함. 더불어 열린 문에 끼이지 않도록 하기 위함도 있음
-				bIsDoorClosed = false;
-				CD_Manager->SetKnowOtherDoorOpen(bIsDoorClosed);
+				else if (auto Runner = Cast<ARunner_cpp>(Creature))
+				{
+					Runner->SetIsStop(true);
+					InteractingCreatures.Add(Runner);
+				}
+				else if (auto Brute = Cast<ABrute_cpp>(Creature))
+				{
+					Brute->SetIsStop(true);
+					InteractingCreatures.Add(Brute);
+				}
+				BreakDoor();
+			}
+			else
+			{
+				if (bIsDoorClosed && bIsOtherDoorClosed) // 현재 문과 옆 문도 닫힌 상황이면
+				{
+					//		USoundCue* DoorSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/DoorOpenSoundCue"));
+					if (DoorSound)
+					{
+						UGameplayStatics::PlaySoundAtLocation(this, DoorSound, GetActorLocation());
+					}
+					OpenAndClose.Play();
+					//	Door->SetCollisionProfileName("OpenedDoor");
+						// AI가 열린 문을 다시 닫지 않도록 하기 위해 OpenedDoor로 콜리전 변경함. 더불어 열린 문에 끼이지 않도록 하기 위함도 있음
+					bIsDoorClosed = false;
+					CD_Manager->SetKnowOtherDoorOpen(bIsDoorClosed);
+				}
 			}
 		}
 	}
@@ -182,6 +185,7 @@ void AClassroomDoorActor_cpp::SetKnowOtherDoorOpen(bool value)
 
 void AClassroomDoorActor_cpp::SetDoorCollision(bool inIsPlayerNear)
 {
+	bIsPlayerNear = inIsPlayerNear;
 	if (inIsPlayerNear) // true라면 플레이어가 근처에 있는 것이기 때문에 콜리전(물리적 충돌) 활성화
 	{
 		DoorMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel5, ECollisionResponse::ECR_Block);

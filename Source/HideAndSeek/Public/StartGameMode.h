@@ -30,6 +30,9 @@ public:
 	UFUNCTION()
 		void ChangeWidget(WidgetType widgetNumber);
 
+	UFUNCTION()
+	void SetCurrentWidget(UUserWidget* inWidgetObject);
+
 protected:
 	virtual void BeginPlay() override;
 

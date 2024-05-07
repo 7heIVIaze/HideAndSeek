@@ -48,6 +48,9 @@ AAltar_cpp::AAltar_cpp()
 		Bell->SetStaticMesh(SM_Bell.Object);
 	}
 
+	SpawnPoint = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("SpawnPoint"));
+	SpawnPoint->SetupAttachment(RootComp);
+
 	InteractSound = CreateDefaultSubobject<UAudioComponent>(TEXT("Sound"));
 	InteractSound->SetAutoActivate(false);
 
@@ -187,7 +190,8 @@ void AAltar_cpp::ReaperSpawn()
 	FActorSpawnParameters spawnParams;
 
 	//if(Reaper != nullptr)
-	CurrentReaper = GetWorld()->SpawnActor<AReaper_cpp>(Reaper, GetActorLocation()+GetActorForwardVector()*100.f, FRotator(0.f, 0.f, 0.f), spawnParams);
+	//CurrentReaper = GetWorld()->SpawnActor<AReaper_cpp>(Reaper, GetActorLocation()+GetActorForwardVector()*300.f, FRotator(0.f, 0.f, 0.f), spawnParams);
+	CurrentReaper = GetWorld()->SpawnActor<AReaper_cpp>(Reaper, SpawnPoint->GetComponentLocation(), FRotator(0.f, 0.f, 0.f), spawnParams);
 	bIsLevelStart = true;
 }
 // Called every frame
@@ -217,6 +221,15 @@ void AAltar_cpp::UnSealedObjectNumber(int32 value)
 
 	if (UnSealedItemNum == 3)
 	{
+		if (CurrentReaper == nullptr)
+		{
+			FActorSpawnParameters spawnParams;
+			CurrentReaper = GetWorld()->SpawnActor<AReaper_cpp>(Reaper, SpawnPoint->GetComponentLocation(), FRotator(0.f, 0.f, 0.f), spawnParams);
+		}
+		else
+		{
+			CurrentReaper->SetActorLocation(SpawnPoint->GetComponentLocation());
+		}
 		PlayerCharacter->OnAnnounce();
 	}
 }

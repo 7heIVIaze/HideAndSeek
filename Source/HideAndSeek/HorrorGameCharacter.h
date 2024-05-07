@@ -82,6 +82,7 @@ protected:
 
 	virtual void Tick(float DeltaTime);
 
+
 public: // Unreal Property
 	/** Look Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -166,6 +167,12 @@ public: // Unreal Property
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "SoundCue")
 		class USoundCue* ExtinguisherCue; // 소화기 사용 소리
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SoundCue")
+		class USoundCue* ReaperSoundCue; // 리퍼 스킬 사용 소리
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "SoundCue")
+		class USoundCue* StunSoundCue; // 기절 소리
+
 	// About Item
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
 	int32 CurrentItemNum = -1;
@@ -229,8 +236,8 @@ public: // Unreal Component
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
 		TObjectPtr<UAudioComponent> PanicSound;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
-		TObjectPtr<UAudioComponent> HeartBeat;
+	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
+		TObjectPtr<UAudioComponent> HeartBeat;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 		TObjectPtr<UAudioComponent> CigarLightOnSound;
@@ -250,6 +257,9 @@ public: // Unreal Component
 	UPROPERTY(EditAnywhere, Category = "Extinguisher")
 		TObjectPtr<class UNiagaraComponent> SmokeComponent;
 	
+	UPROPERTY(EditDefaultsOnly, Category = Projectile)
+		TSubclassOf<class AGlowStick_cpp> GlowStickClass;
+
 	UPROPERTY()
 		class AHorrorGamePlayerController* HorrorGamePlayerController;
 
@@ -296,7 +306,7 @@ public: // Unreal Component
 	bool bCanExtinguisherUse = true, bCanItemGet = true;
 	int32 SwordCount, MirrorCount, BellCount;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite)
 		float MouseSensitive;
 
 	UPROPERTY()
@@ -385,6 +395,12 @@ public: // Unreal Function
 
 	UFUNCTION(BlueprintCallable, Category = "SoulLantern")
 		void UseLantern();
+
+	UFUNCTION(BlueprintCallable)
+		void AddGlowStick();
+
+	UFUNCTION(BlueprintCallable)
+		void UseGlowStick();
 
 	UFUNCTION()
 	void StaminaChange();

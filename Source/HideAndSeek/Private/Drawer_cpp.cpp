@@ -19,7 +19,7 @@ ADrawer_cpp::ADrawer_cpp()
 
 	/*Drawer = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Drawer"));
 	Drawer->SetupAttachment(DefaultSceneRoot);*/
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> DrawerAssetMesh(TEXT("/Game/Assets/Furniture/Drawer_Cube_002"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> DrawerAssetMesh(TEXT("/Game/Assets/Furniture/drawerBox"));
 	if (DrawerAssetMesh.Succeeded())
 	{
 		Drawer->SetStaticMesh(DrawerAssetMesh.Object);

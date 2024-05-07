@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "ComponentAction/Records.h"
 #include "GameSettingWidget.generated.h"
 
 /**
@@ -66,10 +67,10 @@ public:
 	UFUNCTION()
 		void OnUnhoveredVolumeButton();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		void OnChangeGlobalVolume(float inValue);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		void OnClickTimerButton();
 
 	UFUNCTION()
@@ -78,7 +79,7 @@ public:
 	UFUNCTION()
 		void OnUnhoveredTimerButton();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		void OnClickCrossHairButton();
 
 	UFUNCTION()
@@ -96,7 +97,7 @@ public:
 	UFUNCTION()
 		void OnUnhoveredMouseSensitiveButton();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 		void OnChangeMouseSensitive(float inValue);
 
 	UFUNCTION()
@@ -107,6 +108,15 @@ public:
 
 	UFUNCTION()
 		void AnimationFinished();
+
+	UFUNCTION()
+		void OnClickBackButton();
+
+	UFUNCTION()
+		void OnHoveredBackButton();
+
+	UFUNCTION()
+		void OnUnhoveredBackButton();
 
 public:
 	UPROPERTY()
@@ -148,6 +158,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
 		class UWidgetAnimation* BackOptionAnim;
 
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+		class UButton* BackBtn;
+
 	UPROPERTY()
 		int32 MenuNavIndex = 0;
 
@@ -183,4 +196,5 @@ private:
 
 	float Volume;
 	float Sensitive;
+	FOptionSettings OptionSetting;
 };

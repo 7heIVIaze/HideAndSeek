@@ -4,9 +4,11 @@
 #include "Components/Button.h"
 #include "HorrorGameGameInstance.h"
 #include "Components/VerticalBox.h"
+#include "Components/TextBlock.h"
 #include "StartGameMode.h"
 #include "Components/Image.h"
 #include "Sound/SoundCue.h"
+#include "Animation/WidgetAnimation.h"
 
 void UStageSelectWidget::NativeConstruct()
 {
@@ -17,24 +19,26 @@ void UStageSelectWidget::NativeConstruct()
 	if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(UGameplayStatics::GetGameInstance(this)))
 	{
 		ClearedChapter = GameInstance->GetClearedChapter();
+		ClearData = GameInstance->GetAllClearData();
 	}
 
-	int32 ButtonNum = ClearedChapter + 1;
+	//int32 ButtonNum = ClearedChapter + 1;
 	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("ButtonNum: %d"), ButtonNum));
 	MenuBox = Cast<UVerticalBox>(GetWidgetFromName(TEXT("ChapterPanel")));
-	
-	if (nullptr != MenuBox)
-	{
-		MenuNumber = MenuBox->GetChildrenCount();
-	}
+	MenuNumber = 3;
+	//if (nullptr != MenuBox)
+//	{
+		// MenuNumber = MenuBox->GetChildrenCount();
+	//	MenuNumber = 3;
+	//}
 
 	CanButtonSelect.Init(false, MenuNumber);
 
-	for (int i = 0; i < ButtonNum; ++i)
+	/*for (int i = 0; i < ButtonNum; ++i)
 	{
 		CanButtonSelect[i] = true;
 	}
-	CanButtonSelect[MenuNumber - 1] = true;
+	CanButtonSelect[MenuNumber - 1] = true;*/
 
 	ChapOneButton = Cast<UButton>(GetWidgetFromName(TEXT("ChapOneBtn")));
 	ChapTwoButton = Cast<UButton>(GetWidgetFromName(TEXT("ChapTwoBtn")));
@@ -49,14 +53,16 @@ void UStageSelectWidget::NativeConstruct()
 
 	if (nullptr != ChapTwoButton)
 	{
-		if (ClearedChapter >= 1) // 이전 챕터를 클리어했을 경우
+		ChapTwoButton->OnClicked.AddDynamic(this, &UStageSelectWidget::OnClickChapTwoButton);
+		ChapTwoButton->OnHovered.AddDynamic(this, &UStageSelectWidget::OnHoveredChapTwoButton);
+		//if (ClearedChapter >= 1) // 이전 챕터를 클리어했을 경우
+		if (ClearData[1].bIsOpened) //챕터가 열려있는 경우
 		{
-			ChapTwoButton->OnClicked.AddDynamic(this, &UStageSelectWidget::OnClickChapTwoButton);
-			ChapTwoButton->OnHovered.AddDynamic(this, &UStageSelectWidget::OnHoveredChapTwoButton);
+			ChapTwoText->SetText(NSLOCTEXT("UStageSelectWidget", "ChapTwoText", "School of Labyrinth"));
 		}
 		else
 		{
-			ChapTwoButton->SetVisibility(ESlateVisibility::Collapsed);
+			ChapTwoText->SetText(NSLOCTEXT("UStageSelectWidget", "ChapUnLock", "???"));
 		}
 	}
 
@@ -76,22 +82,35 @@ void UStageSelectWidget::OnClickChapOneButton()
 	{
 		UGameplayStatics::PlaySound2D(GetWorld(), StageSelectSound);
 	}
-	FString levelName = TEXT("/Game/Levels/GameLevel/Prologue");
+	FadeoutWidgetAnimationEvent.Clear();
+	FadeoutWidgetAnimationEvent.BindUFunction(this, FName(FString(TEXT("OnMoveChapOne"))));
+	BindToAnimationFinished(Fadeout, FadeoutWidgetAnimationEvent);
+	PlayAnimation(Fadeout);
+	//Fadeout->Animation
+	//FString levelName = TEXT("/Game/Levels/GameLevel/Prologue");
 	//if(GameInstance)
 	//	GameInstance->StopSound();
-	UGameplayStatics::OpenLevel(GetWorld(), *levelName);
+	//UGameplayStatics::OpenLevel(GetWorld(), *levelName);
 }
 
 void UStageSelectWidget::OnClickChapTwoButton()
 {
-	if (IsValid(StageSelectSound))
+
+	if (ClearData[1].bIsOpened) //챕터가 열려있는 경우
 	{
-		UGameplayStatics::PlaySound2D(GetWorld(), StageSelectSound);
+		if (IsValid(StageSelectSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), StageSelectSound);
+		}
+		FadeoutWidgetAnimationEvent.Clear();
+		FadeoutWidgetAnimationEvent.BindUFunction(this, FName(FString(TEXT("OnMoveChapTwo"))));
+		BindToAnimationFinished(Fadeout, FadeoutWidgetAnimationEvent);
+		PlayAnimation(Fadeout);
 	}
-	FString levelName = TEXT("/Game/Levels/GameLevel/Level1");
+	//FString levelName = TEXT("/Game/Levels/GameLevel/Level1");
 	/*if(GameInstance)
 		GameInstance->StopSound();*/
-	UGameplayStatics::OpenLevel(GetWorld(), *levelName);
+	//UGameplayStatics::OpenLevel(GetWorld(), *levelName);
 }
 
 void UStageSelectWidget::OnClickBackButton()
@@ -104,6 +123,29 @@ void UStageSelectWidget::OnClickBackButton()
 
 	GameMode->ChangeWidget(WidgetType::StartWidget);
 }
+
+void UStageSelectWidget::OnMoveChapOne()
+{
+	FString levelName = TEXT("/Game/Levels/GameLevel/Prologue");
+	//if(GameInstance)
+	//	GameInstance->StopSound();
+	UGameplayStatics::OpenLevel(GetWorld(), *levelName);
+}
+
+void UStageSelectWidget::OnMoveChapTwo()
+{
+	FString levelName = TEXT("/Game/Levels/GameLevel/Level1");
+	/*if(GameInstance)
+		GameInstance->StopSound();*/
+	UGameplayStatics::OpenLevel(GetWorld(), *levelName);
+}
+//
+//void UStageSelectWidget::OnMoveBack()
+//{
+//	auto GameMode = Cast<AStartGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+//
+//	GameMode->ChangeWidget(WidgetType::StartWidget);
+//}
 
 void UStageSelectWidget::OnHoveredChapOneButton()
 {
@@ -151,9 +193,16 @@ void UStageSelectWidget::UpdateButtonSlate()
 		ChapOneButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
 		ChapTwoButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 		BackButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-		LevelImg->SetBrushFromTexture(LevelSample[MenuNavigationIndex]);
+		if (ClearData[1].bIsOpened) //챕터가 열려있는 경우
+		{
+			LevelImg->SetBrushFromTexture(LevelSample[MenuNavigationIndex]);
+		}
+		else
+		{
+			LevelImg->SetBrushFromTexture(LevelSample[2]);
+		}
 		break;
-	case 5:
+	case 2:
 		ChapOneButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
 		ChapTwoButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
 		BackButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
@@ -181,7 +230,7 @@ FReply UStageSelectWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FK
 		case 1:
 			OnClickChapTwoButton();
 			break;
-		case 5:
+		case 2:
 			OnClickBackButton();
 			break;
 		}

@@ -15,8 +15,8 @@ void UArchiveWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	this->SetKeyboardFocus();
-	bIsFocusable = true;
-	bIsEnabled = true;
+	/*bIsFocusable = true;
+	bIsEnabled = true;*/
 
 	Item->OnClicked.AddDynamic(this, &UArchiveWidget::OnItemButtonClick);
 	Item->OnHovered.AddDynamic(this, &UArchiveWidget::OnItemButtonHovered);
@@ -36,7 +36,12 @@ void UArchiveWidget::NativeConstruct()
 	NavIndex = 5;
 	CurrentIndex = 0;
 
-	bIsStartGameMode = true;
+	//bIsStartGameMode = true;
+
+	if (bIsStartGameMode)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("From Start Game Mode"));
+	}
 
 	UpdateButtonSlate();
 }
@@ -53,6 +58,7 @@ void UArchiveWidget::OnExitButtonClick()
 		auto GameMode = Cast<AStartGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 
 		GameMode->ChangeWidget(WidgetType::StartWidget);
+
 	}
 	else
 	{
@@ -71,10 +77,19 @@ void UArchiveWidget::OnItemButtonClick()
 	}
 	UArchiveDocsWidget* NewWidget = CreateWidget<UArchiveDocsWidget>(GetWorld(), DetailWidget);
 
-	this->bIsFocusable = false;
+	//this->bIsFocusable = false;
 	NewWidget->ArchiveMode = EArchiveModes::AM_Item;
-	NewWidget->ParentWidget = this;
+	//NewWidget->ParentWidget = this;
 	NewWidget->AddToViewport();
+	NewWidget->bIsStartGameMode = bIsStartGameMode;
+	NewWidget->bIsStartGameMode = bIsStartGameMode;
+	if (bIsStartGameMode)
+	{
+		auto GameMode = Cast<AStartGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+		GameMode->SetCurrentWidget(NewWidget);
+	}
+	RemoveFromParent();
 }
 
 void UArchiveWidget::OnDocumentButtonClick()
@@ -85,10 +100,19 @@ void UArchiveWidget::OnDocumentButtonClick()
 	}
 	UArchiveDocsWidget* NewWidget = CreateWidget<UArchiveDocsWidget>(GetWorld(), DetailWidget);
 	
-	this->bIsFocusable = false;
+	//this->bIsFocusable = false;
 	NewWidget->ArchiveMode = EArchiveModes::AM_Document;
-	NewWidget->ParentWidget = this;
+	//NewWidget->ParentWidget = this;
 	NewWidget->AddToViewport();
+	NewWidget->bIsStartGameMode = bIsStartGameMode;
+	NewWidget->bIsStartGameMode = bIsStartGameMode;
+	if (bIsStartGameMode)
+	{
+		auto GameMode = Cast<AStartGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+		GameMode->SetCurrentWidget(NewWidget);
+	}
+	RemoveFromParent();
 }
 
 void UArchiveWidget::OnLetterButtonClick()
@@ -99,10 +123,18 @@ void UArchiveWidget::OnLetterButtonClick()
 	}
 	UArchiveDocsWidget* NewWidget = CreateWidget<UArchiveDocsWidget>(GetWorld(), DetailWidget);
 
-	this->bIsFocusable = false;
+	//this->bIsFocusable = false;
 	NewWidget->ArchiveMode = EArchiveModes::AM_Letter;
-	NewWidget->ParentWidget = this;
+	//NewWidget->ParentWidget = this;
 	NewWidget->AddToViewport();
+	NewWidget->bIsStartGameMode = bIsStartGameMode;
+	if (bIsStartGameMode)
+	{
+		auto GameMode = Cast<AStartGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+		GameMode->SetCurrentWidget(NewWidget);
+	}
+	RemoveFromParent();
 }
 
 void UArchiveWidget::OnHintButtonClick()
@@ -112,10 +144,18 @@ void UArchiveWidget::OnHintButtonClick()
 		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
 	}
 	UHintWidget* NewWidget = CreateWidget<UHintWidget>(GetWorld(), HintWidget);
-
-	this->bIsFocusable = false;
-	NewWidget->FromWidget = this;
 	NewWidget->AddToViewport();
+	NewWidget->bIsStartGameMode = bIsStartGameMode;
+	//this->bIsFocusable = false;
+	//NewWidget->FromWidget = this;
+	NewWidget->bIsStartGameMode = bIsStartGameMode;
+	if (bIsStartGameMode)
+	{
+		auto GameMode = Cast<AStartGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+
+		GameMode->SetCurrentWidget(NewWidget);
+	}
+	RemoveFromParent();
 }
 
 void UArchiveWidget::OnExitButtonHovered()

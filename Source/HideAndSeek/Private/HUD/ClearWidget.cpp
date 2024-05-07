@@ -17,6 +17,7 @@ void UClearWidget::NativeConstruct()
 	NextStageButton = Cast<UButton>(GetWidgetFromName(TEXT("NextStage")));
 	BackToMainButton = Cast<UButton>(GetWidgetFromName(TEXT("BackToMain")));
 	CurrentLevel = UGameplayStatics::GetCurrentLevelName(GetWorld());
+	RecordBreakingText->SetVisibility(ESlateVisibility::Collapsed);
 
 	if (ClearTime != nullptr)
 	{
@@ -100,6 +101,14 @@ void UClearWidget::OnHoveredBackToMain()
 void UClearWidget::SetClearTime(FString inClearTime)
 {
 	ClearTime->SetText(FText::FromString(inClearTime));
+}
+
+void UClearWidget::SetRecordBreakingText(bool inIsVisible)
+{
+	if (inIsVisible)
+	{
+		RecordBreakingText->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
+	}
 }
 
 void UClearWidget::UpdateButtonSlate()

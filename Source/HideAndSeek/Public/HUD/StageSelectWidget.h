@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "ComponentAction/Records.h"
 #include "StageSelectWidget.generated.h"
 
 /**
@@ -32,6 +33,15 @@ protected:
 		void OnClickBackButton();
 
 	UFUNCTION()
+		void OnMoveChapOne();
+
+	UFUNCTION()
+		void OnMoveChapTwo();
+
+	/*UFUNCTION()
+		void OnMoveBack();*/
+
+	UFUNCTION()
 		void OnHoveredChapOneButton();
 
 	UFUNCTION()
@@ -44,6 +54,9 @@ protected:
 		void UpdateButtonSlate();
 
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+		class UTextBlock* ChapTwoText;
 
 private:
 	UPROPERTY()
@@ -76,6 +89,9 @@ private:
 	UPROPERTY()
 		int32 ClearedChapter;
 
+	UPROPERTY()
+		TArray<FClearData> ClearData;
+
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level_Image")
 		TArray<UTexture2D*> LevelSample;
@@ -88,4 +104,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 		TObjectPtr<class USoundCue> ButtonMoveSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
+		class UWidgetAnimation* Fadeout;
+
+	FWidgetAnimationDynamicEvent FadeoutWidgetAnimationEvent;
 };

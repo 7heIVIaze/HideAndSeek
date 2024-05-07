@@ -26,6 +26,7 @@ void UOptionWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	this->SetKeyboardFocus();
+	
 
 	PlaySettingButton = Cast<UButton>(GetWidgetFromName(TEXT("PlayOptionBtn")));
 	GraphicsSettingButton = Cast<UButton>(GetWidgetFromName(TEXT("GraphicOptionBtn")));

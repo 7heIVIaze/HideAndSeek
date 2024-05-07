@@ -7,6 +7,7 @@
 void UBruteAnimInstance::NativeInitializeAnimation()
 {
 	Brute = Cast<ABrute_cpp>(TryGetPawnOwner());
+
 	// Pawn에 해당하는 인스턴스가 있는지 없는지 상관 없이 해당 객체를 가져오고 Brute_cpp로 변환
 }
 
@@ -21,6 +22,8 @@ void UBruteAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		bIsChase = Brute->bIsChase;
 		bIsCatch = Brute->GetIsCatch();
 		bIsStunned = Brute->GetIsStunned();
+		bIsRangeChange = Brute->bIsRangeChange;
+		bIsCalledRangeChange = Brute->bCalledRangeChange;
 		/*if (Brute->bIsTimeStop)
 		{
 			Montage_Stop(0.f);
@@ -50,5 +53,41 @@ void UBruteAnimInstance::AnimNotify_BruteAttackEnd()
 		Brute->SetAnimFinish(true);
 		bIsCatch = false;
 		UE_LOG(LogTemp, Warning, TEXT("IsCatch = %s"), (bIsCatch == true) ? TEXT("true") : TEXT("false"));
+	}
+}
+
+void UBruteAnimInstance::AnimNotify_BruteChangeRangeStart()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Change Range Notify Called"));
+	if (IsValid(Brute))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Start IsValid Called"));
+		//Brute->SetIsCatch(true);
+		//bIsCatch = true;
+		//UE_LOG(LogTemp, Warning, TEXT("IsCatch = %s"), (bIsCatch == true) ? TEXT("true") : TEXT("false"));
+	}
+}
+
+void UBruteAnimInstance::AnimNotify_BruteChangeRangeEnd()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Change Range Notify Called"));
+	if (IsValid(Brute))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("End IsValid Called"));
+		//Brute->SetIsCatch(false);
+		//Brute->bCalledRangeChange = false;
+		//bIsCalledRangeChange = false;
+		if (!bIsChase)
+		{
+			bIsRangeChange = true;
+			Brute->BroadCastChangeNoiseRange(true);
+		}
+		else
+		{
+			bIsRangeChange = true;
+			Brute->ChangeNoiseRange(false);
+		}
+		//bIsCatch = false;
+		//UE_LOG(LogTemp, Warning, TEXT("IsCatch = %s"), (bIsCatch == true) ? TEXT("true") : TEXT("false"));
 	}
 }

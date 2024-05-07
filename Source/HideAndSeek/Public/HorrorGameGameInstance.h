@@ -6,6 +6,9 @@
 #include "Engine/GameInstance.h"
 #include "ComponentAction/Records.h"
 #include "MyStoveSDKObject.h"
+//#include "Interfaces/OnlineSessionInterface.h"
+//#include "Interfaces/OnlineUserCloudInterface.h"
+//#include "Interfaces/OnlineIdentityInterface.h"
 #include "HorrorGameGameInstance.generated.h"
 
 struct FHorrorGameItemData;
@@ -20,6 +23,18 @@ public:
 
 	virtual void OnStart() override;
 	virtual void Init() override;
+
+	/*void GetOnlineSubsystem();
+
+	UFUNCTION(BlueprintCallable)
+	bool WriteUserFile_Test(const FString& FileName, const FString& FileContents, bool bCompressBeforeUpload);
+
+	IOnlineSessionPtr OnlineSessionInterface;
+	IOnlineUserCloudPtr OnlineCloudInterface;
+	IOnlineIdentityPtr OnlineIdentityInterface;
+
+	FString Filename;*/
+
 
 	UFUNCTION()
 		virtual void BeginLoadingScreen(const FString& MapName);
@@ -57,6 +72,9 @@ public:
 		bool TimerOnSaveLogic(bool inIsTimerOn);
 
 	UFUNCTION(BlueprintCallable)
+		bool OptionSettingSaveLogic(FOptionSettings inOptionSetting);
+
+	UFUNCTION(BlueprintCallable)
 		bool CharacteristicsOnSaveLogic();
 
 	UFUNCTION(BlueprintCallable)
@@ -84,6 +102,9 @@ public:
 		bool GetIsTimerOn();
 
 	UFUNCTION(BlueprintCallable)
+		ELanguage GetCurrentLanguage();
+
+	UFUNCTION(BlueprintCallable)
 		bool ClearTimeSaveLogic(int32 inClearedChapter, FString inClearTime); // inClearedChapter는 클리어한 챕터, inClearTime은 클리어 시의 시간
 
 	UFUNCTION(BlueprintCallable)
@@ -96,7 +117,10 @@ public:
 		TArray<FString> GetAllClearedTime();
 
 	UFUNCTION(BlueprintCallable)
-		bool ChapterClearSaveLogic(int32 inClearedChapter, FString inClearTime);
+		TArray<FClearData> GetAllClearData();
+
+	UFUNCTION(BlueprintCallable)
+		bool ChapterClearSaveLogic(int32 inClearedChapter, float inClearTime, int32 inNextChapter);
 
 private:
 	UPROPERTY()
@@ -121,22 +145,25 @@ private:
 		TArray<FString> ClearedTime;
 
 	UPROPERTY()
-		float BrightGamma; // 밝기 감마. (하한 0.5 ~ 상한 5.0)
+		FOptionSettings OptionSetting;
 
-	UPROPERTY()
-		bool bMotionBlur; // 모션 블러 설정
+	//UPROPERTY()
+	//	float BrightGamma; // 밝기 감마. (하한 0.5 ~ 상한 5.0)
 
-	UPROPERTY()
-		float Volume; // 볼륨 설정
+	//UPROPERTY()
+	//	bool bMotionBlur; // 모션 블러 설정
 
-	UPROPERTY()
-		float MouseSensitive; // 마우스 감도 설정
+	//UPROPERTY()
+	//	float Volume; // 볼륨 설정
 
-	UPROPERTY()
-		bool bIsCrossHairOn; // 크로스헤어 설정
+	//UPROPERTY()
+	//	float MouseSensitive; // 마우스 감도 설정
 
-	UPROPERTY()
-		bool bIsTimerOn; // 타이머 설정
+	//UPROPERTY()
+	//	bool bIsCrossHairOn; // 크로스헤어 설정
+
+	//UPROPERTY()
+	//	bool bIsTimerOn; // 타이머 설정
 
 	UPROPERTY()
 		TArray<FClearData> ClearChapter;

@@ -36,6 +36,9 @@ public: // FUNCTION
 		void SetClearTime(FString inClearTime);
 
 	UFUNCTION()
+		void SetRecordBreakingText(bool inIsVisible);
+
+	UFUNCTION()
 		void UpdateButtonSlate();
 
 public: // PROPERTY
@@ -62,6 +65,9 @@ public: // PROPERTY
 
 	UPROPERTY(EditInstanceOnly, meta = (BindWidget))
 		class UTextBlock* ClearTime;
+
+	UPROPERTY(EditInstanceOnly, meta = (BindWidget))
+		class UTextBlock* RecordBreakingText;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 		TObjectPtr<class USoundCue> ButtonClickSound;

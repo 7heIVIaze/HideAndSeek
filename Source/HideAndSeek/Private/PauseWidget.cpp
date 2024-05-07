@@ -3,8 +3,11 @@
 #include "PauseWidget.h"
 #include "Components/Button.h"
 #include "HorrorGamePlayerController.h"
+#include "HideAndSeek/HorrorGameCharacter.h"
+#include "GameUI.h"
 #include "Sound/SoundCue.h"
 #include "HUD/ArchiveWidget.h"
+#include "HUD/TimerWidget.h"
 
 void UPauseWidget::NativeConstruct()
 {
@@ -72,7 +75,12 @@ void UPauseWidget::OnClickRetryButton()
 		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
 	}
 	auto PlayerController = Cast<AHorrorGamePlayerController>(GetOwningPlayer());
+	auto Player = Cast<AHorrorGameCharacter>(PlayerController->GetPawn());
 
+	if (Player)
+	{
+		Player->GameUIWidget->TimerWidget->StopTimer();
+	}
 	PlayerController->RestartLevel();
 }
 
@@ -81,6 +89,14 @@ void UPauseWidget::OnClickQuitButton()
 	if (IsValid(ButtonClickSound))
 	{
 		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+	}
+
+	auto PlayerController = Cast<AHorrorGamePlayerController>(GetOwningPlayer());
+	auto Player = Cast<AHorrorGameCharacter>(PlayerController->GetPawn());
+
+	if (Player)
+	{
+		Player->GameUIWidget->TimerWidget->StopTimer();
 	}
 	UGameplayStatics::OpenLevel(GetWorld(), TEXT("Start"));
 }

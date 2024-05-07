@@ -59,36 +59,36 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 			switch(DocumentData->Number) // 문서 번호
 			{
 			case 1:
-				if (!SaveData->Article1)
+				if (!SaveData->CollectArchives.Article1)
 				{
-					SaveData->Article1 = true;
+					SaveData->CollectArchives.Article1 = true;
 					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Article1", "Article dated January 4th\nis added in archive"));
 				}
 				break;
 			case 2:
-				if (!SaveData->Article2)
+				if (!SaveData->CollectArchives.Article2)
 				{
-					SaveData->Article2 = true;
+					SaveData->CollectArchives.Article2 = true;
 					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Article2", "Article dated December 7th\nis added in archive"));
 				}
 				break;
 			case 3:
-				if (!SaveData->Article3)
+				if (!SaveData->CollectArchives.Article3)
 				{
-					SaveData->Article3 = true;
+					SaveData->CollectArchives.Article3 = true;
 					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Article3", "Article dated December 18th\nis added in archive"));
 				}
 			case 4:
-				if (!SaveData->Article4)
+				if (!SaveData->CollectArchives.Article4)
 				{
-					SaveData->Article4 = true;
+					SaveData->CollectArchives.Article4 = true;
 					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Article4", "Article dated January 11th\nis added in archive"));
 				}
 				break;
 			case 5:
-				if (!SaveData->Article5)
+				if (!SaveData->CollectArchives.Article5)
 				{
-					SaveData->Article5 = true;
+					SaveData->CollectArchives.Article5 = true;
 					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Article5", "Article dated February 6th\nis added in archive"));
 				}
 				break;
@@ -108,36 +108,36 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 			switch (DocumentData->Number)
 			{
 			case 1:
-				if (!SaveData->Diary1)
+				if (!SaveData->CollectArchives.Diary1)
 				{
-					SaveData->Diary1 = true;
+					SaveData->CollectArchives.Diary1 = true;
 					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Diary1", "Diary dated November 4th\nis added in archive"));
 				}
 				break;
 			case 2:
-				if (!SaveData->Diary2)
+				if (!SaveData->CollectArchives.Diary2)
 				{
-					SaveData->Diary2 = true;
+					SaveData->CollectArchives.Diary2 = true;
 					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Diary2", "Someone's Diary\nis added in archive"));
 				}
 				break;
 			case 3:
-				if (!SaveData->Diary3)
+				if (!SaveData->CollectArchives.Diary3)
 				{
-					SaveData->Diary3 = true;
+					SaveData->CollectArchives.Diary3 = true;
 					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Diary3", "Diary dated January 3rd\nis added in archive"));
 				}
 			case 4:
-				if (!SaveData->Diary4)
+				if (!SaveData->CollectArchives.Diary4)
 				{
-					SaveData->Diary4 = true;
+					SaveData->CollectArchives.Diary4 = true;
 					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Diary4", "Diary dated December 17th\nis added in archive"));
 				}
 				break;
 			case 5:
-				if (!SaveData->Diary5)
+				if (!SaveData->CollectArchives.Diary5)
 				{
-					SaveData->Diary5 = true;
+					SaveData->CollectArchives.Diary5 = true;
 					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Diary5", "Diary dated February 6th\nis added in archive"));
 				}
 				break;
@@ -157,73 +157,73 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 			switch (DocumentData->Number)
 			{
 			case 1:
-				if (!SaveData->Letter1_Berith1)
+				if (!SaveData->CollectArchives.Letter1_Berith1)
 				{
-					SaveData->Letter1_Berith1 = true;
-					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter1", "Berith's Letter 1\nis added in archive"));
+					SaveData->CollectArchives.Letter1_Berith1 = true;
+					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter1", "Natty's Letter 1\nis added in archive"));
 				}
 				break;
 			case 2:
-				if (!SaveData->Letter2_Berith2)
+				if (!SaveData->CollectArchives.Letter2_Berith2)
 				{
-					SaveData->Letter2_Berith2 = true;
-					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter2", "Berith's Letter 2\nis added in archive"));
+					SaveData->CollectArchives.Letter2_Berith2 = true;
+					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter2", "Natty's Letter 2\nis added in archive"));
 				}
 				break;
 			case 3:
-				if (!SaveData->Letter3_Berith3)
+				if (!SaveData->CollectArchives.Letter3_Berith3)
 				{
-					SaveData->Letter3_Berith3 = true;
-					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter3", "Berith's Letter 3\nis added in archive"));
+					SaveData->CollectArchives.Letter3_Berith3 = true;
+					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter3", "Natty's Letter 3\nis added in archive"));
 				}
 				break;
 			case 4:
-				if (!SaveData->Letter4_Berith4)
+				if (!SaveData->CollectArchives.Letter4_Berith4)
 				{
-					SaveData->Letter4_Berith4 = true;
-					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter4", "Berith's Letter 4\nis added in archive"));
+					SaveData->CollectArchives.Letter4_Berith4 = true;
+					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter4", "Natty's Letter 4\nis added in archive"));
 				}
 				break;
 			case 5:
-				if (!SaveData->Letter5_Berith5)
+				if (!SaveData->CollectArchives.Letter5_Berith5)
 				{
-					SaveData->Letter5_Berith5 = true;
-					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter5", "Berith's Letter 5\nis added in archive"));
+					SaveData->CollectArchives.Letter5_Berith5 = true;
+					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter5", "Natty's Letter 5\nis added in archive"));
 				}
 				break;
 			case 6:
-				if (!SaveData->Letter6_Berith6)
+				if (!SaveData->CollectArchives.Letter6_Berith6)
 				{
-					SaveData->Letter6_Berith6 = true;
-					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter6", "Berith's Letter 6\nis added in archive"));
+					SaveData->CollectArchives.Letter6_Berith6 = true;
+					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter6", "Natty's Letter 6\nis added in archive"));
 				}
 				break;
 			case 7:
-				if (!SaveData->Letter7_Gamigin1)
+				if (!SaveData->CollectArchives.Letter7_Gamigin1)
 				{
-					SaveData->Letter7_Gamigin1 = true;
-					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter7", "Gamigin's Letter 1\nis added in archive"));
+					SaveData->CollectArchives.Letter7_Gamigin1 = true;
+					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter7", "Hongsul's Letter 1\nis added in archive"));
 				}
 				break;
 			case 8:
-				if (!SaveData->Letter8_Gamigin2)
+				if (!SaveData->CollectArchives.Letter8_Gamigin2)
 				{
-					SaveData->Letter8_Gamigin2 = true;
-					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter8", "Gamigin's Letter 2\nis added in archive"));
+					SaveData->CollectArchives.Letter8_Gamigin2 = true;
+					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter8", "Hongsul's Letter 2\nis added in archive"));
 				}
 				break;
 			case 9:
-				if (!SaveData->Letter9_Gamigin3)
+				if (!SaveData->CollectArchives.Letter9_Gamigin3)
 				{
-					SaveData->Letter9_Gamigin3 = true;
-					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter9", "Gamigin's Letter 3\nis added in archive"));
+					SaveData->CollectArchives.Letter9_Gamigin3 = true;
+					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter9", "Hongsul's Letter 3\nis added in archive"));
 				}
 				break;
 			case 10:
-				if (!SaveData->Letter10_Gamigin4)
+				if (!SaveData->CollectArchives.Letter10_Gamigin4)
 				{
-					SaveData->Letter10_Gamigin4 = true;
-					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter10", "Gamigin's Letter 4\nis added in archive"));
+					SaveData->CollectArchives.Letter10_Gamigin4 = true;
+					Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter10", "Hongsul's Letter 4\nis added in archive"));
 				}
 				break;
 			}

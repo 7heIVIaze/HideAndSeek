@@ -39,9 +39,9 @@ void AKey_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	{
 		if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 		{
-			if (!SaveData->Item3_Key) // 열쇠를 처음 얻은 상태라면
+			if (!SaveData->CollectArchives.Item3_Key) // 열쇠를 처음 얻은 상태라면
 			{
-				SaveData->Item3_Key = true;
+				SaveData->CollectArchives.Item3_Key = true;
 				Player->SetArchiveGetText(NSLOCTEXT("AKey_cpp", "Get_Key", "Key\nis added in archive"));
 				SaveData->SaveData();
 			}

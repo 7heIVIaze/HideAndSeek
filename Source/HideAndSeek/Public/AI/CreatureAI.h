@@ -47,6 +47,12 @@ public:
 	UFUNCTION()
 		void OnTargetDetected(AActor* Actor, FAIStimulus const Stimulus);
 
+	//UFUNCTION(BlueprintCallable)
+	//void DetectedBySight(AActor* Actor, FAIStimulus const Stimulus);
+
+	//UFUNCTION(BlueprintCallable)
+	//void DetectedByHearing(AActor* Actor, FAIStimulus const Stimulus);
+
 	UFUNCTION()
 		void SetStunned(bool value);
 
@@ -79,6 +85,8 @@ public:
 		float AIFieldOfView = 90.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		float AILastSeenLocation = 1200.0f;
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		float AIHearingRange = 1600.0f;*/
 
 
 private:
@@ -89,6 +97,7 @@ private:
 
 	class UBlackboardComponent* BlackboardComp;
 	class UAISenseConfig_Sight* SightConfig;
+	//class UAISenseConfig_Hearing* HearingConfig;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 		class UBehaviorTreeComponent* Behavior_Tree_Component;

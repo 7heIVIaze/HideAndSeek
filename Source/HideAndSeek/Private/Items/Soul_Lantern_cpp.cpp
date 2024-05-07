@@ -81,9 +81,9 @@ void ASoul_Lantern_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	{
 		if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 		{
-			if (!SaveData->Item10_SoulLantern) // 영혼 랜턴을 처음 얻은 상태라면
+			if (!SaveData->CollectArchives.Item10_SoulLantern) // 영혼 랜턴을 처음 얻은 상태라면
 			{
-				SaveData->Item10_SoulLantern = true;
+				SaveData->CollectArchives.Item10_SoulLantern = true;
 				Player->SetArchiveGetText(NSLOCTEXT("ASoul_Lantern_cpp", "Get_SoulLantern", "Soul Lantern\nis added in archive"));
 				SaveData->SaveData();
 			}

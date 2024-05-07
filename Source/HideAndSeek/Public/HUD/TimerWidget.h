@@ -17,6 +17,8 @@ class HIDEANDSEEK_API UTimerWidget : public UUserWidget
 protected:
 	virtual void NativeConstruct() override;
 
+	//virtual void NativeTick(const FGeometry& MyGeometry, float inDeltaTime);
+
 public:
 	UFUNCTION()
 		void StartTimer();
@@ -29,6 +31,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		FString GetClearTime();
+
+	UFUNCTION(BlueprintCallable)
+		float GetIntClearTime();
 public:
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 		class UTextBlock* MiliSecond;

@@ -87,6 +87,8 @@ public:
 
 	virtual void DissolveFinish() override;
 
+	UFUNCTION(BlueprintCallable)
+	void OpenDoor();
 
 public:
 	UPROPERTY()

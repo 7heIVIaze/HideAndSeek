@@ -20,7 +20,7 @@ const FName AAIController_Brute::TargetKey(TEXT("Target"));
 const FName AAIController_Brute::TargetLocation(TEXT("TargetLocation"));
 const FName AAIController_Brute::CanSeePlayer(TEXT("CanSeePlayer"));
 const FName AAIController_Brute::NoiseDetected(TEXT("NoiseDetected"));
-//const FName AAIController_Brute::SprintDetected(TEXT("SprintDetected"));
+const FName AAIController_Brute::ChangeDetectRange(TEXT("ChangeDetectRange"));
 const FName AAIController_Brute::Stunned(TEXT("Stunned"));
 const FName AAIController_Brute::LockerLighting(TEXT("LockerLighting"));
 

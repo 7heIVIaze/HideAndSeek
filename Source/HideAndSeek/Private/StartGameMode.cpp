@@ -144,3 +144,8 @@ void AStartGameMode::ChangeWidget(WidgetType widgetNumber)
 		break;
 	}
 }
+
+void AStartGameMode::SetCurrentWidget(UUserWidget* inWidgetObject)
+{
+	CurrentWidget = inWidgetObject;
+}

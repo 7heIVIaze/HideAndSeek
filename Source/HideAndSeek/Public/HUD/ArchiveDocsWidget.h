@@ -114,6 +114,12 @@ public:
 		void OnArchive10ButtonHover();
 
 	UFUNCTION()
+		void OnArchive11ButtonClick();
+
+	UFUNCTION()
+		void OnArchive11ButtonHover();
+
+	UFUNCTION()
 		void UpdateButtonSlate();
 
 public:
@@ -220,6 +226,12 @@ public:
 		class UTextBlock* Archive10Text;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+		class UButton* Archive11;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
+		class UTextBlock* Archive11Text;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
 		class UTextBlock* ExplainText;
 
 	UPROPERTY()
@@ -279,6 +291,9 @@ public:
 
 	UPROPERTY()
 		bool Item10_SoulLantern; // 영혼 랜턴
+
+	UPROPERTY()
+		bool Item11_GlowStick; // 야광봉
 
 	// 신문 기사 문서
 	UPROPERTY()
@@ -350,5 +365,8 @@ public:
 		TObjectPtr<class USoundCue> ButtonMoveSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
-		TObjectPtr<class UArchiveWidget> ParentWidget;
+	TSubclassOf<UUserWidget> ParentWidget;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
+	bool bIsStartGameMode = true;
 };

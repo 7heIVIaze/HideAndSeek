@@ -175,6 +175,14 @@ void UGraphicsOption::NativeConstruct()
 		FullScreenBtn->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredFullScreenButton);
 		FullScreenBtn->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredFullScreenButton);
 	}
+
+	if (BackBtn != nullptr)
+	{
+		BackBtn->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickBackButton);
+		BackBtn->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredBackButton);
+		BackBtn->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredBackButton);
+	}
+
 	if (IsValid(GraphicsSettingPanel))
 	{
 		MenuNumber = GraphicsSettingPanel->GetChildrenCount();
@@ -1067,17 +1075,18 @@ void UGraphicsOption::SetBrightness(float Value)
 		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
 	}
 	Brightness += Value;
-	if (Brightness <= 0.5f)
+	/*if (Brightness <= 0.5f)
 	{
 		Brightness = 0.5f;
 	}
 	if (Brightness >= 5.0f)
 	{
 		Brightness = 5.0f;
-	}
+	}*/
+	Brightness = FMath::Clamp(Brightness, 0.f, 5.f);
 
-	//BrightBar->SetPercent(Brightness / 5.f);
-	BrightBar->SetPercent((Brightness - 0.5f) / 4.5f);
+	BrightBar->SetPercent(Brightness / 5.f);
+	//BrightBar->SetPercent((Brightness - 0.5f) / 4.5f);
 
 	FString CVarGamma = TEXT("gamma ") + FString::Printf(TEXT("%f"), Brightness);
 
@@ -1106,6 +1115,34 @@ void UGraphicsOption::SetBrightness(float Value)
 
 }
 
+void UGraphicsOption::OnClickBackButton()
+{
+	if (IsValid(ButtonMoveSound))
+	{
+		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+	}
+	PlayAnimation(BackOptionAnim);
+}
+
+void UGraphicsOption::OnHoveredBackButton()
+{
+	if (CurrentMode == GraphicsType::None) // 현재 아무 것도 선택되지 않은 상태일 때만
+	{
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
+		}
+		MenuNavIndex = 6;
+		UpdateButtonSlate();
+		BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+	}
+}
+
+void UGraphicsOption::OnUnhoveredBackButton()
+{
+	BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+}
+
 void UGraphicsOption::UpdateButtonSlate()
 {
 	if (CurrentMode == GraphicsType::None)
@@ -1114,62 +1151,78 @@ void UGraphicsOption::UpdateButtonSlate()
 		{
 		case 0:
 			Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-			WindowMode->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			BrightButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			ShadowBtn->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			MotionBlurBtn->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			ShadowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			MotionBlurBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			break;
 		case 1:
-			Resolution->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-			BrightButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			ShadowBtn->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			MotionBlurBtn->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			ShadowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			MotionBlurBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			break;
 		case 2:
-			Resolution->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			WindowMode->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			ShadowBtn->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			MotionBlurBtn->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			ShadowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			MotionBlurBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			break;
 		case 3:
-			Resolution->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			WindowMode->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			BrightButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-			ShadowBtn->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			MotionBlurBtn->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			ShadowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			MotionBlurBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			break;
 		case 4:
-			Resolution->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			WindowMode->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			BrightButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			ShadowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-			MotionBlurBtn->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			MotionBlurBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			break;
 		case 5:
-			Resolution->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			WindowMode->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			BrightButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-			ShadowBtn->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+			Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			ShadowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 			MotionBlurBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			break;
+		case 6:
+			Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			ShadowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			MotionBlurBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 			break;
 		}
 	}
 	else
 	{
-		Resolution->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-		WindowMode->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-		BrightButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-		AntiAliasingBtn->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-		ShadowBtn->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
-		MotionBlurBtn->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
+		Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		AntiAliasingBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		ShadowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		MotionBlurBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 	}
 	
 	if (CurrentMode == GraphicsType::Resolution)
@@ -1533,6 +1586,9 @@ FReply UGraphicsOption::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyE
 				break;
 			case 5:
 				OnClickMotionBlurButton();
+				break;
+			case 6:
+				OnClickBackButton();
 				break;
 			}
 		}
