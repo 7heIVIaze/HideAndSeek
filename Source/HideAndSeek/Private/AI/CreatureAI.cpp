@@ -15,6 +15,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "AI/Reaper_cpp.h"
 
+// 블랙보드 데이터를 블루프린트로부터 읽어올 수 있도록 바인딩해줌.
 const FName ACreatureAI::PatrolTargetKey(TEXT("PatrolTarget"));
 const FName ACreatureAI::NoiseTargetKey(TEXT("NoiseTargetKey"));
 const FName ACreatureAI::HomePosKey(TEXT("HomePos"));
@@ -22,15 +23,19 @@ const FName ACreatureAI::PatrolPosKey(TEXT("PatrolPos"));
 const FName ACreatureAI::TargetKey(TEXT("Target"));
 const FName ACreatureAI::TargetLocation(TEXT("TargetLocation"));
 const FName ACreatureAI::CanSeePlayer(TEXT("CanSeePlayer"));
-// const FName ACreatureAI::SprintDetected(TEXT("SprintDetected"));
 const FName ACreatureAI::NoiseDetected(TEXT("NoiseDetected"));
 const FName ACreatureAI::Stunned(TEXT("Stunned"));
 const FName ACreatureAI::LockerLighting(TEXT("LockerLighting"));
 const FName ACreatureAI::SealStatus(TEXT("SealStatus"));
+const FName ACreatureAI::LockerTargetKey(TEXT("LockerTarget"));
 
+// Constructor
 ACreatureAI::ACreatureAI()
 {
+	// AI Controller는 Tick 비활성화할 것임. Actor만 해도 충분함.
 	PrimaryActorTick.bCanEverTick = false;
+
+	// 블랙보드 컴포넌트를 블루프린트 클래스로부터 가져와 생성함.
 	static ConstructorHelpers::FObjectFinder<UBlackboardData> BBObject(TEXT("/Game/Assets/AI/Reaper/BB_Reaper"));
 	if (BBObject.Succeeded())
 	{
@@ -38,6 +43,7 @@ ACreatureAI::ACreatureAI()
 		UE_LOG(LogTemp, Log, TEXT("BB Access Completed!"))
 	}
 
+	// 비헤이비어트리 컴포넌트를 블루프린트 클래스로부터 가져와 생성함.
 	Behavior_Tree_Component = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BT Comp"));
 	static ConstructorHelpers::FObjectFinder<UBehaviorTree> BTObject(TEXT("/Game/Assets/AI/Reaper/BT_Reaper"));
 	if (BTObject.Succeeded())
@@ -55,9 +61,9 @@ void ACreatureAI::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// 처음 생성될 때 상태는 봉인된 상태로 설정
 	CurrentStatus = Sealed::Sealed;
 }
-
 
 void ACreatureAI::OnPossess(APawn* InPawn)
 {
@@ -69,6 +75,7 @@ void ACreatureAI::OnPossess(APawn* InPawn)
 	}
 }
 
+// AI가 Destroy될 경우 비헤이비어트리를 정리하고 Destroy되도록 하는 함수
 void ACreatureAI::StopAI()
 {
 	// Super::OnUnPossess();
@@ -82,47 +89,6 @@ void ACreatureAI::StopAI()
 UBlackboardComponent* ACreatureAI::GetBlackboard() const
 {
 	return BlackboardComp;
-}
-//void ACreatureAI::OnUnPossess()
-//{
-//	Super::OnUnPossess();
-//	GetWorld()->GetTimerManager().ClearTimer(RepeatTimerHandle);
-//}
-
-void ACreatureAI::UpdatePerception(const TArray<AActor*>& Actors)
-{
-	if (BlackboardComp == nullptr)
-		return;
-
-	int size = Actors.Num();
-	// bool catched = false;
-
-	for (int i = 0; i < size; ++i)
-	{
-		AHorrorGameCharacter* player = Cast<AHorrorGameCharacter>(Actors[i]);
-		if (player != nullptr)
-		{
-
-			if (player->GetIsHiding())
-			{
-				GetAIPerceptionComponent()->ForgetAll();
-			}
-
-			player = Cast<AHorrorGameCharacter>(BlackboardComp->GetValueAsObject(TargetKey));
-			
-			if (player == nullptr)
-			{
-				BlackboardComp->SetValueAsObject(TargetKey, Actors[i]);
-				BlackboardComp->SetValueAsVector(TargetLocation, Actors[i]->GetActorLocation());
-			}
-			else
-			{
-				BlackboardComp->SetValueAsObject(TargetKey, nullptr);
-
-			}
-			break;
-		}
-	}
 }
 
 void ACreatureAI::OnTargetDetected(AActor* Actor, FAIStimulus const Stimulus)
@@ -348,28 +314,6 @@ void ACreatureAI::OnTargetDetected(AActor* Actor, FAIStimulus const Stimulus)
 //	}
 //}
 
-void ACreatureAI::OnRepeatTimer()
-{
-	auto CurrentPawn = GetPawn();
-	if (nullptr == CurrentPawn)
-	{
-		return;
-	}
-	
-	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(GetWorld());
-	if (nullptr == NavSystem)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("NavSystem is nullptr"));
-		return;
-	}
-
-	FNavLocation NextLocation;
-	if (NavSystem->GetRandomPointInNavigableRadius(FVector::ZeroVector, 500.f, NextLocation))
-	{
-		UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, NextLocation.Location);
-		UE_LOG(LogTemp, Warning, TEXT("Next Location: %s"), *NextLocation.Location.ToString());
-	}
-}
 
 void ACreatureAI::SetPerception()
 {

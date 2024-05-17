@@ -6,9 +6,11 @@
 #include "AI/CreatureAI.h"
 #include "AI/AIController_Runner.h"
 #include "AI/AIController_Brute.h"
+#include "AI/AIController_Shadow.h"
 #include "AI/Reaper_cpp.h"
 #include "AI/Runner_cpp.h"
 #include "AI/Brute_cpp.h"
+#include "AI/Shadow_cpp.h"
 
 UBTTask_SetTrace::UBTTask_SetTrace()
 {
@@ -123,6 +125,40 @@ EBTNodeResult::Type UBTTask_SetTrace::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 		return EBTNodeResult::Succeeded;
 	}
+
+	else if (AAIController_Shadow* ShadowAI = Cast<AAIController_Shadow>(AIController))
+	{
+		AShadow_cpp* Shadow = Cast<AShadow_cpp>(ShadowAI->GetPawn());
+
+		if (nullptr == Shadow)
+		{
+			return EBTNodeResult::Failed;
+		}
+
+		AHorrorGameCharacter* pTarget = Cast<AHorrorGameCharacter>(ShadowAI->GetBlackboard()->GetValueAsObject(AAIController_Shadow::TargetKey));
+
+		if (nullptr == pTarget)
+		{
+			ShadowAI->GetBlackboard()->SetValueAsBool(AAIController_Shadow::CanSeePlayer, false);
+			// ShadowAI->GetBlackboard()->SetValueAsBool(AAIController_Shadow::LockerLighting, false);
+			Shadow->EndChase();
+		}
+
+		else
+		{
+			ShadowAI->GetBlackboard()->SetValueAsBool(AAIController_Shadow::CanSeePlayer, true);
+			Shadow->StartChase();
+		}
+
+		bool bNoiseDetected = ShadowAI->GetBlackboard()->GetValueAsBool(AAIController_Shadow::NoiseDetected);
+
+		if (bNoiseDetected)
+		{
+			ShadowAI->GetBlackboard()->SetValueAsBool(AAIController_Shadow::NoiseDetected, false);
+		}
+
+		return EBTNodeResult::Succeeded;
+		}
 
 	return EBTNodeResult::Failed;
 	//ACreatureAI* ReaperAI = Cast<ACreatureAI>(OwnerComp.GetAIOwner());

@@ -4,9 +4,11 @@
 #include "AI/CreatureAI.h"
 #include "AI/AIController_Runner.h"
 #include "AI/AIController_Brute.h"
+#include "AI/AIController_Shadow.h"
 #include "AI/Reaper_cpp.h"
 #include "AI/Runner_cpp.h"
 #include "AI/Brute_cpp.h"
+#include "AI/Shadow_cpp.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BehaviorTree.h"
@@ -54,7 +56,7 @@ void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 				return;
 			}
 
-			Target = Cast<AActor>(ReaperAI->GetBlackboard()->GetValueAsObject(ACreatureAI::TargetKey));
+			AActor* Target = Cast<AActor>(ReaperAI->GetBlackboard()->GetValueAsObject(ACreatureAI::LockerTargetKey));
 
 			if (nullptr == Target) // 타겟이 없으면 Fail 리턴시키고 task 종료시킴
 			{
@@ -67,6 +69,8 @@ void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 
 			if (Reaper->GetAnimFinish())
 			{
+				ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::LockerTargetKey, nullptr);
+				ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::LockerLighting, false);
 				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 				return;
 			}
@@ -82,19 +86,24 @@ void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 				return;
 			}
 
-			Target = Cast<AActor>(RunnerAI->GetBlackboard()->GetValueAsObject(AAIController_Runner::TargetKey));
+			AActor* Target = Cast<AActor>(RunnerAI->GetBlackboard()->GetValueAsObject(AAIController_Runner::LockerTargetKey));
 
 			if (nullptr == Target)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("MoveToLocker ERROR: Target Not Found"));
 				FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 				return;
 			}
 
+
+			UE_LOG(LogTemp, Warning, TEXT("MoveToLocker Log: Move to Target"));
 			RunnerAI->MoveToActor(Target, AcceptableRadius, bStopOverlap, bUsePathfinding,
 				bAllowStrafe, RunnerAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
 
 			if (Runner->GetAnimFinish())
 			{
+				RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::LockerTargetKey, nullptr);
+				RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::LockerLighting, false);
 				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 				return;
 			}
@@ -110,7 +119,7 @@ void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 				return;
 			}
 
-			Target = Cast<AActor>(BruteAI->GetBlackboard()->GetValueAsObject(AAIController_Brute::TargetKey));
+			AActor* Target = Cast<AActor>(BruteAI->GetBlackboard()->GetValueAsObject(AAIController_Brute::LockerTargetKey));
 
 			if (nullptr == Target)
 			{
@@ -123,6 +132,38 @@ void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 
 			if (Brute->GetAnimFinish())
 			{
+				BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::LockerTargetKey, nullptr);
+				BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::LockerLighting, false);
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				return;
+			}
+		}
+
+		if (AAIController_Shadow* ShadowAI = Cast<AAIController_Shadow>(AIController))
+		{
+			AShadow_cpp* Shadow = Cast<AShadow_cpp>(ShadowAI->GetPawn());
+
+			if (nullptr == Shadow)
+			{
+				FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+				return;
+			}
+
+			AActor* Target = Cast<AActor>(ShadowAI->GetBlackboard()->GetValueAsObject(AAIController_Shadow::LockerTargetKey));
+
+			if (nullptr == Target)
+			{
+				FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+				return;
+			}
+
+			ShadowAI->MoveToActor(Target, AcceptableRadius, bStopOverlap, bUsePathfinding,
+				bAllowStrafe, ShadowAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+
+			if (Shadow->GetAnimFinish())
+			{
+				ShadowAI->GetBlackboard()->SetValueAsObject(AAIController_Shadow::LockerTargetKey, nullptr);
+				ShadowAI->GetBlackboard()->SetValueAsBool(AAIController_Shadow::LockerLighting, false);
 				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 				return;
 			}

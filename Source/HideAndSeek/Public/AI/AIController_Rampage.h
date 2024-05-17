@@ -33,8 +33,7 @@ public:
 
 	UFUNCTION()
 		void SetPerception();
-	UFUNCTION()
-		void UpdatePerception(const TArray<AActor*>& Actors);
+
 	UFUNCTION()
 		void OnTargetDetected(AActor* Actor, FAIStimulus const Stimulus);
 

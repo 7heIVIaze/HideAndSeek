@@ -11,10 +11,12 @@
 #include "AI/AIController_Runner.h"
 #include "AI/AIController_Brute.h"
 #include "AI/AIController_Rampage.h"
+#include "AI/AIController_Shadow.h"
 #include "AI/Reaper_cpp.h"
 #include "AI/Runner_cpp.h"
 #include "AI/Brute_cpp.h"
 #include "AI/Rampage_cpp.h"
+#include "AI/Shadow_cpp.h"
 
 
 UBTTask_Trace::UBTTask_Trace()
@@ -71,6 +73,19 @@ EBTNodeResult::Type UBTTask_Trace::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 		ARampage_cpp* Rampage = Cast<ARampage_cpp>(RampageAI->GetPawn());
 
 		if (nullptr == Rampage)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Creature Initialize Failed"));
+			return EBTNodeResult::Failed;
+		}
+
+		return EBTNodeResult::InProgress;
+	}
+
+	if (AAIController_Shadow* ShadowAI = Cast<AAIController_Shadow>(AIController))
+	{
+		AShadow_cpp* Shadow = Cast<AShadow_cpp>(ShadowAI->GetPawn());
+
+		if (nullptr == Shadow)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Creature Initialize Failed"));
 			return EBTNodeResult::Failed;
@@ -275,6 +290,47 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 		{
 			RampageAI->GetBlackboard()->SetValueAsObject(AAIController_Rampage::TargetKey, nullptr);
 			RampageAI->GetBlackboard()->SetValueAsBool(AAIController_Rampage::CanSeePlayer, false);
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			return;
+		}
+	}
+	if (AAIController_Shadow* ShadowAI = Cast<AAIController_Shadow>(AIController))
+	{
+		AShadow_cpp* Shadow = Cast<AShadow_cpp>(ShadowAI->GetPawn());
+
+		if (nullptr == Shadow)
+		{
+			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+			return;
+		}
+
+		AHorrorGameCharacter* pTarget = nullptr;
+
+		pTarget = Cast<AHorrorGameCharacter>(ShadowAI->GetBlackboard()->GetValueAsObject(AAIController_Shadow::TargetKey));
+
+		FVector TargetLocation = ShadowAI->GetBlackboard()->GetValueAsVector(AAIController_Shadow::TargetLocation);
+
+		if (nullptr == pTarget) // if no target
+		{
+			// UAIBlueprintHelperLibrary::SimpleMoveToLocation(ShadowAI, TargetLocation);
+			ShadowAI->MoveToLocation(TargetLocation, AcceptableRadius, bStopOverlap, bUsePathfinding,
+				bProjectGoalLocation, bAllowStrafe, ShadowAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			return;
+		}
+
+		auto PlayerController = Cast<APlayerController>(pTarget->GetController());
+
+		// move to actor
+		//UAIBlueprintHelperLibrary::SimpleMoveToActor(ShadowAI, pTarget);
+		ShadowAI->MoveToActor(pTarget, AcceptableRadius, bStopOverlap, bUsePathfinding,
+			bAllowStrafe, ShadowAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+
+		if (Shadow->GetAnimFinish())
+		{
+			ShadowAI->GetBlackboard()->SetValueAsObject(AAIController_Shadow::TargetKey, nullptr);
+			ShadowAI->GetBlackboard()->SetValueAsBool(AAIController_Shadow::CanSeePlayer, false);
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			return;
 		}

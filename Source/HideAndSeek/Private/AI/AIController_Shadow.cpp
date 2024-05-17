@@ -1,6 +1,6 @@
 // CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
 
-#include "AI/AIController_Brute.h"
+#include "AI/AIController_Shadow.h"
 #include "NavigationSystem.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "BehaviorTree/BehaviorTree.h"
@@ -11,30 +11,32 @@
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "HideAndSeek/HorrorGameCharacter.h"
+#include "Cabinet_cpp.h"
+#include "Wardrobe_cpp.h"
+#include "AI/Shadow_cpp.h"
 
 // 블랙보드 데이터를 블루프린트로부터 읽어올 수 있도록 바인딩해줌.
-const FName AAIController_Brute::PatrolTargetKey(TEXT("PatrolTarget"));
-const FName AAIController_Brute::NoiseTargetKey(TEXT("NoiseTargetKey"));
-const FName AAIController_Brute::HomePosKey(TEXT("HomePos"));
-const FName AAIController_Brute::PatrolPosKey(TEXT("PatrolPos"));
-const FName AAIController_Brute::TargetKey(TEXT("Target"));
-const FName AAIController_Brute::TargetLocation(TEXT("TargetLocation"));
-const FName AAIController_Brute::CanSeePlayer(TEXT("CanSeePlayer"));
-const FName AAIController_Brute::NoiseDetected(TEXT("NoiseDetected"));
-const FName AAIController_Brute::ChangeDetectRange(TEXT("ChangeDetectRange"));
-const FName AAIController_Brute::Stunned(TEXT("Stunned"));
-const FName AAIController_Brute::LockerLighting(TEXT("LockerLighting"));
-const FName AAIController_Brute::LockerTargetKey(TEXT("LockerTarget"));
+const FName AAIController_Shadow::PatrolTargetKey(TEXT("PatrolTarget"));
+const FName AAIController_Shadow::NoiseTargetKey(TEXT("NoiseTargetKey"));
+const FName AAIController_Shadow::HomePosKey(TEXT("HomePos"));
+const FName AAIController_Shadow::PatrolPosKey(TEXT("PatrolPos"));
+const FName AAIController_Shadow::TargetKey(TEXT("Target"));
+const FName AAIController_Shadow::TargetLocation(TEXT("TargetLocation"));
+const FName AAIController_Shadow::CanSeePlayer(TEXT("CanSeePlayer"));
+const FName AAIController_Shadow::NoiseDetected(TEXT("NoiseDetected"));
+const FName AAIController_Shadow::Stunned(TEXT("Stunned"));
+const FName AAIController_Shadow::LockerLighting(TEXT("LockerLighting"));
+const FName AAIController_Shadow::LockerTargetKey(TEXT("LockerTarget"));
 
 // Constructor
-AAIController_Brute::AAIController_Brute()
+AAIController_Shadow::AAIController_Shadow()
 {
-	// AI Controller는 Tick 비활성화할 것임. Actor만 해도 충분함.
+	// AI Controller는 Tick 비활성화. Actor만 해도 충분,
 	PrimaryActorTick.bCanEverTick = false;
-	
+
 	// 블랙보드 컴포넌트를 블루프린트 클래스로부터 가져와 생성함.
 	BlackboardComp = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BB Comp"));
-	static ConstructorHelpers::FObjectFinder<UBlackboardData>BBObject(TEXT("/Game/Assets/AI/Brute/BB_Brute"));
+	static ConstructorHelpers::FObjectFinder<UBlackboardData>BBObject(TEXT("/Game/Assets/AI/Shadow/BB_Shadow"));
 	if (BBObject.Succeeded())
 	{
 		BBAsset = BBObject.Object;
@@ -42,7 +44,7 @@ AAIController_Brute::AAIController_Brute()
 
 	// 비헤이비어트리 컴포넌트를 블루프린트 클래스로부터 가져와 생성함.
 	Behavior_Tree_Component = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BT Comp"));
-	static ConstructorHelpers::FObjectFinder<UBehaviorTree>BTObject(TEXT("/Game/Assets/AI/Brute/BT_Brute"));
+	static ConstructorHelpers::FObjectFinder<UBehaviorTree>BTObject(TEXT("/Game/Assets/AI/Shadow/BT_Shadow"));
 	if (BTObject.Succeeded())
 	{
 		BTAsset = BTObject.Object;
@@ -52,15 +54,13 @@ AAIController_Brute::AAIController_Brute()
 	SetPerception();
 }
 
-void AAIController_Brute::BeginPlay()
+void AAIController_Shadow::BeginPlay()
 {
 	Super::BeginPlay();
-	/*RunBehaviorTree(BTAsset);
-	Behavior_Tree_Component->StartTree(*BTAsset);*/
-	// BlackboardComp->InitializeBlackboard(*BBAsset);
+
 }
 
-void AAIController_Brute::OnPossess(APawn* InPawn)
+void AAIController_Shadow::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 	if (UseBlackboard(BBAsset, BlackboardComp))
@@ -74,7 +74,7 @@ void AAIController_Brute::OnPossess(APawn* InPawn)
 }
 
 // AI가 Destroy될 경우 비헤이비어트리를 정리하고 Destroy되도록 하는 함수
-void AAIController_Brute::StopAI()
+void AAIController_Shadow::StopAI()
 {
 	UBehaviorTreeComponent* BehaviorTreeComp = Cast<UBehaviorTreeComponent>(BrainComponent);
 	if (BehaviorTreeComp == nullptr) return;
@@ -82,13 +82,13 @@ void AAIController_Brute::StopAI()
 	BehaviorTreeComp->StopTree(EBTStopMode::Safe);
 }
 
-UBlackboardComponent* AAIController_Brute::GetBlackboard() const
+UBlackboardComponent* AAIController_Shadow::GetBlackboard() const
 {
 	return BlackboardComp;
 }
 
 // 플레이어가 AI Perception의 주 감각에 의해 감지될 경우 처리할 함수
-void AAIController_Brute::OnTargetDetected(AActor* Actor, FAIStimulus const Stimulus)
+void AAIController_Shadow::OnTargetDetected(AActor* Actor, FAIStimulus const Stimulus)
 {
 	// 플레이어의 감지가 끝났을 때 5초간 그 값을 유지하기 위해 사용할 타이머 변수
 	FTimerHandle Timer;
@@ -98,7 +98,6 @@ void AAIController_Brute::OnTargetDetected(AActor* Actor, FAIStimulus const Stim
 		// 감지된 액터가 플레이어일 경우
 		if (auto const Player = Cast<AHorrorGameCharacter>(Actor))
 		{
-			
 			// 거리 비교를 위해 감지한 플레이어와의 거리를 가져옴.
 			float Distance = this->GetPawn()->GetDistanceTo(Player);
 
@@ -113,15 +112,22 @@ void AAIController_Brute::OnTargetDetected(AActor* Actor, FAIStimulus const Stim
 				if (Player->bIsFlashLightOn || Player->bIsCigarLightOn) // AI의 감지 범위가 1200이므로 불을 켰는지 체크
 				{
 					// GetBlackboard()->SetValueAsBool(CanSeePlayer, true);
-					
+					if (Distance <= 600.f) // 만약 600 범위 내에서 감지한 경우라면 사라짐.
+					{
+						StopAI();
+						Cast<AShadow_cpp>(GetPawn())->Destroy();
+					}
 					// 불을 켠 경우 최대 감지 범위까지 감지가 가능하므로 TargetKey에 플레이어를 저장시킴.
-					GetBlackboard()->SetValueAsObject(TargetKey, Player);
-					GetBlackboard()->SetValueAsVector(TargetLocation, Player->GetActorLocation());
+					else
+					{
+						GetBlackboard()->SetValueAsObject(TargetKey, Player);
+						GetBlackboard()->SetValueAsVector(TargetLocation, Player->GetActorLocation());
+					}
 				}
 
 				else // 아닐 경우 거리를 비교해서 400 이내에 있을 때만 감지
 				{
-					if (Distance <= NoLightSightRadius)
+					if (Distance <= 1200.f)
 					{
 						// GetBlackboard()->SetValueAsBool(CanSeePlayer, true);
 						GetBlackboard()->SetValueAsObject(TargetKey, Player);
@@ -130,18 +136,50 @@ void AAIController_Brute::OnTargetDetected(AActor* Actor, FAIStimulus const Stim
 				}
 			}
 		}
+		//// 감지된 액터가 캐비닛이면
+		//else if (auto const Cabinet = Cast<ACabinet_cpp>(Actor))
+		//{
+		//	//// DEPRECATED
+		//	// 로커의 불을 감지했는지 확인
+		//	// bool bIsLockerLighting = GetBlackboard()->GetValueAsBool(LockerLighting);
+		//	
+		//	// 그 캐비닛에 플레이어가 숨어있으면 수행
+		//	if (Cabinet->bIsHiding)
+		//	{
+		//		// 만약 캐비닛 안에서 라이터나 플래시를 켠 경우에
+		//		if (Cabinet->bIsCigarLightOn || Cabinet->bIsFlashLightOn)
+		//		{
+		//			// 해당 캐비닛 추가
+		//			Cast<AShadow_cpp>(GetPawn())->DetectPlayerHidingObject(Cabinet);
+		//		}
+		//	}
+		//}
+		//// 감지된 액터가 옷장이면
+		//else if (auto const Wardrobe = Cast<AWardrobe_cpp>(Actor))
+		//{
+		//	// 그 옷장에 플레이어가 숨어있으면 수행
+		//	if (Wardrobe->bIsHiding)
+		//	{
+		//		// 만약 옷장 안에서 라이터나 플래시를 켠 경우에
+		//		if (Wardrobe->bIsCigarLightOn || Wardrobe->bIsFlashLightOn)
+		//		{
+		//			// 해당 옷장 추가
+		//			Cast<AShadow_cpp>(GetPawn())->DetectPlayerHidingObject(Wardrobe);
+		//		}
+		//	}
+		//}
 	}
 
 	else // 플레이어 감지가 끝난 경우
 	{
 		GetWorld()->GetTimerManager().SetTimer(Timer, FTimerDelegate::CreateLambda([&]() {
 			GetBlackboard()->SetValueAsObject(TargetKey, nullptr);
-		}), 1.f, false, 5.f);
+			}), 1.f, false, 5.f);
 	}
 }
 
 // AI Perception 설정하는 함수. Constructor에서 호출할 것
-void AAIController_Brute::SetPerception()
+void AAIController_Shadow::SetPerception()
 {
 	// AI Perception의 기능 중 Sight Config(시야 감지) 컴포넌트를 생성함.
 	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
@@ -162,11 +200,11 @@ void AAIController_Brute::SetPerception()
 
 	// AI Perception의 주 감각을 시각(Sight Config)으로 설정하고, 감지될 때마다 수행할 콜백 함수를 바인딩해줌.
 	GetPerceptionComponent()->SetDominantSense(*SightConfig->GetSenseImplementation());
-	GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AAIController_Brute::OnTargetDetected);
+	GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AAIController_Shadow::OnTargetDetected);
 	GetPerceptionComponent()->ConfigureSense(*SightConfig);
 }
 
-void AAIController_Brute::SetStunned(bool value)
+void AAIController_Shadow::SetStunned(bool value)
 {
 	/*if (bIsStunned != value)
 	{

@@ -12,9 +12,11 @@
 #include "AI/CreatureAI.h"
 #include "AI/AIController_Runner.h"
 #include "AI/AIController_Brute.h"
+#include "AI/AIController_Shadow.h"
 #include "AI/Reaper_cpp.h"
 #include "AI/Runner_cpp.h"
 #include "AI/Brute_cpp.h"
+#include "AI/Shadow_cpp.h"
 #include "Tasks/AITask_MoveTo.h"
 #include "HideAndSeek/HorrorGameCharacter.h"
 #include "Door_cpp.h"
@@ -842,6 +844,83 @@ void UBTTask_PatrolMove::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* Node
 				return;
 			}*/
 		}
+
+		else if (AAIController_Shadow* ShadowAI = Cast<AAIController_Shadow>(AIController))
+		{
+			AShadow_cpp* Shadow = Cast<AShadow_cpp>(ShadowAI->GetPawn());
+
+			if (nullptr == Shadow)
+			{
+				FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+				return;
+			}
+
+			FVector PatrolLocation = ShadowAI->GetBlackboard()->GetValueAsVector(AAIController_Shadow::PatrolPosKey);
+			AActor* PatrolTarget = Cast<AActor>(ShadowAI->GetBlackboard()->GetValueAsObject(AAIController_Shadow::PatrolTargetKey));
+
+			bool bCanSeePlayer = ShadowAI->GetBlackboard()->GetValueAsBool(AAIController_Shadow::CanSeePlayer);
+			bool bNoiseDetected = ShadowAI->GetBlackboard()->GetValueAsBool(AAIController_Shadow::NoiseDetected);
+
+			FVector ShadowLocation = Shadow->GetActorLocation(); // 러너의 Z 값은 100(100.15)
+
+			float Distance = 200.f;
+
+			if (bCanSeePlayer) // 만약 플레이어를 추격하다가 플레이어를 놓쳤을 경우거나
+			{
+				ShadowAI->MoveToLocation(PatrolLocation, AcceptableRadius, bStopOverlap, bUsePathfinding,
+					bProjectGoalLocation, bAllowStrafe, ShadowAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+				ShadowLocation.Z = PatrolLocation.Z;
+				Distance = FMath::Abs(FVector::Distance(PatrolLocation, ShadowLocation));
+				// 추격하다 놓친 상태에서는 FindPlayerLocation에서 랜덤 순찰 지점을 PatrolPosKey에 저장하므로 Location임
+			}
+			else // 플레이어를 추격 중이 아닌 상황일 경우
+			{
+				if (bNoiseDetected) // 타이머나 알람이 울리는 소리를 들었을 때
+				{
+					FVector TargetLocation = ShadowAI->GetBlackboard()->GetValueAsVector(AAIController_Shadow::TargetLocation);
+					AActor* NoiseTarget = Cast<AActor>(ShadowAI->GetBlackboard()->GetValueAsObject(AAIController_Shadow::NoiseTargetKey));
+
+					if (NoiseTarget) // 타겟이 존재할 땐 MoveToActor
+					{
+						ShadowAI->MoveToActor(NoiseTarget, AcceptableRadius, bStopOverlap, bUsePathfinding,
+							bAllowStrafe, RunnerAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+						ShadowLocation.Z = NoiseTarget->GetActorLocation().Z; // 그냥 액터의 Z 위치 동일화시킴
+						Distance = FMath::Abs(FVector::Distance(NoiseTarget->GetActorLocation(), ShadowLocation));
+					}
+					else // 존재 안할 땐, MoveToLocation
+					{
+						ShadowAI->MoveToLocation(TargetLocation, AcceptableRadius, bStopOverlap, bUsePathfinding,
+							bProjectGoalLocation, bAllowStrafe, ShadowAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+						ShadowLocation.Z = TargetLocation.Z; // 그냥 액터의 Z 위치 동일화시킴
+						Distance = FMath::Abs(FVector::Distance(TargetLocation, ShadowLocation));
+					}
+					// 소리를 들은 상태에서는 NoiseDetect에서 근원지를 TargetLocationKey에 저장하므로 Location임
+				}
+				else // 그것이 아닌 상황은 진짜 PatrolPoint를 향해 가는 것
+				{
+					ShadowAI->MoveToActor(PatrolTarget, AcceptableRadius, bStopOverlap, bUsePathfinding,
+						bAllowStrafe, ShadowAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
+					ShadowLocation.Z -= 90.15f;
+					Distance = FMath::Abs(FVector::Distance(PatrolTarget->GetActorLocation(), ShadowLocation));
+					// PatrolPoint는 PatrolTarget에 저장하니까 MoveToActor 사용
+				}
+			}
+
+			// 러너와 패트롤 포인트의 거리 차이는 80으로 나옴
+
+			if (Distance <= 80.f)
+			{
+				Shadow->SetPatrolSuccess(true);
+			}
+
+			if (Shadow->GetPatrolSuccess())
+			{
+				Shadow->SetPatrolSuccess(false);
+				FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+				UE_LOG(LogTemp, Warning, TEXT("End Task"));
+				return;
+			}
+			}
 	}
 	else // AI Controller가 없는 경우엔, 그냥 실패했다고 알리고 Task를 종료한다.
 	{

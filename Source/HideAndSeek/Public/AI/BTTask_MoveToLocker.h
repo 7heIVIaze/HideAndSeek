@@ -43,6 +43,6 @@ public:
 protected:
 	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 
-public:
-	AActor* Target = nullptr;
+//public:
+//	AActor* Target = nullptr;
 };

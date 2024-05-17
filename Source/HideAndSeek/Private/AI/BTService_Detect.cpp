@@ -4,9 +4,11 @@
 #include "AI/CreatureAI.h"
 #include "AI/AIController_Runner.h"
 #include "AI/AIController_Brute.h"
+#include "AI/AIController_Shadow.h"
 #include "AI/Reaper_cpp.h"
 #include "AI/Runner_cpp.h"
 #include "AI/Brute_cpp.h"
+#include "AI/Shadow_cpp.h"
 #include "HideAndSeek/HorrorGameCharacter.h"
 #include "Cabinet_cpp.h"
 #include "Wardrobe_cpp.h"
@@ -82,38 +84,39 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 				}
 				// Chack if a controller is player's controller
 
-				else if (ACabinet_cpp* Cabinet = Cast<ACabinet_cpp>(OverlapResult.GetActor()))
+				if (ACabinet_cpp* Cabinet = Cast<ACabinet_cpp>(OverlapResult.GetActor()))
 				{
 					if (Cabinet->bIsHiding)
 					{
 						if (Cabinet->bIsFlashLightOn || Cabinet->bIsCigarLightOn)
 						{
-							ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, Cabinet);
+							ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::LockerTargetKey, Cabinet);
 							ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::LockerLighting, true);
 						}
 						else
 						{
-							ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, nullptr);
+							ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::LockerTargetKey, nullptr);
 							ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::LockerLighting, false);
 						}
 					}
 				}
-				else if (AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(OverlapResult.GetActor()))
+				if (AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(OverlapResult.GetActor()))
 				{
 					if (Wardrobe->bIsHiding)
 					{
 						if (Wardrobe->bIsFlashLightOn || Wardrobe->bIsCigarLightOn)
 						{
-							ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, Wardrobe);
+							ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::LockerTargetKey, Wardrobe);
 							ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::LockerLighting, true);
 						}
 						else
 						{
-							ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, nullptr);
+							ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::LockerTargetKey, nullptr);
 							ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::LockerLighting, false);
 						}
 					}
 				}
+
 				else
 				{
 					// set null
@@ -170,6 +173,7 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 				{
 					if (PlayerCharacter && PlayerCharacter->GetController()->IsPlayerController() && !(PlayerCharacter->GetIsHiding()))
 					{
+						UE_LOG(LogTemp, Warning, TEXT("Player Detected"));
 						RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::TargetKey, PlayerCharacter);
 						RunnerAI->GetBlackboard()->SetValueAsVector(AAIController_Runner::TargetLocation, PlayerCharacter->GetActorLocation());
 						// Show radius
@@ -184,34 +188,36 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 				}
 				// Chack if a controller is player's controller
 
-				else if (ACabinet_cpp* Cabinet = Cast<ACabinet_cpp>(OverlapResult.GetActor()))
+				if (ACabinet_cpp* Cabinet = Cast<ACabinet_cpp>(OverlapResult.GetActor()))
 				{
 					if (Cabinet->bIsHiding)
 					{
 						if (Cabinet->bIsFlashLightOn || Cabinet->bIsCigarLightOn)
 						{
-							RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::TargetKey, Cabinet);
+							UE_LOG(LogTemp, Warning, TEXT("Cabinet Detected"));
+							RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::LockerTargetKey, Cabinet);
 							RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::LockerLighting, true);
 						}
 						else
 						{
-							RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::TargetKey, nullptr);
+							RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::LockerTargetKey, nullptr);
 							RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::LockerLighting, false);
 						}
 					}
 				}
-				else if (AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(OverlapResult.GetActor()))
+				if (AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(OverlapResult.GetActor()))
 				{
 					if (Wardrobe->bIsHiding)
 					{
 						if (Wardrobe->bIsFlashLightOn || Wardrobe->bIsCigarLightOn)
 						{
-							RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::TargetKey, Wardrobe);
+							UE_LOG(LogTemp, Warning, TEXT("Wardrobe Detected"));
+							RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::LockerTargetKey, Wardrobe);
 							RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::LockerLighting, true);
 						}
 						else
 						{
-							RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::TargetKey, nullptr);
+							RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::LockerTargetKey, nullptr);
 							RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::LockerLighting, false);
 						}
 					}
@@ -287,34 +293,34 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 				}
 				// Chack if a controller is player's controller
 
-				else if (ACabinet_cpp* Cabinet = Cast<ACabinet_cpp>(OverlapResult.GetActor()))
+				if (ACabinet_cpp* Cabinet = Cast<ACabinet_cpp>(OverlapResult.GetActor()))
 				{
 					if (Cabinet->bIsHiding)
 					{
 						if (Cabinet->bIsFlashLightOn || Cabinet->bIsCigarLightOn)
 						{
-							BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::TargetKey, Cabinet);
+							BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::LockerTargetKey, Cabinet);
 							BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::LockerLighting, true);
 						}
 						else
 						{
-							BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::TargetKey, nullptr);
+							BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::LockerTargetKey, nullptr);
 							BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::LockerLighting, false);
 						}
 					}
 				}
-				else if (AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(OverlapResult.GetActor()))
+				if (AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(OverlapResult.GetActor()))
 				{
 					if (Wardrobe->bIsHiding)
 					{
 						if (Wardrobe->bIsFlashLightOn || Wardrobe->bIsCigarLightOn)
 						{
-							BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::TargetKey, Wardrobe);
+							BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::LockerTargetKey, Wardrobe);
 							BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::LockerLighting, true);
 						}
 						else
 						{
-							BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::TargetKey, nullptr);
+							BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::LockerTargetKey, nullptr);
 							BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::LockerLighting, false);
 						}
 					}
@@ -336,6 +342,110 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 	//	DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.2f);
 		//DrawDebugBox(World, Center, DetectSize, FColor::Red, false, 0.2f);
 	}
+
+	if (AAIController_Shadow* ShadowAI = Cast<AAIController_Shadow>(AIController))
+	{
+		AShadow_cpp* Shadow = Cast<AShadow_cpp>(ShadowAI->GetPawn());
+		bool bDetected = ShadowAI->GetBlackboard()->GetValueAsBool(AAIController_Shadow::CanSeePlayer);
+		if (nullptr == Shadow) return;
+
+		UWorld* World = Shadow->GetWorld();
+
+		FVector Center = Shadow->GetActorLocation();
+		float DetectRadius = 400.f;
+		if (bDetected)
+			DetectRadius = 1600.f;
+		//FVector DetectSize = FVector(100.0f, 800.0f, 10.0f);
+
+		if (nullptr == World) return;
+		TArray<FOverlapResult> OverlapResults;
+		FCollisionQueryParams CollisionQueryParam(NAME_None, false, Shadow);
+		bool bResult = World->OverlapMultiByChannel(
+			OverlapResults,
+			Center,
+			FQuat::Identity,
+			//FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(),
+			ECollisionChannel::ECC_GameTraceChannel3,
+			//FCollisionShape::MakeCapsule(20.f, 400.f),
+			FCollisionShape::MakeSphere(DetectRadius),
+			//FCollisionShape::MakeBox(DetectSize),
+			CollisionQueryParam
+		);
+		// ECC_GameTraceChannel3 is collision trace channel which is just detect overlapped only AHorrorGameCharacter class
+
+		if (bResult)
+		{
+			for (auto OverlapResult : OverlapResults)
+			{
+				if (AHorrorGameCharacter* PlayerCharacter = Cast<AHorrorGameCharacter>(OverlapResult.GetActor()))
+				{
+					if (PlayerCharacter && PlayerCharacter->GetController()->IsPlayerController() && !(PlayerCharacter->GetIsHiding()))
+					{
+						ShadowAI->GetBlackboard()->SetValueAsObject(AAIController_Shadow::TargetKey, PlayerCharacter);
+						ShadowAI->GetBlackboard()->SetValueAsVector(AAIController_Shadow::TargetLocation, PlayerCharacter->GetActorLocation());
+						// Show radius
+						//DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.2f);
+						//DrawDebugCapsule(World, Center, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Red, false, 0.2f);
+						//DrawDebugBox(World, Center, DetectSize, FColor::Green, false, 0.2f);
+
+					//	DrawDebugPoint(World, PlayerCharacter->GetActorLocation(), 10.f, FColor::Blue, false, 0.2f);
+					//	DrawDebugLine(World, Shadow->GetActorLocation(), PlayerCharacter->GetActorLocation(), FColor::Blue, false, 0.2f);
+						return;
+					}
+				}
+				// Chack if a controller is player's controller
+
+				if (ACabinet_cpp* Cabinet = Cast<ACabinet_cpp>(OverlapResult.GetActor()))
+				{
+					if (Cabinet->bIsHiding)
+					{
+						if (Cabinet->bIsFlashLightOn || Cabinet->bIsCigarLightOn)
+						{
+							ShadowAI->GetBlackboard()->SetValueAsObject(AAIController_Shadow::LockerTargetKey, Cabinet);
+							ShadowAI->GetBlackboard()->SetValueAsBool(AAIController_Shadow::LockerLighting, true);
+						}
+						else
+						{
+							ShadowAI->GetBlackboard()->SetValueAsObject(AAIController_Shadow::LockerTargetKey, nullptr);
+							ShadowAI->GetBlackboard()->SetValueAsBool(AAIController_Shadow::LockerLighting, false);
+						}
+					}
+				}
+				if (AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(OverlapResult.GetActor()))
+				{
+					if (Wardrobe->bIsHiding)
+					{
+						if (Wardrobe->bIsFlashLightOn || Wardrobe->bIsCigarLightOn)
+						{
+							ShadowAI->GetBlackboard()->SetValueAsObject(AAIController_Shadow::LockerTargetKey, Wardrobe);
+							ShadowAI->GetBlackboard()->SetValueAsBool(AAIController_Shadow::LockerLighting, true);
+						}
+						else
+						{
+							ShadowAI->GetBlackboard()->SetValueAsObject(AAIController_Shadow::LockerTargetKey, nullptr);
+							ShadowAI->GetBlackboard()->SetValueAsBool(AAIController_Shadow::LockerLighting, false);
+						}
+					}
+				}
+				else
+				{
+					// set null
+					ShadowAI->GetBlackboard()->SetValueAsObject(AAIController_Shadow::TargetKey, nullptr);
+				}
+			}
+		}
+		else
+		{
+			// set null
+			ShadowAI->GetBlackboard()->SetValueAsObject(AAIController_Shadow::TargetKey, nullptr);
+		}
+
+		//DrawDebugCapsule(World, Center, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Green, false, 0.2f);
+	//	DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.2f);
+		//DrawDebugBox(World, Center, DetectSize, FColor::Red, false, 0.2f);
+	}
+
+
 
 	/*
 	if (ReaperAI)

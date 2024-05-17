@@ -45,8 +45,8 @@ public: // Property
 	UPROPERTY(VisibleAnywhere, Category = "Cabinet")
 		TObjectPtr<UStaticMeshComponent> Cabinet;
 
-	UPROPERTY(VisibleAnywhere, Category = "Cabinet")
-		TObjectPtr<UStaticMeshComponent> Cabinet_Door;
+	/*UPROPERTY(VisibleAnywhere, Category = "Cabinet")
+		TObjectPtr<UStaticMeshComponent> Cabinet_Door;*/
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 		UCameraComponent* Camera;

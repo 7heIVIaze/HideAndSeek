@@ -5,41 +5,38 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "Perception/AIPerceptionTypes.h"
-#include "AIController_Brute.generated.h"
+#include "AIController_Shadow.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class HIDEANDSEEK_API AAIController_Brute : public AAIController
+class HIDEANDSEEK_API AAIController_Shadow : public AAIController
 {
 	GENERATED_BODY()
 	
 public:
-	AAIController_Brute();
+	// Constructor
+	AAIController_Shadow();
 
 	void BeginPlay() override;
+
 	void OnPossess(APawn* InPawn) override;
 
 	UFUNCTION(BlueprintCallable)
-		void StopAI();
+	void StopAI();
 
+	UFUNCTION(BlueprintCallable)
 	class UBlackboardComponent* GetBlackboard() const;
 
 	UFUNCTION()
-		void SetPerception();
-
-	/*UFUNCTION()
-		void UpdatePerception(const TArray<AActor*>& Actors);*/
+	void SetPerception();
 
 	UFUNCTION()
-		void OnTargetDetected(AActor* Actor, FAIStimulus const Stimulus);
+	void OnTargetDetected(AActor* Actor, FAIStimulus const Stimulus);
 
 	UFUNCTION()
-		void SetStunned(bool value);
-
-	//UFUNCTION()
-	//	void EndChase();
+	void SetStunned(bool value);
 
 public:
 	//////////////////////
@@ -53,42 +50,36 @@ public:
 	static const FName TargetLocation; // 추격할 플레이어의 위치나 소리를 내는 액터의 위치를 저장할 FVector 데이터
 	static const FName CanSeePlayer; // 플레이어를 시야로 감지했는지 판단할 boolean 데이터
 	static const FName NoiseDetected; // 플레이어나 액터의 소리를 감지했는지 판단할 boolean 데이터
-	static const FName ChangeDetectRange; // 플레이어가 걷는 소리를 듣고 감지 범위가 늘었는지 판단할 boolean 데이터
 	static const FName Stunned; // AI 캐릭터가 행동 불능 상태인지 판단할 boolean 데이터
 	static const FName LockerLighting; // AI 캐릭터가 본 캐비닛/옷장 속 플레이어가 불을 켰는지 판단할 boolean 데이터
-	static const FName LockerTargetKey; // AI 캐릭터가 본 플레이어가 불을 켠 캐비닛/옷장을 담을 Object 데이터
+	static const FName LockerTargetKey; // AI 캐릭터가 본 플레이어가 불을 켠 캐비닛/옷장을 담은 Object 데이터
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float AISightRadius = 1200.f;
+	float AISightRadius = 1200.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float AISightAge = 0.5f;
+	float AISightAge = 0.5f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float AILoseSightRadius = 1700.f;
+	float AILoseSightRadius = 1700.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float AIFieldOfView = 60.0f;
+	float AIFieldOfView = 60.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float AILastSeenLocation = 2000.f;
+	float AILastSeenLocation = 2000.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float NoLightSightRadius = 800.f;
+	float NoLightSightRadius = 800.f;
 
 private:
-	/*void OnRepeatTimer();
-
-	FTimerHandle RepeatTimerHandle;
-	float RepeatInterval;*/
-
 	class UBlackboardComponent* BlackboardComp;
 	class UAISenseConfig_Sight* SightConfig;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
-		class UBehaviorTreeComponent* Behavior_Tree_Component;
+	class UBehaviorTreeComponent* Behavior_Tree_Component;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
-		class UBehaviorTree* BTAsset;
+	class UBehaviorTree* BTAsset;
 
 	UPROPERTY()
-		class UBlackboardData* BBAsset;
+	class UBlackboardData* BBAsset;
 
 	UPROPERTY()
-		bool bIsStunned;
+	bool bIsStunned;
 };

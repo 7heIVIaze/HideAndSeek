@@ -5,9 +5,11 @@
 #include "AI/CreatureAI.h"
 #include "AI/AIController_Runner.h"
 #include "AI/AIController_Brute.h"
+#include "AI/AIController_Shadow.h"
 #include "AI/Reaper_cpp.h"
 #include "AI/Runner_cpp.h"
 #include "AI/Brute_cpp.h"
+#include "AI/Shadow_cpp.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BehaviorTree.h"
@@ -119,6 +121,38 @@ EBTNodeResult::Type UBTTask_FindPatrolPos::ExecuteTask(UBehaviorTreeComponent& O
 		BruteAI->GetBlackboard()->SetValueAsVector(AAIController_Brute::PatrolPosKey, NextLocation); // 해당 위치를 Brute Controller에 추가
 
 		return EBTNodeResult::Succeeded; // Succeed 반환
+	}
+
+	else if (AAIController_Shadow* ShadowAI = Cast<AAIController_Shadow>(AIController)) // AI Controller가 Runner Controller라면
+	{
+		AShadow_cpp* Shadow = Cast<AShadow_cpp>(ShadowAI->GetPawn());
+
+		if (nullptr == Shadow) // Runner Controller가 Runner를 Possess하지 못했으면(즉 Runner가 없다면) Fail
+		{
+			return EBTNodeResult::Failed;
+		}
+
+		//UWorld* World = Runner->GetWorld();
+		//
+		//if (nullptr == World) // 현재 World에 Runner가 존재하지 않으면 Fail
+		//{
+		//	return EBTNodeResult::Failed;
+		//}
+
+		//UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(World);
+		//// if cannot find Nav mesh return false
+		//if (nullptr == NavSystem) // 현재 Level에 Nav Mesh가 깔려있지 않으면 Fail
+		//{
+		//	return EBTNodeResult::Failed;
+		//}
+
+		/*FVector const Origin = Runner->GetActorLocation();
+		FNavLocation NextPatrol;*/
+
+		FVector const NextLocation = Shadow->GetPatrolPoint(); // 다음 Patrol 위치를 가져옴 (PatronPoint1~25 중 하나)
+		ShadowAI->GetBlackboard()->SetValueAsVector(AAIController_Shadow::PatrolPosKey, NextLocation); // 해당 위치를 Runner Controller에 추가
+
+		return EBTNodeResult::Succeeded; // Succeed 리턴
 	}
 
 	return EBTNodeResult::Failed;

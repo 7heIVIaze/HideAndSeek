@@ -83,8 +83,8 @@ private:
 	UPROPERTY()
 		int32 MenuNumber;
 
-	//UPROPERTY()
-		//int32 ButtonNum;
+	UPROPERTY()
+		bool bIsButtonClicked; // 버튼 클릭 후, 다른 버튼으로 변경하지 못하도록 하기 위한 변수.
 
 	UPROPERTY()
 		int32 ClearedChapter;

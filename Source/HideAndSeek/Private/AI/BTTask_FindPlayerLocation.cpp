@@ -4,9 +4,11 @@
 #include "AI/CreatureAI.h"
 #include "AI/AIController_Runner.h"
 #include "AI/AIController_Brute.h"
+#include "AI/AIController_Shadow.h"
 #include "AI/Reaper_cpp.h"
 #include "AI/Runner_cpp.h"
 #include "AI/Brute_cpp.h"
+#include "AI/Shadow_cpp.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BehaviorTree.h"
@@ -85,6 +87,31 @@ EBTNodeResult::Type UBTTask_FindPlayerLocation::ExecuteTask(UBehaviorTreeCompone
 		}
 
 		UWorld* World = Brute->GetWorld();
+
+		if (nullptr == World)
+		{
+			return EBTNodeResult::Failed;
+		}
+
+		UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(World);
+		if (nullptr == NavSystem)
+		{
+			return EBTNodeResult::Failed;
+		}
+
+		return EBTNodeResult::InProgress;
+	}
+
+	if (AAIController_Shadow* ShadowAI = Cast<AAIController_Shadow>(AIController))
+	{
+		AShadow_cpp* Shadow = Cast<AShadow_cpp>(ShadowAI->GetPawn());
+
+		if (nullptr == Shadow)
+		{
+			return EBTNodeResult::Failed;
+		}
+
+		UWorld* World = Shadow->GetWorld();
 
 		if (nullptr == World)
 		{
@@ -254,6 +281,49 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 		{
 			BruteAI->GetBlackboard()->SetValueAsVector(AAIController_Brute::PatrolPosKey, fNextPatrol.Location);
 			
+			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+			return;
+		}
+	}
+
+	if (AAIController_Shadow* ShadowAI = Cast<AAIController_Shadow>(AIController))
+	{
+
+		AShadow_cpp* Shadow = Cast<AShadow_cpp>(ShadowAI->GetPawn());
+
+		if (nullptr == Shadow)
+		{
+			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+			return;
+		}
+
+
+		FVector fTargetLastLocation = ShadowAI->GetBlackboard()->GetValueAsVector(AAIController_Shadow::TargetLocation);
+		UAIBlueprintHelperLibrary::SimpleMoveToLocation(ShadowAI, fTargetLastLocation);
+
+		// Move to last location of detected target.	
+		UWorld* World = Shadow->GetWorld();
+		if (nullptr == World)
+		{
+			//	UE_LOG(LogTemp, Warning, TEXT("Task_FindPlayerLocation: Get World Failed"));
+			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+			return;
+		}
+
+		UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(World);
+		if (nullptr == NavSystem)
+		{
+			//	UE_LOG(LogTemp, Warning, TEXT("Task_FindPlayerLocation: Nav System Initialization Failed"));
+			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
+			return;
+		}
+
+		FNavLocation fNextPatrol;
+
+		if (NavSystem->GetRandomPointInNavigableRadius(fTargetLastLocation, 200.0f, fNextPatrol))
+		{
+			ShadowAI->GetBlackboard()->SetValueAsVector(AAIController_Shadow::PatrolPosKey, fNextPatrol.Location);
+
 			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
 			return;
 		}

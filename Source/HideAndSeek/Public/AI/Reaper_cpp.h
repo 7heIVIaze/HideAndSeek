@@ -40,8 +40,8 @@ public:
 	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interact)
 	//	class UBoxComponent* InteractBox;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interact)
-		class UBoxComponent* KillBox;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact")
+	TObjectPtr<class USphereComponent> KillSphere;
 
 public:
 	// Sets default values for this character's properties
@@ -58,18 +58,15 @@ private:
 
 	bool bIsStunned = false;
 	bool bIsDied = false;
+	// 현재 향하고 있는 순찰 지점
 	class APatrolPoint_cpp* CurrentPatrolPoint;
 
-public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "PatrolPointList")
-		TArray<FName>PatrolPointList = { TEXT("BP_PatrolPoint"), TEXT("BP_PatrolPoint2"), TEXT("BP_PatrolPoint3"), TEXT("BP_PatrolPoint4"), TEXT("BP_PatrolPoint5"),
-		TEXT("BP_PatrolPoint6"), TEXT("BP_PatrolPoint7"), TEXT("BP_PatrolPoint8"), TEXT("BP_PatrolPoint9"), TEXT("BP_PatrolPoint10"),
-		TEXT("BP_PatrolPoint11"), TEXT("BP_PatrolPoint12"), TEXT("BP_PatrolPoint13"), TEXT("BP_PatrolPoint14"), TEXT("BP_PatrolPoint15"),
-		TEXT("BP_PatrolPoint16"), TEXT("BP_PatrolPoint17"), TEXT("BP_PatrolPoint18"), TEXT("BP_PatrolPoint19"), TEXT("BP_PatrolPoint20"),
-		TEXT("BP_PatrolPoint21"), TEXT("BP_PatrolPoint22"), TEXT("BP_PatrolPoint23"), TEXT("BP_PatrolPoint24"), TEXT("BP_PatrolPoint25") };
+	// 플레이어가 숨어있는 캐비닛/옷장
+	class AActor* PlayerHidingObject;
 
+public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PatrolPointList")
-		TArray<class APatrolPoint_cpp*> PatrolPointLists;
+		TArray<class APatrolPoint_cpp*> PatrolPointList;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PatrolPointList")
 		bool bIsCollectMode; // Level1처럼 오브젝트를 모으는 챕터인가
@@ -104,53 +101,68 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OpenDoor();
 
-	/*void Move(const FInputActionValue& Value);
-
-	void Look(const FInputActionValue& Value);*/
-
 public:
+	// 패트롤 성공 여부
 	UPROPERTY()
-		bool bIsPatrolSuccess = false;
+	bool bIsPatrolSuccess = false;
 
 	int Index = 0;
 
+	// 추격 중인지 여부
 	UPROPERTY()
-		bool bIsChase = false;
+	bool bIsChase = false;
 
+	// 플레이어를 잡았는지 여부
 	UPROPERTY()
-		bool bIsCatch = false;
+	bool bIsCatch = false;
 
+	// 플레이어가 숨은 곳을 잡았는지 여부
 	UPROPERTY()
-		bool bAnimFinish = false;
+	bool bIsHidingCatch = false;
 
+	// 공격 애니메이션 종료 여부
 	UPROPERTY()
-		bool bIsPlayerWatch = false;
+	bool bAnimFinish = false;
 
+	// 플레이어를 보고 있는지 여부
 	UPROPERTY()
-		bool bIsCooldown = false;
-	
-	UPROPERTY()
-		float stunTime = 0.0f;
+	bool bIsPlayerWatch = false;
 
+	// 플레이어를 행동 불능시키는 능력의 쿨타임이 돌고 있는지 여부
 	UPROPERTY()
-		float CastingTime = 0.0f;
+	bool bIsCooldown = false;
 
+	// 행동 불능이 유지되는 시간
 	UPROPERTY()
-		float SkillCooldown = 0.0f;
+	float stunTime = 0.0f;
 
+	// 능력의 캐스팅 시간
 	UPROPERTY()
-		bool bIsTimeStop = false; // 시간 정지
+	float CastingTime = 0.0f;
 
+	// 능력의 쿨타임
 	UPROPERTY()
-		bool bSealedButChase = false;
+	float SkillCooldown = 0.0f;
 
+	// 플레이어가 청동 거울을 사용했는지 여부
 	UPROPERTY()
-		FString MapName;
+	bool bIsTimeStop = false; // 시간 정지
 
+	// 프롤로그를 위한 변수임
+	UPROPERTY()
+	bool bSealedButChase = false;
+
+	// 맵 이름을 감지하기 위한 변수
+	UPROPERTY()
+	FString MapName;
+
+	// 행동 불능된 동안 흐르는 시간
 	float CurrentStunnedTime = 0;
 
+	// 시간 정지된 동안 흐르는 시간
 	float TimeStopElapsedTime = 0;
 
+public:
 	/* Called for Sprint Input */
 	UFUNCTION(BlueprintCallable)
 		void StartChase();
@@ -164,8 +176,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void SetPlayerWatch(bool value);
 
-	/*void EndChase();*/
-
 	UFUNCTION(BlueprintCallable)
 		void SetIsCatch(bool Value);
 
@@ -178,14 +188,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SoundEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	/*UFUNCTION(BlueprintCallable)
-	void DoorBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);*/
-
-	UFUNCTION(BlueprintCallable)
-		void CheckBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
-	
 	UFUNCTION(BlueprintCallable)
 	FVector GetPatrolPoint();
+
+	UFUNCTION(BlueprintCallable)
+	void DetectPlayerHidingObject(AActor* DetectedObject);
 
 	UFUNCTION(BlueprintCallable)
 		bool GetIsStunned();
@@ -217,9 +224,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 		bool GetIsStop();
 
-	//UFUNCTION(BlueprintCallable)
-	//	void CatchBeginOverlap(UPrimitiveComponent* HitComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-	UFUNCTION(BlueprintCallable)
+		UFUNCTION(BlueprintCallable)
 		void CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
 	UFUNCTION(BlueprintCallable)

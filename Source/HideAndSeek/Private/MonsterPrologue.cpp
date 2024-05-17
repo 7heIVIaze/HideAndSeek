@@ -41,7 +41,7 @@ void AMonsterPrologue::PlayerEnterBeginOverlap(UPrimitiveComponent* OverlappedCo
 				AReaper_cpp* reaper = GetWorld()->SpawnActor<AReaper_cpp>(ObjectToSpawn, GetActorLocation(), FRotator(0.f, 0.f, 0.f), spawnParams);
 				reaper->bIsCollectMode = false;
 
-				reaper->PatrolPointLists = PatrolPointLists;
+				reaper->PatrolPointList = PatrolPointLists;
 				bIsPlayerIn = true;
 			}
 		}

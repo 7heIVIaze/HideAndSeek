@@ -42,8 +42,7 @@ public:
 
 	UFUNCTION()
 		void SetPerception();
-	UFUNCTION()
-		void UpdatePerception(const TArray<AActor*>& Actors);
+
 	UFUNCTION()
 		void OnTargetDetected(AActor* Actor, FAIStimulus const Stimulus);
 
@@ -73,6 +72,7 @@ public:
 	static const FName Stunned;
 	static const FName LockerLighting;
 	static const FName SealStatus;
+	static const FName LockerTargetKey;
 
 	// AI Perception Variables
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -90,8 +90,6 @@ public:
 
 
 private:
-	void OnRepeatTimer();
-
 	FTimerHandle RepeatTimerHandle;
 	float RepeatInterval;
 
