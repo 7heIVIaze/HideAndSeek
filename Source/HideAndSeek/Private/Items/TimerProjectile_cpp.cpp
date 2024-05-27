@@ -25,18 +25,6 @@ ATimerProjectile_cpp::ATimerProjectile_cpp()
 	TimerMesh->SetRelativeLocation(DefaultLoc);
 	TimerMesh->SetRelativeScale3D(DefaultScale);
 
-	/*TimerSound = CreateDefaultSubobject<UAudioComponent>(TEXT("TimerSound"));
-	TimerSound->SetupAttachment(TimerMesh);
-	static ConstructorHelpers::FObjectFinder<USoundCue>TimerSoundObj(TEXT("/Game/Assets/Sounds/SoundCues/Timer_Alarm1_Cue"));
-	if (TimerSoundObj.Succeeded())
-	{
-		TimerSound->SetSound(TimerSoundObj.Object);
-	}
-	TimerSound->SetAutoActivate(false);
-	TimerSound->OnAudioFinished.AddDynamic(this, &ATimerProjectile_cpp::RangEnd);*/
-	// TimerSound->IsPlaying
-	// TimerSound->GetPlayState();
-
 	ProjectileMovement = CreateDefaultSubobject<UProjectileMovementComponent>(TEXT("ProjectileMovement"));
 	ProjectileMovement->SetUpdatedComponent(TimerMesh);
 	ProjectileMovement->InitialSpeed = 1000.f;
@@ -78,9 +66,6 @@ void ATimerProjectile_cpp::Tick(float DeltaTime)
 				FActorSpawnParameters SpawnParams;
 				AThrownTimer_cpp* TimerActor = GetWorld()->SpawnActor<AThrownTimer_cpp>(Timer, TimerMesh->GetComponentLocation(), TimerMesh->GetComponentRotation(), SpawnParams);
 				TimerActor->RingingStart();
-				// ATimerProjectile_cpp* TimerActor = GetWorld()->SpawnActor<ATimerProjectile_cpp>(Timer, TimerMesh->GetComponentLocation(), TimerMesh->GetComponentRotation(), SpawnParams);
-				//TimerActor->TimerSound->Play();
-				//TimerActor->SetPlaySound(true);
 				Destroy();
 			}
 		}

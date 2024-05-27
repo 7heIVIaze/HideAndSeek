@@ -17,6 +17,23 @@ enum EItemType
 	ITEM_Passive UMETA(DisplayName = "Passive"),
 };
 
+// 사용형 아이템 번호
+UENUM(BlueprintType)
+enum class Active_Item_Num : uint8
+{
+	CigetLighter UMETA(DisplayName = "CigarLighter"),
+	FlashLight UMETA(DisplayName = "FlashLight"),
+	Key UMETA(DisplayName = "Key"),
+	Timer UMETA(DisplayName = "Timer"),
+	Sword UMETA(DisplayName = "Sword"),
+	Bell UMETA(DisplayName = "Bell"),
+	Mirror UMETA(DisplayName = "Mirror"),
+	Extinguisher UMETA(DisplayName = "Extinguisher"),
+	Cutter UMETA(DisplayName = "Cutter"),
+	SoulLantern UMETA(DisplayName = "SoulLantern"),
+	GlowStick UMETA(DisplayName = "GlowStick")
+};
+
 USTRUCT(BlueprintType)
 struct FHorrorGameItemData : public FTableRowBase
 {
@@ -27,6 +44,7 @@ public:
 
 	void Clear();
 	void Use(AHorrorGameCharacter* Player);
+	//void Initialize();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")

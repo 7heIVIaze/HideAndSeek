@@ -55,5 +55,6 @@ public:
 	//UFUNCTION(BlueprintCallable)
 	void UseInteract(class AHorrorGameCharacter* Player) override;
 
-
+	UFUNCTION(BlueprintCallable)
+	void HideInteract(class AHorrorGameCharacter* Player);
 };

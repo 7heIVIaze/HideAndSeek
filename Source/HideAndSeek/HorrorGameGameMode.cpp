@@ -82,14 +82,14 @@ void AHorrorGameGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	//
-	if (IsValid(LevelWidgetClass))
+	/*if (IsValid(LevelWidgetClass))
 	{
 		MainWidget = Cast<UGameUI>(CreateWidget(GetWorld(), LevelWidgetClass));
 		if (IsValid(MainWidget))
 		{
 			MainWidget->AddToViewport();
 		}
-	}
+	}*/
 
 	AudioComponent->SetSound(MainCue);
 	//AudioComponent->Play();

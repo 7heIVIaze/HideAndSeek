@@ -6,11 +6,13 @@
 #include "AI/AIController_Runner.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
+// 생성자
 UBTDecorator_CheckChasePlayer::UBTDecorator_CheckChasePlayer()
 {
 	NodeName = TEXT("PlayerChase");
 }
 
+// 조건을 계산하는 함수
 bool UBTDecorator_CheckChasePlayer::CalculateRawConditionValue(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) const
 {
 	AAIController* AIController = OwnerComp.GetAIOwner();
@@ -18,17 +20,17 @@ bool UBTDecorator_CheckChasePlayer::CalculateRawConditionValue(UBehaviorTreeComp
 
 	if (AIController)
 	{
-		if (AIController->IsA(ACreatureAI::StaticClass()))
+		if (const auto ReaperAI = Cast<ACreatureAI>(AIController))
 		{
-			bPlayerChase = AIController->GetBlackboardComponent()->GetValueAsBool(ACreatureAI::CanSeePlayer);
+			bPlayerChase = ReaperAI->GetBlackboardComponent()->GetValueAsBool(ACreatureAI::CanSeePlayer);
 		}
-		else if (AIController->IsA(AAIController_Brute::StaticClass()))
+		else if (const auto RunnerAI = Cast<AAIController_Runner>(AIController))
 		{
-			bPlayerChase = AIController->GetBlackboardComponent()->GetValueAsBool(AAIController_Brute::CanSeePlayer);
+			bPlayerChase = RunnerAI->GetBlackboardComponent()->GetValueAsBool(AAIController_Runner::CanSeePlayer);
 		}
-		else if (AIController->IsA(AAIController_Runner::StaticClass()))
+		else if (const auto BruteAI = Cast<AAIController_Brute>(AIController))
 		{
-			bPlayerChase = AIController->GetBlackboardComponent()->GetValueAsBool(AAIController_Runner::CanSeePlayer);
+			bPlayerChase = BruteAI->GetBlackboardComponent()->GetValueAsBool(AAIController_Brute::CanSeePlayer);
 		}
 	}
 

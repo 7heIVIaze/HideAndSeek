@@ -49,6 +49,7 @@
 #include "Items/PlayerSword_cpp.h"
 #include "Furniture/DistributionBox.h"
 #include "Furniture/Paper.h"
+#include "Furniture/HideObject.h"
 #include "EngineUtils.h"
 #include "NiagaraComponent.h"
 #include "NiagaraSystem.h"
@@ -252,6 +253,7 @@ AHorrorGameCharacter::AHorrorGameCharacter()
 	DoorBoxComp->OnComponentBeginOverlap.AddDynamic(this, &AHorrorGameCharacter::OnDoorBoxBeginOverlap);
 	DoorBoxComp->OnComponentEndOverlap.AddDynamic(this, &AHorrorGameCharacter::OnDoorBoxEndOverlap);
 	
+	PlayerStatus = Player_Status::Loading;
 }
 
 void AHorrorGameCharacter::BeginPlay()
@@ -295,7 +297,6 @@ void AHorrorGameCharacter::BeginPlay()
 		CigarLightOffSound->SetAutoActivate(false);
 	}
 
-	PlayerStatus = Player_Status::Survive;
 	//GameUIWidget = HorrorGamePlayerController->GetMainWidget();
 	
 	//SetPlayerSetting();
@@ -417,7 +418,10 @@ void AHorrorGameCharacter::Tick(float DeltaTime)
 			}
 			else
 			{
-				GameUIWidget->SetArchiveGetText(FText::FromString(TEXT("")));
+				if (GameUIWidget)
+				{
+					GameUIWidget->SetArchiveGetText(FText::FromString(TEXT("")));
+				}
 			}
 			bIsArchiveTextOn = false;
 			ArchiveTextTimer = 0.f;
@@ -490,7 +494,10 @@ void AHorrorGameCharacter::Tick(float DeltaTime)
 		if (Stamina <= 399)
 		{
 			Stamina += 1;
-			GameUIWidget->SetStaminaHUD(Stamina);
+			if (GameUIWidget)
+			{
+				GameUIWidget->SetStaminaHUD(Stamina);
+			}
 		}
 	}
 	else
@@ -500,7 +507,10 @@ void AHorrorGameCharacter::Tick(float DeltaTime)
 			if (Stamina > 0)
 			{
 				Stamina -= 2;
-				GameUIWidget->SetStaminaHUD(Stamina);
+				if (GameUIWidget)
+				{
+					GameUIWidget->SetStaminaHUD(Stamina);
+				}
 			}
 			else
 			{
@@ -512,7 +522,10 @@ void AHorrorGameCharacter::Tick(float DeltaTime)
 			if (Stamina <= 399)
 			{
 				Stamina += 1;
-				GameUIWidget->SetStaminaHUD(Stamina);
+				if (GameUIWidget)
+				{
+					GameUIWidget->SetStaminaHUD(Stamina);
+				}
 			}
 		}
 	}
@@ -629,9 +642,18 @@ void AHorrorGameCharacter::Look(const FInputActionValue& Value)
 					else if(AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(HitActor))
 					{
 						//AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(HitActor);
-						Wardrobe->Pitch += LookAxisVector.Y * -1.f;
+						Wardrobe->Pitch += LookAxisVector.Y * -1.0f;
 						Wardrobe->Yaw += LookAxisVector.X;
 						Wardrobe->MoveCamera(); // Call Cabinet_cpp Hide Function
+					}
+
+					//else if (HitActor->IsA<AWardrobe_cpp>())
+					else if (AHideObject* HideObject = Cast<AHideObject>(HitActor))
+					{
+						//AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(HitActor);
+						HideObject->Pitch += LookAxisVector.Y * -1.0f;
+						HideObject->Yaw += LookAxisVector.X;
+						HideObject->MoveCamera(); // Call Cabinet_cpp Hide Function
 					}
 				}
 			}
@@ -1009,50 +1031,68 @@ bool AHorrorGameCharacter::GetLineTraceSingle(AActor* &HitActor)
 		{
 			if (HitActor->IsA<AItems>()) // Item 클래스 일 경우
 			{
-				GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter","Look_Item","Take"));
-				GameUIWidget->SetInteractDot(true);
+				if (GameUIWidget)
+				{
+					GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter","Look_Item","Take"));
+					GameUIWidget->SetInteractDot(true);
+				}
 				return true;
 			}
 			
 			else if(HitActor->IsA<ADrawerClass>()) // 서랍류(책상 서랍, 옷장 서랍, 일반 서랍)일 경우
 			{
-				GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter","Look_Drawer", "Open/Close"));
-				GameUIWidget->SetInteractDot(true);
+				if (GameUIWidget)
+				{
+					GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Drawer", "Open/Close"));
+					GameUIWidget->SetInteractDot(true);
+				}
 				return true;
 			}
 
 			else if (HitActor->GetClass()->ImplementsInterface(UDoorInterface_cpp::StaticClass())) // 문일 경우(교실문, 창살문, 방문)
 			{
-				GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Door", "Open/Close"));
-				GameUIWidget->SetInteractDot(true);
+				if (GameUIWidget)
+				{
+					GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Door", "Open/Close"));
+					GameUIWidget->SetInteractDot(true);
+				}
 				return true;
 			}
 
 			else if (HitActor->GetClass()->ImplementsInterface(UHideInterface::StaticClass())) // 숨는 포인트일 경우(옷장, 캐비닛)
 			{
-				if (bIsHiding)
+				if (GameUIWidget)
 				{
-					GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Cabinet_While_Hiding", "Exit"));
+					if (bIsHiding)
+					{
+						GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Cabinet_While_Hiding", "Exit"));
+					}
+					else
+					{
+						GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Cabinet", "Hide"));
+					}
+					GameUIWidget->SetInteractDot(true);
 				}
-				else
-				{
-					GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Cabinet", "Hide"));
-				}
-				GameUIWidget->SetInteractDot(true);
 				return true;
 			}
 
 			else if(HitActor->IsA<ALockerDoorActor_cpp>()) // 사물함 문일경우
 			{
-				GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Locker", "Open/Close"));
-				GameUIWidget->SetInteractDot(true);
+				if (GameUIWidget)
+				{
+					GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Locker", "Open/Close"));
+					GameUIWidget->SetInteractDot(true);
+				}
 				return true;
 			}
 
 			else if (HitActor->IsA<AAlarm>()) // 경보기일 경우
 			{
-				GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Alarm", "Ring"));
-				GameUIWidget->SetInteractDot(true);
+				if (GameUIWidget)
+				{
+					GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Alarm", "Ring"));
+					GameUIWidget->SetInteractDot(true);
+				}
 				return true;
 			}
 
@@ -1060,8 +1100,11 @@ bool AHorrorGameCharacter::GetLineTraceSingle(AActor* &HitActor)
 			{
 				if (!HangLight->bIsLightOn)
 				{
-					GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Hanging_Light", "Turn On"));
-					GameUIWidget->SetInteractDot(true);
+					if (GameUIWidget)
+					{
+						GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Hanging_Light", "Turn On"));
+						GameUIWidget->SetInteractDot(true);
+					}
 					return true;
 				}
 			}
@@ -1070,16 +1113,22 @@ bool AHorrorGameCharacter::GetLineTraceSingle(AActor* &HitActor)
 			{
 				if (!DBox->bIsPowered)
 				{
-					GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Distribution_Box", "Power On"));
-					GameUIWidget->SetInteractDot(true);
+					if (GameUIWidget)
+					{
+						GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Distribution_Box", "Power On"));
+						GameUIWidget->SetInteractDot(true);
+					}
 					return true;
 				}
 			}
 
 			else if (HitActor->IsA<ALightSwitch>()) // 전등 스위치일 경우
 			{
-				GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Light_Switch", "Turn On"));
-				GameUIWidget->SetInteractDot(true);
+				if (GameUIWidget)
+				{
+					GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Light_Switch", "Turn On"));
+					GameUIWidget->SetInteractDot(true);
+				}
 				return true;
 			}
 
@@ -1087,30 +1136,42 @@ bool AHorrorGameCharacter::GetLineTraceSingle(AActor* &HitActor)
 			{
 				if (!bIsCleared)
 				{
-					GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Altar", "Place the Reaper's Items"));
-					GameUIWidget->SetInteractDot(true);
+					if (GameUIWidget)
+					{
+						GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Altar", "Place the Reaper's Items"));
+						GameUIWidget->SetInteractDot(true);
+					}
 					return true;
 				}
 			}
 
 			else if (HitActor->IsA<ASwitchLever>()) // 레버일 경우
 			{
-				GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Switch_Lever", "Lift Up/Down"));
-				GameUIWidget->SetInteractDot(true);
+				if (GameUIWidget)
+				{
+					GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Switch_Lever", "Lift Up/Down"));
+					GameUIWidget->SetInteractDot(true);
+				}
 				return true;
 			}
 
 			else if (HitActor->IsA<APaper>()) // 종이일 경우
 			{
-				GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Paper", "Look"));
-				GameUIWidget->SetInteractDot(true);
+				if (GameUIWidget)
+				{
+					GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Paper", "Look"));
+					GameUIWidget->SetInteractDot(true);
+				}
 				return true;
 			}
 
 			else if (HitActor->IsA<AEnd_Mirror>()) // 엔딩용 거울일 경우
 			{
-				GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Mirror", "Go To Berith"));
-				GameUIWidget->SetInteractDot(true);
+				if (GameUIWidget)
+				{
+					GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Look_Mirror", "Go To Berith"));
+					GameUIWidget->SetInteractDot(true);
+				}
 				return true;
 			}
 		}
@@ -1121,9 +1182,12 @@ bool AHorrorGameCharacter::GetLineTraceSingle(AActor* &HitActor)
 			return false;
 		}*/
 	}
-	
-	GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Nothing_Look", ""));
-	GameUIWidget->SetInteractDot(false); // 에러
+
+	if (GameUIWidget)
+	{
+		GameUIWidget->SetInteractDotText(NSLOCTEXT("AHorrorGameCharacter", "Nothing_Look", ""));
+		GameUIWidget->SetInteractDot(false); // 에러
+	}
 	return false;
 }
 
@@ -1227,8 +1291,11 @@ void AHorrorGameCharacter::SetPlayerSetting()
 {
 	if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
 	{
-		GameUIWidget->SetTimerWidget(GameInstance->GetIsTimerOn());
-		GameUIWidget->SetCrossHairVisible(GameInstance->GetIsCrossHairOn());
+		if (GameUIWidget)
+		{
+			GameUIWidget->SetTimerWidget(GameInstance->GetIsTimerOn());
+			GameUIWidget->SetCrossHairVisible(GameInstance->GetIsCrossHairOn());
+		}
 		MouseSensitive = GameInstance->GetMouseSensitive();
 	}
 }
@@ -1295,7 +1362,10 @@ void AHorrorGameCharacter::SelectItem(FKey fkey)
 		}
 	}
 	// UE_LOG(LogTemp, Warning, TEXT("SelectItem(): Current Item Number: %d"), CurrentItemNum);
-	GameUIWidget->Init();
+	if (GameUIWidget)
+	{
+		GameUIWidget->Init();
+	}
 }
 
 void AHorrorGameCharacter::ScrollUpItem()
@@ -1424,7 +1494,10 @@ void AHorrorGameCharacter::AddFlashLight()
 			}
 		}
 		CurrentItem();
-		GameUIWidget->SetBatteryHUD(FlashLightBattery);
+		if (GameUIWidget)
+		{
+			GameUIWidget->SetBatteryHUD(FlashLightBattery);
+		}
 	}
 	bFLIntenseDown = false;
 	FlashLight->SetIntensity(15000.f);
@@ -1585,7 +1658,10 @@ void AHorrorGameCharacter::AddSword()
 		//GameUIWidget->Init();
 		CurrentItem();
 		// ObjectNumbers++;
-		GameUIWidget->SetObjectCount(1, SwordCount);
+		if (GameUIWidget)
+		{
+			GameUIWidget->SetObjectCount(1, SwordCount);
+		}
 	}
 }
 
@@ -1646,7 +1722,10 @@ void AHorrorGameCharacter::AddBell()
 
 		CurrentItem();
 		// ObjectNumbers++;
-		GameUIWidget->SetObjectCount(2, BellCount);
+		if (GameUIWidget)
+		{
+			GameUIWidget->SetObjectCount(2, BellCount);
+		}
 	}
 }
 
@@ -1707,7 +1786,10 @@ void AHorrorGameCharacter::AddMirror()
 		//GameUIWidget->Init();
 		CurrentItem();
 		// ObjectNumbers++;
-		GameUIWidget->SetObjectCount(3, MirrorCount);
+		if (GameUIWidget)
+		{
+			GameUIWidget->SetObjectCount(3, MirrorCount);
+		}
 	}
 }
 
@@ -1771,7 +1853,10 @@ void AHorrorGameCharacter::AddExtinguisher()
 			GameUIWidget->SetExtWidget(true);
 		}*/
 		CurrentItem();
-		GameUIWidget->SetExtHUD(ExtinguisherLeft);
+		if (GameUIWidget)
+		{
+			GameUIWidget->SetExtHUD(ExtinguisherLeft);
+		}
 	}
 }
 
@@ -1834,8 +1919,11 @@ void AHorrorGameCharacter::AddCutter()
 				UGameplayStatics::PlaySound2D(this, ItemGetSoundCue);
 			}
 		}
-		CurrentItem();
-		GameUIWidget->SetCutterHUD(CutterDurability);
+		CurrentItem(); 
+		if (GameUIWidget)
+		{
+			GameUIWidget->SetCutterHUD(CutterDurability);
+		}
 	}
 }
 
@@ -2233,14 +2321,18 @@ void AHorrorGameCharacter::UseSword()
 	if (GEngine)
 		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Current Notify Attack Start: %s"), bNotifyAttackStart ? TEXT("true") : TEXT("false")));
 	*/
-	auto AnimInstance = Cast<UPlayerAnim>(GetMesh()->GetAnimInstance());
-	if (nullptr == AnimInstance) return;
-
-	AnimInstance->PlayAttackMontage();
-	AActor* ChildActor = Sword->GetChildActor();
-	if (APlayerSword_cpp* BronzeSword = Cast<APlayerSword_cpp>(ChildActor))
+	
+	if (!bIsHiding)
 	{
-		BronzeSword->UseInteract(this);
+		auto AnimInstance = Cast<UPlayerAnim>(GetMesh()->GetAnimInstance());
+		if (nullptr == AnimInstance) return;
+
+		AnimInstance->PlayAttackMontage();
+		AActor* ChildActor = Sword->GetChildActor();
+		if (APlayerSword_cpp* BronzeSword = Cast<APlayerSword_cpp>(ChildActor))
+		{
+			BronzeSword->UseInteract(this);
+		}
 	}
 }
 
@@ -2345,6 +2437,11 @@ void AHorrorGameCharacter::UseExtinguisher()
 	if (FirstPersonCameraComponent == nullptr)
 		return;
 
+	if (bIsHiding)
+	{
+		return;
+	}
+
 	SmokeComponent->Activate(true);
 	bCanExtinguisherUse = false;
 	//USoundCue* ExtinguisherSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/SpraySoundCue"));
@@ -2416,7 +2513,10 @@ void AHorrorGameCharacter::UseExtinguisher()
 		SmokeComponent->Deactivate();
 		//CapsuleComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 		ExtinguisherLeft -= 20;
-		GameUIWidget->SetExtHUD(ExtinguisherLeft);
+		if (GameUIWidget)
+		{
+			GameUIWidget->SetExtHUD(ExtinguisherLeft);
+		}
 
 		if (ExtinguisherLeft <= 0)
 		{
@@ -2439,7 +2539,10 @@ void AHorrorGameCharacter::UseExtinguisher()
 			FHorrorGameItemData TempItem;
 			TempItem.Clear();
 			Inventory.Add(TempItem);
-			GameUIWidget->SetExtWidget(false);
+			if (GameUIWidget)
+			{
+				GameUIWidget->SetExtWidget(false);
+			}
 		}
 		CurrentItem();
 
@@ -2466,8 +2569,11 @@ void AHorrorGameCharacter::UseExtinguisher()
 		}
 		FHorrorGameItemData TempItem;
 		TempItem.Clear();
-		Inventory.Add(TempItem);
-		GameUIWidget->SetExtWidget(false);
+		Inventory.Add(TempItem); 
+		if (GameUIWidget)
+		{
+			GameUIWidget->SetExtWidget(false);
+		}
 	}
 	CurrentItem();
 }
@@ -2481,14 +2587,14 @@ void AHorrorGameCharacter::UseCutter()
 	{
 		if (HitActor)
 		{
-		//	FString ActorName = HitActor->GetName();
+			//	FString ActorName = HitActor->GetName();
 
 			if (ALockerDoorActor_cpp* LockerDoor = Cast<ALockerDoorActor_cpp>(HitActor))
 			{
 				// ALockerDoorActor_cpp* LockerDoor = Cast<ALockerDoorActor_cpp>(HitActor);
 				if (LockerDoor->bIsLockerLocked)
 				{
-				//	USoundCue* CutSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/BreakLock"));
+					//	USoundCue* CutSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/BreakLock"));
 					if (CutterSoundCue)
 					{
 						UGameplayStatics::PlaySoundAtLocation(this, CutterSoundCue, GetActorLocation());
@@ -2508,7 +2614,7 @@ void AHorrorGameCharacter::UseCutter()
 				if (ClassroomDoor->bIsDoorLocked)
 				{
 					ClassroomDoor->UseInteract(this);
-				//	USoundCue* CutSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/BreakLock"));
+					//	USoundCue* CutSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/BreakLock"));
 					if (CutterSoundCue)
 					{
 						UGameplayStatics::PlaySoundAtLocation(this, CutterSoundCue, GetActorLocation());
@@ -2526,7 +2632,7 @@ void AHorrorGameCharacter::UseCutter()
 			{
 				if (MetalDoor->bIsDoorLocked)
 				{
-				//	USoundCue* CutSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/BreakLock"));
+					//	USoundCue* CutSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/BreakLock"));
 					if (CutterSoundCue)
 					{
 						UGameplayStatics::PlaySoundAtLocation(this, CutterSoundCue, GetActorLocation());
@@ -2547,7 +2653,10 @@ void AHorrorGameCharacter::UseCutter()
 		Inventory[CurrentItemNum].ItemCount--;
 		if (Inventory[CurrentItemNum].ItemCount == 0)
 		{
-			GameUIWidget->SetCutterWidget(false);
+			if (GameUIWidget)
+			{
+				GameUIWidget->SetCutterWidget(false);
+			}
 			Inventory.RemoveAt(CurrentItemNum);
 			InventoryNum--;
 			CurrentItemNum--;
@@ -2566,20 +2675,31 @@ void AHorrorGameCharacter::UseCutter()
 		Inventory.Add(TempItem);
 	}
 	CurrentItem();
-	GameUIWidget->SetCutterHUD(CutterDurability);
+	if (GameUIWidget)
+	{
+		GameUIWidget->SetCutterHUD(CutterDurability);
+	}
 }
 
 void AHorrorGameCharacter::UseLantern()
 {
-	AActor* ChildActor = Lantern->GetChildActor();
-	if (ASoul_Lantern_cpp* SoulLantern = Cast<ASoul_Lantern_cpp>(ChildActor))
+//	bLanternOn = !bLanternOn;
+	if (Lantern)
 	{
-		SoulLantern->UseInteract(this);
+		if (ASoul_Lantern_cpp* SoulLantern = Cast<ASoul_Lantern_cpp>(Lantern->GetChildActor()))
+		{
+			SoulLantern->UseInteract(this);
+		}
 	}
 }
 
 void AHorrorGameCharacter::UseGlowStick()
 {
+	if (bIsHiding)
+	{
+		return;
+	}
+
 	if (GlowStickClass)
 	{
 		FActorSpawnParameters SpawnParams;
@@ -2591,6 +2711,7 @@ void AHorrorGameCharacter::UseGlowStick()
 		{
 			Z = 45.f; // 56 - 45 = 11
 		}
+
 		FVector SpawnLocation = GetActorLocation() - FVector(0.f, 0.f, Z);
 			
 		AGlowStick_cpp* GlowStick = GetWorld()->SpawnActor<AGlowStick_cpp>(GlowStickClass, SpawnLocation, FRotator(0.f, 0.f, 0.f), SpawnParams);
@@ -2702,8 +2823,9 @@ void AHorrorGameCharacter::FlashLightBatteryChange()
 			bFLIntenseDown = true;
 		}
 	}
-
+	
 	GameUIWidget->SetBatteryHUD(FlashLightBattery);
+	
 	GetWorld()->GetTimerManager().ClearTimer(_loopLightTimerHandle);
 	GetWorld()->GetTimerManager().SetTimer(_loopLightTimerHandle, this, &AHorrorGameCharacter::FlashLightBatteryChange, 1.0f, false);
 }
@@ -2717,31 +2839,49 @@ void AHorrorGameCharacter::CurrentItem()
 	//if (currentItemName == TEXT("FlashLight"))
 	if (currentItemNumber == 2) // FlashLight
 	{
-		GameUIWidget->SetBatteryWidget(true);
+		if (GameUIWidget)
+		{
+			GameUIWidget->SetBatteryWidget(true);
+		}
 	}
 	else
 	{
-		GameUIWidget->SetBatteryWidget(false);
+		if (GameUIWidget)
+		{
+			GameUIWidget->SetBatteryWidget(false);
+		}
 	}
 
 	//if (currentItemName == TEXT("Extinguisher"))
 	if (currentItemNumber == 8) // Extinguisher
 	{
-		GameUIWidget->SetExtWidget(true);
+		if (GameUIWidget)
+		{
+			GameUIWidget->SetExtWidget(true);
+		}
 	}
 	else
 	{
-		GameUIWidget->SetExtWidget(false);
+		if (GameUIWidget)
+		{
+			GameUIWidget->SetExtWidget(false);
+		}
 	}
 
 	//if (currentItemName == TEXT("Cutter"))
 	if (currentItemNumber == 9) // Cutter
 	{
-		GameUIWidget->SetCutterWidget(true);
+		if (GameUIWidget)
+		{
+			GameUIWidget->SetCutterWidget(true);
+		}
 	}
 	else
 	{
-		GameUIWidget->SetCutterWidget(false);
+		if (GameUIWidget)
+		{
+			GameUIWidget->SetCutterWidget(false);
+		}
 	}
 
 	//if (currentItemName == TEXT("SoulLantern"))
@@ -2754,7 +2894,7 @@ void AHorrorGameCharacter::CurrentItem()
 		AActor* ChildActor = Lantern->GetChildActor();
 		if (ASoul_Lantern_cpp* SoulLantern = Cast<ASoul_Lantern_cpp>(ChildActor))
 		{
-			if(SoulLantern->bIsLightOn)
+			if (SoulLantern->bIsLightOn)
 				SoulLantern->UseInteract(this);
 		}
 		Lantern->SetHiddenInGame(true);
@@ -2780,7 +2920,10 @@ void AHorrorGameCharacter::CurrentItem()
 		Sword->SetHiddenInGame(true);
 	}
 
-	GameUIWidget->Init();
+	if (GameUIWidget)
+	{
+		GameUIWidget->Init();
+	}
 }
 
 // Get Functions: GetStamina(), GetFlashLightBattery(), GetCurrentItemNumber()
@@ -2867,6 +3010,11 @@ int32 AHorrorGameCharacter::GetBellNumbers()
 	return BellCount;
 }
 
+bool AHorrorGameCharacter::GetIsLightOn()
+{
+	return bIsCigarLightOn || bIsFlashLightOn;
+}
+
 // Set Functions: SetPlayerStatus()
 void AHorrorGameCharacter::SetPlayerStatus(Player_Status Value)
 {
@@ -2909,12 +3057,21 @@ void AHorrorGameCharacter::SetPlayerStatus(Player_Status Value)
 				GetCharacterMovement()->StopMovementImmediately();
 				break;
 			}
+			// 이 케이스는 숨은 상태를 나타내는 케이스가 아닌, Hide Object속에 배치된 캐릭터에 대한 케이스임.
+			case Player_Status::Hiding: // 헷갈리면 안 됨. 숨은 상태는 bIsHiding이 나타냄.
+			{
+				
+				break;
+			}
 			case Player_Status::Died: // 사망
 			{
 				SetActorEnableCollision(false);
 				GetMesh()->SetHiddenInGame(true);
 				DisableInput(HorrorGamePlayerController);
-				GameUIWidget->SetTimerStop(true);
+				if (GameUIWidget)
+				{
+					GameUIWidget->SetTimerStop(true);
+				}
 				HorrorGamePlayerController->ShowDeadUI();
 				break;
 			}
@@ -2923,7 +3080,10 @@ void AHorrorGameCharacter::SetPlayerStatus(Player_Status Value)
 				SetActorEnableCollision(false);
 				GetMesh()->SetHiddenInGame(true);
 				DisableInput(HorrorGamePlayerController);
-				GameUIWidget->SetTimerStop(true);
+				if (GameUIWidget)
+				{
+					GameUIWidget->SetTimerStop(true);
+				}
 				//HorrorGamePlayerController->ShowDeadUI();
 				break;
 			}
@@ -2933,14 +3093,20 @@ void AHorrorGameCharacter::SetPlayerStatus(Player_Status Value)
 
 void AHorrorGameCharacter::SetExplainText(FText text, int32 time)
 {
-	GameUIWidget->SetInteractDotExplainText(text);
+	if (GameUIWidget)
+	{
+		GameUIWidget->SetInteractDotExplainText(text);
+	}
 	TextTimer = time;
 	cnt = 0.f;
 }
 
 void AHorrorGameCharacter::SetErrorText(FText text, int32 time)
 {
-	GameUIWidget->SetInteractDotErrorText(text);
+	if (GameUIWidget)
+	{
+		GameUIWidget->SetInteractDotErrorText(text);
+	}
 	ErrorTextTimer = time;
 	ErrorTextCount = 0.f;
 }
@@ -2953,8 +3119,11 @@ void AHorrorGameCharacter::AddPatience(int32 value)
 
 	if (Patience >= 100)
 		Patience = 100;
-	bIsCooldown = true;
-	GameUIWidget->SetPatience(Patience);
+	bIsCooldown = true; 
+	if (GameUIWidget)
+	{
+		GameUIWidget->SetPatience(Patience);
+	}
 }
 
 void AHorrorGameCharacter::LightFlicker(float value)
@@ -3056,7 +3225,10 @@ void AHorrorGameCharacter::AttackCheck(bool value)
 				//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Inventory Array Num: %d"), Inventory.Num()));
 			}
 
-			GameUIWidget->SetObjectCount(1, SwordCount);
+			if (GameUIWidget)
+			{
+				GameUIWidget->SetObjectCount(1, SwordCount);
+			}
 			CurrentItem();
 		}
 	}
@@ -3189,10 +3361,17 @@ void AHorrorGameCharacter::SetPanicScreamEnd()
 
 void AHorrorGameCharacter::LevelStart()
 {
-	//HorrorGamePlayerController->ShowMainUI();
-	GameUIWidget->Player = this;
-	GameUIWidget->AllWidgetInit();
-	SetPlayerSetting();
+	if (PlayerStatus == Player_Status::Loading)
+	{
+		PlayerStatus = Player_Status::Survive;
+		//HorrorGamePlayerController->ShowMainUI();
+		if (GameUIWidget)
+		{
+			GameUIWidget->Player = this;
+			GameUIWidget->AllWidgetInit();
+		}
+		SetPlayerSetting();
+	}
 }
 
 void AHorrorGameCharacter::SetIsTimeStop(bool value)
@@ -3282,7 +3461,10 @@ void AHorrorGameCharacter::SetArchiveGetText(FText inText)
 	}
 	else
 	{
-		GameUIWidget->SetArchiveGetText(inText);
+		if (GameUIWidget)
+		{
+			GameUIWidget->SetArchiveGetText(inText);
+		}
 
 		/*GetWorld()->GetTimerManager().SetTimer(ArchiveTextTimer, FTimerDelegate::CreateLambda([&]() {
 			GameUIWidget->SetArchiveGetText(FText::FromString(TEXT("")));

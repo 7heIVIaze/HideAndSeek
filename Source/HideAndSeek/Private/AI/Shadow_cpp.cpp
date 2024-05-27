@@ -12,8 +12,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "PatrolPoint_cpp.h"
 #include "EngineUtils.h"
-#include "Wardrobe_cpp.h"
-#include "Cabinet_cpp.h"
+#include "Furniture/HideObject.h"
 #include "HideAndSeek/HorrorGameCharacter.h"
 #include "HorrorGamePlayerController.h"
 #include "ClassroomDoorActor_cpp.h"
@@ -214,18 +213,8 @@ void AShadow_cpp::SetAnimFinish(bool inIsAnimationFinished)
 	// 만약 숨어있는 곳을 잡았는지 확인
 	if (bIsHidingCatch)
 	{
-		// 그 숨었던 물체가 캐비닛이면
-		if (const auto Cabinet = Cast<ACabinet_cpp>(PlayerHidingObject))
-		{
-			// 캐비닛 부수기
-			Cabinet->BreakCabinet();
-		}
-		// 그게 아닌 옷장이면
-		else if (const auto Wardrobe = Cast<AWardrobe_cpp>(PlayerHidingObject))
-		{
-			// 옷장 부수기
-			Wardrobe->BreakWardrobe();
-		}
+		// 그 숨은 장소를 부숨
+		PlayerHidingObject->BreakHideObject();
 
 		// 초기화 후 나가기
 		bIsHidingCatch = false;
@@ -282,27 +271,15 @@ void AShadow_cpp::SoundBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 			GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel9, ECollisionResponse::ECR_Block);
 		}
 
-		// 그 액터가 캐비닛이면
-		if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
+		// 충돌한 액터가 숨는 장소이면
+		if (auto HideObject = Cast<AHideObject>(OtherActor))
 		{
-			// 캐비닛 근처 요괴의 수를 증가시키고 플레이어가 숨어있는 경우에 카메라 노이즈 단계를 1로 설정함.
-			Cabinet->CreatureNum++;
+			// 근처의 요괴 수를 증가시키고, 플레이어가 숨어있는 경우에 카메라 노이즈 단계를 1로 설정함.
+			HideObject->CreatureNum++;
 
-			if (Cabinet->bIsHiding)
+			if (HideObject->bIsHiding)
 			{
-				Cabinet->SetCameraComponentNoise(1);
-			}
-		}
-
-		// 그 액터가 옷장이면
-		if (auto Wardrobe = Cast<AWardrobe_cpp>(OtherActor))
-		{
-			// 옷장 근처 요괴의 수를 증가시키고, 플레이어가 숨어있는 경우에 카메라 노이즈 단계를 1로 설정함.
-			Wardrobe->CreatureNum++;
-
-			if (Wardrobe->bIsHiding)
-			{
-				Wardrobe->SetCameraComponentNoise(1);
+				HideObject->SetCameraComponentNoise(1);
 			}
 		}
 	}
@@ -330,32 +307,17 @@ void AShadow_cpp::SoundEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* O
 			// 캡슐 콜라이더의 충돌 설정을 문을 기준으로 Ignore로 설정. 즉 문을 통과할 수 있게 설정.
 			GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel9, ECollisionResponse::ECR_Ignore);
 		}
-
-		// 그 액터가 캐비닛이면
-		if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
+		// 그 액터가 숨는 장소이면
+		if (auto HideObject = Cast<AHideObject>(OtherActor))
 		{
-			// 근처 요괴의 수를 1 감소시키고, 그 수가 0 이하라면 깜빡임을 멈추고, 빛의 세기도 원상복귀시키며, 카메라 노이즈 단계도 0으로 설정함.
-			Cabinet->CreatureNum--;
-			if (Cabinet->CreatureNum <= 0)
+			// 근처 요괴의 수를 1 감소시키고, 그 수가 0 이하라면 깜빡임, 불빛의 세기, 카메라 노이즈 단계를 default로 설정함.
+			HideObject->CreatureNum--;
+			if (HideObject->CreatureNum <= 0)
 			{
-				Cabinet->FlickeringLight.Stop();
-				Cabinet->CigarLight->SetIntensity(Cabinet->Intensity);
-				Cabinet->FlashLight->SetIntensity(Cabinet->Intensity);
-				Cabinet->SetCameraComponentNoise(0);
-			}
-		}
-
-		// 그 액터가 옷장이면
-		if (auto Wardrobe = Cast<AWardrobe_cpp>(OtherActor))
-		{
-			// 근처 요괴의 수를 1 감소시키고, 그 수가 0 이하라면 깜빡임을 멈추고, 빛의 세기도 원상복귀시키며, 카메라 노이즈 단계도 0으로 설정함.
-			Wardrobe->CreatureNum--;
-			if (Wardrobe->CreatureNum <= 0)
-			{
-				Wardrobe->FlickeringLight.Stop();
-				Wardrobe->CigarLight->SetIntensity(Wardrobe->Intensity);
-				Wardrobe->FlashLight->SetIntensity(Wardrobe->Intensity);
-				Wardrobe->SetCameraComponentNoise(0);
+				HideObject->FlickeringLight.Stop();
+				HideObject->CigarLight->SetIntensity(HideObject->Intensity);
+				HideObject->FlashLight->SetIntensity(HideObject->Intensity);
+				HideObject->SetCameraComponentNoise(0);
 			}
 		}
 	}
@@ -378,7 +340,7 @@ FVector AShadow_cpp::GetPatrolPoint()
 }
 
 // 플레이어가 숨은 오브젝트를 감지했을 때, 컨트롤러에서 제어할 함수
-void AShadow_cpp::DetectPlayerHidingObject(AActor* DetectedObject)
+void AShadow_cpp::DetectPlayerHidingObject(class AHideObject* DetectedObject)
 {
 	PlayerHidingObject = DetectedObject;
 }
@@ -488,38 +450,16 @@ void AShadow_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 		// 충돌한 액터가 존재할 경우에
 		if (OtherActor != this && OtherActor != nullptr && OtherComp != nullptr)
 		{
-			// 그 액터가 캐비닛이면
-			if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
-			{
-				// 현재 추격 중이고 숨어있는 알고 있는 상태에서 잡았다면
-				if (bIsChase && HideCatch)
-				{
-					// Catch 했음을 알리고 애니메이션이 종료되면 캐비닛을 부슴.
-					SetIsCatch(true);
-					bIsHidingCatch = true;
-					DetectPlayerHidingObject(Cabinet);
-
-					// 이 아래 코드는 수정이 필요함.
-					/*if (GetAnimFinish())
-						Cabinet->BreakCabinet();*/
-					//SetIsCatch(false);
-				}
-			}
-			// 그 액터가 옷장이면
-			if (auto Wardrobe = Cast<AWardrobe_cpp>(OtherActor))
+			// 그 액터가 숨을 수 있는 액터이면
+			if (auto HideObject = Cast<AHideObject>(OtherActor))
 			{
 				// 현재 추격 중이고 숨어있는 것을 알고 있는 상태에서 잡았다면
 				if (bIsChase && HideCatch)
 				{
-					// Catch 했음을 알리고 애니메이션이 종료되면 캐비닛을 부슴.
+					// Catch 했음을 알리고 옷장을 잡았다고 함수를 호출함
 					SetIsCatch(true);
 					bIsHidingCatch = true;
-					DetectPlayerHidingObject(Wardrobe);
-
-					// 이 아래 코드는 수정이 필요함.
-					/*if (GetAnimFinish())
-						Wardrobe->BreakWardrobe();*/
-					//SetIsCatch(false);
+					DetectPlayerHidingObject(HideObject);
 				}
 			}
 			// 그 액터가 플레이어라면

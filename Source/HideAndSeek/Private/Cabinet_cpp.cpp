@@ -1,5 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
 
+/***
+* Deprecated! Furniture/HideObject 클래스가 이 클래스를 대체함.
+***/
 
 #include "Cabinet_cpp.h"
 #include "Camera/CameraComponent.h"
@@ -326,8 +329,8 @@ void ACabinet_cpp::MoveCamera()
 	if (bIsHiding)
 	{
 		Camera->SetRelativeRotation(UKismetMathLibrary::MakeRotator(0, Pitch, Yaw));
-		GetWorld()->GetTimerManager().SetTimer(_loopCameraTimerHandle, this, &ACabinet_cpp::MoveCamera, 0.1f, false);
-		GetWorld()->GetTimerManager().ClearTimer(_loopCameraTimerHandle);
+		/*GetWorld()->GetTimerManager().SetTimer(_loopCameraTimerHandle, this, &ACabinet_cpp::MoveCamera, 0.1f, false);
+		GetWorld()->GetTimerManager().ClearTimer(_loopCameraTimerHandle);*/
 	}
 }
 
@@ -406,11 +409,11 @@ void ACabinet_cpp::SetCameraComponentNoise(int32 WhichStatus)
 		Camera->PostProcessSettings.bOverride_VignetteIntensity = true;
 		Camera->PostProcessSettings.VignetteIntensity = 1.f;
 		Camera->PostProcessSettings.bOverride_FilmGrainIntensity = true;
-		Camera->PostProcessSettings.FilmGrainIntensity = 4.f;
+		Camera->PostProcessSettings.FilmGrainIntensity = 1.f;
 		break;
 	case 2: // 추격 판정이 뜰 경우 노이즈 크게 함
 		Camera->PostProcessSettings.bOverride_VignetteIntensity = true;
-		Camera->PostProcessSettings.VignetteIntensity = 1.f;
+		Camera->PostProcessSettings.VignetteIntensity = 3.f;
 		Camera->PostProcessSettings.bOverride_FilmGrainIntensity = true;
 		Camera->PostProcessSettings.FilmGrainIntensity = 15.f;
 		GetWorldTimerManager().SetTimer(NoiseTimer, FTimerDelegate::CreateLambda([&]() {

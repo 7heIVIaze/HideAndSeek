@@ -18,8 +18,7 @@
 #include "PatrolPoint_cpp.h"
 #include "EngineUtils.h"
 #include "AI/ReaperAnim.h"
-#include "Wardrobe_cpp.h"
-#include "Cabinet_cpp.h"
+#include "Furniture/HideObject.h"
 #include "HideAndSeek/HorrorGameCharacter.h"
 #include "HorrorGamePlayerController.h"
 #include "ClassroomDoorActor_cpp.h"
@@ -372,18 +371,8 @@ void AReaper_cpp::SetAnimFinish(bool Value)
 	// 이 때, 플레이어가 숨어있는 곳을 발견해 공격 모션을 취했을 경우 
 	if (bIsHidingCatch)
 	{
-		// 숨었던 장소가 캐비닛이면
-		if (const auto Cabinet = Cast<ACabinet_cpp>(PlayerHidingObject))
-		{
-			// 그 캐비닛 부숨
-			Cabinet->BreakCabinet();
-		}
-		// 그것이 아닌 옷장일 경우
-		else if (const auto Wardrobe = Cast<AWardrobe_cpp>(PlayerHidingObject))
-		{
-			// 옷장 부숨
-			Wardrobe->BreakWardrobe();
-		}
+		// 그 숨은 장소를 부숨
+		PlayerHidingObject->BreakHideObject();
 
 		// 초기화 후 해당 함수에서 나감
 		bIsHidingCatch = false;
@@ -431,26 +420,15 @@ void AReaper_cpp::SoundBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 			// 캡슐 콜라이더의 충돌 채널을 문을 기준으로 Block으로 설정해, Brute가 문을 통과하지 못하도록 설정함.
 			GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel9, ECollisionResponse::ECR_Block);
 		}
-		// 충돌한 액터가 캐비닛이면
-		if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
+		// 충돌한 액터가 숨는 장소이면
+		if (auto HideObject = Cast<AHideObject>(OtherActor))
 		{
-			// 캐비닛 근처의 요괴 수를 증가시키고, 플레이어가 숨어있는 경우에 카메라 노이즈 단계를 1로 설정함.
-			Cabinet->CreatureNum++;
+			// 근처의 요괴 수를 증가시키고, 플레이어가 숨어있는 경우에 카메라 노이즈 단계를 1로 설정함.
+			HideObject->CreatureNum++;
 
-			if (Cabinet->bIsHiding)
+			if (HideObject->bIsHiding)
 			{
-				Cabinet->SetCameraComponentNoise(1);
-			}
-		}
-		// 충돌한 액터가 옷장이면
-		if (auto Wardrobe = Cast<AWardrobe_cpp>(OtherActor))
-		{
-			// 옷장 근처의 요괴 수를 증가시키고, 플레이어가 숨어있는 경우에 카메라 노이즈 단계를 1로 설정함.
-			Wardrobe->CreatureNum++;
-
-			if (Wardrobe->bIsHiding)
-			{
-				Wardrobe->SetCameraComponentNoise(1);
+				HideObject->SetCameraComponentNoise(1);
 			}
 		}
 		// ** 캐비닛/옷장의 경우, 숨지 않은 경우일때 충돌했더라도 플레이어의 카메라가 이미 노이즈가 발생했다면, 그 값을 그대로 가져오므로 상관없음.
@@ -479,30 +457,17 @@ void AReaper_cpp::SoundEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* O
 			// 캡슐 콜라이더의 충돌 설정을 문을 기준으로 Ignore로 설정해, Brute가 문을 통과하도록 설정함.
 			GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel9, ECollisionResponse::ECR_Ignore);
 		}
-		// 그 액터가 캐비닛이면
-		if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
+		// 그 액터가 숨는 장소이면
+		if (auto HideObject = Cast<AHideObject>(OtherActor))
 		{
-			// 캐비닛 근처 요괴의 수를 1 감소시키고, 그 수가 0 이하라면 깜빡임, 불빛의 세기, 카메라 노이즈를 default로 초기화함.
-			Cabinet->CreatureNum--;
-			if (Cabinet->CreatureNum <= 0)
+			// 근처 요괴의 수를 1 감소시키고, 그 수가 0 이하라면 깜빡임, 불빛의 세기, 카메라 노이즈 단계를 default로 설정함.
+			HideObject->CreatureNum--;
+			if (HideObject->CreatureNum <= 0)
 			{
-				Cabinet->FlickeringLight.Stop();
-				Cabinet->CigarLight->SetIntensity(Cabinet->Intensity);
-				Cabinet->FlashLight->SetIntensity(Cabinet->Intensity);
-				Cabinet->SetCameraComponentNoise(0);
-			}
-		}
-		// 그 액터가 옷장이면
-		if (auto Wardrobe = Cast<AWardrobe_cpp>(OtherActor))
-		{
-			// 옷장 근처 요괴의 수를 1 감소시키고, 그 수가 0 이하라면 깜빡임, 불빛의 세기, 카메라 노이즈 단계를 default로 설정함.
-			Wardrobe->CreatureNum--;
-			if (Wardrobe->CreatureNum <= 0)
-			{
-				Wardrobe->FlickeringLight.Stop();
-				Wardrobe->CigarLight->SetIntensity(Wardrobe->Intensity);
-				Wardrobe->FlashLight->SetIntensity(Wardrobe->Intensity);
-				Wardrobe->SetCameraComponentNoise(0);
+				HideObject->FlickeringLight.Stop();
+				HideObject->CigarLight->SetIntensity(HideObject->Intensity);
+				HideObject->FlashLight->SetIntensity(HideObject->Intensity);
+				HideObject->SetCameraComponentNoise(0);
 			}
 		}
 	}
@@ -547,7 +512,7 @@ FVector AReaper_cpp::GetPatrolPoint()
 }
 
 // 플레이어가 숨은 오브젝트를 감지했을 때, 컨트롤러에서 제어할 함수
-void AReaper_cpp::DetectPlayerHidingObject(AActor* DetectedObject)
+void AReaper_cpp::DetectPlayerHidingObject(class AHideObject* DetectedObject)
 {
 	PlayerHidingObject = DetectedObject;
 }
@@ -669,24 +634,8 @@ void AReaper_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 		// 충돌한 액터가 존재할 경우
 		if (OtherActor != this && OtherActor != nullptr && OtherComp != nullptr)
 		{
-			// 그 액터가 캐비닛이면
-			if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
-			{
-				// 현재 추격 중이고 숨어있는 것을 알고 있는 상태에서 충돌했으면
-				if (bIsChase && HideCatch)
-				{
-					// 모든 능력이 봉인된 상태가 아니라면
-					if (CurrentStatus != Sealed::Sealed)
-					{
-						// Catch 했음을 알리고, 캐비닛을 잡았다고 함수를 호출함
-						SetIsCatch(true);
-						bIsHidingCatch = true;
-						DetectPlayerHidingObject(Cabinet);
-					}
-				}
-			}
-			// 그 액터가 옷장이면
-			if (auto Wardrobe = Cast<AWardrobe_cpp>(OtherActor))
+			// 그 액터가 숨을 수 있는 액터이면
+			if (auto HideObject = Cast<AHideObject>(OtherActor))
 			{
 				// 현재 추격 중이고 숨어있는 것을 알고 있는 상태에서 잡았다면
 				if (bIsChase && HideCatch)
@@ -697,7 +646,7 @@ void AReaper_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 						// Catch 했음을 알리고 옷장을 잡았다고 함수를 호출함
 						SetIsCatch(true);
 						bIsHidingCatch = true;
-						DetectPlayerHidingObject(Wardrobe);
+						DetectPlayerHidingObject(HideObject);
 					}
 				}
 			}

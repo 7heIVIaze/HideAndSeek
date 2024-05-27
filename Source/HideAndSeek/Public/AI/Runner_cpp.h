@@ -62,7 +62,7 @@ private:
 	class APatrolPoint_cpp* CurrentPatrolPoint;
 
 	// 플레이어가 숨어있는 캐비닛/옷장
-	class AActor* PlayerHidingObject;
+	class AHideObject* PlayerHidingObject;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PatrolPointList")
@@ -146,7 +146,7 @@ public:
 		FVector GetPatrolPoint();
 
 	UFUNCTION(BlueprintCallable)
-	void DetectPlayerHidingObject(AActor* DetectedObject);
+	void DetectPlayerHidingObject(class AHideObject* DetectedObject);
 
 	UFUNCTION(BlueprintCallable)
 		bool GetIsStunned();

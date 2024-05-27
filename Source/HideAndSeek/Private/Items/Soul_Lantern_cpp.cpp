@@ -97,6 +97,8 @@ void ASoul_Lantern_cpp::UseInteract(class AHorrorGameCharacter* Player)
 	Super::UseInteract(Player);
 	
 	bIsLightOn = !bIsLightOn;
+	Player->bLanternOn = bIsLightOn;
+	UE_LOG(LogTemp, Warning, TEXT("Player: LanternOn : %s"), bIsLightOn ? TEXT("true") : TEXT("false"));
 	if (bIsLightOn)
 	{
 		//USoundCue* LanternCue = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/LanternSoundCue"));
@@ -104,6 +106,31 @@ void ASoul_Lantern_cpp::UseInteract(class AHorrorGameCharacter* Player)
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, LanternCue, GetActorLocation());
 		}
+		LightNiagara->Activate(true);
+	}
+	else
+	{
+		LightNiagara->Activate(false);
+		LightNiagara->Deactivate();
+	}
+	Light->SetVisibility(bIsLightOn);
+
+}
+
+
+void ASoul_Lantern_cpp::HideInteract(class AHorrorGameCharacter* Player)
+{
+	Super::UseInteract(Player);
+	
+	bIsLightOn = !bIsLightOn;
+	UE_LOG(LogTemp, Warning, TEXT("Player: LanternOn : %s"), bIsLightOn ? TEXT("true") : TEXT("false"));
+	if (bIsLightOn)
+	{
+		//USoundCue* LanternCue = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/LanternSoundCue"));
+		/*if (LanternCue)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, LanternCue, GetActorLocation());
+		}*/
 		LightNiagara->Activate(true);
 	}
 	else

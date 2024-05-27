@@ -18,7 +18,7 @@
 #include "AI/Rampage_cpp.h"
 #include "AI/Shadow_cpp.h"
 
-
+// AI가 플레이어를 추격하는 로직
 UBTTask_Trace::UBTTask_Trace()
 {
 	NodeName = TEXT("Trace");
@@ -28,7 +28,7 @@ UBTTask_Trace::UBTTask_Trace()
 EBTNodeResult::Type UBTTask_Trace::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
-
+	// AI 컨트롤러가 존재할 경우 InProgress 상태로, 아니면 fail로 설정함.
 	AAIController* AIController = OwnerComp.GetAIOwner();
 
 	if (ACreatureAI* ReaperAI = Cast<ACreatureAI>(AIController))
@@ -94,26 +94,6 @@ EBTNodeResult::Type UBTTask_Trace::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 		return EBTNodeResult::InProgress;
 	}
 
-	/*ACreatureAI* ReaperAI = Cast<ACreatureAI>(OwnerComp.GetAIOwner());
-	AAIController_Runner* RunnerAI = Cast<AAIController_Runner>(OwnerComp.GetAIOwner());
-	APawn* Creature = nullptr;
-	AReaper_cpp* Reaper = nullptr;
-	ARunner_cpp* Runner = nullptr;
-
-	if (nullptr == Creature)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Creature Initialize Failed"));
-		return EBTNodeResult::Failed;
-	}
-
-	UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
-	if (nullptr == NavSystem)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No Creature in Nav"));
-		return EBTNodeResult::Failed;
-	}
-
-	return EBTNodeResult::InProgress;*/
 	return EBTNodeResult::Failed;
 }
 
@@ -121,8 +101,10 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
 
+	// Behavior Tree를 실행시키는 Component의 AI Controller를 가져옴
 	AAIController* AIController = OwnerComp.GetAIOwner();
 
+	// 그 컨트롤러가 Reaper의 컨트롤러면
 	if (ACreatureAI* ReaperAI = Cast<ACreatureAI>(AIController))
 	{
 		AReaper_cpp* Reaper = Cast<AReaper_cpp>(ReaperAI->GetPawn());
@@ -135,10 +117,12 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 
 		AHorrorGameCharacter* pTarget = nullptr;
 
+		// 블랙보드로부터 Target과 Target Location을 가져옴
 		pTarget = Cast<AHorrorGameCharacter>(ReaperAI->GetBlackboard()->GetValueAsObject(ACreatureAI::TargetKey));
 
 		FVector TargetLocation = ReaperAI->GetBlackboard()->GetValueAsVector(ACreatureAI::TargetLocation);
 
+		// Target이 없을 경우 TargetLocation을 향해 이동함
 		if (nullptr == pTarget) // if no target
 		{
 			//UAIBlueprintHelperLibrary::SimpleMoveToLocation(ReaperAI, TargetLocation);
@@ -149,14 +133,13 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 			return;
 		}
 
-		auto PlayerController = Cast<APlayerController>(pTarget->GetController());
-
+		// Target이 있으면 Target을 향해 이동함
 		// move to actor
 		// UAIBlueprintHelperLibrary::SimpleMoveToActor(ReaperAI, pTarget);
 		ReaperAI->MoveToActor(pTarget, AcceptableRadius, bStopOverlap, bUsePathfinding,
 			bAllowStrafe, ReaperAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
 
-		// if distance is under than 150, stop and set task succeed
+		// 공격 애니메이션이 끝나면 Target과 CanSeePlayer를 초기화함.
 		if (Reaper->GetAnimFinish())
 		{
 			ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, nullptr);
@@ -165,8 +148,8 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 			return;
 		}
 	}
-
-	if (AAIController_Runner* RunnerAI = Cast<AAIController_Runner>(AIController))
+	// 컨트롤러가 Runner의 컨트롤러면
+	else if (AAIController_Runner* RunnerAI = Cast<AAIController_Runner>(AIController))
 	{
 		ARunner_cpp* Runner = Cast<ARunner_cpp>(RunnerAI->GetPawn());
 
@@ -178,10 +161,12 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 
 		AHorrorGameCharacter* pTarget = nullptr;
 
+		// 블랙보드로부터 Target과 Target Location을 가져옴
 		pTarget = Cast<AHorrorGameCharacter>(RunnerAI->GetBlackboard()->GetValueAsObject(AAIController_Runner::TargetKey));
 
 		FVector TargetLocation = RunnerAI->GetBlackboard()->GetValueAsVector(AAIController_Runner::TargetLocation);
 
+		// Target이 없을 경우 TargetLocation을 향해 이동함
 		if (nullptr == pTarget) // if no target
 		{
 			// UAIBlueprintHelperLibrary::SimpleMoveToLocation(RunnerAI, TargetLocation);
@@ -192,13 +177,13 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 			return;
 		}
 
-		auto PlayerController = Cast<APlayerController>(pTarget->GetController());
-
+		// Target이 있으면 Target을 향해 이동함
 		// move to actor
 		//UAIBlueprintHelperLibrary::SimpleMoveToActor(RunnerAI, pTarget);
 		RunnerAI->MoveToActor(pTarget, AcceptableRadius, bStopOverlap, bUsePathfinding,
 			bAllowStrafe, RunnerAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
 
+		// 공격 애니메이션이 끝나면 Target과 CanSeePlayer를 초기화함.
 		if (Runner->GetAnimFinish())
 		{
 			RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::TargetKey, nullptr);
@@ -207,8 +192,8 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 			return;
 		}
 	}
-
-	if (AAIController_Brute* BruteAI = Cast<AAIController_Brute>(AIController))
+	// 그 컨트롤러가 Brute의 컨트롤러면
+	else if (AAIController_Brute* BruteAI = Cast<AAIController_Brute>(AIController))
 	{
 		ABrute_cpp* Brute = Cast<ABrute_cpp>(BruteAI->GetPawn());
 
@@ -220,10 +205,12 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 
 		AHorrorGameCharacter* pTarget = nullptr;
 
+		// 블랙보드로부터 Target과 Target Location을 가져옴
 		pTarget = Cast<AHorrorGameCharacter>(BruteAI->GetBlackboard()->GetValueAsObject(AAIController_Brute::TargetKey));
 
 		FVector TargetLocation = BruteAI->GetBlackboard()->GetValueAsVector(AAIController_Brute::TargetLocation);
 
+		// Target이 없을 경우 TargetLocation을 향해 이동함
 		if (nullptr == pTarget) // if no target
 		{
 			//UAIBlueprintHelperLibrary::SimpleMoveToLocation(BruteAI, TargetLocation);
@@ -234,13 +221,13 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 			return;
 		}
 
-		auto PlayerController = Cast<APlayerController>(pTarget->GetController());
-
+		// Target이 있으면 Target을 향해 이동함
 		// move to actor
 		// UAIBlueprintHelperLibrary::SimpleMoveToActor(BruteAI, pTarget);
 		BruteAI->MoveToActor(pTarget, AcceptableRadius, bStopOverlap, bUsePathfinding,
 			bAllowStrafe, BruteAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
 
+		// 공격 애니메이션이 끝나면 Target과 CanSeePlayer를 초기화함.
 		if (Brute->GetAnimFinish())
 		{
 			/*if (GEngine)
@@ -252,8 +239,8 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 			return;
 		}
 	}
-
-	if (AAIController_Rampage* RampageAI = Cast<AAIController_Rampage>(AIController))
+	// 그 컨트롤러가 Rampage의 컨트롤러면
+	else if (AAIController_Rampage* RampageAI = Cast<AAIController_Rampage>(AIController))
 	{
 		ARampage_cpp* Rampage = Cast<ARampage_cpp>(RampageAI->GetPawn());
 
@@ -265,10 +252,12 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 
 		AHorrorGameCharacter* pTarget = nullptr;
 
+		// 블랙보드로부터 Target과 Target Location을 가져옴
 		pTarget = Cast<AHorrorGameCharacter>(RampageAI->GetBlackboard()->GetValueAsObject(AAIController_Rampage::TargetKey));
 
 		FVector TargetLocation = RampageAI->GetBlackboard()->GetValueAsVector(AAIController_Rampage::TargetLocation);
 
+		// Target이 없을 경우 TargetLocation을 향해 이동함
 		if (nullptr == pTarget) // if no target
 		{
 			//UAIBlueprintHelperLibrary::SimpleMoveToLocation(BruteAI, TargetLocation);
@@ -279,13 +268,13 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 			return;
 		}
 
-		auto PlayerController = Cast<APlayerController>(pTarget->GetController());
-
+		// Target이 있으면 Target을 향해 이동함
 		// move to actor
 		// UAIBlueprintHelperLibrary::SimpleMoveToActor(BruteAI, pTarget);
 		RampageAI->MoveToActor(pTarget, AcceptableRadius, bStopOverlap, bUsePathfinding,
 			bAllowStrafe, RampageAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
 
+		// 공격 애니메이션이 끝나면 Target과 CanSeePlayer를 초기화함.
 		if (Rampage->GetAnimFinish())
 		{
 			RampageAI->GetBlackboard()->SetValueAsObject(AAIController_Rampage::TargetKey, nullptr);
@@ -294,7 +283,8 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 			return;
 		}
 	}
-	if (AAIController_Shadow* ShadowAI = Cast<AAIController_Shadow>(AIController))
+	// 그 컨트롤러가 Shadow의 컨트롤러면
+	else if (AAIController_Shadow* ShadowAI = Cast<AAIController_Shadow>(AIController))
 	{
 		AShadow_cpp* Shadow = Cast<AShadow_cpp>(ShadowAI->GetPawn());
 
@@ -306,10 +296,12 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 
 		AHorrorGameCharacter* pTarget = nullptr;
 
+		// 블랙보드로부터 Target과 Target Location을 가져옴
 		pTarget = Cast<AHorrorGameCharacter>(ShadowAI->GetBlackboard()->GetValueAsObject(AAIController_Shadow::TargetKey));
 
 		FVector TargetLocation = ShadowAI->GetBlackboard()->GetValueAsVector(AAIController_Shadow::TargetLocation);
 
+		// Target이 없을 경우 TargetLocation을 향해 이동함
 		if (nullptr == pTarget) // if no target
 		{
 			// UAIBlueprintHelperLibrary::SimpleMoveToLocation(ShadowAI, TargetLocation);
@@ -320,13 +312,13 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 			return;
 		}
 
-		auto PlayerController = Cast<APlayerController>(pTarget->GetController());
-
+		// Target이 있으면 Target을 향해 이동함
 		// move to actor
 		//UAIBlueprintHelperLibrary::SimpleMoveToActor(ShadowAI, pTarget);
 		ShadowAI->MoveToActor(pTarget, AcceptableRadius, bStopOverlap, bUsePathfinding,
 			bAllowStrafe, ShadowAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
 
+		// 공격 애니메이션이 끝나면 Target과 CanSeePlayer를 초기화함.
 		if (Shadow->GetAnimFinish())
 		{
 			ShadowAI->GetBlackboard()->SetValueAsObject(AAIController_Shadow::TargetKey, nullptr);
@@ -335,143 +327,4 @@ void UBTTask_Trace::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemor
 			return;
 		}
 	}
-
-	//ACreatureAI* ReaperAI = Cast<ACreatureAI>(OwnerComp.GetAIOwner());
-	//AAIController_Runner* RunnerAI = Cast<AAIController_Runner>(OwnerComp.GetAIOwner());
-	//APawn* Creature = nullptr;
-	//AReaper_cpp* Reaper = nullptr;
-	//ARunner_cpp* Runner = nullptr;
-
-	//if (ReaperAI)
-	//{
-	//	Creature = ReaperAI->GetPawn();
-	//	Reaper = Cast<AReaper_cpp>(Creature);
-	//}
-
-	//if (RunnerAI)
-	//{
-	//	Creature = RunnerAI->GetPawn();
-	//	Runner = Cast<ARunner_cpp>(Creature);
-	//}
-
-	//if (nullptr == Creature)
-	//{
-	//	FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-	//	return;
-	//}
-
-	//AHorrorGameCharacter* pTarget = nullptr;
-
-	//if(ReaperAI)
-	//	pTarget = Cast<AHorrorGameCharacter>(ReaperAI->GetBlackboard()->GetValueAsObject(ACreatureAI::TargetKey));
-
-	//if(RunnerAI)
-	//	pTarget = Cast<AHorrorGameCharacter>(RunnerAI->GetBlackboard()->GetValueAsObject(AAIController_Runner::TargetKey));
-	//
-
-	//FVector TargetLocation(0.f, 0.f, 0.f);
-	//
-	//if(ReaperAI)
-	//	TargetLocation = ReaperAI->GetBlackboard()->GetValueAsVector(ACreatureAI::TargetLocation);
-	//
-	//if(RunnerAI)
-	//	TargetLocation = RunnerAI->GetBlackboard()->GetValueAsVector(AAIController_Runner::TargetLocation);
-
-	//auto PlayerController = Cast<APlayerController>(pTarget->GetController());
-	//
-
-	//if (nullptr == pTarget) // if no target
-	//{
-	//	// Controller->StopMovement(); // 왜 여기서 에러가 뜨는 걸까
-	//	/*if(!bCreature)
-	//		Creature->EndChase();
-	//	if(!bReaper)
-	//		Reaper->EndChase();*/
-	//	if(ReaperAI)
-	//		UAIBlueprintHelperLibrary::SimpleMoveToLocation(ReaperAI, TargetLocation);
-
-	//	if(RunnerAI)
-	//		UAIBlueprintHelperLibrary::SimpleMoveToLocation(RunnerAI, TargetLocation);
-
-	//	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	//	return;
-	//}
-
-	//// move to actor
-	//if(ReaperAI)
-	//	UAIBlueprintHelperLibrary::SimpleMoveToActor(ReaperAI, pTarget);
-
-	//if(RunnerAI)
-	//	UAIBlueprintHelperLibrary::SimpleMoveToActor(RunnerAI, pTarget);
-	////if(!bCreature) 
-	////	Creature->StartChase();
-	////if(!bReaper)
-	////	Reaper->StartChase();
-
-	//// Caculate distance between creature and player
-	///*FVector vCreatureLoc(0.f, 0.f, 0.f);
-	//if(!bCreature)
-	//	vCreatureLoc = Creature->GetActorLocation();
-	//if (!bReaper)
-	//	vCreatureLoc = Reaper->GetActorLocation();
-	//FVector vTargetLoc = pTarget->GetActorLocation();
-	//vCreatureLoc.Z = 0.f;
-	//vTargetLoc.Z = 0.f;*/
-
-	//// float fDistance = FVector::Distance(vCreatureLoc, vTargetLoc);
-
-	//// UE_LOG(LogTemp, Warning, TEXT("Distance: %f"), fDistance);
-	//// if distance is under than 150, stop and set task succeed
-	//if (Reaper)
-	//{
-	//	if (Reaper->GetAnimFinish())
-	//		{ 
-	//			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	//			if (pTarget->GetIsHiding())
-	//				pTarget->SetPlayerStatus(Player_Status::Survive);
-	//			else
-	//				pTarget->SetPlayerStatus(Player_Status::Died);
-	//			ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, nullptr);
-	//			ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::CanSeePlayer, false);
-	//			return;
-	//		}
-	//}
-
-	//if (Runner)
-	//{
-	//	if (Reaper->GetAnimFinish())
-	//	{
-	//		FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	//		if (pTarget->GetIsHiding())
-	//			pTarget->SetPlayerStatus(Player_Status::Survive);
-	//		else
-	//			pTarget->SetPlayerStatus(Player_Status::Died);
-	//		RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::TargetKey, nullptr);
-	//		RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::CanSeePlayer, false);
-	//		return;
-	//	}
-	//}
-	//
-	///*if (fDistance <= 100.0f)
-	//{
-	//	Controller->StopMovement();*/
-
-	//	// FVector vDir = Reaper->GetActorLocation() - pTarget->GetActorLocation();
-	//	// vDir.Normalize();
-	//	// pTarget->SetActorRotation(FRotator(0.f, vDir.Rotation().Yaw, 0.f));
-	//	// Reaper->SetIsCatch(true);
-
-	//	//if (Reaper->GetIsCatch() && pTarget->GetPlayerStatus() == Player_Status::Survive && !pTarget->GetIsHiding())
-	//	//{
-	//	//	pTarget->SetPlayerStatus(Player_Status::Catched);
-	//	//	/*FRotator CameraRotation = FRotationMatrix::MakeFromX(Reaper->GetActorLocation() - pTarget->GetActorLocation()).Rotator();
-	//	//	
-	//	//	pTarget->GetCameraComponent()->SetWorldRotation(CameraRotation);*/
-
-	//	//	FVector CameraRot = Reaper->GetActorLocation() - pTarget->GetActorLocation();
-	//	//	pTarget->AddControllerYawInput(CameraRot.X);
-	//	//}
-	//	
-	////}
-
 }

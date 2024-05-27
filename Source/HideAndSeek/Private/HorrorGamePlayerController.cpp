@@ -67,6 +67,8 @@ AHorrorGamePlayerController::AHorrorGamePlayerController()
 
 	GameInputMode = FInputModeGameOnly();
 	UIInputMode = FInputModeUIOnly();
+
+	
 }
 
 void AHorrorGamePlayerController::PostInitializeComponents()
@@ -119,6 +121,10 @@ void AHorrorGamePlayerController::BeginPlay()
 			//ChangeInputMode(true);
 			if (AHorrorGameCharacter* PlayerCharacter = Cast<AHorrorGameCharacter>(GetPawn()))
 			{
+				if (PlayerCharacter->PlayerStatus == Player_Status::Hiding)
+				{
+					return;
+				}
 				PlayerCharacter->GameUIWidget = MainWidget;
 			}
 		}
@@ -132,6 +138,10 @@ void AHorrorGamePlayerController::BeginPlay()
 
 			if (AHorrorGameCharacter* PlayerCharacter = Cast<AHorrorGameCharacter>(GetPawn()))
 			{
+				if (PlayerCharacter->PlayerStatus == Player_Status::Hiding)
+				{
+					return;
+				}
 				PlayerCharacter->GameUIWidget = MainWidget;
 				PlayerCharacter->LevelStart();
 			}

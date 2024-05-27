@@ -12,6 +12,7 @@
 #include "AI/Brute_cpp.h"
 #include "AI/Shadow_cpp.h"
 
+// AI의 추격 상태를 설정하는 로직
 UBTTask_SetTrace::UBTTask_SetTrace()
 {
 	NodeName = TEXT("SetTrace");
@@ -21,8 +22,10 @@ EBTNodeResult::Type UBTTask_SetTrace::ExecuteTask(UBehaviorTreeComponent& OwnerC
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
 
+	// Behavior Tree를 실행시키는 Component의 AI Controller를 가져옴
 	AAIController* AIController = OwnerComp.GetAIOwner();
 
+	// 그 컨트롤러가 Reaper의 컨트롤러라면
 	if (ACreatureAI* ReaperAI = Cast<ACreatureAI>(AIController))
 	{
 		AReaper_cpp* Reaper = Cast<AReaper_cpp>(ReaperAI->GetPawn());
@@ -32,23 +35,26 @@ EBTNodeResult::Type UBTTask_SetTrace::ExecuteTask(UBehaviorTreeComponent& OwnerC
 			return EBTNodeResult::Failed;
 		}
 
+		// 블랙보드에 저장된 Target을 가져옴
 		AHorrorGameCharacter* pTarget = Cast<AHorrorGameCharacter>(ReaperAI->GetBlackboard()->GetValueAsObject(ACreatureAI::TargetKey));
 
+		// Target이 null이면 CanSeePlayer를 제거하고 추격을 멈춤
 		if (nullptr == pTarget)
 		{
 			ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::CanSeePlayer, false);
-			// ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::LockerLighting, false);
 			Reaper->EndChase();
 		}
-
+		// 반대라면 CanSeePlayer를 on하고 추격을 시작함.
 		else
 		{
 			ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::CanSeePlayer, true);
 			Reaper->StartChase();
 		}
 
+		// 블랙보드에 저장된 Noise Detect를 가져옴
 		bool bNoiseDetected = ReaperAI->GetBlackboard()->GetValueAsBool(ACreatureAI::NoiseDetected);
 
+		// Noise Detect가 true라면 false로 지정함.
 		if (bNoiseDetected)
 		{
 			ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::NoiseDetected, false);
@@ -56,7 +62,7 @@ EBTNodeResult::Type UBTTask_SetTrace::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 		return EBTNodeResult::Succeeded;
 	}
-
+	// 그 컨트롤러가 Runner의 컨트롤러면
 	else if (AAIController_Runner* RunnerAI = Cast<AAIController_Runner>(AIController))
 	{
 		ARunner_cpp* Runner = Cast<ARunner_cpp>(RunnerAI->GetPawn());
@@ -66,23 +72,27 @@ EBTNodeResult::Type UBTTask_SetTrace::ExecuteTask(UBehaviorTreeComponent& OwnerC
 			return EBTNodeResult::Failed;
 		}
 
+		// 블랙보드에 저장된 Target을 가져옴.
 		AHorrorGameCharacter* pTarget = Cast<AHorrorGameCharacter>(RunnerAI->GetBlackboard()->GetValueAsObject(AAIController_Runner::TargetKey));
 
+		// Target이 null이라면 CanSeePlayer를 제거하고 추격을 멈춤
 		if (nullptr == pTarget)
 		{
 			RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::CanSeePlayer, false);
 			// RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::LockerLighting, false);
 			Runner->EndChase();
 		}
-
+		// 반대라면 CanSeePlayer를 on하고 추격을 시작함.
 		else
 		{
 			RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::CanSeePlayer, true);
 			Runner->StartChase();
 		}
-
+		
+		// 블랙보드에 저장된 Noise Detect를 가져옴.
 		bool bNoiseDetected = RunnerAI->GetBlackboard()->GetValueAsBool(AAIController_Runner::NoiseDetected);
 
+		// Noise Detect가 true라면 false로 변경함
 		if (bNoiseDetected)
 		{
 			RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::NoiseDetected, false);
@@ -90,7 +100,7 @@ EBTNodeResult::Type UBTTask_SetTrace::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 		return EBTNodeResult::Succeeded;
 	}
-
+	// 그 컨트롤러가 Brute의 컨트롤러라면
 	else if (AAIController_Brute* BruteAI = Cast<AAIController_Brute>(AIController))
 	{
 		ABrute_cpp* Brute = Cast<ABrute_cpp>(BruteAI->GetPawn());
@@ -100,23 +110,27 @@ EBTNodeResult::Type UBTTask_SetTrace::ExecuteTask(UBehaviorTreeComponent& OwnerC
 			return EBTNodeResult::Failed;
 		}
 
+		// 블랙보드에 저장된 Target을 가져옴
 		AHorrorGameCharacter* pTarget = Cast<AHorrorGameCharacter>(BruteAI->GetBlackboard()->GetValueAsObject(AAIController_Brute::TargetKey));
 
+		// Target이 null이라면 CanSeePlayer를 초기화하고 추격을 멈춤
 		if (nullptr == pTarget)
 		{
 			BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::CanSeePlayer, false);
 			// BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::LockerLighting, false);
 			Brute->EndChase();
 		}
-
+		// 반대라면 CanSeePlayer를 on하고 추격을 시작함
 		else
 		{
 			BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::CanSeePlayer, true);
 			Brute->StartChase();
 		}
 
+		// 블랙보드에 저장된 Noise Detect를 가져옴
 		bool bNoiseDetected = BruteAI->GetBlackboard()->GetValueAsBool(AAIController_Brute::NoiseDetected);
 
+		// true라면 Noise Detect를 false로 변경하고, 소리 감지 범위도 줄이도록 함.
 		if (bNoiseDetected)
 		{
 			BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::NoiseDetected, false);
@@ -125,7 +139,7 @@ EBTNodeResult::Type UBTTask_SetTrace::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
 		return EBTNodeResult::Succeeded;
 	}
-
+	// 그 컨트롤러가 Shadow의 컨트롤러면
 	else if (AAIController_Shadow* ShadowAI = Cast<AAIController_Shadow>(AIController))
 	{
 		AShadow_cpp* Shadow = Cast<AShadow_cpp>(ShadowAI->GetPawn());
@@ -135,23 +149,27 @@ EBTNodeResult::Type UBTTask_SetTrace::ExecuteTask(UBehaviorTreeComponent& OwnerC
 			return EBTNodeResult::Failed;
 		}
 
+		// 블랙보드에 저장된 Target을 가져옴
 		AHorrorGameCharacter* pTarget = Cast<AHorrorGameCharacter>(ShadowAI->GetBlackboard()->GetValueAsObject(AAIController_Shadow::TargetKey));
 
+		// Target이 null이라면 CanSeePlayer를 초기화하고 추격을 멈춤
 		if (nullptr == pTarget)
 		{
 			ShadowAI->GetBlackboard()->SetValueAsBool(AAIController_Shadow::CanSeePlayer, false);
 			// ShadowAI->GetBlackboard()->SetValueAsBool(AAIController_Shadow::LockerLighting, false);
 			Shadow->EndChase();
 		}
-
+		// 반대라면 CanSeePlayer를 on하고 추격을 시작함
 		else
 		{
 			ShadowAI->GetBlackboard()->SetValueAsBool(AAIController_Shadow::CanSeePlayer, true);
 			Shadow->StartChase();
 		}
 
+		// 블랙보드에 저장된 Noise Detect를 가져옴
 		bool bNoiseDetected = ShadowAI->GetBlackboard()->GetValueAsBool(AAIController_Shadow::NoiseDetected);
 
+		// true라면 Noise Detect를 false로 변경하고, 소리 감지 범위도 줄이도록 함.
 		if (bNoiseDetected)
 		{
 			ShadowAI->GetBlackboard()->SetValueAsBool(AAIController_Shadow::NoiseDetected, false);
@@ -161,85 +179,4 @@ EBTNodeResult::Type UBTTask_SetTrace::ExecuteTask(UBehaviorTreeComponent& OwnerC
 		}
 
 	return EBTNodeResult::Failed;
-	//ACreatureAI* ReaperAI = Cast<ACreatureAI>(OwnerComp.GetAIOwner());
-	//AAIController_Runner* RunnerAI = Cast<AAIController_Runner>(OwnerComp.GetAIOwner());
-	//APawn* Creature = nullptr;
-	//AReaper_cpp* Reaper = nullptr;
-	//ARunner_cpp* Runner = nullptr;
-	//bool bNoiseDetected = false;
-	//
-	//if (ReaperAI)
-	//{
-	//	Creature = ReaperAI->GetPawn();
-	//	Reaper = Cast<AReaper_cpp>(Creature);
-	//}
-	//
-	//if (RunnerAI)
-	//{
-	//	Creature = RunnerAI->GetPawn();
-	//	Runner = Cast<ARunner_cpp>(Creature);
-	//}
-	//
-	//if (nullptr == Creature)
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("SetTrace Creature Initialized Failed"));
-	//	return EBTNodeResult::Failed;
-	//}
-	//
-	//AHorrorGameCharacter* pTarget = nullptr;
-//
-	//if(ReaperAI)
-	//	pTarget = Cast<AHorrorGameCharacter>(ReaperAI->GetBlackboard()->GetValueAsObject(ACreatureAI::TargetKey));
-	//
-	//if(RunnerAI)
-	//	pTarget = Cast<AHorrorGameCharacter>(RunnerAI->GetBlackboard()->GetValueAsObject(AAIController_Runner::TargetKey));
-	////bool bCanSeePlayer = AIController->GetBlackboard()->GetValueAsBool(ACreatureAI::CanSeePlayer);
-	//if (nullptr == pTarget)
-	//{
-	//	if (ReaperAI)
-	//	{
-	//		ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::CanSeePlayer, false);
-	//		ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::LockerLighting, false);
-	//		Reaper->EndChase();
-	//	}
-	//
-	//	if (RunnerAI)
-	//	{
-	//		RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::CanSeePlayer, false);
-	//		RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::LockerLighting, false);
-	//		Runner->EndChase();
-	//	}
-	//}
-	//
-	//else
-	//{
-	//	if (ReaperAI)
-	//	{
-	//		ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::CanSeePlayer, true);
-	//		Reaper->StartChase();
-	//	}
-	//	
-	//	if (RunnerAI)
-	//	{
-	//		RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::CanSeePlayer, true);
-	//		Runner->StartChase();
-	//	}
-	//}
-	//
-	//if(ReaperAI)
-	//	bNoiseDetected = ReaperAI->GetBlackboard()->GetValueAsBool(ACreatureAI::NoiseDetected);
-	//
-	//if(RunnerAI)
-	//	bNoiseDetected = RunnerAI->GetBlackboard()->GetValueAsBool(AAIController_Runner::NoiseDetected);
-	//
-	//if (bNoiseDetected)
-	//{
-	//	if(ReaperAI)
-	//		ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::NoiseDetected, false);
-	//
-	//	if(RunnerAI)
-	//		RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::NoiseDetected, false);
-	//}
-	//
-	//return EBTNodeResult::Succeeded;
 }

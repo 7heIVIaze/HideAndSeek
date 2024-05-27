@@ -1,4 +1,8 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+
+/***
+* Deprecated! Furniture/HideObject 클래스가 이 클래스를 대체함.
+***/
 
 #pragma once
 

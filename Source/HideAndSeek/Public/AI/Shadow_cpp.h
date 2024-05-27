@@ -46,7 +46,7 @@ private:
 	//class AHorrorGameCharacter* Player;
 
 	// 플레이어가 숨어있는 캐비닛/옷장
-	class AActor* PlayerHidingObject;
+	class AHideObject* PlayerHidingObject;
 
 public:
 	// Called every frame
@@ -84,7 +84,7 @@ public:
 	FVector GetPatrolPoint();
 
 	UFUNCTION(BlueprintCallable)
-	void DetectPlayerHidingObject(AActor* DetectedObject);
+	void DetectPlayerHidingObject(class AHideObject* DetectedObject);
 
 	UFUNCTION(BlueprintCallable)
 	void Exorcism();

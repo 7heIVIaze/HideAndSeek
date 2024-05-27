@@ -43,8 +43,8 @@ void UBTService_NoiseDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 		if (nullptr == World) return;
 
 		TArray<FOverlapResult> OverlapResults;
-		
-		FCollisionQueryParams CollisionQueryParam(NAME_None, false, Reaper);
+		// AICanDetect라는 태그를 가진 액터만 검색하도록 설정함.
+		FCollisionQueryParams CollisionQueryParam(TEXT("AICanDetect"), false, Reaper);
 		bool bResult = World->OverlapMultiByChannel(
 			OverlapResults,
 			vCenter, // Reaper의 현재 위치를 중심으로
@@ -125,8 +125,8 @@ void UBTService_NoiseDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 		if (nullptr == World) return;
 
 		TArray<FOverlapResult> OverlapResults;
-		//bool bDetected = AIController->GetBlackboard()->GetValueAsBool(ACreatureAI::NoiseDetected, true)
-		FCollisionQueryParams CollisionQueryParam(NAME_None, false, Runner);
+		// AICanDetect라는 태그를 가진 액터만 검색하도록 설정함.
+		FCollisionQueryParams CollisionQueryParam(TEXT("AICanDetect"), false, Runner);
 		bool bResult = World->OverlapMultiByChannel(
 			OverlapResults, // 감지된 결과를 저장할 변수
 			vCenter, // Runner의 위치를 중심으로
@@ -207,8 +207,8 @@ void UBTService_NoiseDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 		if (nullptr == World) return;
 
 		TArray<FOverlapResult> OverlapResults;
-		
-		FCollisionQueryParams CollisionQueryParam(NAME_None, false, Brute);
+		// AICanDetect라는 태그를 가진 액터만 검색하도록 설정함.
+		FCollisionQueryParams CollisionQueryParam(TEXT("AICanDetect"), false, Brute);
 		bool bResult = World->OverlapMultiByChannel(
 			OverlapResults, // 감지된 개체들을 담을 변수
 			vCenter, // Brute의 위치를 중심으로
@@ -339,8 +339,8 @@ void UBTService_NoiseDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 		if (nullptr == World) return;
 
 		TArray<FOverlapResult> OverlapResults;
-		//bool bDetected = AIController->GetBlackboard()->GetValueAsBool(ACreatureAI::NoiseDetected, true)
-		FCollisionQueryParams CollisionQueryParam(NAME_None, false, Shadow);
+		// AICanDetect라는 태그를 가진 액터만 검색하도록 설정함.
+		FCollisionQueryParams CollisionQueryParam(TEXT("AICanDetect"), false, Shadow);
 		bool bResult = World->OverlapMultiByChannel(
 			OverlapResults, // 감지된 결과를 저장할 변수
 			vCenter, // Shadow의 위치를 중심으로

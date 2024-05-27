@@ -17,7 +17,9 @@
 #include "HideAndSeek/HorrorGameCharacter.h"
 #include "Cabinet_cpp.h"
 #include "Wardrobe_cpp.h"
+#include "Furniture/HideObject.h"
 
+// AI를 숨을 수 있는 오브젝트(옷장/캐비닛)로 이동시키는 로직
 UBTTask_MoveToLocker::UBTTask_MoveToLocker()
 {
 	NodeName = TEXT("MoveToLocker");
@@ -41,11 +43,12 @@ EBTNodeResult::Type UBTTask_MoveToLocker::ExecuteTask(UBehaviorTreeComponent& Ow
 void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
-
+	// Behavior Tree를 실행시키는 Component의 AI Controller를 가져옴
 	AAIController* AIController = OwnerComp.GetAIOwner();
 
 	if (AIController) // AI Controller가 있는 경우에만 아래의 동작 수행
 	{
+		// 그 컨트롤러가 Reaper의 컨트롤러라면
 		if (ACreatureAI* ReaperAI = Cast<ACreatureAI>(AIController))
 		{
 			AReaper_cpp* Reaper = Cast<AReaper_cpp>(ReaperAI->GetPawn());
@@ -56,6 +59,7 @@ void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 				return;
 			}
 
+			// 블랙보드에 저장된 Locker Target을 가져옴
 			AActor* Target = Cast<AActor>(ReaperAI->GetBlackboard()->GetValueAsObject(ACreatureAI::LockerTargetKey));
 
 			if (nullptr == Target) // 타겟이 없으면 Fail 리턴시키고 task 종료시킴
@@ -64,9 +68,11 @@ void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 				return;
 			}
 
+			// 해당 target으로 이동시킴
 			ReaperAI->MoveToActor(Target, AcceptableRadius, bStopOverlap, bUsePathfinding,
 				bAllowStrafe, ReaperAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
 
+			// 공격 모션이 끝난 이후 Locker Target과 Locker Lighting을 초기화함.
 			if (Reaper->GetAnimFinish())
 			{
 				ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::LockerTargetKey, nullptr);
@@ -75,8 +81,8 @@ void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 				return;
 			}
 		}
-
-		if (AAIController_Runner* RunnerAI = Cast<AAIController_Runner>(AIController))
+		// 그 컨트롤러가 Runner의 컨트롤러라면
+		else if (AAIController_Runner* RunnerAI = Cast<AAIController_Runner>(AIController))
 		{
 			ARunner_cpp* Runner = Cast<ARunner_cpp>(RunnerAI->GetPawn());
 
@@ -86,6 +92,7 @@ void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 				return;
 			}
 
+			// 블랙보드에 저장된 Locker Target을 가져옴
 			AActor* Target = Cast<AActor>(RunnerAI->GetBlackboard()->GetValueAsObject(AAIController_Runner::LockerTargetKey));
 
 			if (nullptr == Target)
@@ -95,11 +102,12 @@ void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 				return;
 			}
 
-
+			// 해당 target으로 이동시킴
 			UE_LOG(LogTemp, Warning, TEXT("MoveToLocker Log: Move to Target"));
 			RunnerAI->MoveToActor(Target, AcceptableRadius, bStopOverlap, bUsePathfinding,
 				bAllowStrafe, RunnerAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
 
+			// 공격 모션이 끝난 이후 Locker Target과 Locker Lighting을 초기화함.
 			if (Runner->GetAnimFinish())
 			{
 				RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::LockerTargetKey, nullptr);
@@ -108,8 +116,8 @@ void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 				return;
 			}
 		}
-
-		if (AAIController_Brute* BruteAI = Cast<AAIController_Brute>(AIController))
+		// 그 컨트롤러가 Brute의 컨트롤러라면
+		else if (AAIController_Brute* BruteAI = Cast<AAIController_Brute>(AIController))
 		{
 			ABrute_cpp* Brute = Cast<ABrute_cpp>(BruteAI->GetPawn());
 
@@ -119,6 +127,7 @@ void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 				return;
 			}
 
+			// 블랙보드에 저장된 Locker Target을 가져옴
 			AActor* Target = Cast<AActor>(BruteAI->GetBlackboard()->GetValueAsObject(AAIController_Brute::LockerTargetKey));
 
 			if (nullptr == Target)
@@ -127,9 +136,11 @@ void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 				return;
 			}
 
+			// 해당 target으로 이동시킴
 			BruteAI->MoveToActor(Target, AcceptableRadius, bStopOverlap, bUsePathfinding,
 				bAllowStrafe, BruteAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
 
+			// 공격 모션이 끝난 이후 Locker Target과 Locker Lighting을 초기화함.
 			if (Brute->GetAnimFinish())
 			{
 				BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::LockerTargetKey, nullptr);
@@ -138,8 +149,8 @@ void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 				return;
 			}
 		}
-
-		if (AAIController_Shadow* ShadowAI = Cast<AAIController_Shadow>(AIController))
+		// 그 컨트롤러가 Shadow의 컨트롤러라면
+		else if (AAIController_Shadow* ShadowAI = Cast<AAIController_Shadow>(AIController))
 		{
 			AShadow_cpp* Shadow = Cast<AShadow_cpp>(ShadowAI->GetPawn());
 
@@ -149,6 +160,7 @@ void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 				return;
 			}
 
+			// 블랙보드에 저장된 Locker Target을 가져옴
 			AActor* Target = Cast<AActor>(ShadowAI->GetBlackboard()->GetValueAsObject(AAIController_Shadow::LockerTargetKey));
 
 			if (nullptr == Target)
@@ -157,9 +169,11 @@ void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 				return;
 			}
 
+			// 해당 target으로 이동시킴
 			ShadowAI->MoveToActor(Target, AcceptableRadius, bStopOverlap, bUsePathfinding,
 				bAllowStrafe, ShadowAI->GetDefaultNavigationFilterClass(), bAllowPartialPath);
 
+			// 공격 모션이 끝난 이후 Locker Target과 Locker Lighting을 초기화함.
 			if (Shadow->GetAnimFinish())
 			{
 				ShadowAI->GetBlackboard()->SetValueAsObject(AAIController_Shadow::LockerTargetKey, nullptr);
@@ -174,64 +188,4 @@ void UBTTask_MoveToLocker::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* No
 		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 		return;
 	}
-
-	/*ACreatureAI* ReaperAI = Cast<ACreatureAI>(OwnerComp.GetAIOwner());
-	AAIController_Runner* RunnerAI = Cast<AAIController_Runner>(OwnerComp.GetAIOwner());
-	APawn* Creature = nullptr;
-	AReaper_cpp* Reaper = nullptr;
-	ARunner_cpp* Runner = nullptr;
-
-	if (ReaperAI)
-	{
-		Creature = ReaperAI->GetPawn();
-		Reaper = Cast<AReaper_cpp>(Creature);
-	}
-
-	if (RunnerAI)
-	{
-		Creature = RunnerAI->GetPawn();
-		Runner = Cast<ARunner_cpp>(Creature);
-	}
-
-	if (nullptr == Creature)
-	{
-		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-		return;
-	}
-
-	if(ReaperAI)
-		Target = Cast<AActor>(ReaperAI->GetBlackboard()->GetValueAsObject(ACreatureAI::TargetKey));
-
-	if(RunnerAI)
-		Target = Cast<AActor>(RunnerAI->GetBlackboard()->GetValueAsObject(AAIController_Runner::TargetKey));
-
-	if (nullptr == Target)
-	{
-		FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-		return;
-	}
-
-	if(ReaperAI)
-		UAIBlueprintHelperLibrary::SimpleMoveToActor(ReaperAI, Target);
-
-	if(RunnerAI)
-		UAIBlueprintHelperLibrary::SimpleMoveToActor(RunnerAI, Target);
-
-	if (Reaper)
-	{
-		if (Reaper->GetAnimFinish())
-		{
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-			return;
-		}
-	}
-
-	if (Runner)
-	{
-		if (Runner->GetAnimFinish())
-		{
-			FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-			return;
-		}
-	}*/
 }

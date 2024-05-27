@@ -44,6 +44,7 @@ enum class Player_Status : uint8
 	Chased UMETA(DisplayName = "Chased"),
 	Catched UMETA(DisplayName = "Catched"),
 	Stunned UMETA(DisplayName = "Stunned"),
+	Hiding UMETA(DisplayName = "Hiding"), // 이 상태는 숨은 상태를 나타내는 것이 아닌, 숨은 오브젝트에 넣을 상태임.
 	Died UMETA(DisplayName = "Died"),
 	Clear UMETA(DisplayName = "Clear"),
 	Ending UMETA(DisplayName = "Ending"),
@@ -122,20 +123,23 @@ public: // Unreal Property
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Crouch")
 	bool bIsCrouch;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlashLight")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "FlashLight")
 	bool bIsFlashLightOn;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlashLight")
 	bool bFLIntenseDown;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CigarLight")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "CigarLight")
 	bool bIsCigarLightOn;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
 	bool bisSoundOn;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Sound")
 	bool bIsHiding = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Lantern")
+	bool bLanternOn = false;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status")
 	Player_Status PlayerStatus = Player_Status::Survive;
@@ -566,6 +570,9 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "Object")
 		int32 GetBellNumbers();
+
+	UFUNCTION(BlueprintCallable, Category = "Boolean")
+	bool GetIsLightOn();
 
 	UFUNCTION(BlueprintCallable)
 		bool GetIsTimeStop();

@@ -28,3 +28,8 @@ void FHorrorGameItemData::Use(AHorrorGameCharacter* Player)
 		}
 	}
 }
+
+//void FHorrorGameItemData::Initialize()
+//{
+//
+//}

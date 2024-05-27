@@ -9,6 +9,7 @@
 #include "AI/Brute_cpp.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
+// 행동 불능 상태에 빠졌는지 체크할 BT 서비스
 UBTService_Stuning::UBTService_Stuning()
 {
 	NodeName = TEXT("CheckStun");
@@ -18,21 +19,22 @@ UBTService_Stuning::UBTService_Stuning()
 void UBTService_Stuning::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);
+	// 이 서비스를 가지고 있는 AI 컨트롤러를 가져옴
 	AAIController* AIController = Cast<AAIController>(OwnerComp.GetAIOwner());
-	/*ACreatureAI* ReaperAI = Cast<ACreatureAI>(OwnerComp.GetAIOwner());
-	AAIController_Runner* RunnerAI = Cast<AAIController_Runner>(OwnerComp.GetAIOwner());
-	AReaper_cpp* Reaper = nullptr;
-	ARunner_cpp* Runner = nullptr;*/
-
+	
+	// 그 컨트롤러가 Reaper의 AI라면
 	if (ACreatureAI* ReaperAI = Cast<ACreatureAI>(AIController))
 	{
+		// AI에 있는 현재 상태를 가져옴
+		bool bCurrentStatus = ReaperAI->GetBlackboard()->GetValueAsBool(ACreatureAI::Stunned);
+
 		AReaper_cpp* Reaper = Cast<AReaper_cpp>(ReaperAI->GetPawn());
 
 		bool bIsStunned = false;
-		bool bCurrentStatus = false;
-
-		bIsStunned = Reaper->GetIsStunned();
-		bCurrentStatus = ReaperAI->GetBlackboard()->GetValueAsBool(ACreatureAI::Stunned);
+		if (Reaper)
+		{
+			bIsStunned = Reaper->GetIsStunned();
+		}
 		
 		if (bIsStunned != bCurrentStatus)
 		{

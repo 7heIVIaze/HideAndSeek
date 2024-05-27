@@ -16,6 +16,7 @@
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "HideAndSeek/HorrorGameCharacter.h"
 
+// AI가 플레이어를 추격하다 놓쳤을 경우/어그로에 끌렸을 경우에 그 주위를 맴도는 로직
 UBTTask_FindPlayerLocation::UBTTask_FindPlayerLocation()
 {
 	NodeName = TEXT("FindPlayerLocation");
@@ -25,10 +26,13 @@ UBTTask_FindPlayerLocation::UBTTask_FindPlayerLocation()
 EBTNodeResult::Type UBTTask_FindPlayerLocation::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
 	Super::ExecuteTask(OwnerComp, NodeMemory);
+	// 이 Behavior Tree를 실행시키는 Component의 AI Controller를 가져옴
 	AAIController* AIController = OwnerComp.GetAIOwner();
 
+	// 이 아래는 해당 컨트롤러가 소유한 Pawn을 가져오고 월드에 배치된 Nav Mesh를 가져옴.
 	if (ACreatureAI* ReaperAI = Cast<ACreatureAI>(AIController))
 	{
+		
 		AReaper_cpp* Reaper = Cast<AReaper_cpp>(ReaperAI->GetPawn());
 
 		if (nullptr == Reaper)
@@ -128,40 +132,15 @@ EBTNodeResult::Type UBTTask_FindPlayerLocation::ExecuteTask(UBehaviorTreeCompone
 	}
 
 	return EBTNodeResult::Failed;
-	//ACreatureAI* ReaperAI = Cast<ACreatureAI>(OwnerComp.GetAIOwner());
-	//AAIController_Runner* RunnerAI = Cast<AAIController_Runner>(OwnerComp.GetAIOwner());
-	//APawn* Creature = nullptr;
-	///*AReaper_cpp* Reaper = nullptr;
-	//ARunner_cpp* Runner = nullptr;*/
-	//
-	//if(ReaperAI)
-	//	Creature = ReaperAI->GetPawn();
-	//
-	//if(RunnerAI)
-	//	Creature = RunnerAI->GetPawn();
-	//
-	//// auto Reaper = Cast<AReaper_cpp>(Creature);
-	//if (nullptr == Creature)
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("Creature Initialize Failed!"));
-	//	return EBTNodeResult::Failed;
-	//}
-	//
-	//UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
-	//if (nullptr == NavSystem)
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("No Creature in Navi"));
-	//	return EBTNodeResult::Failed;
-	//}
-	//
-	//return EBTNodeResult::InProgress;
 }
 
 void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickTask(OwnerComp, NodeMemory, DeltaSeconds);
+	// Behavior Tree를 실행시키는 Component의 AI Controller를 가져옴
 	AAIController* AIController = OwnerComp.GetAIOwner();
 
+	// 그 컨트롤러가 Reaper의 컨트롤러인 경우
 	if (ACreatureAI* ReaperAI = Cast<ACreatureAI>(AIController))
 	{
 		AReaper_cpp* Reaper = Cast<AReaper_cpp>(ReaperAI->GetPawn());
@@ -172,6 +151,7 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 			return;
 		}
 
+		// 블랙보드에 있는 Target Location을 가져와 해당 위치로 이동시킴. 이 때, 이동 중 추격이 뜰 수 있기 때문에 중간에 멈출 수 있도록 SimpleMove로 구현함.
 		FVector fTargetLastLocation = ReaperAI->GetBlackboard()->GetValueAsVector(ACreatureAI::TargetLocation);
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(ReaperAI, fTargetLastLocation);
 		
@@ -183,6 +163,7 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 			return;
 		}
 
+		// 월드에 배치된 Nav Mesh를 가져옴
 		UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(World);
 		if (nullptr == NavSystem)
 		{
@@ -192,7 +173,8 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 
 		FNavLocation fNextPatrol;
 
-		if (NavSystem->GetRandomPointInNavigableRadius(fTargetLastLocation, 200.0f, fNextPatrol))
+		// Target Location을 기준으로 150 이내의 랜덤 위치를 Patrol Pos로 저장시킴
+		if (NavSystem->GetRandomPointInNavigableRadius(fTargetLastLocation, 150.0f, fNextPatrol))
 		{
 			ReaperAI->GetBlackboard()->SetValueAsVector(ACreatureAI::PatrolPosKey, fNextPatrol.Location);
 
@@ -200,10 +182,9 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 			return;
 		}
 	}
-
-	if (AAIController_Runner* RunnerAI = Cast<AAIController_Runner>(AIController))
+	// 그 컨트롤러가 Runner의 컨트롤러라면
+	else if (AAIController_Runner* RunnerAI = Cast<AAIController_Runner>(AIController))
 	{
-		
 		ARunner_cpp* Runner = Cast<ARunner_cpp>(RunnerAI->GetPawn());
 		
 		if (nullptr == Runner)
@@ -212,7 +193,7 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 			return;
 		}
 
-
+		// 블랙보드에 있는 Target Location을 가져와 해당 위치로 이동함. 이 때, 이둥 중에 추격 판정이 뜰 수도 있으므로 중간에 멈출 수 있도록 Simple Move로 구현.
 		FVector fTargetLastLocation = RunnerAI->GetBlackboard()->GetValueAsVector(AAIController_Runner::TargetLocation);
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(RunnerAI, fTargetLastLocation);
 
@@ -220,22 +201,22 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 		UWorld* World = Runner->GetWorld();
 		if (nullptr == World)
 		{
-			//	UE_LOG(LogTemp, Warning, TEXT("Task_FindPlayerLocation: Get World Failed"));
 			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 			return;
 		}
 
+		// 월드에 배치된 Nav Mesh를 가져옴.
 		UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(World);
 		if (nullptr == NavSystem)
 		{
-			//	UE_LOG(LogTemp, Warning, TEXT("Task_FindPlayerLocation: Nav System Initialization Failed"));
 			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 			return;
 		}
 
 		FNavLocation fNextPatrol;
 
-		if (NavSystem->GetRandomPointInNavigableRadius(fTargetLastLocation, 200.0f, fNextPatrol))
+		// Target Location을 기준으로 150 이내의 랜덤 위치를 Patrol Pos로 저장시킴.
+		if (NavSystem->GetRandomPointInNavigableRadius(fTargetLastLocation, 150.0f, fNextPatrol))
 		{
 			RunnerAI->GetBlackboard()->SetValueAsVector(AAIController_Runner::PatrolPosKey, fNextPatrol.Location);
 			
@@ -243,8 +224,8 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 			return;
 		}
 	}
-
-	if (AAIController_Brute* BruteAI = Cast<AAIController_Brute>(AIController))
+	// 그 컨트롤러가 Brute의 컨트롤러라면
+	else if (AAIController_Brute* BruteAI = Cast<AAIController_Brute>(AIController))
 	{
 		ABrute_cpp* Brute = Cast<ABrute_cpp>(BruteAI->GetPawn());
 		
@@ -254,7 +235,7 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 			return;
 		}
 
-
+		// 블랙보드에 있는 Target Location을 가져와 해당 위치로 이동함. 이 때, 이동 중 추격 판정이 뜰 수도 있으므로 중간에 멈출 수 있도록 Simple Move로 구현함.
 		FVector fTargetLastLocation = BruteAI->GetBlackboard()->GetValueAsVector(AAIController_Brute::TargetLocation);
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(BruteAI, fTargetLastLocation);
 		
@@ -262,22 +243,22 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 		UWorld* World = Brute->GetWorld();
 		if (nullptr == World)
 		{
-			//	UE_LOG(LogTemp, Warning, TEXT("Task_FindPlayerLocation: Get World Failed"));
 			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 			return;
 		}
 
+		// 월드에 배치된 Nav Mesh를 가져옴
 		UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(World);
 		if (nullptr == NavSystem)
 		{
-			//	UE_LOG(LogTemp, Warning, TEXT("Task_FindPlayerLocation: Nav System Initialization Failed"));
 			FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
 			return;
 		}
 
 		FNavLocation fNextPatrol;
 
-		if (NavSystem->GetRandomPointInNavigableRadius(fTargetLastLocation, 200.0f, fNextPatrol))
+		// Target Location을 기준으로 150 이내의 랜덤 위치를 Patrol Pos로 저장시킴.
+		if (NavSystem->GetRandomPointInNavigableRadius(fTargetLastLocation, 150.0f, fNextPatrol))
 		{
 			BruteAI->GetBlackboard()->SetValueAsVector(AAIController_Brute::PatrolPosKey, fNextPatrol.Location);
 			
@@ -285,10 +266,9 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 			return;
 		}
 	}
-
-	if (AAIController_Shadow* ShadowAI = Cast<AAIController_Shadow>(AIController))
+	// 그 컨트롤러가 Shadow의 컨트롤러라면
+	else if (AAIController_Shadow* ShadowAI = Cast<AAIController_Shadow>(AIController))
 	{
-
 		AShadow_cpp* Shadow = Cast<AShadow_cpp>(ShadowAI->GetPawn());
 
 		if (nullptr == Shadow)
@@ -297,7 +277,7 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 			return;
 		}
 
-
+		// 블랙보드에 있는 Target Location을 가져와 해당 위치로 이동함. 이 때, 이동 중 추격 판정이 뜰 수도 있으므로 중간에 멈출 수 있도록 Simple Move로 구현함.
 		FVector fTargetLastLocation = ShadowAI->GetBlackboard()->GetValueAsVector(AAIController_Shadow::TargetLocation);
 		UAIBlueprintHelperLibrary::SimpleMoveToLocation(ShadowAI, fTargetLastLocation);
 
@@ -310,6 +290,7 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 			return;
 		}
 
+		// 월드에 배치된 Nav Mesh를 가져옴
 		UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(World);
 		if (nullptr == NavSystem)
 		{
@@ -320,7 +301,8 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 
 		FNavLocation fNextPatrol;
 
-		if (NavSystem->GetRandomPointInNavigableRadius(fTargetLastLocation, 200.0f, fNextPatrol))
+		// Target Location을 기준으로 150 이내의 랜덤 위치를 Patrol Pos로 저장시킴.
+		if (NavSystem->GetRandomPointInNavigableRadius(fTargetLastLocation, 150.0f, fNextPatrol))
 		{
 			ShadowAI->GetBlackboard()->SetValueAsVector(AAIController_Shadow::PatrolPosKey, fNextPatrol.Location);
 
@@ -328,106 +310,4 @@ void UBTTask_FindPlayerLocation::TickTask(UBehaviorTreeComponent& OwnerComp, uin
 			return;
 		}
 	}
-	//ACreatureAI* ReaperAI = Cast<ACreatureAI>(OwnerComp.GetAIOwner());
-	//AAIController_Runner* RunnerAI = Cast<AAIController_Runner>(OwnerComp.GetAIOwner());
-	//APawn* Creature = nullptr;
-	//AReaper_cpp* Reaper = nullptr;
-	//ARunner_cpp* Runner = nullptr;
-	//
-	//if (ReaperAI)
-	//{
-	//	Creature = ReaperAI->GetPawn();
-	//	Reaper = Cast<AReaper_cpp>(Creature);
-	//}
-	//
-	//if (RunnerAI)
-	//{
-	//	Creature = RunnerAI->GetPawn();
-	//	Runner = Cast<ARunner_cpp>(Creature);
-	//}
-	//
-	//bool bCreature = false;
-	//bool bReaper = false;
-	//
-	////if (nullptr == Creature)
-	////{
-	////	UE_LOG(LogTemp, Warning, TEXT("Task_FindPlayerLocation: Creature Initialization failed"));
-	////	/*FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-	////	return;*/
-	////	bCreature = true;
-	////}
-	//
-	//if (nullptr == Creature)
-	//{
-	//	UE_LOG(LogTemp, Warning, TEXT("Task_FindPlayerLocation: Reaper Initialization failed"));
-	//	bReaper = true;
-	//}
-	//
-	///*if (bCreature && bReaper)
-	//{
-	//	FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-	//	return;
-	///}*/
-	//
-	//if (bReaper)
-	//{
-	//	FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-	//	return;
-	//}
-//
-	//
-	//FVector fTargetLastLocation(0.f, 0.f, 0.f);
-	//
-	//if(ReaperAI)
-	//{
-	//	fTargetLastLocation = ReaperAI->GetBlackboardComponent()->GetValueAsVector(ACreatureAI::TargetLocation);
-	//	UAIBlueprintHelperLibrary::SimpleMoveToLocation(ReaperAI, fTargetLastLocation);
-	//}
-	//	
-	//if(RunnerAI) 
-	//{
-	//	fTargetLastLocation = RunnerAI->GetBlackboardComponent()->GetValueAsVector(AAIController_Runner::TargetLocation);
-	//	UAIBlueprintHelperLibrary::SimpleMoveToLocation(RunnerAI, fTargetLastLocation);
-	//}
-	//// Move to last location of detected target.	
-	//UWorld* World = Creature->GetWorld();
-	////if (!bCreature)
-	////{
-	////	//Creature->EndChase();
-	//
-	////	World = Creature->GetWorld();
-	////}
-	////if (!bReaper)
-	////{
-	////	//Reaper->EndChase();
-	////	World = Reaper->GetWorld();
-	////}
-	//
-	//if (nullptr == World)
-	//{
-	////	UE_LOG(LogTemp, Warning, TEXT("Task_FindPlayerLocation: Get World Failed"));
-	//	FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-	//	return;
-	//}
-	//
-	//UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetNavigationSystem(World);
-	//if (nullptr == NavSystem)
-	//{
-	////	UE_LOG(LogTemp, Warning, TEXT("Task_FindPlayerLocation: Nav System Initialization Failed"));
-	//	FinishLatentTask(OwnerComp, EBTNodeResult::Failed);
-	//	return;
-	//}
-	//
-	//FNavLocation fNextPatrol;
-	//
-	//if (NavSystem->GetRandomPointInNavigableRadius(fTargetLastLocation, 200.0f, fNextPatrol))
-	//{
-	//	if(ReaperAI)
-	//		ReaperAI->GetBlackboardComponent()->SetValueAsVector(ACreatureAI::TargetLocation, fNextPatrol.Location);
-	//
-	//	if(RunnerAI)
-	//		RunnerAI->GetBlackboardComponent()->SetValueAsVector(AAIController_Runner::TargetLocation, fNextPatrol.Location);
-	//	FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
-	//	return;
-	//}
 }

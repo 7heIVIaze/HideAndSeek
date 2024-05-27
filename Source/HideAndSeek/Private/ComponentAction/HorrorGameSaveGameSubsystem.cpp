@@ -51,6 +51,8 @@ UHorrorGameSaveGameBase* UHorrorGameSaveGameSubsystem::LoadDataLogic(UClass* inC
 			TempSaveData->ClearChapter[i].ChapterNumber = i;
 		}
 		TempSaveData->ClearChapter[0].bIsOpened = true;
+
+		TempSaveData->SaveData();
 	}
 
 	UHorrorGameSaveGameBase* SaveData = Cast<UHorrorGameSaveGameBase>(Temp);
