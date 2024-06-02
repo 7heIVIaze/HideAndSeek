@@ -1,4 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "ComponentAction/PrologueGameMode.h"
 #include "HideAndSeek/HorrorGameCharacter.h"
@@ -64,18 +64,12 @@ void APrologueGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	//
-	//if (IsValid(LevelWidgetClass))
-	//{
-	//	MainWidget = Cast<UGameUI>(CreateWidget(GetWorld(), LevelWidgetClass));
-	//	if (IsValid(MainWidget))
-	//	{
-	//		MainWidget->AddToViewport();
-	//	}
-	//}
-
+	
+	// 오디오 컴포넌트의 기본 소리를 Main Cue로 설정하고 재생함.
 	AudioComponent->SetSound(MainCue);
 	AudioComponent->Play();
 
+	// 적이 근처에 있을 때의 소리도 설정하고 자동 재생은 off함.
 	NervousAudioComponent->SetSound(NervousCue);
 	NervousAudioComponent->SetAutoActivate(false);
 }
@@ -85,28 +79,38 @@ void APrologueGameMode::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
+// 근처에 적이 있을 때 BGM을 변경할 함수.
 void APrologueGameMode::PlayNervousBackGroundMusic()
 {
+	// 메인 BGM을 페이드아웃 시키고, 긴장 BGM을 페이드 인 시킴.
 	AudioComponent->FadeOut(0.75f, 0.f);
 	NervousAudioComponent->FadeIn(1.0f);
 }
 
+// 근처에 적이 없을 때 BGM을 변경할 함수.
 void APrologueGameMode::StopNervousBackGroundMusic()
 {
+	// 긴장 BGM을 페이드아웃 시키고, 메인 BGM을 페이드 인 시킴.
 	NervousAudioComponent->FadeOut(0.75f, 0.f);
 
 	AudioComponent->FadeIn(0.75f);
 }
 
+// 사망했을 때 BGM을 변경할 함수.
 void APrologueGameMode::PlayDiedBackGroundMusic()
 {
+	// 모든 BGM을 끄고, 메인 BGM을 Died Cue로 변경한 후 재생시킴.
+	NervousAudioComponent->Stop();
 	AudioComponent->Stop();
 	AudioComponent->SetSound(DiedCue);
 	AudioComponent->Play();
 }
 
+// 클리어 시 BGM을 변경할 함수.
 void APrologueGameMode::PlayClearBackGroundMusic()
 {
+	// 모든 BGM을 끄고, 메인 BGM을 Clear Cue로 변경한 후 재생시킴.
+	NervousAudioComponent->Stop();
 	AudioComponent->Stop();
 	AudioComponent->SetSound(ClearCue);
 	AudioComponent->Play();

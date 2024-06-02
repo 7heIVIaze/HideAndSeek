@@ -1,4 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 /***
 * 브루트의 애니메이션과 관련된 동작을 수행할 코드

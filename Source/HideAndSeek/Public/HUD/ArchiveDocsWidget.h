@@ -1,4 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #pragma once
 
@@ -263,100 +263,103 @@ public:
 
 	// 아이템 관련 문서
 	UPROPERTY()
-		bool Item1_CigarLighter; // 라이터
+	FCollectedArchives CollectedData;
 
-	UPROPERTY()
-		bool Item2_FlashLight; // 플래시라이터
+	//UPROPERTY()
+	//	bool Item1_CigarLighter; // 라이터
 
-	UPROPERTY()
-		bool Item3_Key; // 열쇠
+	//UPROPERTY()
+	//	bool Item2_FlashLight; // 플래시라이터
 
-	UPROPERTY()
-		bool Item4_Timer; // 타이머
+	//UPROPERTY()
+	//	bool Item3_Key; // 열쇠
 
-	UPROPERTY()
-		bool Item5_BronzeSword; // 청동검
+	//UPROPERTY()
+	//	bool Item4_Timer; // 타이머
 
-	UPROPERTY()
-		bool Item6_BronzeBell; // 청동 방울
+	//UPROPERTY()
+	//	bool Item5_BronzeSword; // 청동검
 
-	UPROPERTY()
-		bool Item7_BronzeMirror; // 청동 거울
+	//UPROPERTY()
+	//	bool Item6_BronzeBell; // 청동 방울
 
-	UPROPERTY()
-		bool Item8_Extinguisher; // 소화기
+	//UPROPERTY()
+	//	bool Item7_BronzeMirror; // 청동 거울
 
-	UPROPERTY()
-		bool Item9_Cutter; // 절단기
+	//UPROPERTY()
+	//	bool Item8_Extinguisher; // 소화기
 
-	UPROPERTY()
-		bool Item10_SoulLantern; // 영혼 랜턴
+	//UPROPERTY()
+	//	bool Item9_Cutter; // 절단기
 
-	UPROPERTY()
-		bool Item11_GlowStick; // 야광봉
+	//UPROPERTY()
+	//	bool Item10_SoulLantern; // 영혼 랜턴
 
-	// 신문 기사 문서
-	UPROPERTY()
-		bool Article1; // 1번 기사
+	//UPROPERTY()
+	//	bool Item11_GlowStick; // 야광봉
 
-	UPROPERTY()
-		bool Article2; // 2번 기사
+	//// 신문 기사 문서
+	//UPROPERTY()
+	//	bool Article1; // 1번 기사
 
-	UPROPERTY()
-		bool Article3; // 3번 기사
+	//UPROPERTY()
+	//	bool Article2; // 2번 기사
 
-	UPROPERTY()
-		bool Article4; // 4번 기사
+	//UPROPERTY()
+	//	bool Article3; // 3번 기사
 
-	UPROPERTY()
-		bool Article5; // 5번 기사
+	//UPROPERTY()
+	//	bool Article4; // 4번 기사
 
-	// 편지 문서
-	UPROPERTY()
-		bool Letter1_Berith1; // 베리스의 편지 1
+	//UPROPERTY()
+	//	bool Article5; // 5번 기사
 
-	UPROPERTY()
-		bool Letter2_Berith2; // 베리스의 편지 2
+	//// 편지 문서
+	//UPROPERTY()
+	//	bool Letter1_Berith1; // 베리스의 편지 1
 
-	UPROPERTY()
-		bool Letter3_Berith3; // 베리스의 편지 3
+	//UPROPERTY()
+	//	bool Letter2_Berith2; // 베리스의 편지 2
 
-	UPROPERTY()
-		bool Letter4_Berith4; // 베리스의 편지 4
+	//UPROPERTY()
+	//	bool Letter3_Berith3; // 베리스의 편지 3
 
-	UPROPERTY()
-		bool Letter5_Berith5; // 베리스의 편지 5
+	//UPROPERTY()
+	//	bool Letter4_Berith4; // 베리스의 편지 4
 
-	UPROPERTY()
-		bool Letter6_Berith6; // 베리스의 편지 6
+	//UPROPERTY()
+	//	bool Letter5_Berith5; // 베리스의 편지 5
 
-	UPROPERTY()
-		bool Letter7_Gamigin1; // 가미긴의 편지 1 
+	//UPROPERTY()
+	//	bool Letter6_Berith6; // 베리스의 편지 6
 
-	UPROPERTY()
-		bool Letter8_Gamigin2; // 가미긴의 편지 2 
+	//UPROPERTY()
+	//	bool Letter7_Gamigin1; // 가미긴의 편지 1 
 
-	UPROPERTY()
-		bool Letter9_Gamigin3; // 가미긴의 편지 3 
+	//UPROPERTY()
+	//	bool Letter8_Gamigin2; // 가미긴의 편지 2 
 
-	UPROPERTY()
-		bool Letter10_Gamigin4; // 가미긴의 편지 4
+	//UPROPERTY()
+	//	bool Letter9_Gamigin3; // 가미긴의 편지 3 
 
-	// 일기 문서
-	UPROPERTY()
-		bool Diary1; // 일기 1
+	//UPROPERTY()
+	//	bool Letter10_Gamigin4; // 가미긴의 편지 4
 
-	UPROPERTY()
-		bool Diary2; // 일기 2
+	//// 일기 문서
+	//UPROPERTY()
+	//	bool Diary1; // 일기 1
 
-	UPROPERTY()
-		bool Diary3; // 일기 3
+	//UPROPERTY()
+	//	bool Diary2; // 일기 2
 
-	UPROPERTY()
-		bool Diary4; // 일기 4
+	//UPROPERTY()
+	//	bool Diary3; // 일기 3
 
-	UPROPERTY()
-		bool Diary5; // 일기 5
+	//UPROPERTY()
+	//	bool Diary4; // 일기 4
+
+	//UPROPERTY()
+	//	bool Diary5; // 일기 5
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 		TObjectPtr<class USoundCue> ButtonClickSound;

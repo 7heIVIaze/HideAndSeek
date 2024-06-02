@@ -1,4 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 // 다음 패트롤 위치를 감지하는 동작을 수행하는 코드
 
 #include "AI/BTTask_FindPatrolPos.h"

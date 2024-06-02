@@ -1,4 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #pragma once
 
@@ -47,6 +47,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Sound)
 	TObjectPtr<class USoundCue> SoundCue;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Sound)
+	TObjectPtr<class USoundCue> BreakSound;
 
 	UPROPERTY(VisibleAnywhere, Category = PlayerCharacter)
 	TObjectPtr<class AHorrorGameCharacter> Player = nullptr;

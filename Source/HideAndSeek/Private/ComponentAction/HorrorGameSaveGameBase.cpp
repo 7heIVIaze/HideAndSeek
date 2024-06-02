@@ -1,5 +1,6 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
+// 세이브 데이터를 관리할 클래스로 루트 클래스임.
 #include "ComponentAction/HorrorGameSaveGameBase.h"
 #include "Kismet/GameplayStatics.h"
 

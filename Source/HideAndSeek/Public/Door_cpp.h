@@ -1,4 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #pragma once
 
@@ -67,9 +67,6 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Door")
 		TObjectPtr<class UBoxComponent> PlayerOverlapBox;
-
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Door")
-		TObjectPtr<class UBoxComponent> CreatureOverlapBox;*/
 
 	/** Please add a variable description */
 	UPROPERTY(VisibleAnywhere, Category = "Door")

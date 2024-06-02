@@ -1,4 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "Furniture/HideObject.h"
 #include "Camera/CameraComponent.h"
@@ -333,6 +333,10 @@ void AHideObject::BreakHideObject()
 		// 플레이어를 내보내고
 		ToggleHide(Player);
 		// 부서짐. -> 소리도 재생되게 해야 함.
+		if (BreakSound)
+		{
+			UGameplayStatics::PlaySoundAtLocation(this, BreakSound, GetActorLocation());
+		}
 		Destroy();
 	}
 }

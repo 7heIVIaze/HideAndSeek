@@ -1,4 +1,6 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
+
+// 세이브 데이터를 괸리할 클래스
 
 #include "ComponentAction/HorrorGameSaveGame.h"
 #include "ComponentAction/HorrorGameSaveGameSubsystem.h"

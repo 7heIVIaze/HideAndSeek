@@ -1,4 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #pragma once
 
@@ -42,10 +42,10 @@ public: // FUNCTION
 		void UpdateButtonSlate();
 
 public: // PROPERTY
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UButton* NextStageButton; // 다음 스테이지 이동 버튼 => 다음 스테이지가 있으면 뜨고 없으면 안 뜨게
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UButton* BackToMainButton; // 메인 화면 버튼
 
 	UPROPERTY()

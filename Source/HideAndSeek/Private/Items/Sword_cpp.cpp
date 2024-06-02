@@ -1,4 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 // 아이템으로 존재할 칼임
 #include "Items/Sword_cpp.h"
 #include "EngineUtils.h"

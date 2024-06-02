@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "WardrobeDrawer_cpp.h"
 #include "Sound/SoundCue.h"

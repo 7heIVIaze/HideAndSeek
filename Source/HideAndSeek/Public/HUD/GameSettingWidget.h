@@ -1,4 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #pragma once
 
@@ -32,161 +32,161 @@ protected:
 
 public:
 	UFUNCTION()
-		void OnClickLanguageButton();
+	void OnClickLanguageButton();
 
 	UFUNCTION()
-		void OnHoveredLanguageButton();
+	void OnHoveredLanguageButton();
+
+	/*UFUNCTION()
+	void OnUnhoveredLanguageButton();*/
 
 	UFUNCTION()
-		void OnUnhoveredLanguageButton();
+	void OnClickEnglishButton();
 
 	UFUNCTION()
-		void OnClickEnglishButton();
+	void OnHoveredEnglishButton();
+
+	//UFUNCTION()
+	//void OnUnhoveredEnglishButton();
 
 	UFUNCTION()
-		void OnHoveredEnglishButton();
+	void OnClickKoreanButton();
 
 	UFUNCTION()
-		void OnUnhoveredEnglishButton();
+	void OnHoveredKoreanButton();
+
+	//UFUNCTION()
+	//void OnUnhoveredKoreanButton();
 
 	UFUNCTION()
-		void OnClickKoreanButton();
+	void OnClickVolumeButton();
 
 	UFUNCTION()
-		void OnHoveredKoreanButton();
+	void OnHoveredVolumeButton();
 
-	UFUNCTION()
-		void OnUnhoveredKoreanButton();
-
-	UFUNCTION()
-		void OnClickVolumeButton();
-
-	UFUNCTION()
-		void OnHoveredVolumeButton();
-
-	UFUNCTION()
-		void OnUnhoveredVolumeButton();
+	/*UFUNCTION()
+	void OnUnhoveredVolumeButton();*/
 
 	UFUNCTION(BlueprintCallable)
-		void OnChangeGlobalVolume(float inValue);
+	void OnChangeGlobalVolume(float inValue);
 
 	UFUNCTION(BlueprintCallable)
-		void OnClickTimerButton();
+	void OnClickTimerButton();
 
 	UFUNCTION()
-		void OnHoveredTimerButton();
+	void OnHoveredTimerButton();
 
-	UFUNCTION()
-		void OnUnhoveredTimerButton();
+	/*UFUNCTION()
+	void OnUnhoveredTimerButton();*/
 
 	UFUNCTION(BlueprintCallable)
-		void OnClickCrossHairButton();
+	void OnClickCrossHairButton();
 
 	UFUNCTION()
-		void OnHoveredCrossHairButton();
+	void OnHoveredCrossHairButton();
+
+	/*UFUNCTION()
+	void OnUnhoveredCrossHairButton();*/
 
 	UFUNCTION()
-		void OnUnhoveredCrossHairButton();
+	void OnClickMouseSensitiveButton();
 
 	UFUNCTION()
-		void OnClickMouseSensitiveButton();
+	void OnHoveredMouseSensitiveButton();
 
-	UFUNCTION()
-		void OnHoveredMouseSensitiveButton();
-
-	UFUNCTION()
-		void OnUnhoveredMouseSensitiveButton();
+	/*UFUNCTION()
+	void OnUnhoveredMouseSensitiveButton();*/
 
 	UFUNCTION(BlueprintCallable)
-		void OnChangeMouseSensitive(float inValue);
+	void OnChangeMouseSensitive(float inValue);
 
 	UFUNCTION()
-		void UpdateButtonSlate();
+	void UpdateButtonSlate();
 
 	UFUNCTION()
-		void SetCurrentMode(CurrentType ModeType);
+	void SetCurrentMode(CurrentType ModeType);
 
 	UFUNCTION()
-		void AnimationFinished();
+	void AnimationFinished();
 
 	UFUNCTION()
-		void OnClickBackButton();
+	void OnClickBackButton();
 
 	UFUNCTION()
-		void OnHoveredBackButton();
+	void OnHoveredBackButton();
 
-	UFUNCTION()
-		void OnUnhoveredBackButton();
+	/*UFUNCTION()
+	void OnUnhoveredBackButton();*/
 
 public:
-	UPROPERTY()
-		class UButton* LanguageButton;
-
-	UPROPERTY()
-		class UButton* EnglishButton;
-
-	UPROPERTY()
-		class UButton* KoreanButton;
-
-	UPROPERTY()
-		class UButton* VolumeButton;
-
-	UPROPERTY()
-		class UProgressBar* VolumeSettingBar;
-
-	UPROPERTY()
-		class UButton* TimerButton;
-
-	UPROPERTY()
-		class UCheckBox* TimerOnCheckBox;
-
-	UPROPERTY()
-		class UButton* CrossHairButton;
-
-	UPROPERTY()
-		class UCheckBox* CrossHairOnCheckBox;
-
-	UPROPERTY()
-		class UButton* MouseSensitiveButton;
-
-	UPROPERTY()
-		class UProgressBar* SensitiveSettingBar;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
-		class UWidgetAnimation* NewOptionAnim;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
-		class UWidgetAnimation* BackOptionAnim;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* LanguageButton;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UButton* BackBtn;
+	class UButton* EnglishButton;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* KoreanButton;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* VolumeButton;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UProgressBar* VolumeSettingBar;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* TimerButton;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UCheckBox* TimerOnCheckBox;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* CrossHairButton;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UCheckBox* CrossHairOnCheckBox;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* MouseSensitiveButton;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UProgressBar* SensitiveSettingBar;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
+	class UWidgetAnimation* NewOptionAnim;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
+	class UWidgetAnimation* BackOptionAnim;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* BackButton;
 
 	UPROPERTY()
-		int32 MenuNavIndex = 0;
+	int32 MenuNavIndex = 0;
 
 	UPROPERTY()
-		int32 SubMenuNavIndex = 0;
+	int32 SubMenuNavIndex = 0;
 
 	UPROPERTY()
-		int32 MenuNumber;
+	int32 MenuNumber;
 
 	UPROPERTY()
-		CurrentType CurrentMode;
+	CurrentType CurrentMode;
 
 	UPROPERTY()
 	FWidgetAnimationDynamicEvent EndDelegate;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-		TObjectPtr<class USoundCue> ButtonClickSound;
+	TObjectPtr<class USoundCue> ButtonClickSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-		TObjectPtr<class USoundCue> ButtonMoveSound;
+	TObjectPtr<class USoundCue> ButtonMoveSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-		TObjectPtr<class USoundMix> SoundMix;
+	TObjectPtr<class USoundMix> SoundMix;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-		TObjectPtr<class USoundClass> SoundClass;
+	TObjectPtr<class USoundClass> SoundClass;
 
 private:
 	bool bIsEnglish;

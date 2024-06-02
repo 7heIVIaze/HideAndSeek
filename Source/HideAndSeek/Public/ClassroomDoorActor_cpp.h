@@ -1,4 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #pragma once
 
@@ -60,9 +60,6 @@ public: // Properties
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
 		class USoundCue* DoorSound;
-
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
-		class USoundCue* DoorBreakSound;
 
 	UPROPERTY(BlueprintReadWrite)
 		class AClassroomDoors_cpp* CD_Manager;

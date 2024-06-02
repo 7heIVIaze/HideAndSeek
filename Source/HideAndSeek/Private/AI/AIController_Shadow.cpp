@@ -1,4 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "AI/AIController_Shadow.h"
 #include "NavigationSystem.h"
@@ -115,7 +115,7 @@ void AAIController_Shadow::OnTargetDetected(AActor* Actor, FAIStimulus const Sti
 					if (Distance <= 600.f) // 만약 600 범위 내에서 감지한 경우라면 사라짐.
 					{
 						StopAI();
-						Cast<AShadow_cpp>(GetPawn())->Destroy();
+						Cast<AShadow_cpp>(GetPawn())->Exorcism();
 					}
 					// 불을 켠 경우 최대 감지 범위까지 감지가 가능하므로 TargetKey에 플레이어를 저장시킴.
 					else
@@ -136,38 +136,7 @@ void AAIController_Shadow::OnTargetDetected(AActor* Actor, FAIStimulus const Sti
 				}
 			}
 		}
-		//// 감지된 액터가 캐비닛이면
-		//else if (auto const Cabinet = Cast<ACabinet_cpp>(Actor))
-		//{
-		//	//// DEPRECATED
-		//	// 로커의 불을 감지했는지 확인
-		//	// bool bIsLockerLighting = GetBlackboard()->GetValueAsBool(LockerLighting);
-		//	
-		//	// 그 캐비닛에 플레이어가 숨어있으면 수행
-		//	if (Cabinet->bIsHiding)
-		//	{
-		//		// 만약 캐비닛 안에서 라이터나 플래시를 켠 경우에
-		//		if (Cabinet->bIsCigarLightOn || Cabinet->bIsFlashLightOn)
-		//		{
-		//			// 해당 캐비닛 추가
-		//			Cast<AShadow_cpp>(GetPawn())->DetectPlayerHidingObject(Cabinet);
-		//		}
-		//	}
-		//}
-		//// 감지된 액터가 옷장이면
-		//else if (auto const Wardrobe = Cast<AWardrobe_cpp>(Actor))
-		//{
-		//	// 그 옷장에 플레이어가 숨어있으면 수행
-		//	if (Wardrobe->bIsHiding)
-		//	{
-		//		// 만약 옷장 안에서 라이터나 플래시를 켠 경우에
-		//		if (Wardrobe->bIsCigarLightOn || Wardrobe->bIsFlashLightOn)
-		//		{
-		//			// 해당 옷장 추가
-		//			Cast<AShadow_cpp>(GetPawn())->DetectPlayerHidingObject(Wardrobe);
-		//		}
-		//	}
-		//}
+		
 	}
 
 	else // 플레이어 감지가 끝난 경우

@@ -1,9 +1,11 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "ClassroomDoors_cpp.h"
 #include "ClassroomDoorActor_cpp.h"
 #include "Components/BoxComponent.h"
 #include "AI/CreatureClass.h"
+#include "Kismet/GameplayStatics.h"
+#include "Sound/SoundCue.h"
 
 // Sets default values
 AClassroomDoors_cpp::AClassroomDoors_cpp()
@@ -139,6 +141,11 @@ void AClassroomDoors_cpp::PlayerBoxEndOverlap(UPrimitiveComponent* OverlappedCom
 
 void AClassroomDoors_cpp::BreakDoor()
 {
+	if (DoorBreakSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, DoorBreakSound, GetActorLocation());
+	}
+
 	PlayerOverlapBox->OnComponentBeginOverlap.RemoveDynamic(this, &AClassroomDoors_cpp::PlayerBoxBeginOverlap);
 	PlayerOverlapBox->OnComponentEndOverlap.RemoveDynamic(this, &AClassroomDoors_cpp::PlayerBoxEndOverlap);
 
@@ -153,28 +160,3 @@ void AClassroomDoors_cpp::BreakDoor()
 		LeftDoor->BreakDoor();
 	}
 }
-
-//void AClassroomDoors_cpp::CreatureBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-//{
-//	if (OtherActor != nullptr && OtherComp != nullptr && OtherActor != this)
-//	{
-//		if (ACreatureClass* Creature = Cast<ACreatureClass>(OtherActor)) // 접촉된 크리쳐라면 발동
-//		{
-//			if (bNearPlayer) // 플레이어가 근처에 있어야 문이 크리쳐를 가로막기 때문에, 그 경우에만 발동하게 설정
-//			{
-//				int i = FMath::RandRange(0, 1); // 두 개의 문 중 어느것을 열지 선택
-//				if (bIsDoorClose) // 닫힌 경우에만 판별하도록 설정
-//				{
-//					if (i == 0)
-//					{
-//						LeftDoor->AIInteract(Creature);
-//					}
-//					else
-//					{
-//						RightDoor->AIInteract(Creature);
-//					}
-//				}
-//			}
-//		}
-//	}
-//}

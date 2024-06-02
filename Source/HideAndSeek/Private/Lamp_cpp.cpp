@@ -1,4 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "Lamp_cpp.h"
 #include "Components/PointLightComponent.h"

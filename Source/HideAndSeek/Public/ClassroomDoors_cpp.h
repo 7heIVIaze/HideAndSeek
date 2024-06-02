@@ -1,4 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 // This Actor is just manage boolean value of ClassroomDoor_cpp s. 
 // If a bIsDoorLocked value of One of ClassroomDoor_cpps is false, this actor make the other's value false.
 
@@ -39,8 +39,8 @@ public: // properties
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Door")
 		TObjectPtr<class UBoxComponent> PlayerOverlapBox;
 
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Door")
-		TObjectPtr<class UBoxComponent> CreatureOverlapBox;*/
+		UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
+		class USoundCue* DoorBreakSound;
 
 	UPROPERTY(EditAnywhere, Category = "Lock")
 		bool bIsLocked;

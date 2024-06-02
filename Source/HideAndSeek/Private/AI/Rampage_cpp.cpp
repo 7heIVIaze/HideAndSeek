@@ -1,5 +1,6 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
+// ED용 요괴 - 장산범으로 하면 좋을 거 같음.
 #include "AI/Rampage_cpp.h"
 #include "Components/PointLightComponent.h"
 #include "Components/SpotLightComponent.h"
@@ -42,12 +43,6 @@ ARampage_cpp::ARampage_cpp()
 		GetMesh()->SetSkeletalMesh(MeshAsset.Object);
 	}
 
-	/*static ConstructorHelpers::FClassFinder<UReaperAnim>AnimAsset(TEXT("/Game/Assets/AI/Reaper/BP_ReaperAnim"));
-	if (AnimAsset.Succeeded())
-	{
-		GetMesh()->SetAnimInstanceClass(AnimAsset.Class);
-	}*/
-
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("PatrolSoundBox"));
 	BoxCollision->SetupAttachment(GetMesh());
 	BoxCollision->SetBoxExtent(FVector(20.f, 20.f, 20.f));
@@ -64,19 +59,10 @@ ARampage_cpp::ARampage_cpp()
 
 	WatchPoint = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayerWatchPoint"));
 
-	/*GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, 0.f));
-	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));*/
-
 	AIControllerClass = AAIController_Rampage::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
 	GetCapsuleComponent()->SetWorldLocation(FVector(0.f, 0.f, 70.f));
-
-	/*static ConstructorHelpers::FObjectFinder<UAnimSequence>anim(TEXT("/Game/ParagonSevarog/Characters/Heroes/Sevarog/Animations/LevelStart"));
-	if (anim.Succeeded())
-	{
-		Anim = anim.Object;
-	}*/
 
 }
 
@@ -84,21 +70,11 @@ ARampage_cpp::ARampage_cpp()
 void ARampage_cpp::BeginPlay()
 {
 	Super::BeginPlay();
-
-	// GetCapsuleComponent()->OnComponentHit.AddDynamic(this, &AReaper_cpp::CatchBeginOverlap);
-
-	UWorld* world = GetWorld();
-	
+		
+	// 현재 변수들을 다 초기화 해줌,
 	Index = 0;
 	MapName = UGameplayStatics::GetCurrentLevelName(GetWorld());
 	RampageController = Cast<AAIController_Rampage>(GetController());
-
-	//if (bIsCinematic) // 시네마틱 모드인 경우(챕터 2 클리어 후 등장한 경우)
-	//{
-	//	RampageController->GetBlackboard()->SetValueAsBool(AAIController_Rampage::IsCinematic, bIsCinematic);
-	//	Player = Cast<AHorrorGameCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
-	//	RampageController->GetBlackboard()->SetValueAsObject(AAIController_Rampage::TargetKey, Player);
-	//}
 }
 
 // Called every frame
@@ -106,6 +82,8 @@ void ARampage_cpp::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// 현재는 Rampage는 처치도, 기절도, 시간 정지도 통하지 않는 캐릭터이지만, 나중의 챕터에 등장할 수도 있기에 주석 처리로 남겨둠.
+	
 	//DissolveTimeline.TickTimeline(DeltaTime);
 
 	//if (bIsStunned)
@@ -119,55 +97,6 @@ void ARampage_cpp::Tick(float DeltaTime)
 	//		//ACreatureAI* controller = Cast<ACreatureAI>(GetController());
 	//		ReaperController->SetStunned(bIsStunned);
 	//		CurrentStunnedTime = 0;
-	//	}
-	//}
-
-	//if (bIsCollectMode) // 오브젝트 수집 모드이라면
-	//{
-	//	switch (UnSealedItemNumber)
-	//	{
-	//	case 0: // 아직 아무런 사신의 물품을 얻지 못했을 때
-	//		ReaperController->SetCurrentSealStatus(Sealed::Sealed);
-	//		break;
-	//	case 1: // 사신의 물품을 하나 얻었을 때
-	//		ReaperController->SetCurrentSealStatus(Sealed::OneUnsealed);
-	//		break;
-	//	case 2: // 사신의 물품을 두 개 얻었을 때
-	//		ReaperController->SetCurrentSealStatus(Sealed::TwoUnsealed);
-	//		ReaperController->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, Player);
-	//		break;
-	//	default: // 사신의 물품을 세 개 이상 얻었을 때
-	//		ReaperController->SetCurrentSealStatus(Sealed::Unsealed);
-	//		ReaperController->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, Player);
-	//	}
-	//}
-	//else // 그 외 모드라면
-	//{
-	//	if (bSealedButChase)
-	//	{
-	//		ReaperController->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, Player);
-	//	}
-	//}
-
-	//if (bIsPlayerWatch && !bIsCooldown && !bIsStunned)
-	//{
-	//	CastingTime += DeltaTime;
-
-	//	if (CastingTime >= 3)
-	//	{
-	//		bIsCooldown = true;
-	//		CastingTime = 0.f;
-	//	}
-	//}
-
-	//if (bIsCooldown)
-	//{
-	//	SkillCooldown += DeltaTime;
-
-	//	if (SkillCooldown >= 10)
-	//	{
-	//		SkillCooldown = 0.f;
-	//		bIsCooldown = false;
 	//	}
 	//}
 
@@ -187,8 +116,6 @@ void ARampage_cpp::Tick(float DeltaTime)
 	//}
 
 	RampageController->SetControlRotation(GetActorRotation());
-	/*ACreatureAI* Controller = Cast<ACreatureAI>(GetController());
-	Controller->GetBlackboard()->SetValueAsBool(ACreatureAI::Stunned, bIsStunned);*/
 }
 
 void ARampage_cpp::PossessedBy(AController* NewController)
@@ -208,11 +135,13 @@ void ARampage_cpp::PossessedBy(AController* NewController)
 	}
 }
 
-
+// 추격 상태로 만들 함수
 void ARampage_cpp::StartChase()
 {
+	// 추격 상태가 아닐 경우에만 작동하도록 설정함.
 	if (!bIsChase)
 	{
+		// 추격 상태로 만들고 플레이어의 상태를 추격 중으로 바꿈
 		bIsChase = true;
 		//ReaperSound->SetSound(DetectedSound);
 		//ReaperSound->Play();
@@ -235,10 +164,14 @@ void ARampage_cpp::StartChase()
 	GetCharacterMovement()->MaxWalkSpeed = 300.f;*/
 }
 
+// 추격 종료 상태로 만들 함수
 void ARampage_cpp::EndChase()
 {
+	// 추격 상태인 경우에만 작동하도록 설정함.
+	// 
 	if (bIsChase)
 	{
+		// 추격 상태가 아님으로 설정하고, 플레이어의 상태도 생존으로 바꿈.
 		// ACreatureAI* AIController = Cast<ACreatureAI>(GetController());
 		if (RampageController != nullptr)
 		{
@@ -267,6 +200,7 @@ void ARampage_cpp::SetIsCatch(bool Value)
 	bIsCatch = Value;
 }
 
+// 공격 애니메이션 종료 시 작동할 함수
 void ARampage_cpp::SetAnimFinish(bool Value)
 {
 	bAnimFinish = Value;
@@ -280,12 +214,17 @@ void ARampage_cpp::SetAnimFinish(bool Value)
 		Player->SetPlayerStatus(Player_Status::Clear);
 		//PlayerController->ShowEnding(1);
 	}
+	// 시네마틱이 아닌 경우 작동할 것이지만, 현재는 이 것을 사용할 일 없음.
 	else
 	{
 		if (Player->GetIsHiding())
+		{
 			Player->SetPlayerStatus(Player_Status::Survive);
+		}
 		else
+		{
 			Player->SetPlayerStatus(Player_Status::Died);
+		}
 	}
 }
 

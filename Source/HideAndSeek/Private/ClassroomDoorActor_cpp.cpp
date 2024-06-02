@@ -1,5 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
-
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "ClassroomDoorActor_cpp.h"
 #include "ClassroomDoors_cpp.h"
@@ -213,11 +212,7 @@ void AClassroomDoorActor_cpp::ChangeDoorCollision()
 
 void AClassroomDoorActor_cpp::BreakDoor()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("BreakDoor Called!")));
-
-	//FActorSpawnParameters spawnParams;
 	DoorMesh->SetSimulatePhysics(true);
-	//Door->SetCollisionProfileName(TEXT("NoCollision"));
 	
 	for (AActor* InteractCreature : InteractingCreatures)
 	{

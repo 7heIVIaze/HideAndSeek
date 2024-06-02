@@ -1,4 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 // 플레이어가 직접 휘두를 칼임
 
 #include "Items/PlayerSword_cpp.h"

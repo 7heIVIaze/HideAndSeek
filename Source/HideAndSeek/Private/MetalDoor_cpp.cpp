@@ -1,4 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "MetalDoor_cpp.h"
 #include "Sound/SoundCue.h"
@@ -197,13 +197,14 @@ void AMetalDoor_cpp::ChangeDoorCollision()
 
 void AMetalDoor_cpp::BreakDoor()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("BreakDoor Called!")));
-
-	//FActorSpawnParameters spawnParams;
 	Door->SetSimulatePhysics(true);
-	//Door->SetCollisionProfileName(TEXT("NoCollision"));
 	PlayerOverlapBox->OnComponentBeginOverlap.RemoveDynamic(this, &AMetalDoor_cpp::PlayerBoxBeginOverlap);
 	PlayerOverlapBox->OnComponentEndOverlap.RemoveDynamic(this, &AMetalDoor_cpp::PlayerBoxEndOverlap);
+
+	if (DoorBreakSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, DoorBreakSound, GetActorLocation());
+	}
 
 	PlayerOverlapBox->DestroyComponent();
 	for (AActor* InteractCreature : InteractingCreatures)

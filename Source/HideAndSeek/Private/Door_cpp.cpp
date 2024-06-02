@@ -1,4 +1,4 @@
-// CopyrightNotice=0 2023 Sunggon Kim kimdave205@gmail.com
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "Door_cpp.h"
 #include "Sound/SoundCue.h"
@@ -222,14 +222,16 @@ void ADoor_cpp::ChangeDoorCollision()
 
 void ADoor_cpp::BreakDoor()
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("BreakDoor Called!")));
-	
-	//FActorSpawnParameters spawnParams;
+	// 문이 부숴지기 전에 충돌 시 날라갈 물리 엔진 활성화와 동시에 바인딩된 함수들 제거함.
 	Door->SetSimulatePhysics(true);
-	//Door->SetCollisionProfileName(TEXT("NoCollision"));
 	PlayerOverlapBox->OnComponentBeginOverlap.RemoveDynamic(this, &ADoor_cpp::PlayerBoxBeginOverlap);
 	PlayerOverlapBox->OnComponentEndOverlap.RemoveDynamic(this, &ADoor_cpp::PlayerBoxEndOverlap);
 	
+	if (DoorBreakSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, DoorBreakSound, GetActorLocation());
+	}
+
 	PlayerOverlapBox->DestroyComponent();
 	for (AActor* InteractCreature : InteractingCreatures)
 	{
@@ -280,19 +282,3 @@ void ADoor_cpp::PlayerBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor*
 		}
 	}
 }
-
-//void ADoor_cpp::CreatureBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-//{
-//	UE_LOG(LogTemp, Warning, TEXT("%s: Somethine Overlapped!"), *(this->GetName()));
-//	if (OtherActor != nullptr && OtherComp != nullptr && OtherActor != this && OtherComp->IsA(USkeletalMeshComponent::StaticClass()))
-//	{
-//		UE_LOG(LogTemp, Warning, TEXT("%s: Overlapped %s"), *(this->GetName()), *(OtherActor->GetName()));
-//		if (ACreatureClass* Creature = Cast<ACreatureClass>(OtherActor)) // 접촉된 크리쳐라면 발동
-//		{
-//			if (bIsPlayerNear) // 플레이어가 근처에 있어야 문이 크리쳐를 가로막기 때문에, 그 경우에만 발동하게 설정
-//			{
-//				AIInteract(Creature);
-//			}
-//		}
-//	}
-//}
