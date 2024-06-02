@@ -22,36 +22,39 @@
 #include "Sound/SoundCue.h"
 #include "Engine/PostProcessVolume.h"
 
+// 생성자
 void UGraphicsOption::NativeConstruct()
 {
 	Super::NativeConstruct();
 
+	// 뷰포트 출력 시 애니메이션 효과를 출력함.
 	PlayAnimation(NewOptionAnim);
 
 	this->SetKeyboardFocus();
 
+	// 뒤로가기 애니메이션이 끝나면, 뷰포트에서 제거되기 위해 델리게이트 함수를 바인딩해줌.
 	EndDelegate.BindDynamic(this, &UGraphicsOption::AnimationFinished);
 	BindToAnimationFinished(BackOptionAnim, EndDelegate);
 
 	/*ResolutionButton = Cast<UButton>(GetWidgetFromName(TEXT("Resolution")));
 	WindowModeButton = Cast<UButton>(GetWidgetFromName(TEXT("WindowMode")));
-	BrightnessButton = Cast<UButton>(GetWidgetFromName(TEXT("BrightButton")));
-	AntiAliasingButton = Cast<UButton>(GetWidgetFromName(TEXT("AntiAliasingBtn")));
-	ShadowButton = Cast<UButton>(GetWidgetFromName(TEXT("ShadowBtn")));
-	MotionBlurButton = Cast<UButton>(GetWidgetFromName(TEXT("MotionBlurBtn")));
-	Resolution1Button = Cast<UButton>(GetWidgetFromName(TEXT("Resolution1Btn")));
-	Resolution2Button = Cast<UButton>(GetWidgetFromName(TEXT("Resolution2Btn")));
-	Resolution3Button = Cast<UButton>(GetWidgetFromName(TEXT("Resolution3Btn")));
-	Resolution4Button = Cast<UButton>(GetWidgetFromName(TEXT("Resolution4Btn")));
-	Resolution5Button = Cast<UButton>(GetWidgetFromName(TEXT("Resolution5Btn")));
-	Resolution6Button = Cast<UButton>(GetWidgetFromName(TEXT("Resolution6Btn")));
-	Resolution7Button = Cast<UButton>(GetWidgetFromName(TEXT("Resolution7Btn")));
-	Resolution8Button = Cast<UButton>(GetWidgetFromName(TEXT("Resolution8Btn")));
-	//Resolution9Button = Cast<UButton>(GetWidgetFromName(TEXT("Resolution9Btn")));
-	//Resolution10Button = Cast<UButton>(GetWidgetFromName(TEXT("Resolution10Btn")));
-	WindowedButton = Cast<UButton>(GetWidgetFromName(TEXT("WindowBtn")));
-	// WinFullButton = Cast<UButton>(GetWidgetFromName(TEXT("WindowFullBtn")));
-	FullScreenButton = Cast<UButton>(GetWidgetFromName(TEXT("FullScreenBtn")));
+	BrightnessBtn = Cast<UButton>(GetWidgetFromName(TEXT("BrightButton")));
+	AntiAliasingBtn = Cast<UButton>(GetWidgetFromName(TEXT("AntiAliasingButton")));
+	ShadowBtn = Cast<UButton>(GetWidgetFromName(TEXT("ShadowButton")));
+	MotionBlurBtn = Cast<UButton>(GetWidgetFromName(TEXT("MotionBlurButton")));
+	Resolution1Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution1Button")));
+	Resolution2Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution2Button")));
+	Resolution3Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution3Button")));
+	Resolution4Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution4Button")));
+	Resolution5Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution5Button")));
+	Resolution6Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution6Button")));
+	Resolution7Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution7Button")));
+	Resolution8Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution8Button")));
+	//Resolution9Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution9Button")));
+	//Resolution10Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution10Button")));
+	WindowedBtn = Cast<UButton>(GetWidgetFromName(TEXT("WindowButton")));
+	// WinFullBtn = Cast<UButton>(GetWidgetFromName(TEXT("WindowFullButton")));
+	FullScreenBtn = Cast<UButton>(GetWidgetFromName(TEXT("FullScreenButton")));
 	AntiAliasBox = Cast<UCheckBox>(GetWidgetFromName(TEXT("AntiCheckbox")));
 	ShadowBox = Cast<UCheckBox>(GetWidgetFromName(TEXT("ShadowCheckbox")));
 	MotionBlurBox = Cast<UCheckBox>(GetWidgetFromName(TEXT("MotionBlurCheckbox")));
@@ -61,138 +64,168 @@ void UGraphicsOption::NativeConstruct()
 	ResolutionPanel = Cast<UUniformGridPanel>(GetWidgetFromName(TEXT("ResolutionType")));
 	WindowModeBox = Cast<UHorizontalBox>(GetWidgetFromName(TEXT("WindowModePanel")));*/
 
-	if (IsValid(Resolution))
+	// 각 버튼 별로 클릭과 마우스 호버 시 작동할 함수를 바인딩해줌.
+	if (IsValid(ResolutionButton))
 	{
-		Resolution->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolutionButton);
-		Resolution->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolutionButton);
-		Resolution->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolutionButton);
+		ResolutionButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolutionButton);
+		ResolutionButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolutionButton);
+		// Resolution->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolutionButton);
 	}
-	if (IsValid(WindowMode))
+
+	if (IsValid(ScreenSettingButton))
 	{
-		WindowMode->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickWindowModeButton);
-		WindowMode->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredWindowModeButton);
-		WindowMode->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredWindowModeButton);
+		ScreenSettingButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickScreenSettingButton);
+		ScreenSettingButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredScreenSettingButton);
+		// WindowMode->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredWindowModeButton);
 	}
+
 	if (IsValid(BrightButton))
 	{
 		BrightButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickBrightButton);
 		BrightButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredBrightButton);
-		BrightButton->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredBrightButton);
+		// BrightButton->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredBrightButton);
 	}
-	if (IsValid(AntiAliasingBtn))
+
+	if (IsValid(AntiAliasingButton))
 	{
-		AntiAliasingBtn->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickAntiAliasingButton);
-		AntiAliasingBtn->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredAntiAliasingButton);
-		AntiAliasingBtn->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredAntiAliasingButton);
+		AntiAliasingButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickAntiAliasingButton);
+		AntiAliasingButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredAntiAliasingButton);
+		// AntiAliasingButton->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredAntiAliasingButton);
 	}
-	if (IsValid(ShadowBtn))
+
+	if (IsValid(ShadowButton))
 	{
-		ShadowBtn->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickShadowButton);
-		ShadowBtn->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredShadowButton);
-		ShadowBtn->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredShadowButton);
+		ShadowButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickShadowButton);
+		ShadowButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredShadowButton);
+		// ShadowButton->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredShadowButton);
 	}
-	if (IsValid(MotionBlurBtn))
+
+	if (IsValid(MotionBlurButton))
 	{
-		MotionBlurBtn->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickMotionBlurButton);
-		MotionBlurBtn->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredMotionBlurButton);
-		MotionBlurBtn->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredMotionBlurButton);
+		MotionBlurButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickMotionBlurButton);
+		MotionBlurButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredMotionBlurButton);
+		// MotionBlurButton->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredMotionBlurButton);
 	}
-	if (IsValid(Resolution1Btn))
+
+	if (IsValid(Resolution1Button))
 	{
-		Resolution1Btn->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution1Button);
-		Resolution1Btn->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution1Button);
-		Resolution1Btn->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution1Button);
+		Resolution1Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution1Button);
+		Resolution1Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution1Button);
+		// Resolution1Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution1Button);
 	}
-	if (IsValid(Resolution2Btn))
+
+	if (IsValid(Resolution2Button))
 	{
-		Resolution2Btn->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution2Button);
-		Resolution2Btn->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution2Button);
-		Resolution2Btn->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution2Button);
+		Resolution2Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution2Button);
+		Resolution2Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution2Button);
+		// Resolution2Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution2Button);
 	}
-	if (IsValid(Resolution3Btn))
+
+	if (IsValid(Resolution3Button))
 	{
-		Resolution3Btn->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution3Button);
-		Resolution3Btn->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution3Button);
-		Resolution3Btn->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution3Button);
+		Resolution3Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution3Button);
+		Resolution3Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution3Button);
+		// Resolution3Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution3Button);
 	}
-	if (IsValid(Resolution4Btn))
+
+	if (IsValid(Resolution4Button))
 	{
-		Resolution4Btn->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution4Button);
-		Resolution4Btn->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution4Button);
-		Resolution4Btn->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution4Button);
+		Resolution4Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution4Button);
+		Resolution4Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution4Button);
+		// Resolution4Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution4Button);
 	}
-	if (IsValid(Resolution5Btn))
+
+	if (IsValid(Resolution5Button))
 	{
-		Resolution5Btn->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution5Button);
-		Resolution5Btn->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution5Button);
-		Resolution5Btn->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution5Button);
+		Resolution5Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution5Button);
+		Resolution5Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution5Button);
+		// Resolution5Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution5Button);
 	}
-	if (IsValid(Resolution6Btn))
+
+	if (IsValid(Resolution6Button))
 	{
-		Resolution6Btn->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution6Button);
-		Resolution6Btn->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution6Button);
-		Resolution6Btn->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution6Button);
+		Resolution6Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution6Button);
+		Resolution6Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution6Button);
+		// Resolution6Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution6Button);
 	}
-	if (IsValid(Resolution7Btn))
+
+	if (IsValid(Resolution7Button))
 	{
-		Resolution7Btn->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution7Button);
-		Resolution7Btn->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution7Button);
-		Resolution7Btn->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution7Button);
+		Resolution7Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution7Button);
+		Resolution7Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution7Button);
+		// Resolution7Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution7Button);
 	}
-	if (IsValid(Resolution8Btn))
+
+	if (IsValid(Resolution8Button))
 	{
-		Resolution8Btn->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution8Button);
-		Resolution8Btn->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution8Button);
-		Resolution8Btn->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution8Button);
+		Resolution8Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution8Button);
+		Resolution8Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution8Button);
+		// Resolution8Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution8Button);
 	}
-	/*if (IsValid(Resolution9Btn))
+
+	/*if (IsValid(Resolution9Button))
 	{
-		Resolution9Btn->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution9Button);
-		Resolution9Btn->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution9Button);
-		Resolution9Btn->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution9Button);
+		Resolution9Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution9Button);
+		Resolution9Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution9Button);
+		Resolution9Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution9Button);
 	}
-	if (IsValid(Resolution10Btn))
+	if (IsValid(Resolution10Button))
 	{
-		Resolution10Btn->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution10Button);
-		Resolution10Btn->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution10Button);
-		Resolution10Btn->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution10Button);
+		Resolution10Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution10Button);
+		Resolution10Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution10Button);
+		Resolution10Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution10Button);
 	}*/
-	if (IsValid(WindowBtn))
+
+	if (IsValid(WindowButton))
 	{
-		WindowBtn->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickWindowedButton);
-		WindowBtn->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredWindowedButton);
-		WindowBtn->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredWindowedButton);
+		WindowButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickWindowedButton);
+		WindowButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredWindowedButton);
+		// WindowButton->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredWindowedButton);
 	}
+
 	/*if (IsValid(WinFullButton))
 	{
 		WinFullButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickWinFullButton);
 		WinFullButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredWinFullButton);
 		WinFullButton->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredWinFullButton);
 	}*/
-	if (IsValid(FullScreenBtn))
+
+	if (IsValid(FullScreenButton))
 	{
-		FullScreenBtn->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickFullScreenButton);
-		FullScreenBtn->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredFullScreenButton);
-		FullScreenBtn->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredFullScreenButton);
+		FullScreenButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickFullScreenButton);
+		FullScreenButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredFullScreenButton);
+		// 	FullScreenButton->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredFullScreenButton);
 	}
 
-	if (BackBtn != nullptr)
+	if (BackButton != nullptr)
 	{
-		BackBtn->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickBackButton);
-		BackBtn->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredBackButton);
-		BackBtn->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredBackButton);
+		BackButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickBackButton);
+		BackButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredBackButton);
+		// BackButton->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredBackButton);
 	}
 
+	// 버튼의 개수는 그래픽 설정 패널의 버튼 개수로 설정.
 	if (IsValid(GraphicsSettingPanel))
 	{
 		MenuNumber = GraphicsSettingPanel->GetChildrenCount();
 	}
 
+	// GameInstance로부터 밝기 감마 값과 모션 블러 설정값 가져오기(GameInstance는 실행 시 Save 데이터를 읽어옴)
+	if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
+	{
+		Brightness = GameInstance->GetBrightGamma();
+		bMotionBlur = GameInstance->GetMotionBlur();
+	} 
+	MotionBlurCheckbox->SetIsChecked(bMotionBlur);
+	BrightBar->SetPercent(Brightness / 5.0f);
+	
+	// 유저 세팅 파일 가져오기
 	if (GEngine)
 	{
-		UserSetting = GEngine->GetGameUserSettings(); // 유저 세팅 파일 가져오기
+		UserSetting = GEngine->GetGameUserSettings(); 
 	}
 
+	// 안티 앨리어싱 효과 레벨이 3(Epic) 이상이면, 안티 앨리어싱이 적용된 것이고, 아니면 적용 안 된 것임.
 	if (UserSetting->GetAntiAliasingQuality() == 3)
 	{
 		bIsAntiAliasing = true;
@@ -203,7 +236,7 @@ void UGraphicsOption::NativeConstruct()
 	}
 	AntiCheckbox->SetIsChecked(bIsAntiAliasing);
 
-	// GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Current Shadow Quality: %d"), UserSetting->GetShadowQuality()));
+	// 그림자 퀄리티가 3(Epic) 이상이면, 그림자 설정이 적용된 것이고, 아니면 적용 안 된 것.
 	if (UserSetting->GetShadowQuality() == 3)
 	{
 		bShadowSetting = true;
@@ -212,7 +245,6 @@ void UGraphicsOption::NativeConstruct()
 	{
 		bShadowSetting = false;
 	}
-
 	ShadowCheckbox->SetIsChecked(bShadowSetting);
 
 	// 사용자 설정에 스크린 모드가 창모드인지, 전체화면 모드인지 체크
@@ -227,662 +259,900 @@ void UGraphicsOption::NativeConstruct()
 		bFullScreen = true;
 	}
 
+	// 현재 화면 해상도 값도 가져옴.
 	FIntPoint IntPoint = UserSetting->GetScreenResolution();
-//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Current Resolution: %dx%d"), IntPoint.X, IntPoint.Y));
 	CurrentResolution = FString::FromInt(IntPoint.X) + TEXT("x") + FString::FromInt(IntPoint.Y);
 	CheckCurrentResolution(CurrentResolution);
 
-	// GameInstance로부터 밝기 감마 값과 모션 블러 설정값 가져오기(GameInstance는 실행 시 Save 데이터를 읽어옴)
-	if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
-	{
-		Brightness = GameInstance->GetBrightGamma();
-		bMotionBlur = GameInstance->GetMotionBlur();
-	} 
-
-	MotionBlurCheckbox->SetIsChecked(bMotionBlur);
-	BrightBar->SetPercent(Brightness / 5.0f);
 	SetCurrentMode(GraphicsType::None);
 	UpdateButtonSlate();
 }
 
 // Main Menu
+// 해상도 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickResolutionButton()
 {
-	if (IsValid(ButtonClickSound))
+	// 현재 위젯의 모드가 최초 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::None)
 	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonClickSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		}
+
+		// 세부 버튼 인덱스를 0으로 설정하고, 현재 위젯 모드를 해상도 설정 모드로 변경함.
+		SubMenuNavIndex = 0;
+		SetCurrentMode(GraphicsType::Resolution);
+
+		// 세부 버튼 최대 인덱스를 해상도 설정 버튼의 개수로 바꿈.
+		if (IsValid(ResolutionType))
+		{
+			MenuNumber = ResolutionType->GetChildrenCount();
+		}
+
+		// 버튼의 상태를 업데이트 함.
+		UpdateButtonSlate();
 	}
-	SubMenuNavIndex = 0;
-	SetCurrentMode(GraphicsType::Resolution);
-	if (IsValid(ResolutionType))
-	{
-		MenuNumber = ResolutionType->GetChildrenCount();
-	}
-	UpdateButtonSlate();
 }
 
+// 해상도 설정 버튼 위에 마우스를 올렸을 때 작동할 함수.
 void UGraphicsOption::OnHoveredResolutionButton()
 {
-	if (IsValid(ButtonMoveSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
-	}
+	// 현재 위젯의 모드가 최초 모드인 경우에만 작동하도록 설정함.
 	if (CurrentMode == GraphicsType::None)
 	{
+		// 버튼 이동 음을 재생함.
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
+		}
+
+		// 현재 버튼의 인덱스를 0으로 설정하고, 버튼의 상태를 업데이트 함.
 		MenuNavIndex = 0;
 		UpdateButtonSlate();
-		//Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 	}
 }
 
-void UGraphicsOption::OnUnhoveredResolutionButton()
-{
-	Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-}
+// Deprecated
+//void UGraphicsOption::OnUnhoveredResolutionButton()
+//{
+//	Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//}
 
-void UGraphicsOption::OnClickWindowModeButton()
+// 화면 설정 버튼을 클릭했을 때 작동할 함수.
+void UGraphicsOption::OnClickScreenSettingButton()
 {
-	if (IsValid(ButtonClickSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
-	}
-	SubMenuNavIndex = 0;
-	SetCurrentMode(GraphicsType::Window);
-	if (IsValid(WindowModePanel))
-	{
-		MenuNumber = WindowModePanel->GetChildrenCount();
-	}
-	UpdateButtonSlate();
-}
-
-void UGraphicsOption::OnHoveredWindowModeButton()
-{
-	if (IsValid(ButtonMoveSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
-	}
+	// 현재 위젯의 모드가 최초 모드인 경우에만 작동하도록 설정함.
 	if (CurrentMode == GraphicsType::None)
 	{
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonClickSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		}
+
+		// 세부 버튼 인덱스를 0으로 설정하고, 현재 위젯 모드를 스크린 설정 모드로 변경함.
+		SubMenuNavIndex = 0;
+		SetCurrentMode(GraphicsType::ScreenSetting);
+
+		// 버튼의 최대 인덱스는 스크린 설정 패널의 버튼 개수(창모드/전체화면)(== 2)로 설정.
+		if (IsValid(WindowModePanel))
+		{
+			MenuNumber = WindowModePanel->GetChildrenCount();
+		}
+
+		// 버튼의 상태를 업데이트 함.
+		UpdateButtonSlate();
+	}
+}
+
+// 스크린 설정 버튼 위에 마우스를 올렸을 때 작동할 함수.
+void UGraphicsOption::OnHoveredScreenSettingButton()
+{
+	// 현재 위젯의 모드가 최초 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::None)
+	{
+		// 버튼 이동 음을 재생함.
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
+		}
+
+		// 현재 버튼 인덱스를 1로 설정하고, 버튼의 상태를 업데이트 함.
 		MenuNavIndex = 1;
 		UpdateButtonSlate();
-		//WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 	}
 }
 
-void UGraphicsOption::OnUnhoveredWindowModeButton()
-{
-	WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-}
+// Deprecated
+//void UGraphicsOption::OnUnhoveredWindowModeButton()
+//{
+//	WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//}
 
+// 밝기 설정 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickBrightButton()
 {
-	if (IsValid(ButtonClickSound))
+	// 현재 위젯의 모드가 최초 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::None)
 	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonClickSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		}
+
+		// 현재 위젯의 모드를 밝기 설정 모드로 설정하고, 버튼의 상태를 업데이트 함.
+		SetCurrentMode(GraphicsType::Brightness);
+		UpdateButtonSlate();
 	}
-	SetCurrentMode(GraphicsType::Brightness);
-	UpdateButtonSlate();
 }
 
+// 밝기 설정 버튼 위에 마우스를 올렸을 때 작동할 함수.
 void UGraphicsOption::OnHoveredBrightButton()
 {
-	if (IsValid(ButtonMoveSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
-	}
+	// 현재 위젯의 모드가 최초 모드인 경우에만 작동하도록 설정함.
 	if (CurrentMode == GraphicsType::None)
 	{
+		// 버튼 이동 음을 재생함.
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
+		}
+
+		// 현재 버튼 인덱스를 2로 설정하고, 버튼의 상태를 업데이트 함.
 		MenuNavIndex = 2;
-		UpdateButtonSlate();	
-		//BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+		UpdateButtonSlate();
 	}
 }
 
-void UGraphicsOption::OnUnhoveredBrightButton()
-{
-	BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-}
+// Deprecated
+//void UGraphicsOption::OnUnhoveredBrightButton()
+//{
+//	BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//}
 
+// 안티 앨리어싱 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickAntiAliasingButton()
 {
-	if (IsValid(ButtonClickSound))
+	// 현재 위젯의 모드가 최초 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::None)
 	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
-	}
-	bIsAntiAliasing = !bIsAntiAliasing;
-	AntiCheckbox->SetIsChecked(bIsAntiAliasing);
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonClickSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		}
+		
+		// 현재 설정된 안티 앨리어싱 값을 반전시켜 저장함.
+		bIsAntiAliasing = !bIsAntiAliasing;
+		AntiCheckbox->SetIsChecked(bIsAntiAliasing);
 
-	if (UserSetting)
-	{
-		int32 Value = bIsAntiAliasing ? 3 : 0; // ShadowSetting이 true면 3, false면 0으로 설정
-		UserSetting->SetAntiAliasingQuality(Value);
-		UserSetting->ApplyNonResolutionSettings();
-		UserSetting->SaveSettings();
-	}
+		// 해당 값을 유저 세팅 파일에 저장하는 로직.
+		if (UserSetting)
+		{ 
+			// AntiAliasing이 true면 3(Epic), false면 0(low)으로 설정
+			int32 Value = bIsAntiAliasing ? 3 : 0;
 
-	UpdateButtonSlate();
+			// 그 후 설정된 값을 유저 세팅 파일에 저장하고 현재 게임에 적용함.
+			UserSetting->SetAntiAliasingQuality(Value);
+			UserSetting->ApplyNonResolutionSettings();
+			UserSetting->SaveSettings();
+		}
+
+		// 버튼의 상태를 업데이트 함.
+		UpdateButtonSlate();
+	}
 }
 
+// 안티앨리어싱 버튼 위에 마우스를 올렸을 때 작동할 함수.
 void UGraphicsOption::OnHoveredAntiAliasingButton()
 {
-	if (IsValid(ButtonMoveSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
-	}
+	// 현재 위젯의 모드가 최초 모드인 경우에만 작동하도록 설정함.
 	if (CurrentMode == GraphicsType::None)
 	{
+		// 버튼 이동 음을 재생함.
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
+		}
+
+		// 현재 버튼 인덱스를 3으로 변경하고, 버튼의 상태를 업데이트 함.
 		MenuNavIndex = 3;
 		UpdateButtonSlate();
-		//AntiAliasingBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 	}
 }
 
-void UGraphicsOption::OnUnhoveredAntiAliasingButton()
-{
-	AntiAliasingBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-}
+// Deprecated
+//void UGraphicsOption::OnUnhoveredAntiAliasingButton()
+//{
+//	AntiAliasingButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//}
 
+// 그림자 설정 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickShadowButton()
 {
-	if (IsValid(ButtonClickSound))
+	// 현재 위젯의 모드가 최초 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::None)
 	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
-	}
-	bShadowSetting = !bShadowSetting;
-	ShadowCheckbox->SetIsChecked(bShadowSetting);
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonClickSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		}
 
-	if (UserSetting)
-	{
-		int32 Value = bShadowSetting ? 3 : 0; // ShadowSetting이 true면 3, false면 1으로 설정
-		UserSetting->SetShadowQuality(Value);
-		UserSetting->ApplyNonResolutionSettings();
-		UserSetting->SaveSettings();
-	}
+		// 현재 설정된 그림자 설정 값을 반전시켜 저장함.
+		bShadowSetting = !bShadowSetting;
+		ShadowCheckbox->SetIsChecked(bShadowSetting);
 
-	UpdateButtonSlate();
+		// 해당 값을 유저 세팅 파일에 저장하는 로직.
+		if (UserSetting)
+		{
+			// ShadowSetting이 true면 3(Epic), false면 0(Low)으로 설정
+			int32 Value = bShadowSetting ? 3 : 0;
+
+			// 그 후 설정된 값을 유저 세팅 파일에 저장하고, 현재 게임에 적용함.
+			UserSetting->SetShadowQuality(Value);
+			UserSetting->ApplyNonResolutionSettings();
+			UserSetting->SaveSettings();
+		}
+
+		// 그 후 버튼의 상태를 업데이트 함.
+		UpdateButtonSlate();
+	}
 }
 
+// 그림자 설정 버튼 위에 마우스를 올렸을 때 작동할 함수.
 void UGraphicsOption::OnHoveredShadowButton()
 {
-	if (IsValid(ButtonMoveSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
-	}
+	// 현재 위젯의 모드가 최초 모드인 경우에만 작동하도록 설정함.
 	if (CurrentMode == GraphicsType::None)
 	{
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
+		}
+
+		// 현재 버튼 인덱스를 4로 설정하고, 버튼의 상태를 업데이트 함.
 		MenuNavIndex = 4;
 		UpdateButtonSlate();
-		//ShadowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 	}
 }
 
-void UGraphicsOption::OnUnhoveredShadowButton()
-{
-	ShadowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-}
+// Deprecated
+//void UGraphicsOption::OnUnhoveredShadowButton()
+//{
+//	ShadowButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//}
 
+// 모션블러 설정 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickMotionBlurButton()
 {
-	if (IsValid(ButtonClickSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
-	}
-	bMotionBlur = !bMotionBlur;
-	MotionBlurCheckbox->SetIsChecked(bMotionBlur);
-	FString Command = bMotionBlur ? TEXT("r.DefaultFeature.MotionBlur 1") : TEXT("r.DefaultFeature.MotionBlur 0"); // true면 1, false면 0으로 설정
-
-	if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
-	{
-		bool bResult = GameInstance->MotionBlurSaveLogic(bMotionBlur);
-		if (bResult)
-		{
-			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-			if (PlayerController)
-			{
-				PlayerController->ConsoleCommand(Command);
-			}
-			//GetWorld()->Exec(GetWorld(), *Command); // 저장을 완료해야 모션 블러 세팅 완료
-		}
-		else
-		{
-	//		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error to save MotionBlur settings")));
-		}
-	}
-	
-	UpdateButtonSlate();
-}
-
-void UGraphicsOption::OnHoveredMotionBlurButton()
-{
-	if (IsValid(ButtonMoveSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
-	}
+	// 현재 위젯의 모드가 최초 모드인 경우에만 작동하도록 설정함.
 	if (CurrentMode == GraphicsType::None)
 	{
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonClickSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		}
+
+		// 현재 설정된 모션 블러값을 반전하여 저장함.
+		bMotionBlur = !bMotionBlur;
+		FString Command = bMotionBlur ? TEXT("r.DefaultFeature.MotionBlur 1") : TEXT("r.DefaultFeature.MotionBlur 0"); // true면 1, false면 0으로 설정
+
+		// 게임 인스턴스 클래스를 가져옴.
+		if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
+		{
+			// 설정한 값을 세이브 데이터에 영구히 저장함.
+			bool bResult = GameInstance->MotionBlurSaveLogic(bMotionBlur);
+
+			// 저장이 완료되면 게임에 적용하고, 모션 블러 체크 박스에 표시를 해 둠. 
+			if (bResult)
+			{
+				APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+				if (PlayerController)
+				{
+					PlayerController->ConsoleCommand(Command);
+				}
+				MotionBlurCheckbox->SetIsChecked(bMotionBlur);
+				//GetWorld()->Exec(GetWorld(), *Command); // 저장을 완료해야 모션 블러 세팅 완료
+			}
+			// 저장 실패 시 로직임.
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Error to save MotionBlur settings"));
+			}
+		}
+
+		// 그 후 버튼의 상태를 업데이트 함.
+		UpdateButtonSlate();
+	}
+}
+
+// 모션 블러 설정 버튼 위에 마우스를 올렸을 때 작동할 함수.
+void UGraphicsOption::OnHoveredMotionBlurButton()
+{
+	// 현재 위젯의 모드가 최초 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::None)
+	{
+		// 버튼 이동 음을 재생함.
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
+		}
+
+		// 현재 버튼 인덱스를 5로 설정하고, 버튼의 상태를 업데이트 함.
 		MenuNavIndex = 5;
 		UpdateButtonSlate();
 	}
 }
 
-void UGraphicsOption::OnUnhoveredMotionBlurButton()
-{
-	MotionBlurBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-}
+// deprecated
+//void UGraphicsOption::OnUnhoveredMotionBlurButton()
+//{
+//	MotionBlurButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//}
 
 // Resolution Menu
+// 1번 해상도(854x450) 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickResolution1Button()
 {
-	if (IsValid(ButtonClickSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
-	}
-	int32 x = 854, y = 480;
-
-	if (UserSetting)
-	{
-		UserSetting->SetScreenResolution(FIntPoint(x, y));
-		UserSetting->ApplyResolutionSettings(true);
-		UserSetting->SaveSettings();
-	}
-	bResolution1 = true;
-	bResolution2 = false;
-	bResolution3 = false;
-	bResolution4 = false;
-	bResolution5 = false;
-	bResolution6 = false;
-	bResolution7 = false;
-	bResolution8 = false;
-
-	UpdateButtonSlate();
-}
-
-void UGraphicsOption::OnHoveredResolution1Button()
-{
-	if (IsValid(ButtonMoveSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
-	}
+	// 현재 위젯의 모드가 해상도 설정 모드인 경우에만 작동하도록 설정함.
 	if (CurrentMode == GraphicsType::Resolution)
 	{
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonClickSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		}
+
+		// 화면 해상도는 854x480임.
+		int32 x = 854, y = 480;
+
+		// 유저 설정 파일에 해상도를 저장하고 게임에 적용함.
+		if (UserSetting)
+		{
+			UserSetting->SetScreenResolution(FIntPoint(x, y));
+			UserSetting->ApplyResolutionSettings(true);
+			UserSetting->SaveSettings();
+		}
+		/*bResolution1 = true;
+		bResolution2 = false;
+		bResolution3 = false;
+		bResolution4 = false;
+		bResolution5 = false;
+		bResolution6 = false;
+		bResolution7 = false;
+		bResolution8 = false;*/
+
+		ResolutionValue = EResolution::Resolution1;
+
+		// 버튼의 상태를 업데이트 함.
+		UpdateButtonSlate();
+	}
+}
+
+// 1번 해상도(854x480) 버튼 위에 마우스를 올렸을 때 작동할 함수.
+void UGraphicsOption::OnHoveredResolution1Button()
+{
+	// 현재 위젯의 모드가 해상도 설정 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::Resolution)
+	{
+		// 버튼 이동 음을 재생함.
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
+		}
+
+		// 현재 세부 버튼 인덱스를 0으로 설정하고, 버튼의 상태를 업데이트 함.
 		SubMenuNavIndex = 0;
 		UpdateButtonSlate();
 	}
 }
 
-void UGraphicsOption::OnUnhoveredResolution1Button()
-{
-	if (bResolution1)
-	{
-		Resolution1Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-	}
-	else
-	{
-		Resolution1Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-	}
-}
+// deprecated
+//void UGraphicsOption::OnUnhoveredResolution1Button()
+//{
+//	if (bResolution1)
+//	{
+//		Resolution1Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+//	}
+//	else
+//	{
+//		Resolution1Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//	}
+//}
 
+// 2번 해상도(1366x768) 설정 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickResolution2Button()
 {
-	if (IsValid(ButtonClickSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
-	}
-	int32 x = 1366, y = 768;
-
-	if (UserSetting)
-	{
-		UserSetting->SetScreenResolution(FIntPoint(x, y));
-		UserSetting->ApplyResolutionSettings(true);
-		UserSetting->SaveSettings();
-	}
-	bResolution1 = false;
-	bResolution2 = true;
-	bResolution3 = false;
-	bResolution4 = false;
-	bResolution5 = false;
-	bResolution6 = false;
-	bResolution7 = false;
-	bResolution8 = false;
-
-	UpdateButtonSlate();
-}
-
-void UGraphicsOption::OnHoveredResolution2Button()
-{
-	if (IsValid(ButtonMoveSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
-	}
+	// 현재 위젯의 모드가 해상도 설정 모드인 경우에만 작동하도록 설정함.
 	if (CurrentMode == GraphicsType::Resolution)
 	{
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonClickSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		}
+
+		// 화면 해상도는 1366x768임.
+		int32 x = 1366, y = 768;
+
+		// 유저 설정 파일에 해상도를 저장하고 게임에 적용함.
+		if (UserSetting)
+		{
+			UserSetting->SetScreenResolution(FIntPoint(x, y));
+			UserSetting->ApplyResolutionSettings(true);
+			UserSetting->SaveSettings();
+		}
+		/*bResolution1 = false;
+		bResolution2 = true;
+		bResolution3 = false;
+		bResolution4 = false;
+		bResolution5 = false;
+		bResolution6 = false;
+		bResolution7 = false;
+		bResolution8 = false;*/
+
+		ResolutionValue = EResolution::Resolution2;
+
+		// 버튼의 상태를 업데이트 함.
+		UpdateButtonSlate();
+	}
+}
+
+// 2번 해상도(1366x768) 설정 버튼 위에 마우스를 올렸을 때 작동할 함수.
+void UGraphicsOption::OnHoveredResolution2Button()
+{
+	// 현재 위젯의 모드가 해상도 설정 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::Resolution)
+	{
+		// 버튼 이동 음을 재생함.
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
+		}
+
+		// 현재 세부 버튼 인덱스를 1로 설정하고 버튼의 상태를 업데이트 함.
 		SubMenuNavIndex = 1;
 		UpdateButtonSlate();
 	}
 }
 
-void UGraphicsOption::OnUnhoveredResolution2Button()
-{
-	if (bResolution2)
-	{
-		Resolution2Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-	}
-	else
-	{
-		Resolution2Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-	}
-}
+// Deprecated
+//void UGraphicsOption::OnUnhoveredResolution2Button()
+//{
+//	if (bResolution2)
+//	{
+//		Resolution2Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+//	}
+//	else
+//	{
+//		Resolution2Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//	}
+//}
 
+// 3번 해상도(1600x900) 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickResolution3Button()
 {
-	if (IsValid(ButtonClickSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
-	}
-	int32 x = 1600, y = 900;
-
-	if (UserSetting)
-	{
-		UserSetting->SetScreenResolution(FIntPoint(x, y));
-		UserSetting->ApplyResolutionSettings(true);
-		UserSetting->SaveSettings();
-	}
-	bResolution1 = false;
-	bResolution2 = false;
-	bResolution3 = true;
-	bResolution4 = false;
-	bResolution5 = false;
-	bResolution6 = false;
-	bResolution7 = false;
-	bResolution8 = false;
-
-	UpdateButtonSlate();
-}
-
-void UGraphicsOption::OnHoveredResolution3Button()
-{
-	if (IsValid(ButtonMoveSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
-	}
+	// 현재 위젯의 모드가 해상도 설정 모드인 경우에만 작동하도록 설정함.
 	if (CurrentMode == GraphicsType::Resolution)
 	{
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonClickSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		}
+		
+		// 화면 해상도는 1600x900임.
+		int32 x = 1600, y = 900;
+
+		// 유저 설정 파일에 해상도를 저장하고, 게임에 적용함.
+		if (UserSetting)
+		{
+			UserSetting->SetScreenResolution(FIntPoint(x, y));
+			UserSetting->ApplyResolutionSettings(true);
+			UserSetting->SaveSettings();
+		}
+		/*bResolution1 = false;
+		bResolution2 = false;
+		bResolution3 = true;
+		bResolution4 = false;
+		bResolution5 = false;
+		bResolution6 = false;
+		bResolution7 = false;
+		bResolution8 = false;*/
+
+		ResolutionValue = EResolution::Resolution3;
+
+		// 버튼의 상태를 업데이트 함.
+		UpdateButtonSlate();
+	}
+}
+
+// 3번 해상도(1600x900) 버튼 위에 마우스를 올렸을 때 작동할 함수.
+void UGraphicsOption::OnHoveredResolution3Button()
+{
+	// 현재 위젯의 모드가 해상도 설정 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::Resolution)
+	{
+		// 버튼 이동 음을 재생함.
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
+		}
+
+		// 현재 세부 버튼 인덱스를 2로 설정하고, 버튼의 상태를 업데이트 함.
 		SubMenuNavIndex = 2;
 		UpdateButtonSlate();
 	}
 }
 
-void UGraphicsOption::OnUnhoveredResolution3Button()
-{
-	if (bResolution3)
-	{
-		Resolution3Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-	}
-	else
-	{
-		Resolution3Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-	}
-}
+// Deprecated
+//void UGraphicsOption::OnUnhoveredResolution3Button()
+//{
+//	if (bResolution3)
+//	{
+//		Resolution3Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+//	}
+//	else
+//	{
+//		Resolution3Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//	}
+//}
 
+// 4번 해상도(1920x1080) 버튼을 클릭했을 때 적용할 함수.
 void UGraphicsOption::OnClickResolution4Button()
 {
-	if (IsValid(ButtonClickSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
-	}
-	int32 x = 1920, y = 1080;
-
-	if (UserSetting)
-	{
-		UserSetting->SetScreenResolution(FIntPoint(x, y));
-		UserSetting->ApplyResolutionSettings(true);
-		UserSetting->SaveSettings();
-	}
-
-	bResolution1 = false;
-	bResolution2 = false;
-	bResolution3 = false;
-	bResolution4 = true;
-	bResolution5 = false;
-	bResolution6 = false;
-	bResolution7 = false;
-	bResolution8 = false;
-
-	UpdateButtonSlate();
-}
-
-void UGraphicsOption::OnHoveredResolution4Button()
-{
-	if (IsValid(ButtonMoveSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
-	}
+	// 현재 위젯의 모드가 해상도 설정 모드인 경우에만 작동하도록 설정함.
 	if (CurrentMode == GraphicsType::Resolution)
 	{
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonClickSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		}
+
+		// 화면 해상도는 1920x1080임.
+		int32 x = 1920, y = 1080;
+
+		// 유저 설정 파일에 해상도를 저장하고, 게임에 적용함.
+		if (UserSetting)
+		{
+			UserSetting->SetScreenResolution(FIntPoint(x, y));
+			UserSetting->ApplyResolutionSettings(true);
+			UserSetting->SaveSettings();
+		}
+
+		/*bResolution1 = false;
+		bResolution2 = false;
+		bResolution3 = false;
+		bResolution4 = true;
+		bResolution5 = false;
+		bResolution6 = false;
+		bResolution7 = false;
+		bResolution8 = false;*/
+
+		ResolutionValue = EResolution::Resolution4;
+
+		// 버튼의 상태를 업데이트 함.
+		UpdateButtonSlate();
+	}
+}
+
+// 4번 해상도(1920x1080) 버튼 위에 마우스를 올렸을 때 작동할 함수.
+void UGraphicsOption::OnHoveredResolution4Button()
+{
+	// 현재 위젯의 모드가 해상도 설정 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::Resolution)
+	{
+		// 버튼 이동 음을 재생함.
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
+		}
+
+		// 세부 버튼 인덱스를 3으로 설정하고, 버튼의 상태를 업데이트 함.
 		SubMenuNavIndex = 3;
 		UpdateButtonSlate();
 	}
 }
 
-void UGraphicsOption::OnUnhoveredResolution4Button()
-{
-	if (bResolution4)
-	{
-		Resolution4Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-	}
-	else
-	{
-		Resolution4Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-	}
-}
+// Deprecated
+//void UGraphicsOption::OnUnhoveredResolution4Button()
+//{
+//	if (bResolution4)
+//	{
+//		Resolution4Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+//	}
+//	else
+//	{
+//		Resolution4Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//	}
+//}
 
+// 5번 해상도(1280x800) 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickResolution5Button()
 {
-	if (IsValid(ButtonClickSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
-	}
-	int32 x = 1280, y = 800;
-
-	if (UserSetting)
-	{
-		UserSetting->SetScreenResolution(FIntPoint(x, y));
-		UserSetting->ApplyResolutionSettings(true);
-		UserSetting->SaveSettings();
-	}
-
-	bResolution1 = false;
-	bResolution2 = false;
-	bResolution3 = false;
-	bResolution4 = false;
-	bResolution5 = true;
-	bResolution6 = false;
-	bResolution7 = false;
-	bResolution8 = false;
-
-	UpdateButtonSlate();
-}
-
-void UGraphicsOption::OnHoveredResolution5Button()
-{
-	if (IsValid(ButtonMoveSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
-	}
+	// 현재 위젯의 모드가 해상도 설정 모드인 경우에만 작동하도록 설정함.
 	if (CurrentMode == GraphicsType::Resolution)
 	{
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonClickSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		}
+
+		// 화면 해상도는 1280x800임.
+		int32 x = 1280, y = 800;
+
+		// 유저 설정 파일에 해상도를 저장하고 게임에 적용함.
+		if (UserSetting)
+		{
+			UserSetting->SetScreenResolution(FIntPoint(x, y));
+			UserSetting->ApplyResolutionSettings(true);
+			UserSetting->SaveSettings();
+		}
+
+		/*bResolution1 = false;
+		bResolution2 = false;
+		bResolution3 = false;
+		bResolution4 = false;
+		bResolution5 = true;
+		bResolution6 = false;
+		bResolution7 = false;
+		bResolution8 = false;*/
+
+		ResolutionValue = EResolution::Resolution5;
+
+		// 버튼의 상태를 업데이트함.
+		UpdateButtonSlate();
+	}
+}
+
+// 5번 해상도(1280x800) 버튼 위에 마우스를 올렸을 때 작동할 함수.
+void UGraphicsOption::OnHoveredResolution5Button()
+{
+	// 현재 위젯의 모드가 해상도 설정 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::Resolution)
+	{
+		// 버튼 이동 음을 재생함.
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
+		}
+
+		// 현재 세부 버튼 인덱스를 4로 설정하고, 버튼의 상태를 업데이트 함.
 		SubMenuNavIndex = 4;
 		UpdateButtonSlate();
 	}
 }
 
-void UGraphicsOption::OnUnhoveredResolution5Button()
-{
-	if (bResolution5)
-	{
-		Resolution5Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-	}
-	else
-	{
-		Resolution5Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-	}
-}
+// Deprecated
+//void UGraphicsOption::OnUnhoveredResolution5Button()
+//{
+//	if (bResolution5)
+//	{
+//		Resolution5Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+//	}
+//	else
+//	{
+//		Resolution5Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//	}
+//}
 
+// 6번 해상도(1920x1200) 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickResolution6Button()
 {
-	if (IsValid(ButtonClickSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
-	}
-	int32 x = 1920, y = 1200;
-
-	if (UserSetting)
-	{
-		UserSetting->SetScreenResolution(FIntPoint(x, y));
-		UserSetting->ApplyResolutionSettings(true);
-		UserSetting->SaveSettings();
-	}
-
-	bResolution1 = false;
-	bResolution2 = false;
-	bResolution3 = false;
-	bResolution4 = false;
-	bResolution5 = false;
-	bResolution6 = true;
-	bResolution7 = false;
-	bResolution8 = false;
-
-	UpdateButtonSlate();
-}
-
-void UGraphicsOption::OnHoveredResolution6Button()
-{
-	if (IsValid(ButtonMoveSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
-	}
+	// 현재 위젯의 모드가 해상도 설정 모드인 경우에만 작동하도록 설정함.
 	if (CurrentMode == GraphicsType::Resolution)
 	{
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonClickSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		}
+
+		// 화면 해상도는 1920x1200임.
+		int32 x = 1920, y = 1200;
+
+		// 유저 설정 파일에 해상도를 저장하고, 게임에 적용함.
+		if (UserSetting)
+		{
+			UserSetting->SetScreenResolution(FIntPoint(x, y));
+			UserSetting->ApplyResolutionSettings(true);
+			UserSetting->SaveSettings();
+		}
+
+		/*bResolution1 = false;
+		bResolution2 = false;
+		bResolution3 = false;
+		bResolution4 = false;
+		bResolution5 = false;
+		bResolution6 = true;
+		bResolution7 = false;
+		bResolution8 = false;*/
+
+		ResolutionValue = EResolution::Resolution6;
+
+		// 버튼의 상태를 업데이트 함.
+		UpdateButtonSlate();
+	}
+}
+
+// 6번 해상도(1920x1200) 버튼 위에 마우스를 올렸을 때 작동할 함수.
+void UGraphicsOption::OnHoveredResolution6Button()
+{
+	// 현재 위젯의 모드가 해상도 설정 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::Resolution)
+	{
+		// 버튼 이동 음을 재생함.
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
+		}
+
+		// 현재 세부 버튼 인덱스를 5로 설정하고, 버튼의 상태를 업데이트 함.
 		SubMenuNavIndex = 5;
 		UpdateButtonSlate();
 	}
 }
 
-void UGraphicsOption::OnUnhoveredResolution6Button()
-{
-	if (bResolution6)
-	{
-		Resolution6Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-	}
-	else
-	{
-		Resolution6Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-	}
-}
+// Deprecated
+//void UGraphicsOption::OnUnhoveredResolution6Button()
+//{
+//	if (bResolution6)
+//	{
+//		Resolution6Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+//	}
+//	else
+//	{
+//		Resolution6Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//	}
+//}
 
+// 7번 해상도(2560x1080) 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickResolution7Button()
 {
-	if (IsValid(ButtonClickSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
-	}
-	int32 x = 2560, y = 1080;
-
-	if (UserSetting)
-	{
-		UserSetting->SetScreenResolution(FIntPoint(x, y));
-		UserSetting->ApplyResolutionSettings(true);
-		UserSetting->SaveSettings();
-	}
-
-	bResolution1 = false;
-	bResolution2 = false;
-	bResolution3 = false;
-	bResolution4 = false;
-	bResolution5 = false;
-	bResolution6 = false;
-	bResolution7 = true;
-	bResolution8 = false;
-
-	UpdateButtonSlate();
-}
-
-void UGraphicsOption::OnHoveredResolution7Button()
-{
-	if (IsValid(ButtonMoveSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
-	}
+	// 현재 위젯의 모드가 해상도 설정 모드인 경우에만 작동하도록 설정함.
 	if (CurrentMode == GraphicsType::Resolution)
 	{
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonClickSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		}
+
+		// 화면 해상도는 2560x1080임.
+		int32 x = 2560, y = 1080;
+
+		// 유저 세팅 파일에 해상도를 저장하고 게임에 적용함.
+		if (UserSetting)
+		{
+			UserSetting->SetScreenResolution(FIntPoint(x, y));
+			UserSetting->ApplyResolutionSettings(true);
+			UserSetting->SaveSettings();
+		}
+
+		/*bResolution1 = false;
+		bResolution2 = false;
+		bResolution3 = false;
+		bResolution4 = false;
+		bResolution5 = false;
+		bResolution6 = false;
+		bResolution7 = true;
+		bResolution8 = false;*/
+
+		ResolutionValue = EResolution::Resolution7;
+
+		// 버튼의 상태를 업데이트 함.
+		UpdateButtonSlate();
+	}
+}
+
+// 7번 해상도(2560x1080) 버튼 위에 마우스를 올렸을 때 작동할 함수.
+void UGraphicsOption::OnHoveredResolution7Button()
+{
+	// 현재 위젯의 모드가 해상도 설정 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::Resolution)
+	{
+		// 버튼 이동 음을 재생함.
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
+		}
+
+		// 현재 세부 버튼 인덱스를 6으로 설정하고, 버튼의 상태를 업데이트 함.
 		SubMenuNavIndex = 6;
 		UpdateButtonSlate();
 	}
 }
 
-void UGraphicsOption::OnUnhoveredResolution7Button()
-{
-	if (bResolution7)
-	{
-		Resolution7Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-	}
-	else
-	{
-		Resolution7Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-	}
-}
+// Deprecated
+//void UGraphicsOption::OnUnhoveredResolution7Button()
+//{
+//	if (bResolution7)
+//	{
+//		Resolution7Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+//	}
+//	else
+//	{
+//		Resolution7Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//	}
+//}
 
+// 8번 해상도(3440x1440) 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickResolution8Button()
 {
-	if (IsValid(ButtonClickSound))
+	// 현재 위젯의 모드가 최초 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::None)
 	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonClickSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		}
+
+		// 화면 해상도는 3440x1440임.
+		int32 x = 3440, y = 1440;
+
+		// 유저 설정 파일에 해상도를 저장하고 게임에 적용함.
+		if (UserSetting)
+		{
+			UserSetting->SetScreenResolution(FIntPoint(x, y));
+			UserSetting->ApplyResolutionSettings(true);
+			UserSetting->SaveSettings();
+		}
+
+		/*bResolution1 = false;
+		bResolution2 = false;
+		bResolution3 = false;
+		bResolution4 = false;
+		bResolution5 = false;
+		bResolution6 = false;
+		bResolution7 = false;
+		bResolution8 = true;*/
+
+		ResolutionValue = EResolution::Resolution8;
+
+		// 버튼의 상태를 업데이트 함.
+		UpdateButtonSlate();
 	}
-	int32 x = 3440, y = 1440;
-
-	if (UserSetting)
-	{
-		UserSetting->SetScreenResolution(FIntPoint(x, y));
-		UserSetting->ApplyResolutionSettings(true);
-		UserSetting->SaveSettings();
-	}
-
-	bResolution1 = false;
-	bResolution2 = false;
-	bResolution3 = false;
-	bResolution4 = false;
-	bResolution5 = false;
-	bResolution6 = false;
-	bResolution7 = false;
-	bResolution8 = true;
-
-	UpdateButtonSlate();
 }
 
+// 8번 해상도(3440x1440) 버튼 위에 마우스를 올릴 때 작동할 함수.
 void UGraphicsOption::OnHoveredResolution8Button()
 {
-	if (IsValid(ButtonMoveSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
-	}
+	// 현재 위젯의 모드가 해상도 설정 모드인 경우에만 작동하도록 설정함.
 	if (CurrentMode == GraphicsType::Resolution)
 	{
+		// 버튼 이동 음을 재생함.
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
+		}
+
+		// 현재 세부 버튼 인덱스를 7로 설정하고, 버튼의 상태를 업데이트 함.
 		SubMenuNavIndex = 7;
 		UpdateButtonSlate();
 	}
 }
 
-void UGraphicsOption::OnUnhoveredResolution8Button()
-{
-	if (bResolution8)
-	{
-		Resolution8Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-	}
-	else
-	{
-		Resolution8Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-	}
-}
+// Deprecated
+//void UGraphicsOption::OnUnhoveredResolution8Button()
+//{
+//	if (bResolution8)
+//	{
+//		Resolution8Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+//	}
+//	else
+//	{
+//		Resolution8Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//	}
+//}
 
 // DEPRECATED
 //void UGraphicsOption::OnClickResolution9Button()
@@ -911,11 +1181,11 @@ void UGraphicsOption::OnUnhoveredResolution8Button()
 //{
 //	if (bResolution9)
 //	{
-//		Resolution9Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+//		Resolution9Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
 //	}
 //	else
 //	{
-//		Resolution9Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//		Resolution9Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 //	}
 //}
 //
@@ -945,54 +1215,70 @@ void UGraphicsOption::OnUnhoveredResolution8Button()
 //{
 //	if (bResolution10)
 //	{
-//		Resolution10Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+//		Resolution10Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
 //	}
 //	else
 //	{
-//		Resolution10Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//		Resolution10Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 //	}
 //}
 
+// 창모드 설정 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickWindowedButton()
 {
-	if (IsValid(ButtonClickSound))
+	// 현재 위젯의 모드가 화면 설정 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::ScreenSetting)
 	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonClickSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		}
+
+		// 유저 설정 파일에 창모드 설정을 저장하고 게임에 적용함.
+		if (UserSetting)
+		{
+			UserSetting->SetFullscreenMode(EWindowMode::Windowed);
+			UserSetting->ApplySettings(true);
+		}
+		bWindowed = true;
+		bFullScreen = false;
+
+		// 버튼의 상태를 업데이트 함.
+		UpdateButtonSlate();
 	}
-	if (UserSetting)
-	{
-		UserSetting->SetFullscreenMode(EWindowMode::Windowed);
-		UserSetting->ApplySettings(false);
-	}
-	bWindowed = true;
-	bFullScreen = false;
-	UpdateButtonSlate();
 }
 
+// 창모드 설정 버튼 위에 마우스를 올렸을 때 작동할 함수.
 void UGraphicsOption::OnHoveredWindowedButton()
 {
-	if (IsValid(ButtonMoveSound))
+	// 현재 위젯의 모드가 화면 설정 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::ScreenSetting)
 	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
-	}
-	if (CurrentMode == GraphicsType::Window)
-	{
+		// 버튼 이동 음을 재생함.
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
+		}
+
+		// 세부 버튼 인덱스를 0으로 설정하고, 버튼의 상태를 업데이트 함.
 		SubMenuNavIndex = 0;
 		UpdateButtonSlate();
 	}
 }
 
-void UGraphicsOption::OnUnhoveredWindowedButton()
-{
-	if (bWindowed)
-	{
-		WindowBtn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-	}
-	else
-	{
-		WindowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-	}
-}
+// Deprecated
+//void UGraphicsOption::OnUnhoveredWindowedButton()
+//{
+//	if (bWindowed)
+//	{
+//		WindowButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+//	}
+//	else
+//	{
+//		WindowButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//	}
+//}
 
 // DEPRECATED
 //void UGraphicsOption::OnClickWinFullButton()
@@ -1017,85 +1303,104 @@ void UGraphicsOption::OnUnhoveredWindowedButton()
 //{
 //	if (bWinFull)
 //	{
-//		WinFullBtn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+//		WinFullButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
 //	}
 //	else
 //	{
-//		WinFullBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//		WinFullButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 //	}
 //}
 
+// 전체 화면 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickFullScreenButton()
 {
-	if (IsValid(ButtonClickSound))
+	// 현재 위젯의 모드가 화면 설정 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::ScreenSetting)
 	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
-	}
-	if (UserSetting)
-	{
-		UserSetting->SetFullscreenMode(EWindowMode::WindowedFullscreen);
-		UserSetting->ApplySettings(true);
-		UserSetting->SaveSettings();
-	}
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonClickSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		}
 
-	bWindowed = false;
-	bFullScreen = true;
-	UpdateButtonSlate();
-}
+		// 유저 설정 파일에 전체화면 모드를 저장하고, 게임에 적용함.
+		if (UserSetting)
+		{
+			UserSetting->SetFullscreenMode(EWindowMode::Fullscreen);
+			UserSetting->ApplySettings(true);
+			UserSetting->SaveSettings();
+		}
 
-void UGraphicsOption::OnHoveredFullScreenButton()
-{
-	if (IsValid(ButtonMoveSound))
-	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
-	}
-	if (CurrentMode == GraphicsType::Window)
-	{
-		SubMenuNavIndex = 2;
+		bWindowed = false;
+		bFullScreen = true;
+		
+		// 버튼의 상태를 업데이트 함.
 		UpdateButtonSlate();
 	}
 }
 
-void UGraphicsOption::OnUnhoveredFullScreenButton()
+// 전체화면 버튼 위에 마우스를 올렸을 때 작동할 함수.
+void UGraphicsOption::OnHoveredFullScreenButton()
 {
-	if (bFullScreen)
+	// 현재 위젯의 모드가 화면 설정 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::ScreenSetting)
 	{
-		FullScreenBtn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-	}
-	else
-	{
-		FullScreenBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
+		}
+
+		// 현재 세부 버튼 인덱스를 1로 설정하고, 버튼의 상태를 업데이트 함.
+		SubMenuNavIndex = 1;
+		UpdateButtonSlate();
 	}
 }
 
+// Deprecated
+//void UGraphicsOption::OnUnhoveredFullScreenButton()
+//{
+//	if (bFullScreen)
+//	{
+//		FullScreenButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+//	}
+//	else
+//	{
+//		FullScreenButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//	}
+//}
+
+// 밝기를 설정하는 함수.
 void UGraphicsOption::SetBrightness(float Value)
 {
+	// 버튼 클릭 음을 재생함.
 	if (IsValid(ButtonClickSound))
 	{
 		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
 	}
+
+	// 밝기를 0.1만큼 더하거나 뺌.
 	Brightness += Value;
-	/*if (Brightness <= 0.5f)
-	{
-		Brightness = 0.5f;
-	}
-	if (Brightness >= 5.0f)
-	{
-		Brightness = 5.0f;
-	}*/
+	
+	// 밝기는 0에서 5 사이의 값을 가지도록 범위를 제한함.
 	Brightness = FMath::Clamp(Brightness, 0.f, 5.f);
 
+	// 밝기 바는 0에서 1 사이의 값을 가지기 때문에 5로 나눔.
 	BrightBar->SetPercent(Brightness / 5.f);
-	//BrightBar->SetPercent((Brightness - 0.5f) / 4.5f);
 
+	// 밝기 설정 커맨드
 	FString CVarGamma = TEXT("gamma ") + FString::Printf(TEXT("%f"), Brightness);
 
+	// 게임 인스턴스 클래스를 가져옴.
 	if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
 	{
+		// 설정한 밝기 값을 세이브 데이터에 영구히 저장함.
 		bool Result = GameInstance->BrightGammaSaveLogic(Brightness);
+		
+		// 저장에 성공하면, 게임에 적용함.
 		if (Result)
 		{
-			UGameplayStatics::GetActorOfClass(GetWorld(), APostProcessVolume::StaticClass());
+			// UGameplayStatics::GetActorOfClass(GetWorld(), APostProcessVolume::StaticClass());
 			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 			if (PlayerController)
 			{
@@ -1103,523 +1408,686 @@ void UGraphicsOption::SetBrightness(float Value)
 			}
 			else
 			{
-		//		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("No Player Controller!")));
+				UE_LOG(LogTemp, Warning, TEXT("No Player Controller!"));
 			}
-			//GetWorld()->Exec(GetWorld(), *CVarGamma);
 		}
+		// 저장에 실패할 경우 로직
 		else
 		{
-		//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Red, FString::Printf(TEXT("Error to save Brightness settings")));
+			UE_LOG(LogTemp, Warning, TEXT("Error to save Brightness settings"));
 		}
 	}
 
 }
 
+// 뒤로 가기 버튼을 클릭할 때 작동할 함수.
 void UGraphicsOption::OnClickBackButton()
 {
-	if (IsValid(ButtonMoveSound))
+	// 현재 위젯의 모드가 최초 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::None)
 	{
-		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		// 버튼 클릭 음을 재생함.
+		if (IsValid(ButtonMoveSound))
+		{
+			UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
+		}
+
+		// 애니메이션을 재생함.
+		PlayAnimation(BackOptionAnim);
 	}
-	PlayAnimation(BackOptionAnim);
 }
 
+// 뒤로 가기 버튼 위에 마우스를 올렸을 때 작동할 함수.
 void UGraphicsOption::OnHoveredBackButton()
 {
-	if (CurrentMode == GraphicsType::None) // 현재 아무 것도 선택되지 않은 상태일 때만
+	// 현재 위젯의 모드가 최초 모드인 경우에만 작동하도록 설정함.
+	if (CurrentMode == GraphicsType::None)
 	{
+		// 버튼 이동 음을 재생함.
 		if (IsValid(ButtonMoveSound))
 		{
 			UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
 		}
+
+		// 현재 버튼 인덱스를 6으로 설정하고 버튼의 상태를 업데이트 함.
 		MenuNavIndex = 6;
 		UpdateButtonSlate();
-		BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 	}
 }
 
-void UGraphicsOption::OnUnhoveredBackButton()
-{
-	BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-}
+// Deprecated
+//void UGraphicsOption::OnUnhoveredBackButton()
+//{
+//	BackButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+//}
 
+// 버튼의 상태를 업데이트하는 함수.
 void UGraphicsOption::UpdateButtonSlate()
 {
+	// 현재 위젯의 모드가 최초 모드인 경우
 	if (CurrentMode == GraphicsType::None)
 	{
 		switch (MenuNavIndex)
 		{
-		case 0:
-			Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-			WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			ShadowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			MotionBlurBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			break;
-		case 1:
-			Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-			BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			ShadowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			MotionBlurBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			break;
-		case 2:
-			Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			ShadowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			MotionBlurBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			break;
-		case 3:
-			Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-			ShadowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			MotionBlurBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			break;
-		case 4:
-			Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			ShadowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-			MotionBlurBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			break;
-		case 5:
-			Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			ShadowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			MotionBlurBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			break;
-		case 6:
-			Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			AntiAliasingBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			ShadowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			MotionBlurBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-			BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-			break;
+			// 현재 버튼 인덱스가 0이면 해상도 설정 버튼만 흰색으로 설정함.
+			case 0:
+			{
+				ResolutionButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+				ScreenSettingButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				AntiAliasingButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				ShadowButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				MotionBlurButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				BackButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				return;
+			}
+			// 현재 버튼 인덱스가 1이면 화면 설정 버튼만 흰색으로 설정함.
+			case 1:
+			{
+				ResolutionButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				ScreenSettingButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+				BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				AntiAliasingButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				ShadowButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				MotionBlurButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				BackButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				return;
+			}
+			// 현재 버튼 인덱스가 2이면 밝기 설정 버튼만 흰색으로 설정함.
+			case 2:
+			{
+				ResolutionButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				ScreenSettingButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+				AntiAliasingButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				ShadowButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				MotionBlurButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				BackButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				return;
+			}
+			// 현재 버튼 인덱스가 3이면 안티 앨리어싱 설정 버튼만 흰색으로 설정함.
+			case 3:
+			{
+				ResolutionButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				ScreenSettingButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				AntiAliasingButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+				ShadowButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				MotionBlurButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				BackButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				return;
+			}
+			// 현재 버튼 인덱스가 4이면 그림자 설정 버튼만 흰색으로 설정함.
+			case 4:
+			{
+				ResolutionButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				ScreenSettingButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				AntiAliasingButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				ShadowButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+				MotionBlurButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				BackButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				return;
+			}
+			// 현재 버튼 인덱스가 5이면 모션 블러 설정 버튼만 흰색으로 설정함.
+			case 5:
+			{
+				ResolutionButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				ScreenSettingButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				AntiAliasingButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				ShadowButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				MotionBlurButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+				BackButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				return;
+			}
+			// 현재 버튼 인덱스가 6이면 뒤로 가기 버튼만 흰색으로 설정함.
+			case 6:
+			{
+				ResolutionButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				ScreenSettingButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				AntiAliasingButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				ShadowButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				MotionBlurButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+				BackButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+				return;
+			}
 		}
 	}
+	// 최초 모드가 아닐 경우, 모든 버튼의 색을 회색으로 설정함.
 	else
 	{
-		Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-		WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		ResolutionButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		ScreenSettingButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 		BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-		AntiAliasingBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-		ShadowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-		MotionBlurBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-		BackBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		AntiAliasingButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		ShadowButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		MotionBlurButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+		BackButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 	}
 	
+	// 현재 위젯의 모드가 해상도 설정 모드인 경우
 	if (CurrentMode == GraphicsType::Resolution)
 	{
-		SelectResolutionMode(bResolution1, bResolution2, bResolution3, bResolution4, bResolution5,
-			bResolution6, bResolution7, bResolution8, SubMenuNavIndex);
+		// 해당 함수에서 버튼을 업데이트 함.
+		SelectResolutionMode(ResolutionValue, SubMenuNavIndex);
 	}
+	// 해상도 설정 모드가 아닐 경우
 	else
 	{
-		SelectResolutionMode(bResolution1, bResolution2, bResolution3, bResolution4, bResolution5,
-			bResolution6, bResolution7, bResolution8, -1);
+		// 해당 함수에서 버튼을 업데이트 하되, 인덱스가 -1인 상태로 업데이트 함.
+		SelectResolutionMode(ResolutionValue, -1);
 	}
 	
-	if (CurrentMode == GraphicsType::Window)
+	// 현재 위젯의 모드가 화면 설정 모드인 경우
+	if (CurrentMode == GraphicsType::ScreenSetting)
 	{
+		// 해당 함수에서 버튼을 업데이트 함.
 		SelectWindowMode(bWindowed, bFullScreen, SubMenuNavIndex);
 	}
+	// 화면 설정 모드가 아닌 경우
 	else
 	{
+		// 해당 함수에서 버튼을 업데이트 하되, 인덱스가 -1인 상태로 업데이트 함.
 		SelectWindowMode(bWindowed, bFullScreen, -1);
 	}
 }
 
+// 창모드 설정 값에 따라 버튼의 상태를 업데이트하는 함수
 void UGraphicsOption::SelectWindowMode(bool bWindowedMode, bool bFullScreenMode, int32 CurrentIndex)
 {
+	// 창모드 상태인 경우
 	if (bWindowedMode)
 	{
+		// 현재 세부 버튼 인덱스가 0일 때 창모드 버튼만 붉게 설정함.
 		if (CurrentIndex == 0)
 		{
-			WindowBtn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+			WindowButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
 		}
+		// 세부 버튼 인덱스가 0이 아닐 때, 붉지만 희미하게 설정함.
 		else
 		{
-			WindowBtn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+			WindowButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
 		}
 	}
+	// 창모드 상태가 아닌 경우
 	else
 	{
+		// 현재 세부 버튼 인덱스가 0일 때 창모드 버튼만 흰색으로 설정함.
 		if (CurrentIndex == 0)
 		{
-			WindowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			WindowButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 		}
+		// 세부 버튼 인덱스가 0이 아닐 때, 흰색이지만 희미하게 설정함.
 		else
 		{
-			WindowBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			WindowButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 		}
 	}
 
+	// 전체화면 상태인 경우
 	if (bFullScreenMode)
 	{
+		// 세부 버튼 인덱스가 1일 때, 전체화면 버튼만 붉지만 희미하게 설정함.
 		if (CurrentIndex == 1)
 		{
-			FullScreenBtn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+			FullScreenButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
 		}
+		// 세부 버튼 인덱스가 1이 아닐 때, 붉지만 희미하게 설정함.
 		else
 		{
-			FullScreenBtn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+			FullScreenButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
 		}
 	}
+	// 전체화면 상태가 아닌 경우
 	else
 	{
+		// 세부 버튼 인덱스가 1이 아닐 때, 전체화면 버튼만 흰색으로 설정함.
 		if (CurrentIndex == 1)
 		{
-			FullScreenBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			FullScreenButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 		}
+		// 세부 버튼 인덱스가 1이 아닐 때, 흰색이지만 희미하게 설정함.
 		else
 		{
-			FullScreenBtn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			FullScreenButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 		}
 	}
 }
 
-void UGraphicsOption::SelectResolutionMode(bool bResolution1Mode, bool bResolution2Mode, bool bResolution3Mode, bool bResolution4Mode,
-	bool bResolution5Mode, bool bResolution6Mode, bool bResolution7Mode, bool bResolution8Mode, int32 CurrentIndex)
+//void UGraphicsOption::SelectResolutionMode(bool bResolution1Mode, bool bResolution2Mode, bool bResolution3Mode, bool bResolution4Mode,
+//	bool bResolution5Mode, bool bResolution6Mode, bool bResolution7Mode, bool bResolution8Mode, int32 CurrentIndex)
+// 해상도 설정 값에 따라 버튼의 상태를 업데이트하는 함수.
+void UGraphicsOption::SelectResolutionMode(EResolution inResolutionValue, int32 CurrentIndex)
 {
-	if (bResolution1Mode)
+	// 현재 해상도 설정 값이 1번 해상도 값이면
+	if (inResolutionValue == EResolution::Resolution1)
 	{
+		// 현재 세부 버튼 인덱스가 0일 때, 1번 해상도 버튼만 붉은 색으로 설정함.
 		if (CurrentIndex == 0)
 		{
-			Resolution1Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+			Resolution1Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
 		}
+		// 현재 세부 버튼 인덱스가 0이 아닐 때, 붉지만 희미하게 설정함.
 		else
 		{
-			Resolution1Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+			Resolution1Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
 		}
 	}
+	// 해상도 설정 값이 1번 해상도 값이 아니면
 	else
 	{
+		// 현재 세부 버튼 인덱스가 0일 때, 1번 해상도 버튼만 흰색으로 설정함.
 		if (CurrentIndex == 0)
 		{
-			Resolution1Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			Resolution1Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 		}
+		// 현재 세부 버튼 인덱스가 0이 아닐 때, 흰색이지만 희미하게 설정함.
 		else
 		{
-			Resolution1Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			Resolution1Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 		}
 	}
 
-	if (bResolution2Mode)
+	// 현재 해상도 설정 값이 2번 해상도 값이면
+	if (inResolutionValue == EResolution::Resolution2)
 	{
+		// 현재 세부 버튼 인덱스가 1일 때, 2번 해상도 버튼만 붉은 색으로 설정함.
 		if (CurrentIndex == 1)
 		{
-			Resolution2Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+			Resolution2Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
 		}
+		// 현재 세부 버튼 인덱스가 1이 아닐 때, 붉지만 희미하게 설정함.
 		else
 		{
-			Resolution2Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+			Resolution2Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
 		}
 	}
+	// 해상도 설정 값이 2번 해상도 값이 아니면
 	else
 	{
+		// 현재 세부 버튼 인덱스가 1일 때, 2번 해상도 버튼만 흰색으로 설정함.
 		if (CurrentIndex == 1)
 		{
-			Resolution2Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			Resolution2Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 		}
+		// 현재 세부 버튼 인덱스가 1이 아닐 때, 흰색이지만 희미하게 설정함.
 		else
 		{
-			Resolution2Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			Resolution2Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 		}
 	}
 
-	if (bResolution3Mode)
+	// 현재 해상도 설정 값이 3번 해상도 값이면
+	if (inResolutionValue == EResolution::Resolution3)
 	{
+		// 현재 세부 버튼 인덱스가 2일 때, 3번 해상도 버튼만 붉은 색으로 설정함.
 		if (CurrentIndex == 2)
 		{
-			Resolution3Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+			Resolution3Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
 		}
+		// 현재 세부 버튼 인덱스가 2가 아닐 때, 붉지만 희미하게 설정함.
 		else
 		{
-			Resolution3Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+			Resolution3Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
 		}
 	}
+	// 해상도 설정 값이 3번 해상도 값이 아니면
 	else
 	{
+		// 현재 세부 버튼 인덱스가 2일 때, 3번 해상도 버튼만 흰색으로 설정함.
 		if (CurrentIndex == 2)
 		{
-			Resolution3Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			Resolution3Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 		}
+		// 현재 세부 버튼 인덱스가 2가 아닐 때, 흰색이지만 희미하게 설정함.
 		else
 		{
-			Resolution3Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			Resolution3Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 		}
 	}
 
-	if (bResolution4Mode)
+	// 현재 해상도 설정 값이 4번 해상도 값이면
+	if (inResolutionValue == EResolution::Resolution4)
 	{
+		// 현재 세부 버튼 인덱스가 3일 때, 4번 해상도 버튼만 붉은 색으로 설정함.
 		if (CurrentIndex == 3)
 		{
-			Resolution4Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+			Resolution4Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
 		}
+		// 현재 세부 버튼 인덱스가 3이 아닐 때, 붉지만 희미하게 설정함.
 		else
 		{
-			Resolution4Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+			Resolution4Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
 		}
 	}
+	// 해상도 설정 값이 4번 해상도 값이 아니면
 	else
 	{
+		// 현재 세부 버튼 인덱스가 3일 때, 4번 해상도 버튼만 흰색으로 설정함.
 		if (CurrentIndex == 3)
 		{
-			Resolution4Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			Resolution4Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 		}
+		// 현재 세부 버튼 인덱스가 3이 아닐 때, 흰색이지만 희미하게 설정함.
 		else
 		{
-			Resolution4Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			Resolution4Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 		}
 	}
 
-	if (bResolution5Mode)
+	// 현재 해상도 설정 값이 5번 해상도 값이면
+	if (inResolutionValue == EResolution::Resolution5)
 	{
+		// 현재 세부 버튼 인덱스가 4일 때, 5번 해상도 버튼만 붉은 색으로 설정함.
 		if (CurrentIndex == 4)
 		{
-			Resolution5Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+			Resolution5Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
 		}
+		// 현재 세부 버튼 인덱스가 4가 아닐 때, 붉지만 희미하게 설정함.
 		else
 		{
-			Resolution5Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+			Resolution5Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
 		}
 	}
+	// 해상도 설정 값이 5번 해상도 값이 아니면
 	else
 	{
+		// 현재 세부 버튼 인덱스가 4일 때, 5번 해상도 버튼만 흰색으로 설정함.
 		if (CurrentIndex == 4)
 		{
-			Resolution5Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			Resolution5Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 		}
+		// 현재 세부 버튼 인덱스가 4가 아닐 때, 흰색이지만 희미하게 설정함.
 		else
 		{
-			Resolution5Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			Resolution5Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 		}
 	}
 
-	if (bResolution6Mode)
+	// 현재 해상도 설정 값이 6번 해상도 값이면
+	if (inResolutionValue == EResolution::Resolution6)
 	{
+		// 현재 세부 버튼 인덱스가 5일 때, 6번 해상도 버튼만 붉은 색으로 설정함.
 		if (CurrentIndex == 5)
 		{
-			Resolution6Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+			Resolution6Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
 		}
+		// 현재 세부 버튼 인덱스가 5가 아닐 때, 붉지만 희미하게 설정함.
 		else
 		{
-			Resolution6Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+			Resolution6Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
 		}
 	}
+	// 해상도 설정 값이 6번 해상도 값이 아니면
 	else
 	{
+		// 현재 세부 버튼 인덱스가 5일 때, 6번 해상도 버튼만 흰색으로 설정함.
 		if (CurrentIndex == 5)
 		{
-			Resolution6Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			Resolution6Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 		}
+		// 현재 세부 버튼 인덱스가 5가 아닐 때, 흰색이지만 희미하게 설정함.
 		else
 		{
-			Resolution6Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			Resolution6Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 		}
 	}
 
-	if (bResolution7Mode)
+	// 현재 해상도 설정 값이 7번 해상도 값이면
+	if (inResolutionValue == EResolution::Resolution7)
 	{
+		// 현재 세부 버튼 인덱스가 6일 때, 7번 해상도 버튼만 붉은 색으로 설정함.
 		if (CurrentIndex == 6)
 		{
-			Resolution7Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+			Resolution7Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
 		}
+		// 현재 세부 버튼 인덱스가 6이 아닐 때, 붉지만 희미하게 설정함.
 		else
 		{
-			Resolution7Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+			Resolution7Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
 		}
 	}
+	// 해상도 설정 값이 7번 해상도 값이 아니면
 	else
 	{
+		// 현재 세부 버튼 인덱스가 6일 때, 7번 해상도 버튼만 흰색으로 설정함.
 		if (CurrentIndex == 6)
 		{
-			Resolution7Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			Resolution7Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 		}
+		// 현재 세부 버튼 인덱스가 6이 아닐 때, 흰색이지만 희미하게 설정함.
 		else
 		{
-			Resolution7Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			Resolution7Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 		}
 	}
 
-	if (bResolution8Mode)
+	// 현재 해상도 설정 값이 8번 해상도 값이면
+	if (inResolutionValue == EResolution::Resolution8)
 	{
+		// 현재 세부 버튼 인덱스가 7일 때, 8번 해상도 버튼만 붉은 색으로 설정함.
 		if (CurrentIndex == 7)
 		{
-			Resolution8Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
+			Resolution8Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
 		}
+		// 현재 세부 버튼 인덱스가 7이 아닐 때, 붉지만 희미하게 설정함.
 		else
 		{
-			Resolution8Btn->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
+			Resolution8Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
 		}
 	}
+	// 해상도 설정 값이 8번 해상도 값이 아니면
 	else
 	{
+		// 현재 세부 버튼 인덱스가 7일 때, 8번 해상도 버튼만 흰색으로 설정함.
 		if (CurrentIndex == 7)
 		{
-			Resolution8Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
+			Resolution8Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 		}
+		// 현재 세부 버튼 인덱스가 7이 아닐 때, 흰색이지만 희미하게 설정함.
 		else
 		{
-			Resolution8Btn->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
+			Resolution8Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
 		}
 	}
 }
 
+// 현재 위젯의 모드를 설정함.
 void UGraphicsOption::SetCurrentMode(GraphicsType ModeType)
 {
+	// 현재 모드를 설정함.
 	CurrentMode = ModeType;
+
+	// 최초 모드일 경우 버튼 최대 인덱스는 그래픽스 설정 패널의 버튼 수로 설정함.
 	if (ModeType == GraphicsType::None)
 	{
 		MenuNumber = GraphicsSettingPanel->GetChildrenCount();
 	}
+	// 해상도 설정 모드일 경우 버튼 최대 인덱스는 해상도 설정 패널의 버튼 수로 설정함.
 	else if (ModeType == GraphicsType::Resolution)
 	{
 		MenuNumber = ResolutionType->GetChildrenCount();
 	}
-	else if (ModeType == GraphicsType::Window)
+	// 화면 설정 모드일 경우 버튼 최대 인덱스는 화면 설정 패널의 버튼 수로 설정함.
+	else if (ModeType == GraphicsType::ScreenSetting)
 	{
 		MenuNumber = WindowModePanel->GetChildrenCount();
 	}
 }
 
+// 현재 해상도를 확인하는 함수.
 void UGraphicsOption::CheckCurrentResolution(const FString ForCheckResolution)
 {
-	bResolution1 = false;
+	/*bResolution1 = false;
 	bResolution2 = false;
 	bResolution3 = false;
 	bResolution4 = false;
 	bResolution5 = false;
 	bResolution6 = false;
 	bResolution7 = false;
-	bResolution8 = false;
+	bResolution8 = false;*/
 
+	// 해당하는 해상도 값에 따라 현재 해상도 값을 설정해줌.
 	if (ForCheckResolution.Equals(TEXT("854x480")))
 	{
-		bResolution1 = true;
+		ResolutionValue = EResolution::Resolution1;
 	}
 	else if (ForCheckResolution.Equals(TEXT("1366x768")))
 	{
-		bResolution2 = true;
+		ResolutionValue = EResolution::Resolution2;
 	}
 	else if (ForCheckResolution.Equals(TEXT("1600x900")))
 	{
-		bResolution3 = true;
+		ResolutionValue = EResolution::Resolution3;
 	}
 	else if (ForCheckResolution.Equals(TEXT("1920x1080")))
 	{
-		bResolution4 = true;
+		ResolutionValue = EResolution::Resolution4;
 	}
 	else if (ForCheckResolution.Equals(TEXT("1280x800")))
 	{
-		bResolution5 = true;
+		ResolutionValue = EResolution::Resolution5;
 	}
 	else if (ForCheckResolution.Equals(TEXT("1920x1200")))
 	{
-		bResolution6 = true;
+		ResolutionValue = EResolution::Resolution6;
 	}
 	else if (ForCheckResolution.Equals(TEXT("2560x1080")))
 	{
-		bResolution7 = true;
+		ResolutionValue = EResolution::Resolution7;
 	}
 	else if (ForCheckResolution.Equals(TEXT("3440x1440")))
 	{
-		bResolution8 = true;
+		ResolutionValue = EResolution::Resolution8;
 	}
 }
 
+// 애니메이션이 끝났을 때 작동할 함수.
 void UGraphicsOption::AnimationFinished()
 {
+	// 게임 모드를 가져와서 옵션 설정 위젯을 뷰포트에 출력하고 이 위젯을 제거함.
 	auto GameMode = Cast<AStartGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
 
 	GameMode->ChangeWidget(WidgetType::OptionSettingWidget);
 }
 
+// 키보드 입력을 받았을 때 수행할 함수.
 FReply UGraphicsOption::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)
 {
 	FReply reply = Super::NativeOnKeyDown(InGeometry, InKeyEvent);
 
+	// 입력받은 키 코드를 가져옴.
 	uint32 KeyNum = InKeyEvent.GetKeyCode();
-	/*if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, FString::Printf(TEXT("KeyCode: %d"), KeyNum));*/
 	FKey KeyCode = InKeyEvent.GetKey();
 	FString KeyType = KeyCode.ToString();
 
-
+	// 엔터 키인 경우
 	if (KeyType == "Enter")
 	{
+		// 현재 위젯 모드가 최초 모드인 경우
 		if (CurrentMode == GraphicsType::None)
 		{
 			switch (MenuNavIndex)
 			{
-			case 0:
-				OnClickResolutionButton();
-				break;
-			case 1:
-				OnClickWindowModeButton();
-				break;
-			case 2:
-				OnClickBrightButton();
-				break;
-			case 3:
-				OnClickAntiAliasingButton();
-				break;
-			case 4:
-				OnClickShadowButton();
-				break;
-			case 5:
-				OnClickMotionBlurButton();
-				break;
-			case 6:
-				OnClickBackButton();
-				break;
+				// 현재 버튼 인덱스가 0일 때 해상도 설정 버튼을 클릭한 효과를 줌.
+				case 0:
+				{
+					OnClickResolutionButton();
+					break;
+				}
+				// 현재 버튼 인덱스가 1일 때 화면 설정 버튼을 클릭한 효과를 줌.
+				case 1:
+				{
+					OnClickScreenSettingButton();
+					break;
+				}
+				// 현재 버튼 인덱스가 2일 때 밝기 설정 버튼을 클릭한 효과를 줌.
+				case 2:
+				{
+					OnClickBrightButton();
+					break;
+				}
+				// 현재 버튼 인덱스가 3일 때 안티 앨리어싱 설정 버튼을 클릭한 효과를 줌.
+				case 3:
+				{
+					OnClickAntiAliasingButton();
+					break;
+				}
+				// 현재 버튼 인덱스가 4일 때 그림자 설정 버튼을 클릭한 효과를 줌.
+				case 4:
+				{
+					OnClickShadowButton();
+					break;
+				}
+				// 현재 버튼 인덱스가 5일 때 모션 블러 설정 버튼을 클릭한 효과를 줌.
+				case 5:
+				{
+					OnClickMotionBlurButton();
+					break;
+				}
+				// 현재 버튼 인덱스가 6일 때 뒤로 가기 버튼을 클릭한 효과를 줌.
+				case 6:
+				{
+					OnClickBackButton();
+					break;
+				}
 			}
 		}
+		// 현재 위젯 모드가 해상도 설정 모드인 경우
 		else if (CurrentMode == GraphicsType::Resolution)
 		{
 			switch (SubMenuNavIndex)
 			{
-			case 0:
-				OnClickResolution1Button();
-				break;
-			case 1:
-				OnClickResolution2Button();
-				break;
-			case 2:
-				OnClickResolution3Button();
-				break;
-			case 3:
-				OnClickResolution4Button();
-				break;
-			case 4:
-				OnClickResolution5Button();
-				break;
-			case 5:
-				OnClickResolution6Button();
-				break;
-			case 6:
-				OnClickResolution7Button();
-				break;
-			case 7:
-				OnClickResolution8Button();
-				break;
+				// 현재 세부 버튼 인덱스가 0일 때 1번 해상도 버튼을 클릭한 효과를 줌.
+				case 0:
+				{
+					OnClickResolution1Button();
+					break;
+				}
+				// 현재 세부 버튼 인덱스가 1일 때 2번 해상도 버튼을 클릭한 효과를 줌.
+				case 1:
+				{
+					OnClickResolution2Button();
+					break;
+				}
+				// 현재 세부 버튼 인덱스가 2일 때 3번 해상도 버튼을 클릭한 효과를 줌.
+				case 2:
+				{
+					OnClickResolution3Button();
+					break;
+				}
+				// 현재 세부 버튼 인덱스가 3일 때 4번 해상도 버튼을 클릭한 효과를 줌.
+				case 3:
+				{
+					OnClickResolution4Button();
+					break;
+				}
+				// 현재 세부 버튼 인덱스가 4일 때 5번 해상도 버튼을 클릭한 효과를 줌.
+				case 4:
+				{
+					OnClickResolution5Button();
+					break;
+				}
+				// 현재 세부 버튼 인덱스가 5일 때 6번 해상도 버튼을 클릭한 효과를 줌.
+				case 5:
+				{
+					OnClickResolution6Button();
+					break;
+				}
+				// 현재 세부 버튼 인덱스가 6일 때 7번 해상도 버튼을 클릭한 효과를 줌.
+				case 6:
+				{
+					OnClickResolution7Button();
+					break;
+				}
+				// 현재 세부 버튼 인덱스가 7일 때 8번 해상도 버튼을 클릭한 효과를 줌.
+				case 7:
+				{
+					OnClickResolution8Button();
+					break;
+				}
 				/*case 8:
 					OnClickResolution9Button();
 					break;
@@ -1627,114 +2095,154 @@ FReply UGraphicsOption::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyE
 					OnClickResolution10Button();
 					break;*/
 			}
+
+			// 그 후 위젯의 모드를 최초 모드로 변경하고 버튼의 상태를 업데이트 함.
 			SetCurrentMode(GraphicsType::None);
 			UpdateButtonSlate();
 		}
-		else if (CurrentMode == GraphicsType::Window)
+		// 현재 위젯의 모드가 화면 설정 모드인 경우
+		else if (CurrentMode == GraphicsType::ScreenSetting)
 		{
 			switch (SubMenuNavIndex)
 			{
-			case 0:
-				OnClickWindowedButton();
-				break;
-				/*case 1:
-					OnClickWinFullButton();
-					break;*/
-					//case 2:
-			case 1:
-				OnClickFullScreenButton();
-				break;
+				// 현재 세부 버튼 인덱스가 0일 때 창모드 버튼을 클릭한 효과를 줌.
+				case 0:
+				{
+					OnClickWindowedButton();
+					break;
+				}
+				// 현재 세부 버튼 인덱스가 1일 때 전체화면 버튼을 클릭한 효과를 줌.
+				case 1:
+				{
+					OnClickFullScreenButton();
+					break;
+				}
 			}
+
+			// 그 후 위젯의 모드를 최초 모드로 변경하고 버튼의 상태를 업데이트 함.
 			SetCurrentMode(GraphicsType::None);
 			UpdateButtonSlate();
 		}
+		// 현재 위젯의 모드가 밝기 설정 모드인 경우
 		else if (CurrentMode == GraphicsType::Brightness)
 		{
+			// 그 후 위젯의 모드를 최초 모드로 변경하고 버튼의 상태를 업데이트 함.
 			SetCurrentMode(GraphicsType::None);
 			UpdateButtonSlate();
 		}
 	}
+	// 엔터 키가 아닌 경우
 	else
 	{
+		// 현재 위젯의 모드가 최조 모드인 경우
 		if (CurrentMode == GraphicsType::None)
 		{
+			// S 키이거나 아래 화살표 키인 경우
 			if (KeyType == "S" || KeyType == "Down")
 			{
+				// 버튼 이동 음을 재생함.
 				if (IsValid(ButtonMoveSound))
 				{
 					UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
 				}
+
+				// 버튼 인덱스를 1 증가시키고, 최대 인덱스를 넘어가면 0으로 설정함.
 				MenuNavIndex++;
 				if (MenuNavIndex >= MenuNumber)
 				{
 					MenuNavIndex = 0;
 				}
 			}
+			// W 키이거나 위 화살표 키인 경우
 			else if (KeyType == "W" || KeyType == "Up")
 			{
+				// 버튼 이동 음을 재생함.
 				if (IsValid(ButtonMoveSound))
 				{
 					UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
 				}
+
+				// 버튼 인덱스를 1 감소시키고, 0 미만일 경우, 최대 인덱스로 설정함.
 				MenuNavIndex--;
 				if (MenuNavIndex < 0)
 				{
 					MenuNavIndex = MenuNumber - 1;
 				}
 			}
+			// A 키이거나 좌측 화살표 키인 경우
 			else if (KeyType == "A" || KeyType == "Left")
 			{
+				// 버튼 이동 음을 재생함.
 				if (IsValid(ButtonMoveSound))
 				{
 					UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
 				}
+
+				// 뒤로 가기 애니메이션을 출력함.
 				PlayAnimation(BackOptionAnim);
 			}
 		}
+		// 현재 위젯의 모드가 해상도 설정 모드인 경우
 		else if (CurrentMode == GraphicsType::Resolution)
 		{
+			// S 키이거나 아래 화살표 키인 경우
 			if (KeyType == "S" || KeyType == "Down")
 			{
+				// 버튼 이동 음을 재생함.
 				if (IsValid(ButtonMoveSound))
 				{
 					UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
 				}
+
+				// 세부 버튼 인덱스를 4 증가시키고, 최대 인덱스를 넘어가면 8만큼 빼 줌.
 				SubMenuNavIndex += 4;
 				if (SubMenuNavIndex >= MenuNumber)
 				{
 					SubMenuNavIndex -= 8;
 				}
 			}
+			// W 키이거나 위 화살표 키인 경우
 			else if (KeyType == "W" || KeyType == "Up")
 			{
+				// 버튼 이동 음을 재생함.
 				if (IsValid(ButtonMoveSound))
 				{
 					UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
 				}
+
+				// 세부 버튼 인덱스를 4 감소시키고, 0 미만일 경우, 8만큼 더해 줌.
 				SubMenuNavIndex -= 4;
 				if (SubMenuNavIndex < 0)
 				{
 					SubMenuNavIndex += 8;
 				}
 			}
+			// A 키이거나 좌측 화살표 키인 경우
 			else if (KeyType == "A" || KeyType == "Left")
 			{
+				// 버튼 이동 음을 재생함.
 				if (IsValid(ButtonMoveSound))
 				{
 					UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
 				}
+				
+				// 세부 버튼 인덱스를 1 감소시키고, 0 미만일 경우, 최대 인덱스로 설정함.
 				SubMenuNavIndex--;
 				if (SubMenuNavIndex < 0)
 				{
 					SubMenuNavIndex = MenuNumber - 1;
 				}
 			}
+			// D 키이거나 우측 화살표 키인 경우
 			else if (KeyType == "D" || KeyType == "Right")
 			{
+				// 버튼 이동 음을 재생함.
 				if (IsValid(ButtonMoveSound))
 				{
 					UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
 				}
+
+				// 세부 버튼 인덱스를 1 증가시키고, 최대 인덱스를 넘어가면 0으로 설정함.
 				SubMenuNavIndex++;
 				if (SubMenuNavIndex >= MenuNumber)
 				{
@@ -1742,26 +2250,35 @@ FReply UGraphicsOption::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyE
 				}
 			}
 		}
-		else if (CurrentMode == GraphicsType::Window)
+		// 현재 위젯의 모드가 화면 설정 모드인 경우
+		else if (CurrentMode == GraphicsType::ScreenSetting)
 		{
+			// D 키이거나 우측 화살표 키인 경우
 			if (KeyType == "D" || KeyType == "Right")
 			{
+				// 버튼 이동 음을 재생함.
 				if (IsValid(ButtonMoveSound))
 				{
 					UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
 				}
+
+				// 세부 버튼 인덱스를 1 증가시키고, 최대 인덱스를 넘어가면 0으로 설정함.
 				SubMenuNavIndex++;
 				if (SubMenuNavIndex >= MenuNumber)
 				{
 					SubMenuNavIndex = 0;
 				}
 			}
+			// A 키이거나 좌측 화살표 키인 경우
 			else if (KeyType == "A" || KeyType == "Left")
 			{
+				// 버튼 이동 음을 재생함.
 				if (IsValid(ButtonMoveSound))
 				{
 					UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
 				}
+
+				// 세부 버튼 인덱스를 1 감소시키고, 0 미만일 경우, 최대 인덱스로 설정함.
 				SubMenuNavIndex--;
 				if (SubMenuNavIndex < 0)
 				{
@@ -1769,17 +2286,22 @@ FReply UGraphicsOption::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyE
 				}
 			}
 		}
+		// 현재 위젯의 모드가 밝기 설정 모드인 경우
 		else if (CurrentMode == GraphicsType::Brightness)
 		{
+			// S 키, 아래 화살표 키, A 키, 좌측 화살표 키인 경우, 밝기 값을 0.1 감소시킴.
 			if (KeyType == "S" || KeyType == "Down" || KeyType == "A" || KeyType == "Left")
 			{
 				SetBrightness(-0.1);
 			}
+			// W 키, 위 화살표 키, D 키, 우측 화살표 키인 경우, 밝기 값을 0.1 증가시킴.
 			else if (KeyType == "W" || KeyType == "Up" || KeyType == "D" || KeyType == "Right")
 			{
 				SetBrightness(0.1);
 			}
 		}
+
+		// 그 후 버튼의 상태를 업데이트 함.
 		UpdateButtonSlate();
 	}
 

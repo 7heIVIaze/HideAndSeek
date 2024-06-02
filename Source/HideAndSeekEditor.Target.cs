@@ -1,5 +1,5 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
-// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
+// CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.ㅎ
 
 using UnrealBuildTool;
 using System.Collections.Generic;

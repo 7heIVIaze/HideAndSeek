@@ -6,6 +6,7 @@
 #include "Blueprint/UserWidget.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "ComponentAction/Records.h"
 #include "GraphicsOption.generated.h"
 
 UENUM(BlueprintType)
@@ -14,7 +15,7 @@ enum class GraphicsType : uint8
 	Option UMETA(DisplayName = "Option"),
 	None UMETA(DisplayName = "None"),
 	Resolution UMETA(DisplayName = "ScreenResolution"),
-	Window UMETA(DisplayName = "WindowMode"),
+	ScreenSetting UMETA(DisplayName = "ScreenSetting"),
 	Brightness UMETA(DisplayName = "Brightness"),
 	/*AntiAliasing UMETA(DisplayName = "AntiAliasing"),
 	ShadowSetting UMETA(DisplayName = "ShadowSetting"),
@@ -36,47 +37,47 @@ protected:
 public:
 	// Main Buttons
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-		class UButton* Resolution;
+		class UButton* ResolutionButton;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-		class UButton* WindowMode;
+		class UButton* ScreenSettingButton;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 		class UButton* BrightButton;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-		class UButton* AntiAliasingBtn;
+		class UButton* AntiAliasingButton;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-		class UButton* ShadowBtn;
+		class UButton* ShadowButton;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-		class UButton* MotionBlurBtn;
+		class UButton* MotionBlurButton;
 
 	// Resolution Buttons
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-		class UButton* Resolution1Btn;
+		class UButton* Resolution1Button;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-		class UButton* Resolution2Btn;
+		class UButton* Resolution2Button;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-		class UButton* Resolution3Btn;
+		class UButton* Resolution3Button;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-		class UButton* Resolution4Btn;
+		class UButton* Resolution4Button;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-		class UButton* Resolution5Btn;
+		class UButton* Resolution5Button;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-		class UButton* Resolution6Btn;
+		class UButton* Resolution6Button;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-		class UButton* Resolution7Btn;
+		class UButton* Resolution7Button;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-		class UButton* Resolution8Btn;
+		class UButton* Resolution8Button;
 
 	/*UPROPERTY(EditAnywhere, meta = (BindWidget))
 		class UButton* Resolution9Btn;
@@ -86,13 +87,13 @@ public:
 
 		// Window Mode Buttons
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-		class UButton* WindowBtn;
+		class UButton* WindowButton;
 
 	/*UPROPERTY(EditAnywhere, meta = (BindWidget))
 		class UButton* WinFullBtn;*/
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
-		class UButton* FullScreenBtn;
+		class UButton* FullScreenButton;
 
 	// Brightness Buttons
 	UPROPERTY()
@@ -164,19 +165,22 @@ public:
 		TObjectPtr<class USoundCue> ButtonMoveSound;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UButton* BackBtn;
+		class UButton* BackButton;
+
+	UPROPERTY()
+	EResolution ResolutionValue;
 
 private:
 	bool bWindowed;
 	bool bFullScreen;
-	bool bResolution1;
+	/*bool bResolution1;
 	bool bResolution2;
 	bool bResolution3;
 	bool bResolution4;
 	bool bResolution5;
 	bool bResolution6;
 	bool bResolution7;
-	bool bResolution8;
+	bool bResolution8;*/
 
 public:
 	// Main Button Functions
@@ -186,17 +190,17 @@ public:
 	UFUNCTION()
 		void OnHoveredResolutionButton();
 
-	UFUNCTION()
-		void OnUnhoveredResolutionButton();
+	/*UFUNCTION()
+		void OnUnhoveredResolutionButton();*/
 
 	UFUNCTION()
-		void OnClickWindowModeButton();
+		void OnClickScreenSettingButton();
 
 	UFUNCTION()
-		void OnHoveredWindowModeButton();
+		void OnHoveredScreenSettingButton();
 
-	UFUNCTION()
-		void OnUnhoveredWindowModeButton();
+	//UFUNCTION()
+	//	void OnUnhoveredWindowModeButton();
 
 	UFUNCTION()
 		void OnClickBrightButton();
@@ -204,8 +208,8 @@ public:
 	UFUNCTION()
 		void OnHoveredBrightButton();
 
-	UFUNCTION()
-		void OnUnhoveredBrightButton();
+	/*UFUNCTION()
+		void OnUnhoveredBrightButton();*/
 
 	UFUNCTION()
 		void OnClickAntiAliasingButton();
@@ -213,8 +217,8 @@ public:
 	UFUNCTION()
 		void OnHoveredAntiAliasingButton();
 
-	UFUNCTION()
-		void OnUnhoveredAntiAliasingButton();
+	//UFUNCTION()
+	//	void OnUnhoveredAntiAliasingButton();
 
 	UFUNCTION()
 		void OnClickShadowButton();
@@ -222,8 +226,8 @@ public:
 	UFUNCTION()
 		void OnHoveredShadowButton();
 
-	UFUNCTION()
-		void OnUnhoveredShadowButton();
+	/*UFUNCTION()
+		void OnUnhoveredShadowButton();*/
 
 	UFUNCTION()
 		void OnClickMotionBlurButton();
@@ -231,8 +235,8 @@ public:
 	UFUNCTION()
 		void OnHoveredMotionBlurButton();
 
-	UFUNCTION()
-		void OnUnhoveredMotionBlurButton();
+	/*UFUNCTION()
+		void OnUnhoveredMotionBlurButton();*/
 
 	// Resolution Buttons Function
 	UFUNCTION()
@@ -241,8 +245,8 @@ public:
 	UFUNCTION()
 		void OnHoveredResolution1Button();
 
-	UFUNCTION()
-		void OnUnhoveredResolution1Button();
+	//UFUNCTION()
+	//	void OnUnhoveredResolution1Button();
 
 	UFUNCTION()
 		void OnClickResolution2Button();
@@ -250,8 +254,8 @@ public:
 	UFUNCTION()
 		void OnHoveredResolution2Button();
 
-	UFUNCTION()
-		void OnUnhoveredResolution2Button();
+	/*UFUNCTION()
+		void OnUnhoveredResolution2Button();*/
 
 	UFUNCTION()
 		void OnClickResolution3Button();
@@ -259,8 +263,8 @@ public:
 	UFUNCTION()
 		void OnHoveredResolution3Button();
 
-	UFUNCTION()
-		void OnUnhoveredResolution3Button();
+	//UFUNCTION()
+	//	void OnUnhoveredResolution3Button();
 
 	UFUNCTION()
 		void OnClickResolution4Button();
@@ -268,8 +272,8 @@ public:
 	UFUNCTION()
 		void OnHoveredResolution4Button();
 
-	UFUNCTION()
-		void OnUnhoveredResolution4Button();
+	//UFUNCTION()
+	//	void OnUnhoveredResolution4Button();
 
 	UFUNCTION()
 		void OnClickResolution5Button();
@@ -277,8 +281,8 @@ public:
 	UFUNCTION()
 		void OnHoveredResolution5Button();
 
-	UFUNCTION()
-		void OnUnhoveredResolution5Button();
+	//UFUNCTION()
+	//	void OnUnhoveredResolution5Button();
 
 	UFUNCTION()
 		void OnClickResolution6Button();
@@ -286,8 +290,8 @@ public:
 	UFUNCTION()
 		void OnHoveredResolution6Button();
 
-	UFUNCTION()
-		void OnUnhoveredResolution6Button();
+	/*UFUNCTION()
+		void OnUnhoveredResolution6Button();*/
 
 	UFUNCTION()
 		void OnClickResolution7Button();
@@ -295,8 +299,8 @@ public:
 	UFUNCTION()
 		void OnHoveredResolution7Button();
 
-	UFUNCTION()
-		void OnUnhoveredResolution7Button();
+	/*UFUNCTION()
+		void OnUnhoveredResolution7Button();*/
 
 	UFUNCTION()
 		void OnClickResolution8Button();
@@ -304,8 +308,8 @@ public:
 	UFUNCTION()
 		void OnHoveredResolution8Button();
 
-	UFUNCTION()
-		void OnUnhoveredResolution8Button();
+	/*UFUNCTION()
+		void OnUnhoveredResolution8Button();*/
 
 	/*UFUNCTION()
 		void OnClickResolution9Button();
@@ -332,8 +336,8 @@ public:
 	UFUNCTION()
 		void OnHoveredWindowedButton();
 
-	UFUNCTION()
-		void OnUnhoveredWindowedButton();
+	/*UFUNCTION()
+		void OnUnhoveredWindowedButton();*/
 
 	/*UFUNCTION()
 		void OnClickWinFullButton();
@@ -350,8 +354,8 @@ public:
 	UFUNCTION()
 		void OnHoveredFullScreenButton();
 
-	UFUNCTION()
-		void OnUnhoveredFullScreenButton();
+	//UFUNCTION()
+	//	void OnUnhoveredFullScreenButton();
 
 	/*UFUNCTION(BlueprintCallable)
 		void GraphicMenu(int32 CurrentIndex);*/
@@ -360,8 +364,9 @@ public:
 		void SelectWindowMode(bool bWindowedMode, bool bFullScreenMode, int32 CurrentIndex);
 
 	UFUNCTION(BlueprintCallable)
-		void SelectResolutionMode(bool bResolution1Mode, bool bResolution2Mode, bool bResolution3Mode, bool bResolution4Mode,
-			bool bResolution5Mode, bool bResolution6Mode, bool bResolution7Mode, bool bResolution8Mode, int32 CurrentIndex);
+		/*void SelectResolutionMode(bool bResolution1Mode, bool bResolution2Mode, bool bResolution3Mode, bool bResolution4Mode,
+			bool bResolution5Mode, bool bResolution6Mode, bool bResolution7Mode, bool bResolution8Mode, int32 CurrentIndex);*/
+		void SelectResolutionMode(EResolution inResolutionValue, int32 CurrentIndex);
 
 	UFUNCTION()
 		void CheckCurrentResolution(const FString ForCheckResolution);
@@ -385,6 +390,6 @@ public:
 	UFUNCTION()
 		void OnHoveredBackButton();
 
-	UFUNCTION()
-		void OnUnhoveredBackButton();
+	/*UFUNCTION()
+		void OnUnhoveredBackButton();*/
 };

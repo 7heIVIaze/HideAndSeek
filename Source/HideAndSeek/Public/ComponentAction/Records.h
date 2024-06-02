@@ -13,6 +13,19 @@ enum ELanguage
 	LANG_Ko UMETA(DisplayName = "Korean"),
 };
 
+UENUM(BlueprintType)
+enum EResolution
+{
+	Resolution1 UMETA(DisplayName = "Resolutoin1"),
+	Resolution2 UMETA(DisplayName = "Resolutoin2"),
+	Resolution3 UMETA(DisplayName = "Resolutoin3"),
+	Resolution4 UMETA(DisplayName = "Resolutoin4"),
+	Resolution5 UMETA(DisplayName = "Resolutoin5"),
+	Resolution6 UMETA(DisplayName = "Resolutoin6"),
+	Resolution7 UMETA(DisplayName = "Resolutoin7"),
+	Resolution8 UMETA(DisplayName = "Resolutoin8"),
+};
+
 USTRUCT(Atomic, BlueprintType)
 struct FClearData
 {
