@@ -43,11 +43,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
 		class UTextBlock* ArchiveGetText;
 
-private:
-	UPROPERTY()
+protected:
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UButton* RestartButton;
 
-	UPROPERTY()
+		UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UButton* ExitButton;
 
 	UPROPERTY()

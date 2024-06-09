@@ -1,4 +1,5 @@
 // CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
+// 던져진 타이머가 울릴 때 스폰될 액터임.
 
 #include "Items/ThrownTimer_cpp.h"
 #include "Components/AudioComponent.h"
@@ -10,6 +11,7 @@ AThrownTimer_cpp::AThrownTimer_cpp()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	// 메시들의 기본 설정을 해줌. (세세한 설정은 블루프린트 클래스에서 수행)
 	RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = RootComp;
 
@@ -41,22 +43,28 @@ void AThrownTimer_cpp::BeginPlay()
 	
 }
 
+// 타이머가 울리는 효과를 시작할 함수.
 void AThrownTimer_cpp::RingingStart()
 {
+	// 타이머 소리를 재생하고, 소리가 울리고 있음을 설정함.
 	TimerSound->Play();
-	SetPlaySound(true);
+	bIsSoundPlaying = true;
+	//SetPlaySound(true);
 }
 
+// 오디오 컴포넌트가 종료되면 호출될 콜백 함수.
 void AThrownTimer_cpp::RingingEnd()
 {
+	// 소리고 멈췄음을 설정하고, 이 액터를 제거함.
 	bIsSoundPlaying = false;
 	Destroy();
 }
 
-void AThrownTimer_cpp::SetPlaySound(bool bValue)
-{
-	bIsSoundPlaying = bValue;
-}
+// Deprecated
+//void AThrownTimer_cpp::SetPlaySound(bool bValue)
+//{
+//	bIsSoundPlaying = bValue;
+//}
 
 bool AThrownTimer_cpp::GetPlaySound()
 {

@@ -14,7 +14,7 @@ enum ELanguage
 };
 
 UENUM(BlueprintType)
-enum EResolution
+enum class EResolution : uint8
 {
 	Resolution1 UMETA(DisplayName = "Resolutoin1"),
 	Resolution2 UMETA(DisplayName = "Resolutoin2"),

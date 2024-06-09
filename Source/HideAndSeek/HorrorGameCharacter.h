@@ -487,6 +487,7 @@ private:
 	bool bNotifyAttackStart = false;
 	bool bReaperWatchPlayer = false; // 리퍼가 능력을 사용하기 시작했는가?
 	
+	AActor* HitActor;
 	FRotator LookAtRotation;
 	FVector BeforeHideLocation;
 	FRotator BeforeHideRotation;

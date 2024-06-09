@@ -16,6 +16,7 @@ ASchoolLight::ASchoolLight()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	// 메시들의 기본 설정을 해줌. (세세한 설정은 블루프린트 클래스에서 수행)
 	RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = RootComp;
 
@@ -56,6 +57,7 @@ void ASchoolLight::BeginPlay()
 	Super::BeginPlay();
 	LightComp->SetVisibility(bIsLightOn);
 	
+	// 타임라인 커브 값이 있다면 타임라인에 할당하고, 재생될 때 실행할 콜백 함수도 바인딩함.
 	if (CurveFloat)
 	{
 		FOnTimelineFloat TimelineProgress;
@@ -73,56 +75,86 @@ void ASchoolLight::Tick(float DeltaTime)
 	FlickeringLight.TickTimeline(DeltaTime);
 }
 
+// 전등의 상태를 설정할 함수.
 void ASchoolLight::SetLightStatus()
 {
+	// 상태 값을 반전시켜, 라이트 컴포넌트에도 설정해줌.
 	bIsLightOn = !bIsLightOn;
 	
 	LightComp->SetVisibility(bIsLightOn);
 }
 
+// 충돌체에 충돌이 감지될 때 작동할 함수.
 void ASchoolLight::BoxOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherIndexBody, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
 	{
+		// 충돌한 액터가 플레이어일 경우
 		if (OtherActor->IsA<AHorrorGameCharacter>())
 		{
+			// 플레이어가 감지되었다고 설정하고
 			bIsPlayerIn = true;
+			
+			// 요괴가 근처에 있어 깜빡이는 경우, 타임라인을 재생함.
 			if (bIsLightBlink)
 			{
 				if (CreatureNearNum <= 0)
+				{
 					FlickeringLight.Play();
+				}
 			}
 		}
-
+		// 충돌한 액터가 요괴 류일 경우
 		else if (OtherActor->IsA<ACreatureClass>())
 		{
+			// 근처 요괴의 수를 증가시키고
 			CreatureNum++;
+			
+			//  요괴가 근처에 있어 깜빡이지 않는 경우, 플레이어가 근처에 있으면 타임라인을 재생함.
 			if (!bIsLightBlink)
 			{
 				bIsLightBlink = true;
 				if (CreatureNearNum <= 0 && bIsPlayerIn)
+				{
 					FlickeringLight.Play();
+				}
 			}
 		}
 	}
 }
 
+// 충돌체에 충돌이 끝날 때 작동할 함수.
 void ASchoolLight::BoxOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherIndexBody)
 {
 	if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
 	{
+		// 충돌이 끝난 액터가 플레이어일 경우
 		if (auto Player = Cast<AHorrorGameCharacter>(OtherActor))
 		{
+			// 플레이어가 숨은 상태가 아닌 경우, 플레이어가 근처에 없다고 설정함.
 			if (!Player->bIsHiding)
+			{
 				bIsPlayerIn = false;
+			}
+
+			// 타임라인을 정지하고 포인트 라이트의 세기를 기본으로 설정함.
 			FlickeringLight.Stop();
-			if (bIsLightOn) LightComp->SetIntensity(Intensity);
+			
+			if (bIsLightOn)
+			{
+				LightComp->SetIntensity(Intensity);
+			}
 		}
+		// 충돌이 끝난 액터가 요괴 류인 경우
 		else if (OtherActor->IsA<ACreatureClass>())
 		{
+			// 근처 요괴의 수를 줄임.
 			CreatureNum--;
+			
+			// 근처 요괴 수가 0 이하일 경우
 			if (CreatureNum <= 0)
 			{
+				// 타임라인을 정지하고 포인트 라이트의 세기를 기본으로 설정함.
 				bIsLightBlink = false;
 				FlickeringLight.Stop();
 				LightComp->SetIntensity(Intensity);
@@ -131,14 +163,18 @@ void ASchoolLight::BoxOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* Ot
 	}
 }
 
+// 구형 충돌체에 충돌이 감지되면 작동할 함수.
 void ASchoolLight::SphereOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherIndexBody, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
 	{
+		// 충돌한 액터가 요괴 류인 경우
 		if (OtherActor->IsA<ACreatureClass>())
 		{
+			// 플레이어가 근처에 있으면서 불이 켜진 상태면
 			if (bIsPlayerIn && bIsLightOn)
 			{
+				// 근처 요괴 수를 증가시키고, 타임라인을 정지하고, 밝기 세기를 0으로 설정함.
 				CreatureNearNum++;
 				FlickeringLight.Stop();
 				LightComp->SetIntensity(0.f);
@@ -147,14 +183,18 @@ void ASchoolLight::SphereOverlapBegin(UPrimitiveComponent* OverlappedComp, AActo
 	}
 }
 
+// 구형 충돌체에 충돌이 끝나면 작동할 함수.
 void ASchoolLight::SphereOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherIndexBody)
 {
 	if (OtherActor != nullptr && OtherActor != this && OtherComp != nullptr)
 	{
+		// 충돌이 끝난 액터가 요괴 류인 경우
 		if (OtherActor->IsA<ACreatureClass>())
 		{
+			// 플레이어가 근처에 있으면서 불이 켜진 상태면
 			if (bIsPlayerIn && bIsLightOn)
 			{
+				// 근처 요괴 수를 감소시키고, 타임라인을 재생하고, 밝기 세기를 기본 세기로 설정함.
 				CreatureNearNum--;
 				if (CreatureNearNum <= 0)
 				{
@@ -166,11 +206,14 @@ void ASchoolLight::SphereOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor*
 	}
 }
 
+// 타임 라인이 재생될 때 호출할 콜백 함수.
 void ASchoolLight::LightFlicker(float value)
 {
-	float LightIntense = Intensity * value;
+	// 밝기의 범위를 0에서 원래 밝기 사이로 설정하고, 밝기를 조절함.
+	float LightIntense = FMath::Clamp(Intensity * value, 0.0f, Intensity);
 
-	if (LightIntense < 0.f)
+	LightComp->SetIntensity(LightIntense);
+	/*if (LightIntense < 0.f)
 	{
 		LightComp->SetIntensity(0.0f);
 	}
@@ -181,5 +224,5 @@ void ASchoolLight::LightFlicker(float value)
 	else
 	{
 		LightComp->SetIntensity(LightIntense);
-	}
+	}*/
 }

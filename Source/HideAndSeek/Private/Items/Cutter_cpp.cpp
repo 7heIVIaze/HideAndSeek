@@ -13,6 +13,7 @@ ACutter_cpp::ACutter_cpp()
 	FVector DefaultLoc = FVector(0.f, 0.f, 0.f);
 	FVector DefaultScale = FVector(1.f, 1.f, 1.f);
 
+	// 메시들의 기본 설정을 해줌. (세세한 설정은 블루프린트 클래스에서 수행)
 	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	DefaultSceneRoot->SetWorldLocation(DefaultLoc);
 	DefaultSceneRoot->SetWorldScale3D(DefaultScale);
@@ -31,23 +32,32 @@ ACutter_cpp::ACutter_cpp()
 
 }
 
+// 플레이어가 절단기와 상호작용할 때 작동할 함수.
 void ACutter_cpp::OnInteract(class AHorrorGameCharacter* Player)
 {
 	Super::OnInteract(Player);
-	Player->CutterDurability = Durability;
+
+	// 플레이어의 절단기를 얻는 메서드를 호출함.
 	Player->AddCutter();
+	
+	// 위 메서드를 통해 플레이어가 아이템을 얻을 수 있는 상황이면
 	if (Player->bCanItemGet)
 	{
+		// 절단기의 남은 내구도를 이 절단기의 내구도로 복구함.
+		Player->CutterDurability = Durability;
+
+		// 절단기를 처음 얻은 상태라면 절단기 문서를 세이브 데이터에 영구히 저장함.
 		if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 		{
-			if (!SaveData->CollectArchives.Item9_Cutter) // 절단기를 처음 얻은 상태라면
+			if (!SaveData->CollectArchives.Item9_Cutter)
 			{
 				SaveData->CollectArchives.Item9_Cutter = true;
 				Player->SetArchiveGetText(NSLOCTEXT("ACutter_cpp", "Get_Cutter", "Cutter\nis added in archive"));
 				SaveData->SaveData();
 			}
 		}
-		//Player->GameUIWidget->SetCutterHUD(Durability);
+
+		// 그 후 배치된 이 액터를 제거함.
 		Destroy();
 	}
 }

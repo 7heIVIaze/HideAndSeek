@@ -66,7 +66,7 @@ AReaper_cpp::AReaper_cpp()
 	DissolveParticleSystem->SetupAttachment(GetMesh());
 	DissolveParticleSystem->SetActive(false);
 	
-	KillSphere = CreateDefaultSubobject<USphereComponent>(TEXT("KillBox"));
+	KillSphere = CreateDefaultSubobject<USphereComponent>(TEXT("KillSphere"));
 	KillSphere->SetupAttachment(GetMesh());
 	KillSphere->SetRelativeLocation(FVector(0.f, 0.f, 130.f));
 	KillSphere->SetRelativeScale3D(FVector(3.5f, 3.5f, 4.f));
@@ -526,6 +526,8 @@ bool AReaper_cpp::GetIsStunned()
 // 청동 검을 통해 처치될 때 호출할 함수
 void AReaper_cpp::Exorcism()
 {
+	// 처치될 때 효과음이 있으면 좋을 듯 하다.
+	
 	// 사망한 것으로 설정
 	bIsDied = true;
 

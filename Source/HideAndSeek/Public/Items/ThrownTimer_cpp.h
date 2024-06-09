@@ -35,8 +35,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 		void RingingEnd();
 
-	UFUNCTION(BlueprintCallable)
-		void SetPlaySound(bool bValue);
+	//UFUNCTION(BlueprintCallable)
+	//	void SetPlaySound(bool bValue);
 
 	UFUNCTION(BlueprintCallable)
 		bool GetPlaySound();

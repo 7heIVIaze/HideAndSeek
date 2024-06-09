@@ -52,19 +52,19 @@ protected:
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 
 public:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UButton* StartButton;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UButton* OptionButton;
 	 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UButton* ExitButton;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UButton* ArchiveBtn;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UVerticalBox* Menu;
 
 private:

@@ -10,35 +10,14 @@ ADrawer_cpp::ADrawer_cpp()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	/*DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	DefaultSceneRoot->SetWorldLocation(FVector(0.0f, 0.0f, 0.0f));
-	FVector DefaultScale = FVector(1.0f, 1.0f, 1.0f);
-	DefaultSceneRoot->SetWorldScale3D(DefaultScale);
 
-	RootComponent = DefaultSceneRoot;*/
-
-	/*Drawer = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Drawer"));
-	Drawer->SetupAttachment(DefaultSceneRoot);*/
+	// 메시들의 기본 설정을 해줌. (세세한 설정은 블루프린트 클래스에서 수행)
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> DrawerAssetMesh(TEXT("/Game/Assets/Furniture/drawerBox"));
 	if (DrawerAssetMesh.Succeeded())
 	{
 		Drawer->SetStaticMesh(DrawerAssetMesh.Object);
 		Drawer->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-		/*Drawer->SetRelativeScale3D(DefaultScale);*/
 	}
-
-	/*Item = CreateDefaultSubobject<UChildActorComponent>(TEXT("Item"));
-	Item->SetupAttachment(Drawer);
-	Item->SetRelativeLocation(FVector(0.0f, 0.0f, -15.0f));*/
-
-	/*DrawerSound = CreateDefaultSubobject<UAudioComponent>(TEXT("DrawerSound"));*/
-	/*static ConstructorHelpers::FObjectFinder<USoundBase>SoundMesh(TEXT("/Game/Assets/Sounds/Drawer_Opening"));
-	if (SoundMesh.Succeeded())
-	{
-		DrawerSound->SetSound(SoundMesh.Object);
-	}*/
-	/*DrawerSound->SetupAttachment(Drawer);
-	DrawerSound->SetAutoActivate(false);*/
 
 	DrawerOpenMove = 80.0f;
 }
@@ -48,6 +27,7 @@ void ADrawer_cpp::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// 타임라인 커브 값이 있다면 타임라인에 할당하고, 재생될 때 실행할 콜백 함수도 바인딩함.
 	if (CurveFloat)
 	{
 		FOnTimelineFloat TimelineProgress;
@@ -55,6 +35,7 @@ void ADrawer_cpp::BeginPlay()
 		OpenAndClose.AddInterpFloat(CurveFloat, TimelineProgress); // 오류 해결 TObjectPtr이 아닌 FTimeline이 좋은 듯
 	}
 
+	// 서랍 메시들 중 하나를 선택해 메시를 변경함.
 	if (DrawerMeshes.Num() > 0)
 	{
 		int RandIdx = FMath::RandRange(0, DrawerMeshes.Num() - 1);
@@ -70,80 +51,26 @@ void ADrawer_cpp::Tick(float DeltaTime)
 	OpenAndClose.TickTimeline(DeltaTime);
 }
 
+// 타임라인이 재생될 때 호출될 콜백 함수.
 void ADrawer_cpp::OpenDrawer(float Value)
 {
 	Super::OpenDrawer(Value);
+
+	// 서랍이 열리는 효과를 줌.
 	FVector Location = FVector(0.0f, DrawerOpenMove * Value, 0.0f);
 
 	Drawer->SetRelativeLocation(Location);
 }
 
+// 플레이어가 상호작용할 때 작동할 함수.
 void ADrawer_cpp::OnInteract()
 {
-	//UE_LOG(LogTemp, Warning, TEXT("Interact!"));
-
-	//USoundCue* DrawerSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/DrawerOpenSoundCue"));
+	// 효과음을 재생함.
 	if (DrawerSound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, DrawerSound, GetActorLocation());
 	}
 
+	// 그 후 부모 클래스의 메서드를 호출함(타임라인 재생임).
 	Super::OnInteract();
-	//if (bIsDrawerClosed)
-	//{
-	//	//UE_LOG(LogTemp, Warning, TEXT("OPEN"));
-	//	if (!bIsFirstOpen) // 서랍을 처음 여는 것이라면, 아이템을 생성하거나 미생성
-	//	{
-	//		float fNoItemProbability = 0.5f; // 아이템이 안 나올 확률
-	//		float RandomValue = FMath::FRandRange(0.0f, 1.0f);
-	//		if (GEngine)
-	//			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("First Random Value: %f"), RandomValue));
-	//		int idx = -1;
-
-	//		if (RandomValue > fNoItemProbability)
-	//		{
-	//			float fTotalProbability = 1.0f - fNoItemProbability;
-	//			RandomValue = FMath::FRandRange(0.0f, fTotalProbability);
-	//			if (GEngine)
-	//				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Second Random Value: %f"), RandomValue));
-
-	//			for (int i = 0; i < ItemProbability.Num(); ++i)
-	//			{
-	//				if (i > 0)
-	//				{
-	//					if (RandomValue < ItemProbability[i] && RandomValue >= ItemProbability[i-1])
-	//					{
-	//						idx = i;
-	//						break;
-	//					}
-	//				}
-	//				else
-	//				{
-	//					if (RandomValue < ItemProbability[i] && RandomValue >= 0)
-	//					{
-	//						idx = i;
-	//						break;
-	//					}
-	//				}
-	//			}
-
-	//			if (idx >= 0)
-	//			{
-	//				if (GEngine)
-	//					GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Class: %s"), *Items[idx]->GetName()));
-	//				Item->SetChildActorClass(Items[idx]);
-	//			}
-	//		}
-	//		bIsFirstOpen = true;
-	//	}
-	//	DrawerSound->Play();
-	//	OpenAndClose.Play();
-	//}
-	//else
-	//{
-	//	//UE_LOG(LogTemp, Warning, TEXT("CLOSE"));
-	//	DrawerSound->Play();
-	//	OpenAndClose.Reverse();
-	//}
-	//bIsDrawerClosed = !bIsDrawerClosed; // flip flop
 }

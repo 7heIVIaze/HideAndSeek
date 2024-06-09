@@ -26,31 +26,29 @@ void UStageSelectWidget::NativeConstruct()
 		ClearData = GameInstance->GetAllClearData(); // 구조체 형태의 클리어 데이터 값을 가져옴
 	}
 
-	//int32 ButtonNum = ClearedChapter + 1;
-	//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("ButtonNum: %d"), ButtonNum));
+	// 블루프린트 클래스로부터 ChapterPanel이라는 위젯 오브젝트를 가져와 MenuBox에 할당함.
+	//MenuBox = Cast<UVerticalBox>(GetWidgetFromName(TEXT("ChapterPanel")));
 
-	MenuBox = Cast<UVerticalBox>(GetWidgetFromName(TEXT("ChapterPanel"))); // 블루프린트 클래스로부터 ChapterPanel이라는 위젯 오브젝트를 가져와 MenuBox에 할당함.
-	MenuNumber = 3; // 플레이어가 선택 가능한 메뉴의 개수는 현재는 3개.
+	// 플레이어가 선택 가능한 메뉴의 개수는 현재는 3개.
+	MenuNumber = 3;
+	
+	/*
+	// 삭제해도 됨. 선택가능한 메뉴를 나타내기 위한 배열 변수임.
+	CanButtonSelect.Init(false, MenuNumber); 
 
-	//if (nullptr != MenuBox)
-//	{
-		// MenuNumber = MenuBox->GetChildrenCount();
-	//	MenuNumber = 3;
-	//}
-
-	CanButtonSelect.Init(false, MenuNumber); // 삭제해도 됨. 선택가능한 메뉴를 나타내기 위한 배열 변수임.
-
-	/*for (int i = 0; i < ButtonNum; ++i)
+	for (int i = 0; i < ButtonNum; ++i)
 	{
 		CanButtonSelect[i] = true;
 	}
-	CanButtonSelect[MenuNumber - 1] = true;*/
+	CanButtonSelect[MenuNumber - 1] = true;
+	*/
 
-	ChapOneButton = Cast<UButton>(GetWidgetFromName(TEXT("ChapOneBtn")));
+	/*ChapOneButton = Cast<UButton>(GetWidgetFromName(TEXT("ChapOneBtn")));
 	ChapTwoButton = Cast<UButton>(GetWidgetFromName(TEXT("ChapTwoBtn")));
 	BackButton = Cast<UButton>(GetWidgetFromName(TEXT("BackBtn")));
-	LevelImg = Cast<UImage>(GetWidgetFromName(TEXT("StageSampleImg")));
+	LevelImg = Cast<UImage>(GetWidgetFromName(TEXT("StageSampleImg")));*/
 
+	// 각 버튼 별로 클릭, 마우스 호버 시 작동할 함수를 바인딩 해줌.
 	if (nullptr != ChapOneButton) // ChapOneButton이 null이 아니면, 콜백 함수 바인드 시킴
 	{
 		ChapOneButton->OnClicked.AddDynamic(this, &UStageSelectWidget::OnClickChapOneButton);
@@ -61,8 +59,9 @@ void UStageSelectWidget::NativeConstruct()
 	{
 		ChapTwoButton->OnClicked.AddDynamic(this, &UStageSelectWidget::OnClickChapTwoButton);
 		ChapTwoButton->OnHovered.AddDynamic(this, &UStageSelectWidget::OnHoveredChapTwoButton);
-		//if (ClearedChapter >= 1) // 이전 챕터를 클리어했을 경우
-		if (ClearData[1].bIsOpened) //챕터가 열려있는 경우
+		
+		// 챕터가 열려 있는 경우, 챕터명을 설정하고, 아닐 경우 ???로 설정함.
+		if (ClearData[1].bIsOpened)
 		{
 			ChapTwoText->SetText(NSLOCTEXT("UStageSelectWidget", "ChapTwoText", "School of Labyrinth"));
 		}
@@ -105,17 +104,13 @@ void UStageSelectWidget::OnClickChapOneButton()
 		// 추가로 버튼을 클릭하고 애니메이션이 재생되는 중간에는 다른 버튼 클릭 및 호버를 할 수 없게 만들어야 함.
 		bIsButtonClicked = true;
 	}
-	//Fadeout->Animation
-	//FString levelName = TEXT("/Game/Levels/GameLevel/Prologue");
-	//if(GameInstance)
-	//	GameInstance->StopSound();
-	//UGameplayStatics::OpenLevel(GetWorld(), *levelName);
 }
 
 // Chapter Two 버튼을 클릭했을 때 호출할 콜백 함수.
 void UStageSelectWidget::OnClickChapTwoButton()
 {
-	if (ClearData[1].bIsOpened) //챕터가 열려있는 경우에만 수행되도록 설정
+	//챕터가 열려있는 경우에만 수행되도록 설정
+	if (ClearData[1].bIsOpened) 
 	{
 		// 다른 버튼을 클릭한 상태가 아닌 경우 실행됨.
 		if (!bIsButtonClicked)
@@ -140,10 +135,6 @@ void UStageSelectWidget::OnClickChapTwoButton()
 	}
 	// 챕터가 안 열린 경우에 에러 음이 나도록 설정해야할 듯함.
 
-	//FString levelName = TEXT("/Game/Levels/GameLevel/Level1");
-	/*if(GameInstance)
-		GameInstance->StopSound();*/
-	//UGameplayStatics::OpenLevel(GetWorld(), *levelName);
 }
 
 /*
@@ -315,7 +306,7 @@ void UStageSelectWidget::OnMoveChapFive()
 
 */
 
-//
+// Deprecated
 //void UStageSelectWidget::OnMoveBack()
 //{
 //	auto GameMode = Cast<AStartGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
@@ -394,7 +385,7 @@ void UStageSelectWidget::UpdateButtonSlate()
 			BackButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
 
 			// 중앙의 챕터 미리보기 이미지를 0번 인덱스의 이미지(챕터 1의 이미지)로 설정함.
-			LevelImg->SetBrushFromTexture(LevelSample[MenuNavigationIndex]);
+			StageSampleImage->SetBrushFromTexture(LevelSample[MenuNavigationIndex]);
 			return;
 		}
 		case 1: // 인덱스가 1일 때
@@ -407,12 +398,12 @@ void UStageSelectWidget::UpdateButtonSlate()
 			if (ClearData[1].bIsOpened) //챕터가 열려있는 경우
 			{
 				// 중앙의 챕터 미리보기 이미지를 1번 인덱스의 이미지(챕터 2의 이미지)로 설정함.
-				LevelImg->SetBrushFromTexture(LevelSample[MenuNavigationIndex]);
+				StageSampleImage->SetBrushFromTexture(LevelSample[MenuNavigationIndex]);
 			}
 			else // 챕터가 열려있지 않은 경우
 			{
 				// 중앙의 챕터 미리보기 이미지를 마지막 인덱스(투명한 이미지)로 설정함.
-				LevelImg->SetBrushFromTexture(LevelSample[2]);
+				StageSampleImage->SetBrushFromTexture(LevelSample[2]);
 			}
 			return;
 		}
@@ -424,7 +415,7 @@ void UStageSelectWidget::UpdateButtonSlate()
 			BackButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 
 			// 중앙의 챕터 미리보기 이미지를 마지막 인덱스(투명한 이미지)로 설정함.
-			LevelImg->SetBrushFromTexture(LevelSample[MenuNavigationIndex]);
+			StageSampleImage->SetBrushFromTexture(LevelSample[MenuNavigationIndex]);
 			return;
 		}
 	}
@@ -491,22 +482,6 @@ FReply UStageSelectWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FK
 				{
 					MenuNavigationIndex = 0; // 총 버튼 수를 초과하면 다시 0으로
 				}
-
-				////////////////
-				// Deprecated //
-				////////////////
-				//while (!CanButtonSelect[MenuNavigationIndex]) // 현재 가리키는 버튼이 사용 가능하면 종료함
-				//{
-				//	MenuNavigationIndex++; // 가리킬 수 있는 버튼일 때까지 인덱스 증가하고
-				//	//if (MenuNavigationIndex > ClearedChapter) // 챕터 개수 이상으로 인덱스 초과시
-				//	//{
-				//	//	MenuNavigationIndex = MenuNumber - 1; // Back으로
-				//	//}
-				//	if (MenuNavigationIndex >= MenuNumber)
-				//	{
-				//		MenuNavigationIndex = 0; // 총 버튼 수를 초과하면 다시 0으로
-				//	}
-				//}
 			}
 		}
 		// 입력받은 키가 W나 Up 화살표일 경우
@@ -530,22 +505,6 @@ FReply UStageSelectWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FK
 				{
 					MenuNavigationIndex = MenuNumber - 1; // 0 미만으로 떨어지면 다시 최대 인덱스로
 				}
-
-				////////////////
-				// Deprecated //
-				////////////////
-				//while (!CanButtonSelect[MenuNavigationIndex]) // 현재 가리키는 버튼이 사용가능하면 종료함
-				//{
-				//	MenuNavigationIndex--; // 가리킬 수 잇는 버튼일 때까지 인덱스 감소시키고
-				//	//if (MenuNavigationIndex > ClearedChapter) // 감소시켰는데 챕터 개수 이상으로 인덱스 초과 시
-				//	//{
-				//	//	MenuNavigationIndex = ClearedChapter;
-				//	//}
-				//	if (MenuNavigationIndex < 0)
-				//	{
-				//		MenuNavigationIndex = MenuNumber - 1; // 0 미만으로 떨어지면 다시 최대 인덱스로
-				//	}
-				//}
 			}
 		}
 

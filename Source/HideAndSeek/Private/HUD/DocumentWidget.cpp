@@ -7,7 +7,7 @@
 #include "HorrorGamePlayercontroller.h"
 #include "Kismet/GameplayStatics.h"
 
-// 생성자.
+// 문서 위젯 생성자.
 void UDocumentWidget::NativeConstruct()
 {
 	Super::NativeConstruct();

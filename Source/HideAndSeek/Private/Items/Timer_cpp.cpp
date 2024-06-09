@@ -13,6 +13,7 @@ ATimer_cpp::ATimer_cpp()
 	FVector DefaultLoc = FVector(0.f, 0.f, 0.f);
 	FVector DefaultScale = FVector(1.f, 1.f, 1.f);
 
+	// 메시들의 기본 설정을 해줌. (세세한 설정은 블루프린트 클래스에서 수행)
 	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	DefaultSceneRoot->SetWorldLocation(DefaultLoc);
 	DefaultSceneRoot->SetWorldScale3D(DefaultScale);
@@ -44,22 +45,29 @@ void ATimer_cpp::BeginPlay()
 //
 //}
 
+// 플레이어가 타이머 아이템을 습득하려 할 때 작동할 함수.
 void ATimer_cpp::OnInteract(class AHorrorGameCharacter* Player) // Player Click Event
 {
 	Super::OnInteract(Player);
 
+	// 플레이어의 타이머를 얻는 메서드를 호출함.
 	Player->AddTimer();
+
+	// 위 메서드를 통해 플레이어가 아이템을 얻을 수 있는 상태이면
 	if (Player->bCanItemGet)
 	{
+		// 타이머를 처음 얻은 상태라면 타이머 문서를 세이브 데이터에 영구히 저장함.
 		if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 		{
-			if (!SaveData->CollectArchives.Item4_Timer) // 타이머를 처음 얻은 상태라면
+			if (!SaveData->CollectArchives.Item4_Timer)
 			{
 				SaveData->CollectArchives.Item4_Timer = true;
 				Player->SetArchiveGetText(NSLOCTEXT("ATimer_cpp", "Get_Timer", "Timer\nis added in archive"));
 				SaveData->SaveData();
 			}
 		}
+
+		// 그 후 배치된 이 액터를 제거함.
 		Destroy();
 	}
 }

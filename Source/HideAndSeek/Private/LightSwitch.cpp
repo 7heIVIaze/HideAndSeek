@@ -11,6 +11,7 @@ ALightSwitch::ALightSwitch()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	// 메시들의 기본 설정을 해줌. (세세한 설정은 블루프린트 클래스에서 수행)
 	RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = RootComp;
 
@@ -40,9 +41,10 @@ void ALightSwitch::BeginPlay()
 	
 }
 
+// 플레이어가 상호작용할 때 작동할 함수.
 void ALightSwitch::OnInteract()
 {
-	//USoundCue* LightSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/LightSwitchCue"));
+	// 스위치 음을 재생하고, 스위치 상태를 설정함.
 	if (LightSound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, LightSound, GetActorLocation());
@@ -50,13 +52,18 @@ void ALightSwitch::OnInteract()
 	SetSwitchStatus();
 }
 
+// 스위치 상태를 설정할 함수.
 void ALightSwitch::SetSwitchStatus()
 {
+	// 스위치 상태 값을 반전시킴.
 	bIsSwitchOn = !bIsSwitchOn;
+
+	// 켜져있으면 기본 회전값으로 스위치 버튼 메시를 회전시킴.
 	if (bIsSwitchOn)
 	{
 		SwitchMesh->SetRelativeRotation(FRotator(0.f, 0.f, 0.f));
 	}
+	// 꺼져있으면 스위치 버즌 메시를 Yaw(Z축)를 기준으로 10 회전시킴.
 	else
 	{	
 		SwitchMesh->SetRelativeRotation(FRotator(0.f, 10.f, 0.f));
@@ -64,8 +71,10 @@ void ALightSwitch::SetSwitchStatus()
 	SetLightsStatus();
 }
 
+// 전등 상태를 설정하는 함수.
 void ALightSwitch::SetLightsStatus()
 {
+	// 블루프린트를 통해 할당한 전등을 하나씩 순찰해 상태를 업데이트함.
 	for (auto Light : Lights)
 	{
 		Cast<ASchoolLight>(Light)->SetLightStatus();

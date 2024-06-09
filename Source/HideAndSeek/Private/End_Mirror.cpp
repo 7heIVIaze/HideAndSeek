@@ -16,6 +16,7 @@ AEnd_Mirror::AEnd_Mirror()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	// 메시들의 기본 설정을 해줌. (세세한 설정은 블루프린트 클래스에서 수행)
 	RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = RootComp;
 
@@ -37,26 +38,34 @@ void AEnd_Mirror::BeginPlay()
 	bIsCleared = false;
 }
 
+// 플레이어가 상호작용할 때 작동할 함수.
 void AEnd_Mirror::OnInteract(class AHorrorGameCharacter* Player)
 {
-	if (bIsCleared) // 게임 클리어 시
+	// 게임 클리어 시
+	if (bIsCleared)
 	{
-		if (InteractSound != nullptr) // 순간이동 소리가 있으면 재생시킴
+		// 순간이동 소리가 있으면 재생시킴
+		if (InteractSound != nullptr)
 		{
 			UGameplayStatics::PlaySound2D(this, InteractSound);
 		}
+		// 기본 BGM을 제거함.
 		Cast<AHorrorGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->StopBackGroundMusic();
 
+		// 플레이어가 사신의 물품을 각각 1개 씩 더 챙긴 상태에서 인터랙트할 경우에,
 		if (Player->GetSwordNumbers() >= 1 && Player->GetMirrorNumbers() >= 1 && Player->GetBellNumbers() >= 1)
-		{ // 플레이어가 사신의 물품을 각각 1개 씩 더 챙긴 상태에서 인터랙트할 경우에,
+		{
+			// 다른 순간이동 위치로 순간이동시킴.
 			if (HiddenTeleportPosition)
 			{
 				FVector TeleportPosition = HiddenTeleportPosition->GetComponentLocation();
 				Player->SetActorLocation(TeleportPosition);
 			}
 		}
+		// 그게 아닐 경우
 		else
 		{
+			// 원래 순간 이동 위치로 순간이동 시킴.
 			if (CommonTeleportPosition)
 			{
 				FVector TeleportPosition = CommonTeleportPosition->GetComponentLocation();
@@ -64,28 +73,6 @@ void AEnd_Mirror::OnInteract(class AHorrorGameCharacter* Player)
 			}
 		}
 	}
-	//if (bIsCleared) // 게임 클리어 시 Clear Widget 표시
-	//{
-	//	if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
-	//	{
-	//		FString ClearTime = Player->GameUIWidget->TimerWidget->GetClearTime();
-	//		if (ClearChapterNum != NULL)
-	//		{
-	//			if (GameInstance->ClearedChapterSaveLogic(ClearChapterNum))
-	//			{
-	//				if (GameInstance->ClearTimeSaveLogic(ClearChapterNum, ClearTime))
-	//				{
-	//					Cast<AHorrorGamePlayerController>(Player->GetController())->OnGameClear(ClearTime);
-	//				}
-	//			}
-	//		}
-	//		//FString ClearTime = GameInstance->GetCurrentClearTime();
-	//	}
-	//	//FString levelName = TEXT("/Game/Levels/GameLevel/Start");
-	//	///*if(GameInstance)
-	//	//	GameInstance->StopSound();*/
-	//	//UGameplayStatics::OpenLevel(GetWorld(), *levelName);
-	//}
 }
 
 void AEnd_Mirror::SetIsCleared(const bool value)

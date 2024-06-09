@@ -14,6 +14,7 @@
 
 AStartGameMode::AStartGameMode()
 {
+	// 필요한 위젯 클래스를 블루프린트 클래스로부터 가져옴.
 	static ConstructorHelpers::FClassFinder<UStartWidget>StartWidgetClass(TEXT("/Game/Assets/BluePrints/UI/StartWidget_BP"));
 	if (StartWidgetClass.Succeeded())
 	{
@@ -50,6 +51,7 @@ AStartGameMode::AStartGameMode()
 		GraphicsSettingWidgetClass = GraphicWidgetClass.Class;
 	}
 
+	// BGM도 가져옴.
 	static ConstructorHelpers::FObjectFinder<USoundCue>OpeningMusicAsset(TEXT("/Game/Assets/Sounds/SoundCues/OpeningBGM"));
 	if (OpeningMusicAsset.Succeeded())
 	{
@@ -66,14 +68,17 @@ void AStartGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// 시작 위젯을 출력하고 BGM을 재생함.
 	ChangeWidget(WidgetType::StartWidget);
 
 	AudioComponent->SetSound(OpeningCue);
 	AudioComponent->Play();
 }
 
+// 위젯을 바꾸는 함수.
 void AStartGameMode::ChangeWidget(WidgetType widgetNumber)
 {
+	// 현재 뷰포트에 출력된 위젯이 있다면, 뷰포트에서 제거하고, null 포인터로 설정함.
 	if (CurrentWidget != nullptr)
 	{
 		CurrentWidget->RemoveFromParent();
@@ -82,66 +87,90 @@ void AStartGameMode::ChangeWidget(WidgetType widgetNumber)
 
 	switch (widgetNumber)
 	{
-	case WidgetType::StartWidget:
-		if (StartLevelWidgetClass != nullptr)
+		// 시작 위젯인 경우
+		case WidgetType::StartWidget:
 		{
-			CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), StartLevelWidgetClass);
-			if (CurrentWidget != nullptr)
+			if (StartLevelWidgetClass != nullptr)
 			{
-				CurrentWidget->AddToViewport();
+				// 시작 위젯을 생성하고 뷰포트에 출력함.
+				CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), StartLevelWidgetClass);
+				if (CurrentWidget != nullptr)
+				{
+					CurrentWidget->AddToViewport();
+				}
 			}
+			return;
 		}
-		break;
-	case WidgetType::LevelSelectWidget:
-		if (StageSelectWidgetClass != nullptr)
+		// 챕터 선택 위젯인 경우
+		case WidgetType::LevelSelectWidget:
 		{
-			CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), StageSelectWidgetClass);
-			if (CurrentWidget != nullptr)
+			if (StageSelectWidgetClass != nullptr)
 			{
-				CurrentWidget->AddToViewport();
+				// 챕터 선택 위젯을 생성하고 뷰포트에 출력함.
+				CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), StageSelectWidgetClass);
+				if (CurrentWidget != nullptr)
+				{
+					CurrentWidget->AddToViewport();
+				}
 			}
+			return;
 		}
-		break;
-	case WidgetType::OptionSettingWidget:
-		if (IsValid(OptionSettingWidgetClass))
+		// 옵션 설정 위젯인 경우
+		case WidgetType::OptionSettingWidget:
 		{
-			CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), OptionSettingWidgetClass);
-			if (CurrentWidget != nullptr)
+			if (IsValid(OptionSettingWidgetClass))
 			{
-				CurrentWidget->AddToViewport();
+				// 옵션 설정 위젯을 생성하고 뷰포트에 출력함.
+				CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), OptionSettingWidgetClass);
+				if (CurrentWidget != nullptr)
+				{
+					CurrentWidget->AddToViewport();
+				}
 			}
+			return;
 		}
-		break;
-	case WidgetType::GameplaySettingWidget:
-		if (IsValid(GameSettingWidgetClass))
+		// 게임 플레이 설정 위젯인 경우
+		case WidgetType::GameplaySettingWidget:
 		{
-			CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), GameSettingWidgetClass);
-			if (CurrentWidget != nullptr)
+			if (IsValid(GameSettingWidgetClass))
 			{
-				CurrentWidget->AddToViewport();
+				// 게임 플레이 설정 위젯을 생성하고 뷰포트에 출력함.
+				CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), GameSettingWidgetClass);
+				if (CurrentWidget != nullptr)
+				{
+					CurrentWidget->AddToViewport();
+				}
 			}
+			return;
 		}
-		break;
-	case WidgetType::GraphicsSettingWidget:
-		if (IsValid(GraphicsSettingWidgetClass))
+		// 그래픽 설정 위젯인 경우
+		case WidgetType::GraphicsSettingWidget:
 		{
-			CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), GraphicsSettingWidgetClass);
-			if (CurrentWidget != nullptr)
+			if (IsValid(GraphicsSettingWidgetClass))
 			{
-				CurrentWidget->AddToViewport();
+				// 그래픽 설정 위젯을 생성하고 뷰포트에 출력함.
+				CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), GraphicsSettingWidgetClass);
+				if (CurrentWidget != nullptr)
+				{
+					CurrentWidget->AddToViewport();
+				}
 			}
+			return;
 		}
-		break;
-	case WidgetType::ArchiveWidget:
-		if (IsValid(ArchiveWidgetClass))
+		// 문서 보관함 위젯인 경우
+		case WidgetType::ArchiveWidget:
 		{
-			CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), ArchiveWidgetClass);
-			if (CurrentWidget != nullptr)
+			if (IsValid(ArchiveWidgetClass))
 			{
-				CurrentWidget->AddToViewport();
+				// 문서 보관함 위젯을 생성하고 뷰포트에 출력함.
+				CurrentWidget = CreateWidget<UUserWidget>(GetWorld(), ArchiveWidgetClass);
+				if (CurrentWidget != nullptr)
+				{
+					CurrentWidget->AddToViewport();
+				}
 			}
+			return;
 		}
-		break;
 	}
 }
 

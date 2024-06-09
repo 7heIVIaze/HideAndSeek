@@ -16,6 +16,7 @@ ASword_cpp::ASword_cpp()
 	FVector fDefaultLoc(0.0f, 0.0f, 0.0f);
 	FVector fDefaultScale(1.0f, 1.0f, 1.0f);
 
+	// 메시들의 기본 설정을 해줌. (세세한 설정은 블루프린트 클래스에서 수행)
 	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	DefaultSceneRoot->SetWorldLocation(fDefaultLoc);
 	RootComponent = DefaultSceneRoot;
@@ -37,6 +38,7 @@ void ASword_cpp::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// 월드에 배치된 제단 액터를 찾아서 설정함.
 	UWorld* World = GetWorld();
 	for (TActorIterator<AAltar_cpp>entity(World); entity; ++entity)
 	{
@@ -44,28 +46,38 @@ void ASword_cpp::BeginPlay()
 	}
 }
 
+// 플레이어가 청동 검 아이템을 습득하려 할 때 작동할 함수.
 void ASword_cpp::OnInteract(class AHorrorGameCharacter* Player)
 {
 	Super::OnInteract(Player);	
 
+	// 플레이어의 검을 얻는 메서드를 호출함.
 	Player->AddSword();
+
+	// 위 메서드를 통해 플레이어가 아이템을 얻을 수 있는 상태이면
 	if (Player->bCanItemGet)
 	{
-	//	USoundCue* ObjectSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/ObjectGet"));
+		// 오브젝트를 얻는 소리를 재생함.
 		if (ObjectSound)
 		{
 			UGameplayStatics::PlaySoundAtLocation(this, ObjectSound, GetActorLocation());
 		}
+
+		// 제단에 봉인이 해제된 아이템 개수를 1개 추가함.
 		Altar->UnSealedObjectNumber(1);
+		
+		// 청동 검을 처음 얻은 상태라면 청동 검 문서를 세이브 데이터에 영구히 저장함.
 		if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 		{
-			if (!SaveData->CollectArchives.Item5_BronzeSword) // 청동 검을 처음 얻은 상태라면
+			if (!SaveData->CollectArchives.Item5_BronzeSword)
 			{
 				SaveData->CollectArchives.Item5_BronzeSword = true;
 				Player->SetArchiveGetText(NSLOCTEXT("ASword_cpp", "Get_Sword", "Bronze Sword\nis added in archive"));
 				SaveData->SaveData();
 			}
 		}
+
+		// 그 후 배치된 이 액터를 제거함.
 		Destroy();
 	}
 }

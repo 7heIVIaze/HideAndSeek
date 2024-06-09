@@ -28,13 +28,13 @@ public:
 	UFUNCTION()
 		void SetInteractDot(bool Value);
 
-private:
-	UPROPERTY()
+protected:
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UImage* InteractDot;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UTextBlock* InteractText;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UTextBlock* ErrorText;
 };

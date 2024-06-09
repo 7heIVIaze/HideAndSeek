@@ -404,6 +404,9 @@ bool ARunner_cpp::GetIsStunned()
 // 청동 검을 통해 처치될 때 호출할 함수
 void ARunner_cpp::Exorcism()
 {
+	// 처치될 때 효과음이 있으면 좋을 듯 하다.
+	
+
 	// 사망한 것으로 설정
 	bIsDied = true;
 

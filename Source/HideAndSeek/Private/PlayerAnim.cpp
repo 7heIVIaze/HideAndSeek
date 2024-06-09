@@ -6,6 +6,7 @@
 #include "Items/PlayerSword_cpp.h"
 //#include "Kismet/GameplayStatics.h"
 
+// 플레이어 애니메이션 생성자.
 UPlayerAnim::UPlayerAnim()
 {
 	static ConstructorHelpers::FObjectFinder<UAnimMontage> ATTACK_MONTAGE(TEXT("/Game/Characters/Mannequins/Animations/Attack"));
@@ -17,6 +18,7 @@ UPlayerAnim::UPlayerAnim()
 
 void UPlayerAnim::NativeInitializeAnimation()
 {
+	// 플레이어 정보를 가져옴.
 	Player = Cast<AHorrorGameCharacter>(TryGetPawnOwner());
 }
 
@@ -35,8 +37,10 @@ void UPlayerAnim::NativeUpdateAnimation(float DeltaSeconds)
 	}
 }
 
+// 청동 검을 사용할 때 모션이 시작 시 작동할 함수.
 void UPlayerAnim::AnimNotify_SwordSlashStart()
 {
+	// 플레이어의 공격이 시작되었다고 알리고, 검의 충돌체 설정을 켜도록 함.
 	if (IsValid(Player))
 	{
 		bShouldAttack = true;
@@ -44,8 +48,10 @@ void UPlayerAnim::AnimNotify_SwordSlashStart()
 	}
 }
 
+// 청동 검을 사용할 때 모션이 끝날 때 작동할 함수.
 void UPlayerAnim::AnimNotify_SwordSlashEnd()
 {
+	// 플레이어의 공격이 끝났다고 알리고, 검의 충돌체 설정을 끄도록 함.
 	if (IsValid(Player))
 	{
 		bShouldAttack = false;

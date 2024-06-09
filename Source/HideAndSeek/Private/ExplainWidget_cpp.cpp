@@ -7,9 +7,10 @@ void UExplainWidget_cpp::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	ExplainText = Cast<UTextBlock>(GetWidgetFromName(TEXT("Explain_Text")));
+	//ExplainText = Cast<UTextBlock>(GetWidgetFromName(TEXT("Explain_Text")));
 }
 
+// 설명 문구를 설정함.
 void UExplainWidget_cpp::SetExplainText(FText strText)
 {
 	ExplainText->SetText(strText);

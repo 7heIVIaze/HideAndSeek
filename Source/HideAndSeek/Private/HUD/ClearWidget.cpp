@@ -8,7 +8,7 @@
 #include "HorrorGameGameInstance.h"
 #include "Sound/SoundCue.h"
 
-// 생성자
+// 클리어 위젯 생성자
 void UClearWidget::NativeConstruct()
 {
 	Super::NativeConstruct();

@@ -59,16 +59,16 @@ public:
 		TSubclassOf<UUserWidget> ArchiveWidget;
 
 public:
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UButton* ResumeButton;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UButton* ArchiveButton;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UButton* RetryButton;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UButton* QuitButton;
 
 	UPROPERTY()

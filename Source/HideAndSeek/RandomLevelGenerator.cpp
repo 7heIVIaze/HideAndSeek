@@ -14,8 +14,8 @@ ARandomLevelGenerator::ARandomLevelGenerator()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	// 메시 기본 값 설정. 세세한 설정은 블루프린트 클래스를 통해 변경함.
 	Center = CreateDefaultSubobject<UBillboardComponent>(TEXT("Root Billboard Comp"));
-	//Center->SetEditorScale(0.25f);
 	Center->SetHiddenInGame(false, true);
 	RootComponent = Center;
 }
@@ -25,6 +25,7 @@ void ARandomLevelGenerator::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// 5 * 5 규격으로 25개의 레벨이 조립되도록 하는 로직.
 	for (int i = 0; i < numX; ++i) // LoopX = i
 	{
 		for (int j = 0; j < numY; ++j) // LoopY = j
@@ -32,18 +33,14 @@ void ARandomLevelGenerator::BeginPlay()
 			FName LevelName;
 			int randIdx = 0;
 			float RotateDeg = 0.0f;
-			/*if (BeforeLevel != nullptr)
-			{
-				if (BeforeLevel->IsLevelVisible() && BeforeLevel->IsLevelLoaded())
-				{
-					j++;
-				}
-				continue;
-			}*/
-
+			
+			// 현재 인덱스의 레벨이 2개 라인 레벨일 경우
 			if (map[i][j] == 2) // Double Level
 			{
+				// 2개 라인 레벨은 4개이기에 랜덤 값을 찾음.
 				randIdx = FMath::RandRange(0, 3);
+
+				// 이미 배치되지 않는 레벨이 생성될 때까지 반복함.
 				while (true) // if index is used
 				{
 					if (!DoubleUse[randIdx])
@@ -53,12 +50,18 @@ void ARandomLevelGenerator::BeginPlay()
 					}
 					randIdx = FMath::RandRange(0, 3);
 				}
+
+				// 선택된 2개 라인 맵을 설정한 회전 값으로 회전되도록 설정함.
 				LevelName = DoubleNames[randIdx];
 				RotateDeg = 90.0f * LevelRotate[i][j];
 			}
+			// 현재 인덱스의 레벨이 3개 라인 레벨일 경우
 			else if (map[i][j] == 3) // Triple Level
 			{
+				// 2개 라인 레벨은 10개이기에 랜덤 값을 찾음.
 				randIdx = FMath::RandRange(0, 9);
+
+				// 이미 배치되지 않는 레벨이 생성될 때까지 반복함.
 				while (true) // if index is used
 				{
 					if (!TripleUse[randIdx])
@@ -68,12 +71,17 @@ void ARandomLevelGenerator::BeginPlay()
 					}
 					randIdx = FMath::RandRange(0, 9);
 				}
+
+				// 선택된 3개 라인 맵을 설정한 회전 값으로 회전되도록 설정함.
 				LevelName = TripleNames[randIdx];
 				RotateDeg = 90.0f * LevelRotate[i][j];
 			}
+			// 현재 인덱스의 레벨이 4개 라인 레벨일 경우
 			else // Quadra Level
 			{
 				randIdx = FMath::RandRange(0, 10);
+				
+				// 이미 배치되지 않는 레벨이 생성될 때까지 반복함.
 				while (true) // if index is used
 				{
 					if (!QuadUse[randIdx])
@@ -83,10 +91,13 @@ void ARandomLevelGenerator::BeginPlay()
 					}
 					randIdx = FMath::RandRange(0, 10);
 				}
+
+				// 선택된 4개 라인 맵을 설정한 회전 값으로 회전되도록 설정함.
 				LevelName = QuadNames[randIdx];
 				RotateDeg = 90.0f * FMath::RandRange(0, 3);
 			}
 
+			// 그 후 배치될 위치에 해당하는 회전값을 가지고 선택된 레벨이 조립되도록 설정함.
 			FVector LevelOffset = FVector(i * LevelSize + 5200.0f, j * LevelSize - 10400.0f, 0.0f);
 			FQuat fq = FRotator(0.0f, RotateDeg, 0.f).Quaternion();
 
@@ -106,34 +117,6 @@ void ARandomLevelGenerator::BeginPlay()
 
 				GetWorld()->AddStreamingLevel(StreamingLevel);
 			}
-
-			
-			// BeforeLevel = UGameplayStatics::GetStreamingLevel(GetWorld(), LevelName);
-			//if (LevelRotate[i][j] == -1) {
-			//	RotateDeg = 90.0f * FMath::RandRange(0, 3);
-			//}
-			//else {
-			//	RotateDeg = 90.0f * LevelRotate[i][j];
-			//}
-			//ULevelStreaming* result = BeforeLevel->CreateInstance(FString::FromInt(i) + "x" + FString::FromInt(j) + "Level");
-			//// result->LevelTransform = UKismetMathLibrary::MakeTransform(UKismetMathLibrary::MakeVector(i * LevelSize + 5200.0f, j * LevelSize - 10400.0f, 0.0f), UKismetMathLibrary::MakeRotator(0.0f, 0.0f, RotateDeg));
-
-			//// result->LevelTransform = UKismetMathLibrary::MakeTransform(FVector(i * LevelSize + 5200.0f, j * LevelSize - 10400.0f, 0.0f), FRotator(0.0f, RotateDeg, 0.f));
-			//result->LevelTransform.SetLocation(FVector(i * LevelSize + 5200.0f, j * LevelSize - 10400.0f, 0.0f));
-			//result->LevelTransform.SetRotation(FRotator(0.0f, RotateDeg, 0.f).Quaternion());
-
-			//result->SetShouldBeLoaded(true);
-			//result->SetShouldBeVisible(true);
-			/*temp->LevelTransform.SetLocation(FVector(i * LevelSize + 4800.0f, j * LevelSize - 9600.0f, 0.0f));
-			temp->LevelTransform.SetRotation(FQuat(FRotator(0.0f, RotateDeg, 0.0f)));*/
-			// BeforeLevel->LevelTransform = UKismetMathLibrary::MakeTransform(UKismetMathLibrary::MakeVector(i * LevelSize + 5200.0f, j * LevelSize - 10400.0f, 0.0f), UKismetMathLibrary::MakeRotator(0.0f, 0.0f, RotateDeg));
-			//BeforeLevel->LevelTransform.SetLocation(FVector(i * LevelSize + 5200.0f, j * LevelSize - 10400.0f, 0.0f));
-			//BeforeLevel->LevelTransform.SetRotation(FRotator(0.0f, RotateDeg, 0.f).Quaternion());
-			//BeforeLevel->SetShouldBeLoaded(true);
-			//// UE_LOG(LogTemp, Warning, TEXT("%s"), ((temp->IsLevelLoaded()) ? "true" : "false"));
-			//
-			//BeforeLevel->SetShouldBeVisible(true);
-			
 		}
 	}
 }

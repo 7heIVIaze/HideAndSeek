@@ -26,10 +26,10 @@ public:
 	UFUNCTION()
 		void SetBatteryVisibility(bool value);
 
-private:
-	UPROPERTY()
+public:
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UProgressBar* Battery;
-
-	UPROPERTY()
+		
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UImage* BatteryImage;
 };

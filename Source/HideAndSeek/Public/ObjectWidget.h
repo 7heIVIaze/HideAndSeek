@@ -31,14 +31,14 @@ private:
 	UFUNCTION()
 		void SetMirrorCount(int32 value);
 
-private:
-	UPROPERTY()
+protected:
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UTextBlock* SwordCount;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UTextBlock* BellCount;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UTextBlock* MirrorCount;
 
 	FString BaseText;

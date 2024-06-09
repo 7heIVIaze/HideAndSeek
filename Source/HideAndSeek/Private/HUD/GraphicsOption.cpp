@@ -22,7 +22,7 @@
 #include "Sound/SoundCue.h"
 #include "Engine/PostProcessVolume.h"
 
-// 생성자
+// 그래픽 설정 위젯 생성자
 void UGraphicsOption::NativeConstruct()
 {
 	Super::NativeConstruct();

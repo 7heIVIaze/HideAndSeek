@@ -19,9 +19,9 @@ protected:
 
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime) override;
 
-private:
-	UPROPERTY()
-		class UProgressBar* Stamina;
+protected:
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+		class UProgressBar* StaminaBar;
 
 public:
 	UFUNCTION()

@@ -24,26 +24,27 @@ class HIDEANDSEEK_API ACreatureClass : public ACharacter
 
 public:
 	UPROPERTY(VisibleAnywhere, Category = "Dissolve")
-		FTimeline DissolveTimeline; // Exorcism 시 사라지는 이펙트를 위한 타임라인 생성
+	FTimeline DissolveTimeline; // Exorcism 시 사라지는 이펙트를 위한 타임라인 생성
 
 	UPROPERTY(EditAnywhere, Category = "Dissolve")
-		UCurveFloat* DissolveCurveFloat; // Timeline Curve -> Dissolve 타임라인을 위한 float 변수
-	
-	UPROPERTY(VisibleAnywhere, Category = "Dissolve")
-		UMaterialInstanceDynamic* MaterialInstance;
+	UCurveFloat* DissolveCurveFloat; // Timeline Curve -> Dissolve 타임라인을 위한 float 변수
 
 	UPROPERTY(VisibleAnywhere, Category = "Dissolve")
-		class UNiagaraComponent* DissolveParticleSystem;
+	UMaterialInstanceDynamic* MaterialInstance;
+
+	UPROPERTY(VisibleAnywhere, Category = "Dissolve")
+	class UNiagaraComponent* DissolveParticleSystem;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Dissolve")
-		class UTexture* Texture;
+	class UTexture* Texture;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "PlayerWatchPoint")
 	class UStaticMeshComponent* WatchPoint;
 
 public:
 	UFUNCTION(BlueprintCallable)
-		virtual void ChangeMaterialInstance(float inValue) {};
+	virtual void ChangeMaterialInstance(float inValue) {};
 
 	UFUNCTION(BlueprintCallable)
-		virtual void DissolveFinish() {};
+	virtual void DissolveFinish() {};
+};

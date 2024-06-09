@@ -29,6 +29,7 @@ void ACreatureSpawner::BeginPlay()
 	//path = TEXT("/Game/Assets/AI/BP_Reaper");
 	//ObjectToSpawn = Cast<UBlueprint>(StaticLoadObject(UBlueprint::StaticClass(), NULL, *path.ToString()));
 	
+	// 생성할 적 개체가 있는지 판별함.
 	for (int i = 0; i < ObjectToSpawn.Num(); ++i)
 	{
 		if (ObjectToSpawn[i] == nullptr)
@@ -43,74 +44,17 @@ void ACreatureSpawner::BeginPlay()
 	}
 }
 
-//void ACreatureSpawner::Tick(float DeltaTime)
-//{
-//	Super::Tick(DeltaTime);
-//	FActorSpawnParameters spawnParams;
-//	fPlayTime += DeltaTime;
-//	if (count++ > 60)
-//	{
-//		//for (TActorIterator<APatrolPoint_cpp>entity(world); entity; ++entity)
-//		//{
-//		//	FString entityName = entity->GetActorLabel(); //->GetName();
-//		//	UE_LOG(LogTemp, Warning, TEXT("%s"), *entityName);
-//		//	entityName.RemoveFromStart(TEXT("BP_PatrolPoint"));
-//		//	int32 idx = FCString::Atoi(*entityName);
-//		//	UE_LOG(LogTemp, Warning, TEXT("%d"), idx);
-//		//	if (idx > 0 || idx <= 25)
-//		//		if (!IsAllLoaded[idx - 1])
-//		//			IsAllLoaded[idx - 1] = true;
-//		//}
-//
-//		//if (Check())
-//		//{
-//		//	FString strText = FString::Printf(TEXT("%2d:%2d"), (int32)fPlayTime / 60, (int32)fPlayTime % 60);
-//		//	if (GEngine)
-//		//		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, strText);
-//		//	if (reaper_cnt++ > 3)
-//		//		Destroy();
-//		//	//AReaper_cpp* reaper = world->SpawnActor<AReaper_cpp>(ObjectToSpawn->GeneratedClass, spawnLocation, rotator, spawnParams);
-//		//	AReaper_cpp* reaper = world->SpawnActor<AReaper_cpp>(ObjectToSpawn, spawnLocation, rotator, spawnParams);
-//		//	/*if (reaper)
-//		//	{
-//		//		ULevel* CurrentLevel = world->GetCurrentLevel();
-//		//		if (CurrentLevel)
-//		//		{
-//		//			CurrentLevel->Actors.Add(reaper);
-//		//			reaper_cnt++;
-//		//			return;
-//		//		}
-//		//	}*/
-//		//	reaper_cnt++;
-//		//}
-//		count = 0;
-//	}
-//
-//	
-//}
-
-//bool ACreatureSpawner::Check()
-//{
-//	for (int i = 0; i < 25; ++i)
-//	{
-//		if (!IsAllLoaded[i]) return false;
-//		UE_LOG(LogTemp, Warning, TEXT("IsAllLoaded[%d] is true"), i);
-//	}
-//	
-//	AHorrorGamePlayerController* PlayerController = Cast<AHorrorGamePlayerController>(GetWorld()->GetFirstPlayerController());
-//	/*UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(GetGameInstance());
-//	GameInstance->EndLoadingScreen(GetWorld());*/
-//	PlayerController->ShowMainUI();
-//	return true;
-//}
-
+// 레벨 매니저가 맵 생성이 다 
 void ACreatureSpawner::CreatureSpawn()
 {
 	FActorSpawnParameters SpawnParams;
+	
 	//for (int i = 0; i < 2; ++i)
 	//{
 		// AReaper_cpp* reaper = world->SpawnActor<AReaper_cpp>(ObjectToSpawn[0], spawnLocation, rotator, spawnParams);
+	//}
+
+	// 러너와 브루트를 하나씩 스폰함.
 	ARunner_cpp* runner = world->SpawnActor<ARunner_cpp>(ObjectToSpawn[0], spawnLocation, rotator, SpawnParams);
 	ABrute_cpp* brute = world->SpawnActor<ABrute_cpp>(ObjectToSpawn[1], spawnLocation, rotator, SpawnParams);
-	//}
 }

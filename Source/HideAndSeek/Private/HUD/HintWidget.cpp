@@ -11,7 +11,7 @@
 #include "HUD/ArchiveWidget.h"
 #include "Sound/SoundCue.h"
 
-// 생성자
+// 도움말 문서 보관함 위젯 생성자
 void UHintWidget::NativeConstruct()
 {
 	Super::NativeConstruct();

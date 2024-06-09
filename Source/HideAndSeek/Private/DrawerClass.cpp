@@ -8,6 +8,7 @@ ADrawerClass::ADrawerClass()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	
+	// 메시들의 기본 설정을 해줌. (세세한 설정은 블루프린트 클래스에서 수행)
 	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	DefaultSceneRoot->SetWorldLocation(FVector(0.0f, 0.0f, 0.0f));
 	FVector DefaultScale = FVector(1.0f, 1.0f, 1.0f);
@@ -17,34 +18,10 @@ ADrawerClass::ADrawerClass()
 
 	Drawer = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Drawer"));
 	Drawer->SetupAttachment(DefaultSceneRoot);
-	/*static ConstructorHelpers::FObjectFinder<UStaticMesh> DrawerAssetMesh(TEXT("/Game/Assets/Furniture/Drawer_Cube_002"));
-	if (DrawerAssetMesh.Succeeded())
-	{
-		Drawer->SetStaticMesh(DrawerAssetMesh.Object);
-		Drawer->SetRelativeLocation(FVector(0.0f, 0.0f, 0.0f));
-		Drawer->SetRelativeScale3D(DefaultScale);
-	}*/
 
 	Item = CreateDefaultSubobject<UChildActorComponent>(TEXT("Item"));
 	Item->SetupAttachment(Drawer);
 	Item->SetRelativeLocation(FVector(0.0f, 0.0f, -15.0f));
-
-	/*Deco_Left = CreateDefaultSubobject<UChildActorComponent>(TEXT("Deco_Left"));
-	Deco_Left->SetupAttachment(Drawer);
-	Deco_Left->SetRelativeLocation(FVector(0.0f, 0.0f, -15.0f));
-
-	Deco_Right = CreateDefaultSubobject<UChildActorComponent>(TEXT("Deco_Right"));
-	Deco_Right->SetupAttachment(Drawer);
-	Deco_Right->SetRelativeLocation(FVector(0.0f, 0.0f, -15.0f));*/
-
-	//DrawerSound = CreateDefaultSubobject<UAudioComponent>(TEXT("DrawerSound"));
-	//static ConstructorHelpers::FObjectFinder<USoundBase>SoundMesh(TEXT("/Game/Assets/Sounds/Drawer_Opening"));
-	//if (SoundMesh.Succeeded())
-	//{
-	//	DrawerSound->SetSound(SoundMesh.Object);
-	//}
-	/*DrawerSound->SetupAttachment(Drawer);
-	DrawerSound->SetAutoActivate(false);*/
 
 	bIsItemSpawned = false;
 }
@@ -54,28 +31,13 @@ void ADrawerClass::BeginPlay()
 {
 	Super::BeginPlay();
 
+	// 아이템이 배치된 상태라면, 배치되었다고 설정함.
 	if (Item->GetChildActorClass() != nullptr)
 	{
 		bIsItemSpawned = true;
 	}
-
-	//if (Decorators.Num() > 0)
-	//{
-	//	float RandomProbability = FMath::RandRange(0.f, 1.f);
-	//	if (RandomProbability > 0.3f) // 30퍼센트보다 더 큰 확률이면(즉 70퍼센트로 데코 생성)
-	//	{
-	//		int32 randIdx = FMath::RandRange(0, Decorators.Num() - 1);
-	//		Deco_Left->SetChildActorClass(Decorators[randIdx]);
-	//	}
-
-	//	RandomProbability = FMath::RandRange(0.f, 1.f);
-	//	if (RandomProbability > 0.3f) // 30퍼센트보다 더 큰 확률이면(즉 70퍼센트로 데코 생성)
-	//	{
-	//		int32 randIdx = FMath::RandRange(0, Decorators.Num() - 1);
-	//		Deco_Right->SetChildActorClass(Decorators[randIdx]);
-	//	}
-	//}
-	
+	 
+	// 타임라인 커브 값이 있다면 타임라인에 할당하고, 재생될 때 실행할 콜백 함수도 바인딩함.
 	if (CurveFloat)
 	{
 		FOnTimelineFloat TimelineProgress;
@@ -91,33 +53,37 @@ void ADrawerClass::Tick(float DeltaTime)
 	OpenAndClose.TickTimeline(DeltaTime);
 }
 
+// 열리는데 사용할 콜백 함수.
 void ADrawerClass::OpenDrawer(float Value)
 {
 	FVector Location = FVector(0.0f, DrawerOpenMove * Value, 0.0f);
 }
 
+// 플레이어가 상호작용할 때 작동할 함수.
 void ADrawerClass::OnInteract()
 {
-	//UE_LOG(LogTemp, Warning, TEXT("Interact!"));
-
+	// 닫혀있는 경우.
 	if (bIsDrawerClosed)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("OPEN"));
-		if (!bIsFirstOpen) // 서랍을 처음 여는 것이라면, 아이템을 생성하거나 미생성
+		// 타임 라인을 재생함.
+		OpenAndClose.Play();
+
+		// DEPRECATED
+		/*
+		// 서랍을 처음 여는 것이라면, 아이템을 생성하거나 미생성
+		if (!bIsFirstOpen) 
 		{
-			// float fNoItemProbability = 0.5f; // 아이템이 안 나올 확률
+			// 아이템이 안 나올 확률
 			float RandomValue = FMath::FRandRange(0.0f, 1.0f);
-			/*if (GEngine)
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("First Random Value: %f"), RandomValue));*/
 			int idx = -1;
 
+			// 아이템이 나올 확률에 해당한다면
 			if (RandomValue > fNoItemProbability)
 			{
 				float fTotalProbability = 1.0f - fNoItemProbability;
 				RandomValue = FMath::FRandRange(0.0f, fTotalProbability);
-				/*if (GEngine)
-					GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Second Random Value: %f"), RandomValue));*/
-
+				
+				// 
 				for (int i = 0; i < ItemProbability.Num(); ++i)
 				{
 					if (i > 0)
@@ -140,31 +106,30 @@ void ADrawerClass::OnInteract()
 
 				if (idx >= 0)
 				{
-					/*if (GEngine)
-						GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Class: %s"), *Items[idx]->GetName()));*/
 					Item->SetChildActorClass(Items[idx]);
 				}
 			}
 			bIsFirstOpen = true;
 		}
-		/*if(DrawerSound)
-			DrawerSound->Play();*/
-		OpenAndClose.Play();
+		*/
+		
 	}
+	// 열려있는 경우
 	else
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("CLOSE"));
-		/*if (DrawerSound)
-			DrawerSound->Play();*/
+		// 타임 라인을 역재생함.
 		OpenAndClose.Reverse();
 	}
 	bIsDrawerClosed = !bIsDrawerClosed; // flip flop
 }
 
+// 아이템을 배치할 함수.
 bool ADrawerClass::SetSpawnItem(TSubclassOf<AActor> inItem)
 {
-	if (!GetIsItemSpawned()) // 아이템이 없는 경우에만
+	// 아이템이 없는 경우에만
+	if (!GetIsItemSpawned())
 	{
+		// 아이템 차일드 액터에 해당하는 아이템을 배치하고 배치되었다고 설정함.
 		Item->SetChildActorClass(inItem);
 		bIsItemSpawned = true;
 

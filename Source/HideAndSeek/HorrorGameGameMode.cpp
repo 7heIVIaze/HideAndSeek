@@ -81,15 +81,6 @@ AHorrorGameGameMode::AHorrorGameGameMode()
 void AHorrorGameGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	//
-	/*if (IsValid(LevelWidgetClass))
-	{
-		MainWidget = Cast<UGameUI>(CreateWidget(GetWorld(), LevelWidgetClass));
-		if (IsValid(MainWidget))
-		{
-			MainWidget->AddToViewport();
-		}
-	}*/
 
 	AudioComponent->SetSound(MainCue);
 	//AudioComponent->Play();
@@ -102,28 +93,6 @@ void AHorrorGameGameMode::BeginPlay()
 void AHorrorGameGameMode::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-	//class AHorrorGameCharacter* PlayerCharacter = nullptr;
-	//if (PlayerController)
-	//{
-	//	PlayerCharacter = Cast<AHorrorGameCharacter>(PlayerController->GetPawn());
-	//}
-	//if (PlayerCharacter)
-	//{
-	//	/*if (PlayerCharacter->GetStamina() < 200)
-	//	{
-	//		if (!bIsStaminaWidgetOn)
-	//		{
-	//			Stamina_HUD->AddToViewport();
-	//			bIsStaminaWidgetOn = true;
-	//		}
-	//	}
-	//	else
-	//	{
-	//		Stamina_HUD->RemoveFromParent();
-	//		bIsStaminaWidgetOn = false;
-	//	}*/
-	//}
 	
 }
 

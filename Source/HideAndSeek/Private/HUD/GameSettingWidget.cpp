@@ -10,7 +10,7 @@
 #include "StartGameMode.h"
 #include "Sound/SoundCue.h"
 
-// 생성자
+// 게임 플레이 설정 위젯 생성자
 void UGameSettingWidget::NativeConstruct()
 {
 	Super::NativeConstruct();

@@ -17,14 +17,14 @@ class HIDEANDSEEK_API UPatienceWidget : public UCustomUI
 protected:
 	virtual void NativeConstruct() override;
 
-private:
-	UPROPERTY()
-		class UProgressBar* Mental;
+public:
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UProgressBar* PanicBar;
 
 public:
 	UFUNCTION()
-		void SetPatience(int32 value);
+	void SetPatience(int32 value);
 
 	UFUNCTION()
-		float GetPatience();
+	float GetPatience();
 };

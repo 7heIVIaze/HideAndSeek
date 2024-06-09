@@ -3,6 +3,7 @@
 #include "UMGPlayerController.h"
 #include "GameFramework/PlayerState.h"
 
+// UI용 컨트롤러
 void AUMGPlayerController::BeginPlay()
 {
 	Super::BeginPlay();

@@ -22,6 +22,6 @@ public:
 		void SetExtinguisherPercent(int32 value);
 
 public:
-	UPROPERTY()
-		class UProgressBar* ExtBar;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+		class UProgressBar* ExtinguisherLeftBar;
 };

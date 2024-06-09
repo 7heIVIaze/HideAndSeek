@@ -14,6 +14,7 @@ APatrolPoint_cpp::APatrolPoint_cpp()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	// 메시들의 기본 설정을 해줌. (세세한 설정은 블루프린트 클래스에서 수행)
 	RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = RootComp;
 }
@@ -23,6 +24,7 @@ void APatrolPoint_cpp::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// 레벨 매니저에게 자신을 순찰지점 리스트에 추가하도록 함.
 	for (TActorIterator<ALevelManager>LevelManager(GetWorld()); LevelManager; ++LevelManager)
 	{
 		ALevelManager* CurrentLevelManager = *LevelManager;

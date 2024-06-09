@@ -15,7 +15,8 @@ AMetalDoor_cpp::AMetalDoor_cpp()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+
+	// 메시들의 기본 설정을 해줌. (세세한 설정은 블루프린트 클래스에서 수행)
 	DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	DefaultSceneRoot->SetWorldLocation(FVector(0.f, 0.f, 0.f));
 	DefaultSceneRoot->SetWorldScale3D(FVector(1.f, 1.f, 1.f));
@@ -51,6 +52,7 @@ void AMetalDoor_cpp::BeginPlay()
 
 	SetDoorCollision(false);
 
+	// 타임라인 커브 값이 있다면 타임라인에 할당하고, 재생될 때 실행할 콜백 함수도 바인딩함.
 	if (CurveFloat)
 	{
 		FOnTimelineFloat TimelineProgress;
@@ -72,48 +74,55 @@ void AMetalDoor_cpp::Tick(float DeltaTime)
 	OpenAndClose.TickTimeline(DeltaTime);
 }
 
+// 플레이어가 상호작용할 때 작동할 함수.
 void AMetalDoor_cpp::OnInteract(class AHorrorGameCharacter* Player)
 {
+	// 문이 잠기지 않았을 때
 	if (!bIsDoorLocked)
 	{
+		// 문이 닫혀있으면
 		if (bIsDoorClosed)
 		{
-			//USoundCue* DoorSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/MetalDoorSoundCue"));
+			// 문을 여는 소리를 재생하고 타임라인을 재생함.
 			if (DoorOpenSound)
 			{
 				UGameplayStatics::PlaySoundAtLocation(this, DoorOpenSound, GetActorLocation());
 			}
 			OpenAndClose.Play();
-		//	Door->SetCollisionProfileName("OpenedDoor");
 		}
+		// 문이 열려있으면
 		else
 		{
-			//USoundCue* DoorSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/MetalDoorSound2Cue"));
+			// 문을 닫는 소리를 재생하고 타임라인을 역재생함.
 			if (DoorCloseSound)
 			{
 				UGameplayStatics::PlaySoundAtLocation(this, DoorCloseSound, GetActorLocation());
 			}
 			OpenAndClose.Reverse();
-		//	Door->SetCollisionProfileName("ClosedDoor");
 		}
 
 		bIsDoorClosed = !bIsDoorClosed;
 	}
+	// 문이 잠겼을 때, 잠겼다고 플레이어에게 알려줌.
 	else
 	{
 		Player->SetErrorText(NSLOCTEXT("AMetalDoor_cpp", "When_Metal_Door_Locked", "Locked"), 3);
 	}
 }
 
+// 적 개체가 상호작용하는 함수.
 void AMetalDoor_cpp::AIInteract(AActor* Creature)
 {
+	// 모든 것은 플레이어가 근처에 있을 때만 되도록 설정
 	if (bIsPlayerNear)
 	{
-		if (!bIsDoorBroken) // 문이 부서진 상태가 아닌 상황이여야 상호작용 가능
+		// 문이 부서진 상태가 아닌 상황이여야 상호작용 가능
+		if (!bIsDoorBroken)
 		{
-			if (bIsDoorLocked) // 만약 문이 잠긴 상황이라면
+			// 만약 문이 잠긴 상황이라면
+			if (bIsDoorLocked)
 			{
-				//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, FString::Printf(TEXT("Door Is Locked!")));
+				// 각 개체별 문을 부수는 동작을 수행할 로직인데 현재는 작동하지 않음.
 				if (auto Reaper = Cast<AReaper_cpp>(Creature))
 				{
 					Reaper->SetIsStop(true);
@@ -129,20 +138,24 @@ void AMetalDoor_cpp::AIInteract(AActor* Creature)
 					Brute->SetIsStop(true);
 					InteractingCreatures.Add(Brute);
 				}
+
+				// 문이 부숴지도록 설정함.
 				BreakDoor();
 			}
+			// 문이 잠기지 않은 상태라면
 			else
 			{
+				// 문이 닫힌 상황이면
 				if (bIsDoorClosed)
 				{
-					//		USoundCue* DoorSound = LoadObject<USoundCue>(nullptr, TEXT("/Game/Assets/Sounds/SoundCues/DoorOpenSoundCue"));
+					// 문이 열리는 소리를 재생함.
 					if (DoorOpenSound)
 					{
 						UGameplayStatics::PlaySoundAtLocation(this, DoorOpenSound, GetActorLocation());
 					}
+					
+					// 타임라인을 재생하고, 잠겼는지 파악하는 변수를 열렸다고 설정.
 					OpenAndClose.Play();
-					//	Door->SetCollisionProfileName("OpenedDoor");
-						// AI가 열린 문을 다시 닫지 않도록 하기 위해 OpenedDoor로 콜리전 변경함. 더불어 열린 문에 끼이지 않도록 하기 위함도 있음
 					bIsDoorClosed = false;
 				}
 			}
@@ -150,36 +163,37 @@ void AMetalDoor_cpp::AIInteract(AActor* Creature)
 	}
 }
 
+// 문의 충돌 여부를 설정하는 함수.
 void AMetalDoor_cpp::SetDoorCollision(bool inIsPlayerNear)
 {
 	bIsPlayerNear = inIsPlayerNear;
 	if (bIsPlayerNear) // true라면 플레이어가 근처에 있는 것이기 때문에 콜리전(물리적 충돌) 활성화
 	{
 		Door->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel5, ECollisionResponse::ECR_Block);
-		// Door->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel5, ECollisionResponse::ECR_Block);
 	}
 	else // false라면 근처에 플레이어가 없는 것이기 때문에 콜리전(물리적 충돌) 비활성화
 	{
-		// Door->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
 		Door->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel5, ECollisionResponse::ECR_Ignore);
-		// Door->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel5, ECollisionResponse::ECR_Ignore);
 	}
 }
 
-
+// 타임라인이 재생될 때 호출될 콜백 함수.
 void AMetalDoor_cpp::OpenDoor(float Value)
 {
+	// 문이 여닫는 효과를 줌.
 	FRotator Rotator = FRotator(0.f, DoorRotateAngle * Value, 0.f);
 	Door->SetRelativeRotation(Rotator);
 }
 
+// 플레이어가 아이템을 사용할 때 작동할 함수.
 void AMetalDoor_cpp::UseInteract(class AHorrorGameCharacter* Player)
 {
+	// 문이 잠겨있을 때만 작동함.
 	if (bIsDoorLocked)
 	{
+		// 플레이어에게 잠긴 문을 열었다는 것을 알리고 잠금을 해제함.
 		Player->bIsFinishUnlock = true;
 		bIsDoorLocked = false;
-		//Door->SetCollisionProfileName("ClosedDoor");
 	}
 }
 
@@ -195,18 +209,24 @@ void AMetalDoor_cpp::ChangeDoorCollision()
 	}
 }
 
+// 문이 부숴지는 함수.
 void AMetalDoor_cpp::BreakDoor()
 {
+	// 원래는 Chaos Destruction을 이용해 부숴져야 하지만, 일단 통째로 눕혀지게 설정함.
+
+	// 문이 부숴지기 전에 충돌 시 날라갈 물리 엔진 활성화와 동시에 바인딩된 함수들 제거함.
 	Door->SetSimulatePhysics(true);
 	PlayerOverlapBox->OnComponentBeginOverlap.RemoveDynamic(this, &AMetalDoor_cpp::PlayerBoxBeginOverlap);
 	PlayerOverlapBox->OnComponentEndOverlap.RemoveDynamic(this, &AMetalDoor_cpp::PlayerBoxEndOverlap);
 
+	PlayerOverlapBox->DestroyComponent();
+	
+	// 문이 부숴지는 소리를 재생함.
 	if (DoorBreakSound)
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, DoorBreakSound, GetActorLocation());
 	}
 
-	PlayerOverlapBox->DestroyComponent();
 	for (AActor* InteractCreature : InteractingCreatures)
 	{
 		if (AReaper_cpp* Reaper = Cast<AReaper_cpp>(InteractCreature))
@@ -226,6 +246,7 @@ void AMetalDoor_cpp::BreakDoor()
 	bIsDoorLocked = false;
 	bIsDoorBroken = true;
 
+	// 문이 부숴지는 효과가 나오고 5초 후, 충돌 설정도 없애고 물리 시뮬레이팅도 멈춤.
 	GetWorld()->GetTimerManager().SetTimer(Timer, FTimerDelegate::CreateLambda([&]() {
 		Door->SetSimulatePhysics(false);
 		Door->SetCollisionProfileName(TEXT("NoCollision"));

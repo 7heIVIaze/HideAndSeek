@@ -16,9 +16,10 @@
 //#include "OnlineSubsystemSteam.h"
 //#include "Serialization/ArchiveSaveCompressedProxy.h"
 
+// 생성자
 UHorrorGameGameInstance::UHorrorGameGameInstance()
 {
-	//Filename = TEXT("SaveFile_");
+	// 설정 및 SDK 초기화
 	_stoveSDKObject = NewObject<UMyStoveSDKObject>();
 	ClearedChaptersNumber = 0;
 	OptionSetting.BrightGamma = 2.2f;
@@ -46,11 +47,12 @@ void UHorrorGameGameInstance::Init()
 	Super::Init();
 
 	//GetOnlineSubsystem();
-
+	// 맵이 로딩 되기 전까지 로딩화면을 출력하도록 함.(근데 생각하던거랑 달라서 필요없는 함수가 됨,)
 	UE_LOG(LogTemp, Warning, TEXT("HorrorGameGameInstance Init!"));
 	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UHorrorGameGameInstance::BeginLoadingScreen);
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UHorrorGameGameInstance::EndLoadingScreen);
 
+	// 기존에 저장된 설정값들을 가져옴.
 	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 	{
 		ClearedChaptersNumber = SaveData->ClearChapter.Num();
@@ -64,7 +66,6 @@ void UHorrorGameGameInstance::Init()
 		ClearedTime = SaveData->ClearTime;
 		ClearChapter = SaveData->ClearChapter;
 	}
-	
 }
 
 void UHorrorGameGameInstance::OnStart()
@@ -83,7 +84,7 @@ void UHorrorGameGameInstance::StopSound()
 	BGM_Comp->Stop();
 }
 
-// deprecated
+// deprecated. 과거에 작성했던 코드.
 bool UHorrorGameGameInstance::ClearedChapterSaveLogic(int32 inClearedChapter)
 {
 	if (ClearedChaptersNumber < inClearedChapter) // 아직 클리어하지 않은 챕터를 클리어한 경우
@@ -103,8 +104,10 @@ bool UHorrorGameGameInstance::ClearedChapterSaveLogic(int32 inClearedChapter)
 	return false;
 }
 
+// 사용자 설정 값들을 저장하는 로직.
 bool UHorrorGameGameInstance::OptionSettingSaveLogic(FOptionSettings inOptionSetting)
 {
+	// 옵션 값을 저장한 후 세이브 데이터에 영구히 저장함.
 	OptionSetting = inOptionSetting;
 	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 	{
@@ -115,8 +118,10 @@ bool UHorrorGameGameInstance::OptionSettingSaveLogic(FOptionSettings inOptionSet
 	return false;
 }
 
+// 밝기 설정 값만 저장하는 로직.
 bool UHorrorGameGameInstance::BrightGammaSaveLogic(float inBrightGamma)
 {
+	// 밝기 설정 값을 가져와 세이브 데이터에 영구히 저장함.
 	OptionSetting.BrightGamma = inBrightGamma;
 	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 	{
@@ -127,8 +132,10 @@ bool UHorrorGameGameInstance::BrightGammaSaveLogic(float inBrightGamma)
 	return false;
 }
 
+// 모션 블러 값만 저장하는 로직
 bool UHorrorGameGameInstance::MotionBlurSaveLogic(bool inMotionBlur)
 {
+	// 모션 블러 값을 가져와 세이브 데이터에 영구히 저장함.
 	OptionSetting.bMotionBlur = inMotionBlur;
 	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 	{
@@ -139,8 +146,10 @@ bool UHorrorGameGameInstance::MotionBlurSaveLogic(bool inMotionBlur)
 	return false;
 }
 
+// 볼륨 값만 저장하는 로직.
 bool UHorrorGameGameInstance::VolumeSaveLogic(float inVolume)
 {
+	// 볼륨 값을 가져와 세이브 데이터에 영구히 저장함.
 	OptionSetting.Volume = inVolume;
 	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 	{
@@ -151,8 +160,10 @@ bool UHorrorGameGameInstance::VolumeSaveLogic(float inVolume)
 	return false;
 }
 
+// 마우스 민감도 값만 저장하는 로직.
 bool UHorrorGameGameInstance::MouseSensitiveSaveLogic(float inMouseSensitive)
 {
+	// 마우스 민감도 값을 가져와 세이브 데이터에 영구히 저장함.
 	OptionSetting.MouseSensitive = inMouseSensitive;
 	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 	{
@@ -163,8 +174,10 @@ bool UHorrorGameGameInstance::MouseSensitiveSaveLogic(float inMouseSensitive)
 	return false;
 }
 
+// 조준점 설정 값만 저장하는 로직.
 bool UHorrorGameGameInstance::CrossHairOnSaveLogic(bool inIsCrossHairOn)
 {
+	// 조준점 설정 값을 가져와 세이브 데이터에 영구히 저장함.
 	OptionSetting.bIsCrossHairOn = inIsCrossHairOn;
 	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 	{
@@ -175,8 +188,10 @@ bool UHorrorGameGameInstance::CrossHairOnSaveLogic(bool inIsCrossHairOn)
 	return false;
 }
 
+// 게임플레이 타이머 설정 값만 저장하는 로직.
 bool UHorrorGameGameInstance::TimerOnSaveLogic(bool inIsTimerOn)
 {
+	// 게임플레이 타이머 설정 값을 가져와 세이브 데이터에 영구히 저장함.
 	OptionSetting.bIsTimerOn = inIsTimerOn;
 	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 	{
@@ -210,33 +225,38 @@ bool UHorrorGameGameInstance::ClearTimeSaveLogic(int32 inClearedChapter, FString
 	return false;
 }
 
+// 챕터를 클리어할 때 클리어한 챕터의 데이터를 저장하는 로직.
 bool UHorrorGameGameInstance::ChapterClearSaveLogic(int32 inClearedChapter, float inClearTime, int32 inNextChapter)
 {
 	//CurrentClearedTime = inClearTime;
 	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 	{
-		bool bIsFirstSave = true; // 갱신이 가능한지(처음 저장)
-		/*FString ClearTime = inClearTime;
-		if (ClearTime.Len() == 8)
-		{
-			ClearTime = TEXT("00:") + ClearTime;
-		}*/
+		// 갱신이 가능한지(처음 저장)
+		bool bIsFirstSave = true; 
+		
 		float ClearTime = inClearTime;
 
+		// 클리어한 챕터 번호를 찾을 때까지 반복함.
 		for (int i = 0; i < SaveData->ClearChapter.Num(); ++i)
 		{
+			// 클리어한 챕터와 동일한 인덱스일 경우
 			if (SaveData->ClearChapter[i].ChapterNumber == inClearedChapter)
 			{
-				if (SaveData->ClearChapter[i].NormalClearTime > ClearTime) // 이전 기록보다 더 짧은 기록을 냈다면
+				// 이전 기록보다 더 짧은 기록을 냈다면 기록 경신
+				if (SaveData->ClearChapter[i].NormalClearTime > ClearTime) 
 				{
-					SaveData->ClearChapter[i].NormalClearTime = ClearTime; // 기록 갱신
-					//bCanUpdate = false;
+					SaveData->ClearChapter[i].NormalClearTime = ClearTime;
 				}
+
+				// 보통 난이도를 클리어한 상태가 아니라면 보통 난이도를 클리어했다고 설정함.
 				if (!SaveData->ClearChapter[i].bIsNormalCleared)
 				{
 					ClearChapter[i].bIsNormalCleared = true;
 					SaveData->ClearChapter[i].bIsNormalCleared = true;
 				}
+
+				// 후에 난이도별로 저장하는 로직도 필요함. 
+
 				//if (SaveData->ClearChapter[i].bIsNormalCleared)
 				//{
 				//	/*TArray<FString>Times;
@@ -258,6 +278,8 @@ bool UHorrorGameGameInstance::ChapterClearSaveLogic(int32 inClearedChapter, floa
 				//}
 				//break;
 			}
+
+			// 다음 챕터의 상태를 열림 상태로 바꿈.
 			if (SaveData->ClearChapter[i].ChapterNumber == inNextChapter)
 			{
 				if (!SaveData->ClearChapter[i].bIsOpened)
@@ -268,21 +290,15 @@ bool UHorrorGameGameInstance::ChapterClearSaveLogic(int32 inClearedChapter, floa
 				break;
 			}
 		}
-		//if (bIsFirstSave) // 처음 클리어하는 거라면
-		//{ 
-		//	FClearData newClearData;
-		//	newClearData.bIsNormalCleared = true;
-		//	newClearData.ChapterNumber = inClearedChapter;
-		//	newClearData.NormalClearTime = ClearTime;
-		//	SaveData->ClearChapter.Emplace(newClearData);
-		//	//SaveData->ClearTime.Add(ClearTime); // 갱신
-		//}
+		
+		// 그 후 세이브 데이터에 영구히 저장함.
 		SaveData->SaveData();
 		return true;
 	}
 	return false;
 }
 
+// 요괴 특징 문서를 저장하는 로직.
 bool UHorrorGameGameInstance::CharacteristicsOnSaveLogic()
 {
 	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
@@ -298,6 +314,7 @@ bool UHorrorGameGameInstance::CharacteristicsOnSaveLogic()
 	return false;
 }
 
+// 도움말 문서를 저장하는 로직.
 bool UHorrorGameGameInstance::TipsOnSaveLogic()
 {
 	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
@@ -396,60 +413,3 @@ TArray<FClearData> UHorrorGameGameInstance::GetAllClearData()
 {
 	return ClearChapter;
 }
-
-//void UHorrorGameGameInstance::GetOnlineSubsystem()
-//{
-//	// Get online subsystem
-//	IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get();
-//
-//	if (OnlineSubsystem)
-//	{
-//		// Get Online subsystem interface
-//		OnlineSessionInterface = OnlineSubsystem->GetSessionInterface();
-//		OnlineCloudInterface = OnlineSubsystem->GetUserCloudInterface();
-//		OnlineIdentityInterface = OnlineSubsystem->GetIdentityInterface();
-//
-//		//OnlineSubsystem->GetAchievementsInterface();
-//		//IOnlineUserCloudPtr CloudInterface = OnlineSubsystem->GetUserCloudInterface();
-//		
-//		if (OnlineIdentityInterface)
-//		{
-//			FUniqueNetIdPtr NetId = OnlineIdentityInterface->GetUniquePlayerId(0);
-//			Filename = Filename.Append(NetId->ToString());
-//			
-//			//bool result = OnlineCloudInterface->ReadUserFile(*NetId, FileName);
-//			
-//
-//			
-//			//OnlineCloudInterface->WriteUserFile(*NetId, );
-//			//OnlineIdentityInterface->CreateUniquePlayerId();
-//			//OnlineIdentityInterface->GetUniquePlayerId(0);
-//		}
-//		//CloudInterface->WriteUserFile();
-//	}
-//}
-//
-//bool UHorrorGameGameInstance::WriteUserFile_Test(const FString& FileName, const FString& FileContents, bool bCompressBeforeUpload)
-//{
-//	if (OnlineCloudInterface)
-//	{
-//		FString GameSave = FileContents;
-//
-//		TArray<uint8> CompressedBytes;
-//		FArchiveSaveCompressedProxy Compressor(CompressedBytes, NAME_Zlib);
-//		Compressor << GameSave;
-//		Compressor.Flush();
-//		Compressor.Close();
-//
-//		if (const IOnlineSubsystem* OnlineSubsystem = IOnlineSubsystem::Get())
-//		{
-//			FUniqueNetIdPtr NetId = OnlineIdentityInterface->GetUniquePlayerId(0);
-//			if (NetId.IsValid())
-//			{
-//				return OnlineSubsystem->GetUserCloudInterface()->WriteUserFile(*NetId, FileName, CompressedBytes, bCompressBeforeUpload);
-//			}
-//		}
-//		return false;
-//	}
-//	return false;
-//}

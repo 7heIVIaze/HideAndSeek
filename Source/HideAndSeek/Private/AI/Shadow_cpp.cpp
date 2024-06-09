@@ -348,6 +348,9 @@ void AShadow_cpp::DetectPlayerHidingObject(class AHideObject* DetectedObject)
 // 청동 검을 통해 처치할 때 호출할 함수
 void AShadow_cpp::Exorcism()
 {
+	// 처치될 때 효과음이 있으면 좋을 듯 하다.
+	
+
 	// 사망했다는 것으로 설정
 	bIsDied = true;
 	

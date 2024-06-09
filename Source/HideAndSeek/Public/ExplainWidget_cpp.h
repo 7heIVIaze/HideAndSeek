@@ -21,7 +21,7 @@ public:
 	UFUNCTION()
 		void SetExplainText(FText strText);
 
-private:
-	UPROPERTY()
+protected:
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 		class UTextBlock* ExplainText;
 };

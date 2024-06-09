@@ -24,89 +24,89 @@ protected:
 	virtual void NativeConstruct() override;
 
 	UFUNCTION()
-		void OnClickChapOneButton();
+	void OnClickChapOneButton();
 
 	UFUNCTION()
-		void OnClickChapTwoButton();
+	void OnClickChapTwoButton();
 
 	UFUNCTION()
-		void OnClickBackButton();
+	void OnClickBackButton();
 
 	UFUNCTION()
-		void OnMoveChapOne();
+	void OnMoveChapOne();
 
 	UFUNCTION()
-		void OnMoveChapTwo();
+	void OnMoveChapTwo();
 
 	/*UFUNCTION()
-		void OnMoveBack();*/
+	void OnMoveBack();*/
 
 	UFUNCTION()
-		void OnHoveredChapOneButton();
+	void OnHoveredChapOneButton();
 
 	UFUNCTION()
-		void OnHoveredChapTwoButton();
+	void OnHoveredChapTwoButton();
 
 	UFUNCTION()
-		void OnHoveredBackButton();
+	void OnHoveredBackButton();
 
 	UFUNCTION()
-		void UpdateButtonSlate();
+	void UpdateButtonSlate();
 
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UTextBlock* ChapTwoText;
+	class UTextBlock* ChapTwoText;
 
-private:
-	UPROPERTY()
-		class UButton* ChapOneButton;
+public:
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* ChapOneButton;
 
-	UPROPERTY()
-		class UButton* ChapTwoButton;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* ChapTwoButton;
 
-	UPROPERTY()
-		class UButton* BackButton;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* BackButton;
 
-	UPROPERTY()
-		TArray<bool> CanButtonSelect;
+	/*UPROPERTY()
+	TArray<bool> CanButtonSelect;*/
 
-	UPROPERTY()
-		class UImage* LevelImg;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UImage* StageSampleImage;
 
-	UPROPERTY()
-		class UVerticalBox* MenuBox;
-
-	UPROPERTY()
-		int32 MenuNavigationIndex = 0;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UVerticalBox* ChapterPanel;
 
 	UPROPERTY()
-		int32 MenuNumber;
+	int32 MenuNavigationIndex = 0;
 
 	UPROPERTY()
-		bool bIsButtonClicked; // 버튼 클릭 후, 다른 버튼으로 변경하지 못하도록 하기 위한 변수.
+	int32 MenuNumber;
 
 	UPROPERTY()
-		int32 ClearedChapter;
+	bool bIsButtonClicked; // 버튼 클릭 후, 다른 버튼으로 변경하지 못하도록 하기 위한 변수.
 
 	UPROPERTY()
-		TArray<FClearData> ClearData;
+	int32 ClearedChapter;
+
+	UPROPERTY()
+	TArray<FClearData> ClearData;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level_Image")
-		TArray<UTexture2D*> LevelSample;
+	TArray<UTexture2D*> LevelSample;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-		TObjectPtr<class USoundCue> StageSelectSound;
+	TObjectPtr<class USoundCue> StageSelectSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-		TObjectPtr<class USoundCue> ButtonClickSound;
+	TObjectPtr<class USoundCue> ButtonClickSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-		TObjectPtr<class USoundCue> ButtonMoveSound;
+	TObjectPtr<class USoundCue> ButtonMoveSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
-		class UWidgetAnimation* Fadeout;
+	class UWidgetAnimation* Fadeout;
 
 	FWidgetAnimationDynamicEvent FadeoutWidgetAnimationEvent;
 };

@@ -27,11 +27,6 @@ ALevelManager::ALevelManager()
 void ALevelManager::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	/*if (PlayerSpawner != nullptr)
-	{
-		PlayerSpawner->BindFunction(this);
-	}*/
 
 	World = GetWorld();
 }
@@ -41,62 +36,55 @@ void ALevelManager::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// 60 프레임마다 실행되도록 함.
 	if (count++ > 60)
 	{
-		//for (TActorIterator<APatrolPoint_cpp>entity(World); entity; ++entity)
-		//{
-		//	FString entityName = entity->GetActorLabel(); //->GetName();
-		//	UE_LOG(LogTemp, Warning, TEXT("%s"), *entityName);
-		//	entityName.RemoveFromStart(TEXT("BP_PatrolPoint"));
-		//	int32 idx = FCString::Atoi(*entityName);
-		//	UE_LOG(LogTemp, Warning, TEXT("%d"), idx);
-		//	if (idx > 0 || idx <= 25)
-		//		if (!IsAllLoaded[idx - 1])
-		//			IsAllLoaded[idx - 1] = true;
-		//}
-
+		// 아직 호출되지 않았을 경우
 		if (!bIsCalled)
 		{
+			// 레벨 시작 조건을 체크함.
 			if (Check())
 			{
+				// 아이템 매니저 클래스를 월드에서 하나씩 찾아서 아이템을 배치함.
 				for (TActorIterator<AItemManager>entity(World); entity; ++entity)
 				{
-					//(*entity)->BindItemSetting(this);
 					(*entity)->ItemSetting();
 				}
+
+				// 제단에서는 리퍼를 스폰시키도록 함.
 				Altar->ReaperSpawn();
+
+				// 요괴 스포너에서는 요괴들을 생성하도록 함.
 				for (int i = 0; i < Spawners.Num(); ++i)
 				{
-					//ACreatureSpawner* Spawner = Cast<ACreatureSpawner>(*Spawners[i]);
 					Spawners[i]->CreatureSpawn();
 				}
+
+				// 그리고 호출되었다고 설정하고
 				bIsCalled = true;
-				//ItemSettingDelegate.Broadcast();
-				//SetActorTickEnabled(false);
+				
+				// 이 액터를 제거함.
 				Destroy();
 			}
 		}
+
+		// 60 프레임마다 검사하도록 카운터를 0으로 설정함.
 		count = 0;
 		
 	}
 }
 
+// 레벨 시작 조건을 체크하는 함수.
 bool ALevelManager::Check()
 {
-	/*for (int i = 0; i < 25; ++i)
-	{
-		if (!IsAllLoaded[i]) return false;
-		UE_LOG(LogTemp, Warning, TEXT("IsAllLoaded[%d] is true"), i);
-	}*/
-
+	// 순찰 지점은 25개이기에 25개 미만이면 false로 리턴.
 	if (PatrolPoint.Num() < 25)
 	{
 		return false;
 	}
 
+	// 플레이어 컨트롤러 클래스를 가져와 레벨이 시작되었다고 알리고, 메인 UI도 호출시키며 BGM을 재생함.
 	AHorrorGamePlayerController* PlayerController = Cast<AHorrorGamePlayerController>(GetWorld()->GetFirstPlayerController());
-	/*UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(GetGameInstance());
-	GameInstance->EndLoadingScreen(GetWorld());*/
 	Cast<AHorrorGameCharacter>(PlayerController->GetPawn())->LevelStart();
 	PlayerController->ShowMainUI();
 	Cast<AHorrorGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->StartBackGroundMusic();

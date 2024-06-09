@@ -9,6 +9,7 @@ AShelf::AShelf()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
+	// 메시들의 기본 설정을 해줌. (세세한 설정은 블루프린트 클래스에서 수행)
 	RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = RootComp;
 
@@ -58,6 +59,7 @@ void AShelf::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	// 위치 별 아이템이 배치된 상태면 배치되었다고 설정함.
 	if (Upper_Item->GetChildActorClass() != nullptr)
 	{
 		bIsUpperItemSpawned = true;
@@ -73,8 +75,10 @@ void AShelf::BeginPlay()
 		bIsLowerItemSpawned = true;
 	}
 
+	// 데코레이션류(책 등 아이템이 아닌 액터)를 배치할 함수.
 	if (Decorators.Num() > 0)
 	{
+		// 랜덤 확률을 계산함.
 		float RandomProbability = FMath::RandRange(0.f, 1.f);
 		if (RandomProbability > 0.3f) // 30퍼센트보다 더 큰 확률이면(즉 70퍼센트로 데코 생성)
 		{
@@ -117,12 +121,9 @@ void AShelf::BeginPlay()
 			Lower_Deco_Right->SetChildActorClass(Decorators[randIdx]);
 		}
 	}
-
-	/*SetUpperItem();
-	SetMiddleItem();
-	SetLowerItem();*/
 }
 
+// Deprecated
 void AShelf::SetUpperItem()
 {
 	float RandomValue = FMath::FRandRange(0.0f, 1.0f);
@@ -160,6 +161,7 @@ void AShelf::SetUpperItem()
 	}
 }
 
+// Deprecated
 void AShelf::SetMiddleItem()
 {
 	
@@ -199,6 +201,7 @@ void AShelf::SetMiddleItem()
 	}
 }
 
+// Deprecated
 void AShelf::SetLowerItem()
 {
 	
@@ -238,10 +241,13 @@ void AShelf::SetLowerItem()
 	}
 }
 
+// 아이템을 배치하는 함수.
 bool AShelf::SetSpawnItem(TSubclassOf<AActor> inItem)
 {
+	// 어디 위치에 스폰시킬 것인지 설정함.
 	int32 RandPosition = FMath::RandRange(0, 2); // 0: Lower, 1: Middle, 2: Upper
 
+	// 아래일 경우 아래에 아이템이 배치되지 않았으면 배치시킴.
 	if (RandPosition == 0)
 	{
 		if (!GetIsLowerItemSpawned())
@@ -250,6 +256,7 @@ bool AShelf::SetSpawnItem(TSubclassOf<AActor> inItem)
 			return true;
 		}
 	}
+	// 중간일 경우 중간에 아이템이 배치되지 않았으면 배치시킴.
 	else if (RandPosition == 1)
 	{
 		if (!GetIsMiddleItemSpawned())
@@ -258,6 +265,7 @@ bool AShelf::SetSpawnItem(TSubclassOf<AActor> inItem)
 			return true;
 		}
 	}
+	// 위일 경우 위에 아이템이 배치되지 않았으면 배치시킴.
 	else if (RandPosition == 2)
 	{
 		if (!GetIsUpperItemSpawned())
