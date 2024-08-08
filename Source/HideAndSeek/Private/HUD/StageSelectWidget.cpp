@@ -2,10 +2,10 @@
 
 #include "HUD/StageSelectWidget.h"
 #include "Components/Button.h"
-#include "HorrorGameGameInstance.h"
+#include "LevelManager/HorrorGameGameInstance.h"
 #include "Components/VerticalBox.h"
 #include "Components/TextBlock.h"
-#include "StartGameMode.h"
+#include "LevelManager/StartGameMode.h"
 #include "Components/Image.h"
 #include "Sound/SoundCue.h"
 #include "Animation/WidgetAnimation.h"

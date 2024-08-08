@@ -1,7 +1,7 @@
 // CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "Items/FlashLight_cpp.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
+#include "Player/HorrorGameCharacter.h"
 #include "ComponentAction/HorrorGameSaveGame.h"
 #include "Kismet/GameplayStatics.h"
 

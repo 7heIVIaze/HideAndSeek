@@ -1,7 +1,7 @@
 // CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "Player/PlayerSpawner.h"
-#include "LevelManager.h"
+#include "LevelManager/LevelManager.h"
 
 // Sets default values
 APlayerSpawner::APlayerSpawner()

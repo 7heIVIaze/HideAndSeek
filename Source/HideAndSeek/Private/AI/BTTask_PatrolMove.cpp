@@ -18,11 +18,11 @@
 #include "AI/Brute_cpp.h"
 #include "AI/Shadow_cpp.h"
 #include "Tasks/AITask_MoveTo.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
-#include "Door_cpp.h"
-#include "ClassroomDoorActor_cpp.h"
-#include "MetalDoor_cpp.h"
-#include "DoorInterface_cpp.h"
+#include "Player/HorrorGameCharacter.h"
+#include "Furniture/Door_cpp.h"
+#include "Furniture/ClassroomDoorActor_cpp.h"
+#include "Furniture/MetalDoor_cpp.h"
+#include "Resource/DoorInterface_cpp.h"
 
 UBTTask_PatrolMove::UBTTask_PatrolMove()
 {

@@ -6,7 +6,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
+#include "Player/HorrorGameCharacter.h"
 #include "AI/CreatureAI.h"
 #include "AI/AIController_Runner.h"
 #include "AI/AIController_Brute.h"

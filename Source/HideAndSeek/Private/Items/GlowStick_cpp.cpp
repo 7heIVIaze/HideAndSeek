@@ -2,7 +2,7 @@
 
 #include "Items/GlowStick_cpp.h"
 #include "Components/PointLightComponent.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
+#include "Player/HorrorGameCharacter.h"
 #include "ComponentAction/HorrorGameSaveGame.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"

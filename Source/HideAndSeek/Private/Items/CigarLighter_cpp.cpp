@@ -5,7 +5,7 @@
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
 #include "Components/PointLightComponent.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
+#include "Player/HorrorGameCharacter.h"
 #include "ComponentAction/HorrorGameSaveGame.h"
 
 // Sets default values

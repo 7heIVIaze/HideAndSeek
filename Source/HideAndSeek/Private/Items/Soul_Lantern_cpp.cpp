@@ -9,8 +9,8 @@
 #include "NiagaraSystem.h"
 #include "NiagaraFunctionLibrary.h"
 #include "EngineUtils.h"
-#include "Altar_cpp.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
+#include "Furniture/Altar_cpp.h"
+#include "Player/HorrorGameCharacter.h"
 
 ASoul_Lantern_cpp::ASoul_Lantern_cpp()
 {

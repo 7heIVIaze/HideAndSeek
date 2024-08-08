@@ -7,7 +7,7 @@
 #include "Components/Border.h"
 #include "ComponentAction/HorrorGameSaveGame.h"
 #include "Kismet/GameplayStatics.h"
-#include "StartGameMode.h"
+#include "LevelManager/StartGameMode.h"
 #include "HUD/ArchiveWidget.h"
 #include "Sound/SoundCue.h"
 

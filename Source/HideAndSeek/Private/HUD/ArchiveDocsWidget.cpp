@@ -6,7 +6,7 @@
 #include "Components/Image.h"
 #include "Components/Border.h"
 #include "Kismet/GameplayStatics.h"
-#include "StartGameMode.h"
+#include "LevelManager/StartGameMode.h"
 #include "ComponentAction/HorrorGameSaveGame.h"
 #include "HUD/ArchiveWidget.h"
 #include "Sound/SoundCue.h"

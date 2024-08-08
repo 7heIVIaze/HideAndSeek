@@ -4,9 +4,9 @@
 #include "EngineUtils.h"
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
+#include "Player/HorrorGameCharacter.h"
 #include "ComponentAction/HorrorGameSaveGame.h"
-#include "Altar_cpp.h"
+#include "Furniture/Altar_cpp.h"
 
 // Sets default values
 ABell_cpp::ABell_cpp()

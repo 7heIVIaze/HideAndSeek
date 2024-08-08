@@ -1,8 +1,8 @@
 // CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "Furniture/Paper.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
-#include "HorrorGamePlayerController.h"
+#include "Player/HorrorGameCharacter.h"
+#include "Player/HorrorGamePlayerController.h"
 #include "ComponentAction/HorrorGameSaveGame.h"
 #include "Kismet/GameplayStatics.h"
 #include "ComponentAction/CollectArchives.h"

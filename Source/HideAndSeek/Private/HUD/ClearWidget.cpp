@@ -5,7 +5,7 @@
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "HorrorGameGameInstance.h"
+#include "LevelManager/HorrorGameGameInstance.h"
 #include "Sound/SoundCue.h"
 
 // 클리어 위젯 생성자

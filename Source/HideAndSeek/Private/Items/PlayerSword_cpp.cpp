@@ -8,8 +8,8 @@
 #include "AI/Reaper_cpp.h"
 #include "AI/Brute_cpp.h"
 #include "AI/Runner_cpp.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
-#include "HideAndSeek/HorrorGameGameMode.h"
+#include "Player/HorrorGameCharacter.h"
+#include "LevelManager/HorrorGameGameMode.h"
 
 // Sets default values
 APlayerSword_cpp::APlayerSword_cpp()

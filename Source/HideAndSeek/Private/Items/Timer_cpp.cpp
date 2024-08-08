@@ -1,7 +1,7 @@
 // CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "Items/Timer_cpp.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
+#include "Player/HorrorGameCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "ComponentAction/HorrorGameSaveGame.h"
 

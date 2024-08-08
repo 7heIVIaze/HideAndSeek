@@ -21,7 +21,10 @@ public:
 
 public: // Properties
 	UPROPERTY(VisibleDefaultsOnly, Category = "Projectile")
-		UBoxComponent* Collision;
+	TObjectPtr<USceneComponent> RootComp;
+
+	/*UPROPERTY(VisibleDefaultsOnly, Category = "Projectile")
+		UBoxComponent* Collision;*/
 
 	UPROPERTY(VisibleAnywhere, Category = "Timer")
 		UStaticMeshComponent* TimerMesh;
@@ -56,8 +59,11 @@ public:
 	UFUNCTION()
 		bool GetPlaySound();*/
 
-	UFUNCTION()
-		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+	/*UFUNCTION()
+		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);*/
+
+	/*UFUNCTION(BlueprintCallable)
+	void OnBeginOverlap();*/
 
 //private:
 //	UPROPERTY()

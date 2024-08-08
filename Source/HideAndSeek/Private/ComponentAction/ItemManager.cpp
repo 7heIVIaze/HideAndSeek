@@ -1,14 +1,14 @@
 // CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "ComponentAction/ItemManager.h"
-#include "LevelManager.h"
+#include "LevelManager/LevelManager.h"
 #include "EngineUtils.h"
-#include "Drawer_cpp.h"
-#include "DrawerClass.h"
-#include "Locker_cpp.h"
-#include "WardrobeDrawer_cpp.h"
-#include "DeskDrawer_cpp.h"
-#include "Shelf.h"
+#include "Furniture/Drawer_cpp.h"
+#include "Furniture/DrawerClass.h"
+#include "Furniture/Locker_cpp.h"
+#include "Furniture/WardrobeDrawer_cpp.h"
+#include "Furniture/DeskDrawer_cpp.h"
+#include "Furniture/Shelf.h"
 
 // Sets default values
 AItemManager::AItemManager()

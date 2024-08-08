@@ -3,7 +3,7 @@
 #include "AI/BTService_SightDetect.h"
 #include "AI/CreatureAI.h"
 #include "AI/AIController_Runner.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
+#include "Player/HorrorGameCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "DrawDebugHelpers.h"
 #include "AI/Reaper_cpp.h"
@@ -105,19 +105,16 @@ void UBTService_SightDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 		return;
 	}
 
-	/*FVector vTraceVec = Creature->GetActorForwardVector() * 1600.f;
-	FVector vCenter = Creature->GetActorLocation() + vTraceVec * 0.5f;
-	FQuat qRotationMat = FRotationMatrix::MakeFromZ(vTraceVec).ToQuat();*/
+	// 콜리전 감지를 위한 기본 변수들
 	FVector StartLocation = Creature->GetActorLocation();
 	FVector ForwardVector = Creature->GetActorForwardVector();
 	FVector EndLocation = StartLocation + ForwardVector * 1600.0f;
 	FVector Extent(40.0f, 40.0f, 1.0f); // X, Y, Z 축 범위
-	//TArray<FOverlapResult> OverlapResults;
 	FHitResult HitResult;
 	FCollisionQueryParams params(NAME_None, false, Creature);
-	// 콜리전 감지를 위한 기본 변수들
 
 
+	// 초기 버전 OverlapMultiByChannel로 물체 뒤 겹친 캐릭터 가져오게
 	//bool bResult = world->OverlapMultiByChannel(
 	//	OverlapResults,
 	//	Creature->GetActorLocation(),
@@ -127,8 +124,8 @@ void UBTService_SightDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 	//	FCollisionShape::MakeBox(vTraceVec),
 	//	params
 	//);
-	// 초기 버전 OverlapMultiByChannel로 물체 뒤 겹친 캐릭터 가져오게
 
+	// 하나만 감지하게 SweepSingleByChannel로 변경했음
 	bool bResult = world->SweepSingleByChannel(
 		HitResult,
 		StartLocation,
@@ -138,7 +135,6 @@ void UBTService_SightDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 		FCollisionShape::MakeBox(ForwardVector * 1600.f),
 		params
 	);
-	// 하나만 감지하게 SweepSingleByChannel로 변경했음
 
 	//FColor DrawColor = bResult ? FColor::Red : FColor::Green;
 	// float fHalfHeight = 1600.0f * 0.5f + 40.0f;
@@ -147,8 +143,6 @@ void UBTService_SightDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 	// 플레이어 감지 시 로직
 	if (bResult)
 	{
-		//UE_LOG(LogTemp, Warning, TEXT("Overlap[0]: %s"), *OverlapResults[0].GetActor()->GetName()); // Overlap 된 객체 중 가장 먼저 Overlap된 것만 검사
-		//AHorrorGameCharacter* pTarget = Cast<AHorrorGameCharacter>(OverlapResults[0].GetActor());
 		AHorrorGameCharacter* pTarget = Cast<AHorrorGameCharacter>(HitResult.GetActor());
 		if (pTarget && pTarget->GetController()->IsPlayerController() && !pTarget->GetIsHiding())
 		{

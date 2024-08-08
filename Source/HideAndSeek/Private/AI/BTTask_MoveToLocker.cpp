@@ -14,9 +14,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
-#include "Cabinet_cpp.h"
-#include "Wardrobe_cpp.h"
+#include "Player/HorrorGameCharacter.h"
 #include "Furniture/HideObject.h"
 
 // AI를 숨을 수 있는 오브젝트(옷장/캐비닛)로 이동시키는 로직

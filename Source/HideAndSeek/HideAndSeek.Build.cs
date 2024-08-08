@@ -25,7 +25,8 @@ public class HideAndSeek : ModuleRules
 			"MoviePlayer", 
 			"StoveSDKPlugin", 
 			"OnlineSubsystemSteam", 
-			"OnlineSubsystem"
+			"OnlineSubsystem",
+			"GameplayCameras"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { 

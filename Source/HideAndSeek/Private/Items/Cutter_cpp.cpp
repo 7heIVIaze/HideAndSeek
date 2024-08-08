@@ -1,7 +1,7 @@
 // CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "Items/Cutter_cpp.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
+#include "Player/HorrorGameCharacter.h"
 #include "ComponentAction/HorrorGameSaveGame.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -45,6 +45,7 @@ void ACutter_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	{
 		// 절단기의 남은 내구도를 이 절단기의 내구도로 복구함.
 		Player->CutterDurability = Durability;
+		Player->CurrentItem();
 
 		// 절단기를 처음 얻은 상태라면 절단기 문서를 세이브 데이터에 영구히 저장함.
 		if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))

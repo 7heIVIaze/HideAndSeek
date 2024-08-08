@@ -9,11 +9,11 @@
 #include "AI/Runner_cpp.h"
 #include "AI/Brute_cpp.h"
 #include "AI/Shadow_cpp.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
+#include "Player/HorrorGameCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Items/TimerProjectile_cpp.h"
 #include "Items/ThrownTimer_cpp.h"
-#include "Alarm.h"
+#include "Furniture/Alarm.h"
 
 UBTService_NoiseDetect::UBTService_NoiseDetect()
 {
@@ -102,6 +102,11 @@ void UBTService_NoiseDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 				}
 			}
 		}
+
+		if (bIsDebug)
+		{
+			DrawDebugSphere(World, vCenter, fDetectRadius, 16, FColor::Green, false, 0.2f);
+		}
 		//else // 아무것도 감지되지 않은 상태이면
 		//{
 		//	ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::NoiseDetected, false); // false로 설정함
@@ -181,6 +186,11 @@ void UBTService_NoiseDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 					}
 				}
 			}
+		}
+
+		if (bIsDebug)
+		{
+			DrawDebugSphere(World, vCenter, fDetectRadius, 16, FColor::Green, false, 0.2f);
 		}
 		//else // 아무것도 감지된 것이 없을 때 false로 설정.
 		//{
@@ -316,6 +326,11 @@ void UBTService_NoiseDetect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* 
 				BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::NoiseDetected, false);
 				//BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::ChangeDetectRange, false);
 			}
+		}
+
+		if (bIsDebug)
+		{
+			DrawDebugSphere(World, vCenter, fDetectRadius, 16, FColor::Green, false, 0.2f);
 		}
 		//DrawDebugCapsule(World, vCenter, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Green, false, 0.2f);
 	//	DrawDebugSphere(World, vCenter, fDetectRadius, 16, FColor::Green, false, 0.2f);

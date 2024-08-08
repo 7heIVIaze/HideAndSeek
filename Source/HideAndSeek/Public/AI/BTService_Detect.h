@@ -15,6 +15,10 @@ class HIDEANDSEEK_API UBTService_Detect : public UBTService
 	GENERATED_BODY()
 	
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
+	bool bIsDebug;
+
+public:
 	UBTService_Detect();
 
 protected:

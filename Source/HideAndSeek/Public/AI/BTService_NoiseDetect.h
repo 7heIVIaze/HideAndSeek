@@ -17,6 +17,10 @@ class HIDEANDSEEK_API UBTService_NoiseDetect : public UBTService
 public:
 	UBTService_NoiseDetect();
 
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
+	bool bIsDebug;
+
 protected:
 	virtual void TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 };

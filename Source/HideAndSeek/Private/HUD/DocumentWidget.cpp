@@ -4,7 +4,7 @@
 #include "Components/TextBlock.h"
 #include "Components/Button.h"
 #include "Components/Border.h"
-#include "HorrorGamePlayercontroller.h"
+#include "Player/HorrorGamePlayercontroller.h"
 #include "Kismet/GameplayStatics.h"
 
 // 문서 위젯 생성자.

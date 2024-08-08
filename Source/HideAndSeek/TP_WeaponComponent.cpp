@@ -2,7 +2,7 @@
 
 
 #include "TP_WeaponComponent.h"
-#include "HorrorGameCharacter.h"
+#include "Player/HorrorGameCharacter.h"
 #include "HorrorGameProjectile.h"
 #include "GameFramework/PlayerController.h"
 #include "Camera/PlayerCameraManager.h"

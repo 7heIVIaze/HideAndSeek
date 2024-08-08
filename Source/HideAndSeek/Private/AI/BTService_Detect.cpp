@@ -9,9 +9,7 @@
 #include "AI/Runner_cpp.h"
 #include "AI/Brute_cpp.h"
 #include "AI/Shadow_cpp.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
-#include "Cabinet_cpp.h"
-#include "Wardrobe_cpp.h"
+#include "Player/HorrorGameCharacter.h"
 #include "Furniture/HideObject.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "DrawDebugHelpers.h"
@@ -83,13 +81,15 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 						ReaperAI->GetBlackboard()->SetValueAsVector(ACreatureAI::TargetLocation, PlayerCharacter->GetActorLocation());
 
 						// 디버깅용
-						//DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.2f);
-						//DrawDebugCapsule(World, Center, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Red, false, 0.2f);
-						//DrawDebugBox(World, Center, DetectSize, FColor::Green, false, 0.2f);
+						if (bIsDebug)
+						{
+							DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.2f);
+							//DrawDebugCapsule(World, Center, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Red, false, 0.2f);
+							//DrawDebugBox(World, Center, DetectSize, FColor::Green, false, 0.2f);
 
-						//DrawDebugPoint(World, PlayerCharacter->GetActorLocation(), 10.f, FColor::Blue, false, 0.2f);
-						//DrawDebugLine(World, Reaper->GetActorLocation(), PlayerCharacter->GetActorLocation(), FColor::Blue, false, 0.2f);
-						
+							DrawDebugPoint(World, PlayerCharacter->GetActorLocation(), 10.f, FColor::Blue, false, 0.2f);
+							DrawDebugLine(World, Reaper->GetActorLocation(), PlayerCharacter->GetActorLocation(), FColor::Blue, false, 0.2f);
+						}
 						return;
 					}
 				}
@@ -160,9 +160,12 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 			ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::TargetKey, nullptr);
 		}
 
-		//DrawDebugCapsule(World, Center, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Green, false, 0.2f);
-		//DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.2f);
-		//DrawDebugBox(World, Center, DetectSize, FColor::Red, false, 0.2f);
+		if (bIsDebug)
+		{
+			//DrawDebugCapsule(World, Center, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Green, false, 0.2f);
+			DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.2f);
+			//DrawDebugBox(World, Center, DetectSize, FColor::Red, false, 0.2f);
+		}
 	}
 	// 만약 그 컨트롤러가 Runner의 AI일 경우
 	if (AAIController_Runner* RunnerAI = Cast<AAIController_Runner>(AIController))
@@ -187,7 +190,7 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 		TArray<FOverlapResult> OverlapResults;
 		// AICanDetect라는 태그가 있는 액터만을 검색하도록 조건을 추가함.
 		FCollisionQueryParams CollisionQueryParam(TEXT("AICanDetect"), false, Runner);
-		
+
 		// 콜리전을 생성하는데 구 모양으로 생성함.
 		bool bResult = World->OverlapMultiByChannel(
 			OverlapResults,
@@ -214,15 +217,18 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 						UE_LOG(LogTemp, Warning, TEXT("Player Detected"));
 						RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::TargetKey, PlayerCharacter);
 						RunnerAI->GetBlackboard()->SetValueAsVector(AAIController_Runner::TargetLocation, PlayerCharacter->GetActorLocation());
-						
-						// 디버깅용
-						// Show radius
-						//DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.2f);
-						//DrawDebugCapsule(World, Center, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Red, false, 0.2f);
-						//DrawDebugBox(World, Center, DetectSize, FColor::Green, false, 0.2f);
 
-						//	DrawDebugPoint(World, PlayerCharacter->GetActorLocation(), 10.f, FColor::Blue, false, 0.2f);
-						//	DrawDebugLine(World, Runner->GetActorLocation(), PlayerCharacter->GetActorLocation(), FColor::Blue, false, 0.2f);
+						// 디버깅용
+						if (bIsDebug)
+						{
+							// Show radius
+							DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.2f);
+							//DrawDebugCapsule(World, Center, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Red, false, 0.2f);
+							//DrawDebugBox(World, Center, DetectSize, FColor::Green, false, 0.2f);
+
+							DrawDebugPoint(World, PlayerCharacter->GetActorLocation(), 10.f, FColor::Blue, false, 0.2f);
+							DrawDebugLine(World, Runner->GetActorLocation(), PlayerCharacter->GetActorLocation(), FColor::Blue, false, 0.2f);
+						}
 						return;
 					}
 				}
@@ -295,9 +301,12 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 			RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::TargetKey, nullptr);
 		}
 
-		//DrawDebugCapsule(World, Center, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Green, false, 0.2f);
-		//	DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.2f);
-		//DrawDebugBox(World, Center, DetectSize, FColor::Red, false, 0.2f);
+		if (bIsDebug)
+		{
+			//DrawDebugCapsule(World, Center, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Green, false, 0.2f);
+			DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.2f);
+			//DrawDebugBox(World, Center, DetectSize, FColor::Red, false, 0.2f);
+		}
 	}
 	// 만약 그 컨트롤러가 Brute의 AI라면
 	if (AAIController_Brute* BruteAI = Cast<AAIController_Brute>(AIController))
@@ -350,12 +359,15 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 						BruteAI->GetBlackboard()->SetValueAsVector(AAIController_Brute::TargetLocation, PlayerCharacter->GetActorLocation());
 
 						// 디버깅용
-						//DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.2f);
-						//DrawDebugCapsule(World, Center, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Red, false, 0.2f);
-						//DrawDebugBox(World, Center, DetectSize, FColor::Green, false, 0.2f);
+						if (bIsDebug)
+						{
+							DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.2f);
+							//DrawDebugCapsule(World, Center, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Red, false, 0.2f);
+							//DrawDebugBox(World, Center, DetectSize, FColor::Green, false, 0.2f);
 
-						// DrawDebugPoint(World, PlayerCharacter->GetActorLocation(), 10.f, FColor::Blue, false, 0.2f);
-						// DrawDebugLine(World, Brute->GetActorLocation(), PlayerCharacter->GetActorLocation(), FColor::Blue, false, 0.2f);
+							DrawDebugPoint(World, PlayerCharacter->GetActorLocation(), 10.f, FColor::Blue, false, 0.2f);
+							DrawDebugLine(World, Brute->GetActorLocation(), PlayerCharacter->GetActorLocation(), FColor::Blue, false, 0.2f);
+						}
 						return;
 					}
 				}
@@ -425,9 +437,12 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 			BruteAI->GetBlackboard()->SetValueAsObject(AAIController_Brute::TargetKey, nullptr);
 		}
 
-		//DrawDebugCapsule(World, Center, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Green, false, 0.2f);
-	//	DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.2f);
-		//DrawDebugBox(World, Center, DetectSize, FColor::Red, false, 0.2f);
+		if (bIsDebug)
+		{
+			//DrawDebugCapsule(World, Center, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Green, false, 0.2f);
+			DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.2f);
+			//DrawDebugBox(World, Center, DetectSize, FColor::Red, false, 0.2f);
+		}
 	}
 	// 만약 그 컨트롤러가 Shadow의 AI라면
 	if (AAIController_Shadow* ShadowAI = Cast<AAIController_Shadow>(AIController))
@@ -452,7 +467,7 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 		TArray<FOverlapResult> OverlapResults;
 		// AICanDetect라는 태그를 가진 액터만을 검색하기 위해 조건을 추가함.
 		FCollisionQueryParams CollisionQueryParam(TEXT("AICanDetect"), false, Shadow);
-		
+
 		// 충돌체를 구 모양으로 생성함.
 		bool bResult = World->OverlapMultiByChannel(
 			OverlapResults,
@@ -463,7 +478,7 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 			CollisionQueryParam
 		);
 		// ECC_GameTraceChannel3 is collision trace channel which is just detect overlapped only AHorrorGameCharacter class
-		
+
 		// 어떤 충돌이 감지되었을 경우
 		if (bResult)
 		{
@@ -478,15 +493,18 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 					{
 						ShadowAI->GetBlackboard()->SetValueAsObject(AAIController_Shadow::TargetKey, PlayerCharacter);
 						ShadowAI->GetBlackboard()->SetValueAsVector(AAIController_Shadow::TargetLocation, PlayerCharacter->GetActorLocation());
-						
-						// 디버깅용
-						//DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.2f);
-						//DrawDebugCapsule(World, Center, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Red, false, 0.2f);
-						//DrawDebugBox(World, Center, DetectSize, FColor::Green, false, 0.2f);
 
-						//DrawDebugPoint(World, PlayerCharacter->GetActorLocation(), 10.f, FColor::Blue, false, 0.2f);
-						//DrawDebugLine(World, Shadow->GetActorLocation(), PlayerCharacter->GetActorLocation(), FColor::Blue, false, 0.2f);
-						return;
+						// 디버깅용
+						if (bIsDebug)
+						{
+							// Show radius
+							DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Red, false, 0.2f);
+							//DrawDebugCapsule(World, Center, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Red, false, 0.2f);
+							//DrawDebugBox(World, Center, DetectSize, FColor::Green, false, 0.2f);
+
+							DrawDebugPoint(World, PlayerCharacter->GetActorLocation(), 10.f, FColor::Blue, false, 0.2f);
+							DrawDebugLine(World, Shadow->GetActorLocation(), PlayerCharacter->GetActorLocation(), FColor::Blue, false, 0.2f);
+						}return;
 					}
 				}
 				// Chack if a controller is player's controller
@@ -555,8 +573,11 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 			ShadowAI->GetBlackboard()->SetValueAsObject(AAIController_Shadow::TargetKey, nullptr);
 		}
 
-		//DrawDebugCapsule(World, Center, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Green, false, 0.2f);
-	//	DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.2f);
-		//DrawDebugBox(World, Center, DetectSize, FColor::Red, false, 0.2f);
+		if (bIsDebug)
+		{
+			//DrawDebugCapsule(World, Center, 400.f, 20.f, FRotationMatrix::MakeFromZ(ControllingPawn->GetActorForwardVector()).ToQuat(), FColor::Green, false, 0.2f);
+			DrawDebugSphere(World, Center, DetectRadius, 16, FColor::Green, false, 0.2f);
+			//DrawDebugBox(World, Center, DetectSize, FColor::Red, false, 0.2f);
+		}
 	}
 }

@@ -1,13 +1,13 @@
 // CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "ComponentAction/PrologueGameMode.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
+#include "Player/HorrorGameCharacter.h"
 #include "Blueprint/UserWidget.h"
-#include "GameUI.h"
-#include "DiedWidget.h"
+#include "HUD/GameUI.h"
+#include "HUD/DiedWidget.h"
 #include "Components/AudioComponent.h"
 #include "Sound/SoundCue.h"
-#include "HorrorGamePlayerController.h"
+#include "Player/HorrorGamePlayerController.h"
 #include "UObject/ConstructorHelpers.h"
 
 APrologueGameMode::APrologueGameMode()

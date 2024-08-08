@@ -2,7 +2,7 @@
 
 #include "AI/BTTask_SetTrace.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
+#include "Player/HorrorGameCharacter.h"
 #include "AI/CreatureAI.h"
 #include "AI/AIController_Runner.h"
 #include "AI/AIController_Brute.h"

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "CustomDataTables.h"
+#include "Resource/CustomDataTables.h"
 #include "ComponentAction/CollectArchives.h"
 #include "ArchiveDocsWidget.generated.h"
 

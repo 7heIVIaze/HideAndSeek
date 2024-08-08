@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Components/TimelineComponent.h"
-#include "DoorInterface_cpp.h"
+#include "Resource/DoorInterface_cpp.h"
 #include "DBox_Door.generated.h"
 
 UCLASS()

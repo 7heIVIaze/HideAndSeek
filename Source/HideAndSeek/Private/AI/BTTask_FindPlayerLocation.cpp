@@ -14,7 +14,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
+#include "Player/HorrorGameCharacter.h"
 
 // AI가 플레이어를 추격하다 놓쳤을 경우/어그로에 끌렸을 경우에 그 주위를 맴도는 로직
 UBTTask_FindPlayerLocation::UBTTask_FindPlayerLocation()

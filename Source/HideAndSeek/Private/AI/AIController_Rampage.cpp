@@ -10,7 +10,7 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AIPerceptionComponent.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
+#include "Player/HorrorGameCharacter.h"
 #include "AI/Rampage_cpp.h"
 
 // 블랙보드 데이터를 블루프린트로부터 읽을 수 있도록 바인딩해줌.

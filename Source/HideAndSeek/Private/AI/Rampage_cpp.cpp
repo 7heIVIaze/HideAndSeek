@@ -14,18 +14,19 @@
 #include "AI/AIController_Rampage.h"
 #include "AI/RampageAnimInstance.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "PatrolPoint_cpp.h"
+#include "LevelManager/PatrolPoint_cpp.h"
 #include "EngineUtils.h"
-#include "Wardrobe_cpp.h"
-#include "Cabinet_cpp.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
-#include "HorrorGamePlayerController.h"
-#include "ClassroomDoorActor_cpp.h"
-#include "Door_cpp.h"
-#include "MetalDoor_cpp.h"
-#include "Alarm.h"
+//#include "Wardrobe_cpp.h"
+//#include "Cabinet_cpp.h"
+#include "Player/HorrorGameCharacter.h"
+#include "Player/HorrorGamePlayerController.h"
+#include "Furniture/ClassroomDoorActor_cpp.h"
+#include "Furniture/Door_cpp.h"
+#include "Furniture/MetalDoor_cpp.h"
+#include "Furniture/Alarm.h"
 #include "Animation/AnimSequence.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/GameplayStatics.h"
 #include "NiagaraComponent.h"
 #include "Materials/MaterialParameterCollection.h"
 #include "Materials/MaterialParameterCollectionInstance.h"
@@ -257,35 +258,35 @@ void ARampage_cpp::SoundBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 			}
 		}
 
-		if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
-		{
-			Cabinet->CreatureNum++;
-			/*if (Cabinet->CreatureNum > 0 && Cabinet->bIsHiding)
-				Cabinet->FlickeringLight.Play();*/
-				//ReaperSound->Play();
-			if (Cabinet->bIsHiding)
-			{
-				Cabinet->SetCameraComponentNoise(1);
-			}
-			/*if (Cabinet->Player != nullptr) // 원래는 숨어있을 때도 긴장도 증가였지만, 없애기로 함
-				if (!Cabinet->Player->bIsCooldown)
-					Cabinet->Player->Patience += 5;*/
-		}
+		//if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
+		//{
+		//	Cabinet->CreatureNum++;
+		//	/*if (Cabinet->CreatureNum > 0 && Cabinet->bIsHiding)
+		//		Cabinet->FlickeringLight.Play();*/
+		//		//ReaperSound->Play();
+		//	if (Cabinet->bIsHiding)
+		//	{
+		//		Cabinet->SetCameraComponentNoise(1);
+		//	}
+		//	/*if (Cabinet->Player != nullptr) // 원래는 숨어있을 때도 긴장도 증가였지만, 없애기로 함
+		//		if (!Cabinet->Player->bIsCooldown)
+		//			Cabinet->Player->Patience += 5;*/
+		//}
 
-		if (auto Wardrobe = Cast<AWardrobe_cpp>(OtherActor))
-		{
-			Wardrobe->CreatureNum++;
-			/*if (Wardrobe->CreatureNum > 0 && Wardrobe->bIsHiding)
-				Wardrobe->FlickeringLight.Play();*/
-				//ReaperSound->Play();
-			if (Wardrobe->bIsHiding)
-			{
-				Wardrobe->SetCameraComponentNoise(1);
-			}
-			/*if (Wardrobe->Player != nullptr) // 원래는 숨어있을 때도 긴장도 증가였지만, 없애기로 함
-				if (!Wardrobe->Player->bIsCooldown)
-					Wardrobe->Player->Patience += 5;*/
-		}
+		//if (auto Wardrobe = Cast<AWardrobe_cpp>(OtherActor))
+		//{
+		//	Wardrobe->CreatureNum++;
+		//	/*if (Wardrobe->CreatureNum > 0 && Wardrobe->bIsHiding)
+		//		Wardrobe->FlickeringLight.Play();*/
+		//		//ReaperSound->Play();
+		//	if (Wardrobe->bIsHiding)
+		//	{
+		//		Wardrobe->SetCameraComponentNoise(1);
+		//	}
+		//	/*if (Wardrobe->Player != nullptr) // 원래는 숨어있을 때도 긴장도 증가였지만, 없애기로 함
+		//		if (!Wardrobe->Player->bIsCooldown)
+		//			Wardrobe->Player->Patience += 5;*/
+		//}
 	}
 }
 
@@ -316,31 +317,31 @@ void ARampage_cpp::SoundEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 			}
 		}
 
-		if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
-		{
-			//ReaperSound->Stop();
-			Cabinet->CreatureNum--;
-			if (Cabinet->CreatureNum <= 0)
-			{
-				Cabinet->FlickeringLight.Stop();
-				Cabinet->CigarLight->SetIntensity(Cabinet->Intensity);
-				Cabinet->FlashLight->SetIntensity(Cabinet->Intensity);
-				Cabinet->SetCameraComponentNoise(0);
-			}
-		}
+		//if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
+		//{
+		//	//ReaperSound->Stop();
+		//	Cabinet->CreatureNum--;
+		//	if (Cabinet->CreatureNum <= 0)
+		//	{
+		//		Cabinet->FlickeringLight.Stop();
+		//		Cabinet->CigarLight->SetIntensity(Cabinet->Intensity);
+		//		Cabinet->FlashLight->SetIntensity(Cabinet->Intensity);
+		//		Cabinet->SetCameraComponentNoise(0);
+		//	}
+		//}
 
-		if (auto Wardrobe = Cast<AWardrobe_cpp>(OtherActor))
-		{
-			//ReaperSound->Stop();
-			Wardrobe->CreatureNum--;
-			if (Wardrobe->CreatureNum <= 0)
-			{
-				Wardrobe->FlickeringLight.Stop();
-				Wardrobe->CigarLight->SetIntensity(Wardrobe->Intensity);
-				Wardrobe->FlashLight->SetIntensity(Wardrobe->Intensity);
-				Wardrobe->SetCameraComponentNoise(0);
-			}
-		}
+		//if (auto Wardrobe = Cast<AWardrobe_cpp>(OtherActor))
+		//{
+		//	//ReaperSound->Stop();
+		//	Wardrobe->CreatureNum--;
+		//	if (Wardrobe->CreatureNum <= 0)
+		//	{
+		//		Wardrobe->FlickeringLight.Stop();
+		//		Wardrobe->CigarLight->SetIntensity(Wardrobe->Intensity);
+		//		Wardrobe->FlashLight->SetIntensity(Wardrobe->Intensity);
+		//		Wardrobe->SetCameraComponentNoise(0);
+		//	}
+		//}
 	}
 }
 
@@ -469,7 +470,7 @@ void ARampage_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 	{
 		if (OtherActor != this && OtherActor != nullptr && OtherComp != nullptr)
 		{
-			if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
+			/*if (auto Cabinet = Cast<ACabinet_cpp>(OtherActor))
 			{
 				if (bIsChase && HideCatch)
 				{
@@ -490,7 +491,7 @@ void ARampage_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor
 						Wardrobe->BreakWardrobe();
 					}
 				}
-			}
+			}*/
 			if (auto Character = Cast<AHorrorGameCharacter>(OtherActor))
 			{
 				if ((Character->GetPlayerStatus() == Player_Status::Survive || Character->GetPlayerStatus() == Player_Status::Chased) && !Character->GetIsHiding())

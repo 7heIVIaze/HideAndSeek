@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
-#include "HideInterface.h"
+#include "Resource/HideInterface.h"
 #include "Components/TimelineComponent.h"
 #include "HideObject.generated.h"
 

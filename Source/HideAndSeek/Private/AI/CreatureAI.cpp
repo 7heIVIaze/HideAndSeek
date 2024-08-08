@@ -11,7 +11,7 @@
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AIPerceptionComponent.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
+#include "Player/HorrorGameCharacter.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "AI/Reaper_cpp.h"
 

@@ -1,6 +1,7 @@
 // CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "Player/PlayerStatComponent.h"
+#include "Player/HorrorGameCharacter.h"
 
 // Sets default values for this component's properties
 UPlayerStatComponent::UPlayerStatComponent()
@@ -9,6 +10,7 @@ UPlayerStatComponent::UPlayerStatComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
+	PlayerStatus = EPlayerStatus::Loading;
 	// ...
 }
 
@@ -18,7 +20,8 @@ void UPlayerStatComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	// 소유자 설정
+	OwnerCharacter = Cast<AHorrorGameCharacter>(GetOwner());
 	
 }
 
@@ -36,3 +39,9 @@ void UPlayerStatComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 	// ...
 }
 
+void UPlayerStatComponent::SetPlayerStatus(EPlayerStatus inPlayerStatus)
+{
+	PlayerStatus = inPlayerStatus;
+
+	//OwnerCharacter->SetPlayerStatus(PlayerStatus);
+}

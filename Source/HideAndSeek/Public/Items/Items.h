@@ -4,7 +4,7 @@
 
 #include "EngineMinimal.h"
 #include "GameFramework/Actor.h"
-#include "InteractInterface.h"
+#include "Resource/InteractInterface.h"
 #include "Items.generated.h"
 
 //class UUINavWidget;

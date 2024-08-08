@@ -1,7 +1,7 @@
 // CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "Furniture/DistributionBox.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
+#include "Player/HorrorGameCharacter.h"
 #include "AI/Reaper_cpp.h"
 #include "Furniture/DBox_Door.h"
 

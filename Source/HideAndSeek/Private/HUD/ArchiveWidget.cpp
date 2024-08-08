@@ -4,11 +4,11 @@
 #include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "Kismet/GameplayStatics.h"
-#include "StartGameMode.h"
+#include "LevelManager/StartGameMode.h"
 #include "Sound/SoundCue.h"
 #include "HUD/ArchiveDocsWidget.h"
 #include "HUD/HintWidget.h"
-#include "PauseWidget.h"
+#include "HUD/PauseWidget.h"
 
 // 생성자
 void UArchiveWidget::NativeConstruct()

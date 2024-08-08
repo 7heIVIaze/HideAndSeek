@@ -5,8 +5,8 @@
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
 #include "ComponentAction/HorrorGameSaveGame.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
-#include "Altar_cpp.h"
+#include "Player/HorrorGameCharacter.h"
+#include "Furniture/Altar_cpp.h"
 
 // Sets default values
 ASword_cpp::ASword_cpp()
@@ -64,7 +64,10 @@ void ASword_cpp::OnInteract(class AHorrorGameCharacter* Player)
 		}
 
 		// 제단에 봉인이 해제된 아이템 개수를 1개 추가함.
-		Altar->UnSealedObjectNumber(1);
+		if (Altar)
+		{
+			Altar->UnSealedObjectNumber(1);
+		}
 		
 		// 청동 검을 처음 얻은 상태라면 청동 검 문서를 세이브 데이터에 영구히 저장함.
 		if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))

@@ -4,10 +4,10 @@
 #include "Components/Button.h"
 #include "Components/ProgressBar.h"
 #include "Components/CheckBox.h"
-#include "HorrorGameGameInstance.h"
+#include "LevelManager/HorrorGameGameInstance.h"
 #include "Kismet/KismetInternationalizationLibrary.h"
 #include "Kismet/GameplayStatics.h"
-#include "StartGameMode.h"
+#include "LevelManager/StartGameMode.h"
 #include "Sound/SoundCue.h"
 
 // 게임 플레이 설정 위젯 생성자

@@ -15,16 +15,16 @@
 #include "EnhancedInputSubSystems.h"
 #include "AI/CreatureAI.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "PatrolPoint_cpp.h"
+#include "LevelManager/PatrolPoint_cpp.h"
 #include "EngineUtils.h"
 #include "AI/ReaperAnim.h"
 #include "Furniture/HideObject.h"
-#include "HideAndSeek/HorrorGameCharacter.h"
-#include "HorrorGamePlayerController.h"
-#include "ClassroomDoorActor_cpp.h"
-#include "Door_cpp.h"
-#include "MetalDoor_cpp.h"
-#include "Alarm.h"
+#include "Player/HorrorGameCharacter.h"
+#include "Player/HorrorGamePlayerController.h"
+#include "Furniture/ClassroomDoorActor_cpp.h"
+#include "Furniture/Door_cpp.h"
+#include "Furniture/MetalDoor_cpp.h"
+#include "Furniture/Alarm.h"
 #include "Animation/AnimSequence.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "NiagaraComponent.h"
@@ -254,6 +254,12 @@ void AReaper_cpp::Tick(float DeltaTime)
 			TimeStopElapsedTime = 0;
 		}
 	}
+
+	//// 문을 부수고 있는 상황이라 움직일 수 없는 상태일 경우, 움직임을 강제로 멈춰둠.
+	//if (bIsStop)
+	//{
+	//	GetCharacterMovement()->StopMovementImmediately();
+	//}
 
 	ReaperController->SetControlRotation(GetActorRotation());
 }
@@ -842,7 +848,7 @@ void AReaper_cpp::OpenDoor()
 	// 시작지점과 끝 지점
 	FVector Start = GetActorLocation();
 	FVector ForwardVector = GetActorForwardVector();
-	FVector End = (ForwardVector * 160.f) + Start;
+	FVector End = (ForwardVector * 250.f) + Start;
 	AActor* HitActor = nullptr;
 
 	// Ray Cast를 수행하고, 그 결과를 Hit에 저장
