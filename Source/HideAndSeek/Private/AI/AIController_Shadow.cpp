@@ -110,7 +110,8 @@ void AAIController_Shadow::OnTargetDetected(AActor* Actor, FAIStimulus const Sti
 			// 그것이 아닌 경우엔 감지된 것으로 확정
 			else
 			{
-				if (Player->bIsFlashLightOn || Player->bIsCigarLightOn) // AI의 감지 범위가 1200이므로 불을 켰는지 체크
+				//if (Player->bIsFlashLightOn || Player->bIsCigarLightOn) // AI의 감지 범위가 1200이므로 불을 켰는지 체크
+				if (Player->bIsLightOn) // AI의 감지 범위가 1200이므로 불을 켰는지 체크
 				{
 					// GetBlackboard()->SetValueAsBool(CanSeePlayer, true);
 					if (Distance <= 600.f) // 만약 600 범위 내에서 감지한 경우라면 사라짐.

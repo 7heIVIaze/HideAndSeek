@@ -12,29 +12,26 @@ class HIDEANDSEEK_API UInteractDot_cpp : public UUserWidget
 {
 	GENERATED_BODY()
 	
-	//void InteractUIInit() override;
-
-	//void Refresh();
 protected:
 	virtual void NativeConstruct() override;
 
 public:
-	UFUNCTION()
-		void SetInteractText(FText strText);
+	UFUNCTION(BlueprintCallable)
+	void SetInteractText(FText strText);
 
-	UFUNCTION()
-		void SetErrorText(FText strText);
+	UFUNCTION(BlueprintCallable)
+	void SetErrorText(FText strText);
 
-	UFUNCTION()
-		void SetInteractDot(bool Value);
+	UFUNCTION(BlueprintCallable)
+	void SetInteractDot(bool Value);
 
 protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UImage* InteractDot;
+	class UImage* InteractDot;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UTextBlock* InteractText;
+	class UTextBlock* InteractText;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UTextBlock* ErrorText;
+	class UTextBlock* ErrorText;
 };

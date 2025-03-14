@@ -7,7 +7,7 @@
 #include "Sound/SoundBase.h"
 #include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "MoviePlayer/Public/MoviePlayer.h"
+#include "MoviePlayer.h"
 #include "Widgets/SCompoundWidget.h"
 #include "LevelManager/PatrolPoint_cpp.h"
 #include "ComponentAction/HorrorGameSaveGame.h"
@@ -51,9 +51,10 @@ void UHorrorGameGameInstance::Init()
 	UE_LOG(LogTemp, Warning, TEXT("HorrorGameGameInstance Init!"));
 	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UHorrorGameGameInstance::BeginLoadingScreen);
 	FCoreUObjectDelegates::PostLoadMapWithWorld.AddUObject(this, &UHorrorGameGameInstance::EndLoadingScreen);
+	SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0);
 
 	// 기존에 저장된 설정값들을 가져옴.
-	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
+	if (SaveData)
 	{
 		ClearedChaptersNumber = SaveData->ClearChapter.Num();
 		OptionSetting.BrightGamma = SaveData->OptionSetting.BrightGamma;
@@ -90,7 +91,7 @@ bool UHorrorGameGameInstance::ClearedChapterSaveLogic(int32 inClearedChapter)
 	if (ClearedChaptersNumber < inClearedChapter) // 아직 클리어하지 않은 챕터를 클리어한 경우
 	{
 		ClearedChaptersNumber = inClearedChapter;
-		if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
+		if (SaveData)
 		{
 			SaveData->ClearedChapter = ClearedChaptersNumber;
 			SaveData->SaveData();
@@ -109,7 +110,7 @@ bool UHorrorGameGameInstance::OptionSettingSaveLogic(FOptionSettings inOptionSet
 {
 	// 옵션 값을 저장한 후 세이브 데이터에 영구히 저장함.
 	OptionSetting = inOptionSetting;
-	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
+	if (SaveData)
 	{
 		SaveData->OptionSetting = OptionSetting;
 		SaveData->SaveData();
@@ -123,7 +124,7 @@ bool UHorrorGameGameInstance::BrightGammaSaveLogic(float inBrightGamma)
 {
 	// 밝기 설정 값을 가져와 세이브 데이터에 영구히 저장함.
 	OptionSetting.BrightGamma = inBrightGamma;
-	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
+	if (SaveData)
 	{
 		SaveData->OptionSetting.BrightGamma = OptionSetting.BrightGamma;
 		SaveData->SaveData();
@@ -137,7 +138,7 @@ bool UHorrorGameGameInstance::MotionBlurSaveLogic(bool inMotionBlur)
 {
 	// 모션 블러 값을 가져와 세이브 데이터에 영구히 저장함.
 	OptionSetting.bMotionBlur = inMotionBlur;
-	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
+	if (SaveData)
 	{
 		SaveData->OptionSetting.bMotionBlur = OptionSetting.bMotionBlur;
 		SaveData->SaveData();
@@ -151,7 +152,7 @@ bool UHorrorGameGameInstance::VolumeSaveLogic(float inVolume)
 {
 	// 볼륨 값을 가져와 세이브 데이터에 영구히 저장함.
 	OptionSetting.Volume = inVolume;
-	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
+	if (SaveData)
 	{
 		SaveData->OptionSetting.Volume = OptionSetting.Volume;
 		SaveData->SaveData();
@@ -165,7 +166,7 @@ bool UHorrorGameGameInstance::MouseSensitiveSaveLogic(float inMouseSensitive)
 {
 	// 마우스 민감도 값을 가져와 세이브 데이터에 영구히 저장함.
 	OptionSetting.MouseSensitive = inMouseSensitive;
-	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
+	if (SaveData)
 	{
 		SaveData->OptionSetting.MouseSensitive = OptionSetting.MouseSensitive;
 		SaveData->SaveData();
@@ -179,7 +180,7 @@ bool UHorrorGameGameInstance::CrossHairOnSaveLogic(bool inIsCrossHairOn)
 {
 	// 조준점 설정 값을 가져와 세이브 데이터에 영구히 저장함.
 	OptionSetting.bIsCrossHairOn = inIsCrossHairOn;
-	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
+	if (SaveData)
 	{
 		SaveData->OptionSetting.bIsCrossHairOn = OptionSetting.bIsCrossHairOn;
 		SaveData->SaveData();
@@ -193,7 +194,7 @@ bool UHorrorGameGameInstance::TimerOnSaveLogic(bool inIsTimerOn)
 {
 	// 게임플레이 타이머 설정 값을 가져와 세이브 데이터에 영구히 저장함.
 	OptionSetting.bIsTimerOn = inIsTimerOn;
-	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
+	if (SaveData)
 	{
 		SaveData->OptionSetting.bIsTimerOn = OptionSetting.bIsTimerOn;
 		SaveData->SaveData();
@@ -206,7 +207,7 @@ bool UHorrorGameGameInstance::TimerOnSaveLogic(bool inIsTimerOn)
 bool UHorrorGameGameInstance::ClearTimeSaveLogic(int32 inClearedChapter, FString inClearTime)
 {
 	CurrentClearedTime = inClearTime;
-	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
+	if (SaveData)
 	{
 		if (SaveData->ClearTime.Num() >= ClearedChaptersNumber) // 만약 이미 클리어한 챕터인 경우
 		{
@@ -229,7 +230,7 @@ bool UHorrorGameGameInstance::ClearTimeSaveLogic(int32 inClearedChapter, FString
 bool UHorrorGameGameInstance::ChapterClearSaveLogic(int32 inClearedChapter, float inClearTime, int32 inNextChapter)
 {
 	//CurrentClearedTime = inClearTime;
-	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
+	if (SaveData)
 	{
 		// 갱신이 가능한지(처음 저장)
 		bool bIsFirstSave = true; 
@@ -301,7 +302,7 @@ bool UHorrorGameGameInstance::ChapterClearSaveLogic(int32 inClearedChapter, floa
 // 요괴 특징 문서를 저장하는 로직.
 bool UHorrorGameGameInstance::CharacteristicsOnSaveLogic()
 {
-	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
+	if (SaveData)
 	{
 		if(!SaveData->CollectArchives.SeeCharacteristic)
 		{
@@ -317,7 +318,7 @@ bool UHorrorGameGameInstance::CharacteristicsOnSaveLogic()
 // 도움말 문서를 저장하는 로직.
 bool UHorrorGameGameInstance::TipsOnSaveLogic()
 {
-	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
+	if (SaveData)
 	{
 		if (!SaveData->CollectArchives.SeeHowToEscape)
 		{
@@ -338,6 +339,20 @@ int32 UHorrorGameGameInstance::GetClearedChapter()
 float UHorrorGameGameInstance::GetBrightGamma()
 {
 	return OptionSetting.BrightGamma;
+}
+
+void UHorrorGameGameInstance::ApplyBrightness()
+{
+	float BrightnessMultiplier = FMath::Clamp(OptionSetting.BrightGamma / 2.5f, 0.0f, 1.0f);
+	
+	for (TObjectIterator<ULightComponent> It; It; ++It)
+	{
+		// 현재 월드의 컴포넌트만 필터링
+		if (It->GetWorld() == GetWorld())
+		{
+			It->SetIntensity(It->Intensity * BrightnessMultiplier);
+		}
+	}
 }
 
 bool UHorrorGameGameInstance::GetMotionBlur()
@@ -412,4 +427,186 @@ TArray<FString> UHorrorGameGameInstance::GetAllClearedTime()
 TArray<FClearData> UHorrorGameGameInstance::GetAllClearData()
 {
 	return ClearChapter;
+}
+
+UHorrorGameSaveGame* UHorrorGameGameInstance::GetSaveData()
+{
+	return SaveData;
+}
+
+bool UHorrorGameGameInstance::GetIsItemFirstAcquired(const EItemNumber ItemNumber)
+{
+	bool result = false;
+
+	switch (ItemNumber)
+	{
+		case EItemNumber::ITEM_CigarLighter:
+		{
+			return SaveData->CollectArchives.Item1_CigarLighter;
+		}
+		case EItemNumber::ITEM_FlashLight:
+		{
+			return SaveData->CollectArchives.Item2_FlashLight;
+		}
+		case EItemNumber::ITEM_Key:
+		{
+			return SaveData->CollectArchives.Item3_Key;
+		}
+		case EItemNumber::ITEM_Timer:
+		{
+			return SaveData->CollectArchives.Item4_Timer;
+		}
+		case EItemNumber::ITEM_Sword:
+		{
+			return SaveData->CollectArchives.Item5_BronzeSword;
+		}
+		case EItemNumber::ITEM_Bell:
+		{
+			return SaveData->CollectArchives.Item6_BronzeBell;
+		}
+		case EItemNumber::ITEM_Mirror:
+		{
+			return SaveData->CollectArchives.Item7_BronzeMirror;
+		}
+		case EItemNumber::ITEM_Extinguisher:
+		{
+			return SaveData->CollectArchives.Item8_Extinguisher;
+		}
+		case EItemNumber::ITEM_Cutter:
+		{
+			return SaveData->CollectArchives.Item9_Cutter;
+		}
+		case EItemNumber::ITEM_Lantern:
+		{
+			return SaveData->CollectArchives.Item10_SoulLantern;
+		}
+		case EItemNumber::ITEM_Glowstick:
+		{
+			return SaveData->CollectArchives.Item11_GlowStick;
+		}
+	}
+
+	return result;
+}
+
+void UHorrorGameGameInstance::SaveItemArchives(const EItemNumber ItemNumber)
+{
+	switch (ItemNumber)
+	{
+		case EItemNumber::ITEM_CigarLighter:
+		{
+			SaveData->CollectArchives.Item1_CigarLighter = true;
+			break;
+		}
+		case EItemNumber::ITEM_FlashLight:
+		{
+			SaveData->CollectArchives.Item2_FlashLight = true;
+			break;
+		}
+		case EItemNumber::ITEM_Key:
+		{
+			SaveData->CollectArchives.Item3_Key = true;
+			break;
+		}
+		case EItemNumber::ITEM_Timer:
+		{
+			SaveData->CollectArchives.Item4_Timer = true;
+			break;
+		}
+		case EItemNumber::ITEM_Sword:
+		{
+			SaveData->CollectArchives.Item5_BronzeSword = true;
+			break;
+		}
+		case EItemNumber::ITEM_Bell:
+		{
+			SaveData->CollectArchives.Item6_BronzeBell = true;
+			break;
+		}
+		case EItemNumber::ITEM_Mirror:
+		{
+			SaveData->CollectArchives.Item7_BronzeMirror = true;
+			break;
+		}
+		case EItemNumber::ITEM_Extinguisher:
+		{
+			SaveData->CollectArchives.Item8_Extinguisher = true;
+			break;
+		}
+		case EItemNumber::ITEM_Cutter:
+		{
+			SaveData->CollectArchives.Item9_Cutter = true;
+			break;
+		}
+		case EItemNumber::ITEM_Lantern:
+		{
+			SaveData->CollectArchives.Item10_SoulLantern = true;
+			break;
+		}
+		case EItemNumber::ITEM_Glowstick:
+		{
+			SaveData->CollectArchives.Item11_GlowStick = true;
+			break;
+		}
+	}
+	SaveData->SaveData();
+}
+
+void UHorrorGameGameInstance::SetLevelDifficulty(int32 inSelectedDifficulty)
+{
+	LevelDifficulty = inSelectedDifficulty;
+}
+
+int UHorrorGameGameInstance::GetObjectCountToCollect() const
+{
+	switch (LevelDifficulty)
+	{
+		case 1: // Easy
+		{
+			return 3;
+		}
+		case 2: // Normal
+		{
+
+		}
+		case 3: // Hard
+		{
+
+		}
+		case 4: // Nightmare
+		{
+
+		}
+		default: // 기본 난이도는 보통
+		{
+			return 5;
+		}
+	}
+}
+
+float UHorrorGameGameInstance::GetHPLossRate() const
+{
+	switch (LevelDifficulty)
+	{
+		case 1: // Easy
+		{
+			return 0.5f;
+		}
+		case 2: // Normal
+		{
+			return 1.0f;
+		}
+		case 3: // Hard
+		{
+			return 2.0f;
+		}
+		case 4: // Nightmare
+		{
+			return 4.0f;
+		}
+		default: // 기본 난이도는 보통
+		{
+			return 1.0f;
+		}
+	}
 }

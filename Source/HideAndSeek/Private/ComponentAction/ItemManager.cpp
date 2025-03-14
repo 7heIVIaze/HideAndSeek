@@ -2,6 +2,7 @@
 
 #include "ComponentAction/ItemManager.h"
 #include "LevelManager/LevelManager.h"
+#include "Items/ItemClass.h"
 #include "EngineUtils.h"
 #include "Furniture/Drawer_cpp.h"
 #include "Furniture/DrawerClass.h"

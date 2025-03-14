@@ -24,6 +24,9 @@ public:
 
 	void ChangeInputMode(bool bGameMode = true);
 
+	UFUNCTION(BlueprintCallable)
+	void OnDeath();
+
 	void ShowDeadUI();
 
 	UFUNCTION(BlueprintCallable)
@@ -47,45 +50,45 @@ protected:
 	virtual void SetupInputComponent() override;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = UI)
-		TSubclassOf<UUserWidget>MainWidgetClass;
+	TSubclassOf<UUserWidget>MainWidgetClass;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = UI)
-		TSubclassOf<UUserWidget>DeadWidgetClass;
+	TSubclassOf<UUserWidget>DeadWidgetClass;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = UI)
-		TSubclassOf<UUserWidget>PauseWidgetClass;
+	TSubclassOf<UUserWidget>PauseWidgetClass;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = UI)
-		TSubclassOf<UUserWidget>LoadingWidgetClass;
+	TSubclassOf<UUserWidget>LoadingWidgetClass;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = UI)
-		TSubclassOf<UUserWidget>ClearWidgetClass;
+	TSubclassOf<UUserWidget>ClearWidgetClass;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = UI)
-		TSubclassOf<UUserWidget>DocumentWidgetClass;
+	TSubclassOf<UUserWidget>DocumentWidgetClass;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = UI)
-		TSubclassOf<UUserWidget>BadEndingWidgetClass;
+	TSubclassOf<UUserWidget>BadEndingWidgetClass;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = UI)
-		TSubclassOf<UUserWidget>NormalEndingWidgetClass;
+	TSubclassOf<UUserWidget>NormalEndingWidgetClass;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = UI)
-		TSubclassOf<UUserWidget>TrueEndingWidgetClass;
+	TSubclassOf<UUserWidget>TrueEndingWidgetClass;
 
 private:
 	UPROPERTY()
-		class UGameUI* MainWidget;
+	class UGameUI* MainWidget;
 
 	UPROPERTY()
-		class UDiedWidget* DeadWidget;
+	class UDiedWidget* DeadWidget;
 	
 	UPROPERTY()
-		class UPauseWidget* PauseWidget;
+	class UPauseWidget* PauseWidget;
 
 	UPROPERTY()
-		class UUserWidget* LoadingWidget;
+	class UUserWidget* LoadingWidget;
 
 	UPROPERTY()
-		class UClearWidget* ClearWidget;
+	class UClearWidget* ClearWidget;
 
 	UPROPERTY()
-		class UDocumentWidget* DocumentWidget;
+	class UDocumentWidget* DocumentWidget;
 
 	UPROPERTY()
-		class UUserWidget* EndingWidget;
+	class UUserWidget* EndingWidget;
 
 	FInputModeGameOnly GameInputMode;
 	FInputModeUIOnly UIInputMode;

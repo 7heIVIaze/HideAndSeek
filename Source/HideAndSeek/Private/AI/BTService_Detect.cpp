@@ -13,7 +13,8 @@
 #include "Furniture/HideObject.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "DrawDebugHelpers.h"
-#include "HideAndSeek/TP_ThirdPerson/TP_ThirdPersonCharacter.h"
+#include "Engine/OverlapResult.h"
+#include "Engine/HitResult.h"
 
 // 생성자 - 플레이어가 감지 범위 내에 있을 때 추격을 계속하게 하기 위한 함수
 UBTService_Detect::UBTService_Detect()
@@ -93,39 +94,6 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 						return;
 					}
 				}
-				// Chack if a controller is player's controller
-				/*if (ACabinet_cpp* Cabinet = Cast<ACabinet_cpp>(OverlapResult.GetActor()))
-				{
-					if (Cabinet->bIsHiding)
-					{
-						if (Cabinet->bIsFlashLightOn || Cabinet->bIsCigarLightOn)
-						{
-							ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::LockerTargetKey, Cabinet);
-							ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::LockerLighting, true);
-						}
-						else
-						{
-							ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::LockerTargetKey, nullptr);
-							ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::LockerLighting, false);
-						}
-					}
-				}
-				if (AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(OverlapResult.GetActor()))
-				{
-					if (Wardrobe->bIsHiding)
-					{
-						if (Wardrobe->bIsFlashLightOn || Wardrobe->bIsCigarLightOn)
-						{
-							ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::LockerTargetKey, Wardrobe);
-							ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::LockerLighting, true);
-						}
-						else
-						{
-							ReaperAI->GetBlackboard()->SetValueAsObject(ACreatureAI::LockerTargetKey, nullptr);
-							ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::LockerLighting, false);
-						}
-					}
-				}*/
 				// 만약 그 객체가 숨는 액터라면(옷장/캐비닛)
 				else if (AHideObject* HideObject = Cast<AHideObject>(OverlapResult.GetActor()))
 				{
@@ -232,41 +200,7 @@ void UBTService_Detect::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeM
 						return;
 					}
 				}
-				// Chack if a controller is player's controller
-				/*if (ACabinet_cpp* Cabinet = Cast<ACabinet_cpp>(OverlapResult.GetActor()))
-				{
-					if (Cabinet->bIsHiding)
-					{
-						if (Cabinet->bIsFlashLightOn || Cabinet->bIsCigarLightOn)
-						{
-							UE_LOG(LogTemp, Warning, TEXT("Cabinet Detected"));
-							RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::LockerTargetKey, Cabinet);
-							RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::LockerLighting, true);
-						}
-						else
-						{
-							RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::LockerTargetKey, nullptr);
-							RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::LockerLighting, false);
-						}
-					}
-				}
-				if (AWardrobe_cpp* Wardrobe = Cast<AWardrobe_cpp>(OverlapResult.GetActor()))
-				{
-					if (Wardrobe->bIsHiding)
-					{
-						if (Wardrobe->bIsFlashLightOn || Wardrobe->bIsCigarLightOn)
-						{
-							UE_LOG(LogTemp, Warning, TEXT("Wardrobe Detected"));
-							RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::LockerTargetKey, Wardrobe);
-							RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::LockerLighting, true);
-						}
-						else
-						{
-							RunnerAI->GetBlackboard()->SetValueAsObject(AAIController_Runner::LockerTargetKey, nullptr);
-							RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::LockerLighting, false);
-						}
-					}
-				}*/
+				
 				// 만약 그 객체가 숨을 수 있는 액터라면(옷장/캐비닛)
 				else if (AHideObject* HideObject = Cast<AHideObject>(OverlapResult.GetActor()))
 				{

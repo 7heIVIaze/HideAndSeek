@@ -14,10 +14,6 @@ void UPauseWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	/*ResumeButton = Cast<UButton>(GetWidgetFromName(TEXT("ResumeBtn")));
-	RetryButton = Cast<UButton>(GetWidgetFromName(TEXT("RetryBtn")));
-	QuitButton = Cast<UButton>(GetWidgetFromName(TEXT("QuitBtn")));*/
-
 	// 각 버튼 별로 클릭 및 마우스 호버 이벤트 발생 시 호출할 콜백 함수를 바인딩함.
 	if (nullptr != ResumeButton)
 	{

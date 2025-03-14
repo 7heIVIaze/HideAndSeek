@@ -13,7 +13,7 @@ void USlot_cpp::Init()
 }
 
 // 슬롯 타입을 설정할 함수.
-void USlot_cpp::SetType(ESlotType type)
+void USlot_cpp::SetType(ESlotsType type)
 {
 	Type = type;
 }
@@ -31,7 +31,7 @@ void USlot_cpp::Refresh()
 	switch (Type)
 	{
 		// 타입이 아이템이면
-		case ESlotType::SLOT_Item:
+		case ESlotsType::SLOT_Item:
 		{
 			// 플레이어의 인벤토리로부터 데이터를 가져옴.
 			FHorrorGameItemData& data = Player->Inventory[SlotNum];

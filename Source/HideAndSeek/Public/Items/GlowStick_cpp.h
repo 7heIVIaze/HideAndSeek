@@ -31,7 +31,7 @@ public: // Properties
 		UMaterialInstanceDynamic* MaterialInstance;
 
 public: // Functions
-	void OnInteract(class AHorrorGameCharacter* Player) override;
+	virtual void OnInteract(class AHorrorGameCharacter* Player) override;
 
-	void UseInteract(class AHorrorGameCharacter* Player) override;
+	virtual bool UseInteract(class AHorrorGameCharacter* Player) override;
 };

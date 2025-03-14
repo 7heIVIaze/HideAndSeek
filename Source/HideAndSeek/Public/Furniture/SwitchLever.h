@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+//#include "GameFramework/Actor.h"
+#include "Furniture/InteractableActor.h"
 #include "Components/TimelineComponent.h"
 #include "SwitchLever.generated.h"
 
 UCLASS()
-class HIDEANDSEEK_API ASwitchLever : public AActor
+class HIDEANDSEEK_API ASwitchLever : public AInteractableActor
 {
 	GENERATED_BODY()
 	
@@ -17,28 +18,28 @@ public:
 	ASwitchLever();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
-		TObjectPtr<USceneComponent> RootComp;
+	TObjectPtr<USceneComponent> RootComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)
-		TObjectPtr<UStaticMeshComponent> LeverBody;
+	TObjectPtr<UStaticMeshComponent> LeverBody;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)
-		TObjectPtr<UStaticMeshComponent> Lever;
+	TObjectPtr<UStaticMeshComponent> Lever;
 
 	UPROPERTY(VisibleAnywhere, Category = Lever)
-		FTimeline UpAndDown; // Create TimeLine 
+	FTimeline UpAndDownTimeline; // Create TimeLine 
 
 	UPROPERTY(EditDefaultsOnly, Category = Sound)
-		class USoundCue* LeverSound;
+	class USoundCue* LeverSound;
 
 	UPROPERTY(EditAnywhere)
-		UCurveFloat* CurveFloat;
+	UCurveFloat* UpAndDownCurveFloat;
 
 	UPROPERTY()
-		float LeverRotateAngle;
+	float LeverRotateAngle;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Lever)
-		bool bIsLeverOn;
+	bool bIsLeverOn;
 
 protected:
 	// Called when the game starts or when spawned
@@ -48,9 +49,8 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintCallable)
-		void OnInteract(class AHorrorGameCharacter* Player);
+	virtual void OnInteract(class AHorrorGameCharacter* Player) override;
 
 	UFUNCTION(BlueprintCallable)
-		void ChangeLeverRotation(float Value);
+	void ChangeLeverRotation(float Value);
 };

@@ -123,7 +123,8 @@ void AAIController_Rampage::OnTargetDetected(AActor* Actor, FAIStimulus const St
 			// 그것이 아니라면 감지된 플레이어는 조건 하나와 거리를 통해 발각 여부를 결정하게 됨.
 			else
 			{
-				if (player->bIsCigarLightOn || player->bIsFlashLightOn) // 라이터든 플래시든 켰을 때는 시야 범위 내부에 있다면 무조건 감지
+				//if (player->bIsCigarLightOn || player->bIsFlashLightOn) // 라이터든 플래시든 켰을 때는 시야 범위 내부에 있다면 무조건 감지
+				if (player->bIsLightOn) // 라이터든 플래시든 켰을 때는 시야 범위 내부에 있다면 무조건 감지
 				{
 					// GetBlackboard()->SetValueAsBool(CanSeePlayer, true);
 					GetBlackboard()->SetValueAsObject(TargetKey, player);

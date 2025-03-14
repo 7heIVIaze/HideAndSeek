@@ -23,12 +23,12 @@ void UHintWidget::NativeConstruct()
 	CatchedByRunner = false;
 	CatchedByBrute = false;
 
-	Archive1Text->SetText(NSLOCTEXT("UHintWidget", "ArchiveNone", "???"));
-	Archive2Text->SetText(NSLOCTEXT("UHintWidget", "ArchiveNone", "???"));
-	Archive3Text->SetText(NSLOCTEXT("UHintWidget", "ArchiveNone", "???"));
-	Archive4Text->SetText(NSLOCTEXT("UHintWidget", "ArchiveNone", "???"));
-	Archive5Text->SetText(NSLOCTEXT("UHintWidget", "ArchiveNone", "???"));
-	Archive6Text->SetText(NSLOCTEXT("UHintWidget", "ArchiveNone", "???"));
+	Archive1Text->SetText(NSLOCTEXT("WidgetText", "ArchiveNone", "???"));
+	Archive2Text->SetText(NSLOCTEXT("WidgetText", "ArchiveNone", "???"));
+	Archive3Text->SetText(NSLOCTEXT("WidgetText", "ArchiveNone", "???"));
+	Archive4Text->SetText(NSLOCTEXT("WidgetText", "ArchiveNone", "???"));
+	Archive5Text->SetText(NSLOCTEXT("WidgetText", "ArchiveNone", "???"));
+	Archive6Text->SetText(NSLOCTEXT("WidgetText", "ArchiveNone", "???"));
 
 	CurrentIndex = 0;
 	HintState = EHintStates::AS_Search;
@@ -43,42 +43,42 @@ void UHintWidget::NativeConstruct()
 		if (SaveData->CollectArchives.CatchedByReaper)
 		{
 			CatchedByReaper = true;
-			Archive1Text->SetText(NSLOCTEXT("UHintWidget", "Archive_Reaper", "Grim Reaper"));
+			Archive1Text->SetText(NSLOCTEXT("WidgetText", "Archive_Reaper", "Grim Reaper"));
 		}
 
 		// 러너에게 한 번 죽었을 경우, 러너 견문록이 해금됨.
 		if (SaveData->CollectArchives.CatchedByRunner)
 		{
 			CatchedByRunner = true;
-			Archive2Text->SetText(NSLOCTEXT("UHintWidget", "Archive_Runner", "Runner"));
+			Archive2Text->SetText(NSLOCTEXT("WidgetText", "Archive_Runner", "Runner"));
 		}
 
 		// 브루트에게 한 번 죽었을 경우, 브루트 견문록이 해금됨.
 		if (SaveData->CollectArchives.CatchedByBrute)
 		{
 			CatchedByBrute = true;
-			Archive3Text->SetText(NSLOCTEXT("UHintWidget", "Archive_Brute", "Brute"));
+			Archive3Text->SetText(NSLOCTEXT("WidgetText", "Archive_Brute", "Brute"));
 		}
 
 		// 섀도우에게 한 번 죽었을 경우, 섀도우 견문록이 해금됨.
 		if (SaveData->CollectArchives.CatchedByShadow)
 		{
 			CatchedByShadow = true;
-			Archive4Text->SetText(NSLOCTEXT("UHintWidget", "Archive_Shadow", "Shadow"));
+			Archive4Text->SetText(NSLOCTEXT("WidgetText", "Archive_Shadow", "Shadow"));
 		}
 
 		// 요괴 특징을 한 번 보았을 경우, 요괴 특징 문서가 해금됨.
 		if (SaveData->CollectArchives.SeeCharacteristic)
 		{
 			SeeCharacteristic = true;
-			Archive5Text->SetText(NSLOCTEXT("UHintWidget", "Archive_Characteristic", "Creature Characteristic"));
+			Archive5Text->SetText(NSLOCTEXT("WidgetText", "Archive_Characteristic", "Creature Characteristic"));
 		}
 
 		// 회피 방법을 한 번 보았을 경우, 회피 방법 문서가 해금됨.
 		if (SaveData->CollectArchives.SeeHowToEscape)
 		{
 			SeeHowToEscape = true;
-			Archive6Text->SetText(NSLOCTEXT("UHintWidget", "Archive_HowToEscape", "How to escape"));
+			Archive6Text->SetText(NSLOCTEXT("WidgetText", "Archive_HowToEscape", "How to escape"));
 		}
 	}
 
@@ -246,11 +246,11 @@ void UHintWidget::OnArchive1ButtonHover()
 		// 리퍼에게 죽은 경험이 있다면 기본 설명란에 문구를 추가하고 아니면 비워둠.
 		if (CatchedByReaper)
 		{
-			ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_Reaper", "Document of the Grim Reaper"));
+			ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_Reaper", "Document of the Grim Reaper"));
 		}
 		else
 		{
-			ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_None", ""));
+			ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_None", ""));
 
 		}
 
@@ -307,11 +307,11 @@ void UHintWidget::OnArchive2ButtonHover()
 		// 러너에게 죽은 경험이 있다면 기본 설명란에 문구를 추가하고 아니면 비워둠.
 		if (CatchedByRunner)
 		{
-			ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_Runner", "Document of the Runner"));
+			ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_Runner", "Document of the Runner"));
 		}
 		else
 		{
-			ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_None", ""));
+			ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_None", ""));
 
 		}
 		
@@ -368,11 +368,11 @@ void UHintWidget::OnArchive3ButtonHover()
 		// 브루트에게 죽은 경험이 있다면 기본 설명란에 문구를 추가하고 아니면 비워둠.
 		if (CatchedByBrute)
 		{
-			ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_Brute", "Document of the Brute"));
+			ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_Brute", "Document of the Brute"));
 		}
 		else
 		{
-			ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_None", ""));
+			ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_None", ""));
 
 		}
 
@@ -429,11 +429,11 @@ void UHintWidget::OnArchive4ButtonHover()
 		// 그슨대에게 죽은 경험이 있다면 기본 설명란에 문구를 추가하고 아니면 비워둠.
 		if (CatchedByShadow)
 		{
-			ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_Shadow", "Document of the Shadow"));
+			ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_Shadow", "Document of the Shadow"));
 		}
 		else
 		{
-			ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_None", ""));
+			ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_None", ""));
 
 		}
 
@@ -488,11 +488,11 @@ void UHintWidget::OnArchive5ButtonHover()
 		// 요괴의 특징을 보았다면 기본 설명란에 문구를 추가하고 아니면 비워둠.
 		if (SeeCharacteristic)
 		{
-			ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_Tip1", "Tip of the creature's characteristics"));
+			ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_Tip1", "Tip of the creature's characteristics"));
 		}
 		else
 		{
-			ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_None", ""));
+			ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_None", ""));
 
 		}
 
@@ -546,11 +546,11 @@ void UHintWidget::OnArchive6ButtonHover()
 		// 회피 방법을 보았다면 기본 설명란에 문구를 추가하고 아니면 비워둠.
 		if (SeeHowToEscape)
 		{
-			ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_Tip2", "Tip on how to escape the creatures"));
+			ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_Tip2", "Tip on how to escape the creatures"));
 		}
 		else
 		{
-			ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_None", ""));
+			ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_None", ""));
 
 		}
 
@@ -580,11 +580,11 @@ void UHintWidget::UpdateButtonSlate()
 			// 리퍼에게 죽은 경험이 있다면 기본 설명란에 문구를 추가하고 아니면 비워둠.
 			if (CatchedByReaper)
 			{
-				ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_Reaper", "Document of the Grim Reaper"));
+				ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_Reaper", "Document of the Grim Reaper"));
 			}
 			else
 			{
-				ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_None", ""));
+				ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_None", ""));
 
 			}
 			return;
@@ -603,11 +603,11 @@ void UHintWidget::UpdateButtonSlate()
 			// 러너에게 죽은 경험이 있다면 기본 설명란에 문구를 추가하고 아니면 비워둠.
 			if (CatchedByRunner)
 			{
-				ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_Runner", "Document of the Runner"));
+				ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_Runner", "Document of the Runner"));
 			}
 			else
 			{
-				ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_None", ""));
+				ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_None", ""));
 
 			}
 			return;
@@ -625,11 +625,11 @@ void UHintWidget::UpdateButtonSlate()
 			// 브루트에게 죽은 경험이 있다면 기본 설명란에 문구를 추가하고 아니면 비워둠.
 			if (CatchedByBrute)
 			{
-				ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_Brute", "Document of the Brute"));
+				ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_Brute", "Document of the Brute"));
 			}
 			else
 			{
-				ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_None", ""));
+				ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_None", ""));
 
 			}
 			return;
@@ -648,11 +648,11 @@ void UHintWidget::UpdateButtonSlate()
 			// 그슨대에게 죽은 경험이 있다면 기본 설명란에 문구를 추가하고 아니면 비워둠.
 			if (CatchedByShadow)
 			{
-				ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_Shadow", "Document of the Shadow"));
+				ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_Shadow", "Document of the Shadow"));
 			}
 			else
 			{
-				ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_None", ""));
+				ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_None", ""));
 
 			}
 			return;
@@ -671,11 +671,11 @@ void UHintWidget::UpdateButtonSlate()
 			// 요괴 특징을 보았다면 기본 설명란에 문구를 추가하고 아니면 비워둠.
 			if (SeeCharacteristic)
 			{
-				ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_Tip1", "Tip of the creature's characteristics"));
+				ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_Tip1", "Tip of the creature's characteristics"));
 			}
 			else
 			{
-				ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_None", ""));
+				ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_None", ""));
 
 			}
 			return;
@@ -694,12 +694,11 @@ void UHintWidget::UpdateButtonSlate()
 			// 회피 방법을 보았다면 기본 설명란에 문구를 추가하고 아니면 비워둠.
 			if (SeeHowToEscape)
 			{
-				ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_Tip2", "Tip on how to escape the creatures"));
+				ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_Tip2", "Tip on how to escape the creatures"));
 			}
 			else
 			{
-				ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_None", ""));
-
+				ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_None", ""));
 			}
 
 			return;
@@ -716,7 +715,7 @@ void UHintWidget::UpdateButtonSlate()
 			Exit->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 
 			// 설명란은 비워둠.
-			ExplainText->SetText(NSLOCTEXT("UHintWidget", "Hover_None", ""));
+			ExplainText->SetText(NSLOCTEXT("WidgetText", "Hover_None", ""));
 
 			return;
 		}

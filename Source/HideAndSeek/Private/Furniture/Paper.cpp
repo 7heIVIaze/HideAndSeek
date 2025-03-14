@@ -4,6 +4,7 @@
 #include "Player/HorrorGameCharacter.h"
 #include "Player/HorrorGamePlayerController.h"
 #include "ComponentAction/HorrorGameSaveGame.h"
+#include "HUD/GameUI.h"
 #include "Kismet/GameplayStatics.h"
 #include "ComponentAction/CollectArchives.h"
 
@@ -37,24 +38,13 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 	// 플레이어의 컨트롤러는 HorrorGamePlayerController이기 때문에 캐스팅 에러는 없음.
 	AHorrorGamePlayerController* PlayerController = Cast<AHorrorGamePlayerController>(Player->GetController());
 
+	if (!OnInteractionMessage.IsAlreadyBound(Player->GameUIWidget, &UGameUI::ShowMessage))
+	{
+		OnInteractionMessage.AddDynamic(Player->GameUIWidget, &UGameUI::ShowMessage);
+	}
+
 	// Document Index에 할당된 인덱스에 맞는 아카이브 데이터를 CollectArchiveData로부터 가져옴. DocumentIndex는 각 Level에 배치된 인스턴스에서 변경된 값임.
 	FCollectArchivesData* DocumentData = ArchiveData->FindRow<FCollectArchivesData>(*FString::FromInt(DocumentIndex), TEXT(""));
-
-	////////////////
-	// DEPRECATED //
-	////////////////
-	/*
-		FString Key = *FTextInspector::GetKey(text); // FText의 Key 값을 가져옴
-		TArray<FString>Value;
-
-		Key.ParseIntoArray(Value, TEXT("#"), false);
-
-		FString Type = Value[0]; // 해당 문서의 타입
-		
-		int32 Number = FCString::Atoi(*Value[1]); // 해당 문서의 번호
-		
-		PlayerController->OnDocumentWidget(text, Type);
-	*/
 
 	FString Type = TEXT(""); // 해당 문서의 타입 변수로 초기화해줌.
 
@@ -68,13 +58,6 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 		{
 			Type = TEXT("Article"); // 문서의 타입을 Article이라고 할당함.
 			
-			/*while (SaveData->Article.Num() < Number)
-			{
-				SaveData->Article.Add(TEXT("???"));
-			}
-			SaveData->Article[Number - 1] = text.ToString();*/
-			//switch (Number)
-
 			// 문서 번호에 따라 아래의 경우를 수행함.
 			switch(DocumentData->Number) // 문서 번호
 			{
@@ -85,7 +68,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// SaveData에 저장시키고(true로 지정), Player의 SetArchiveGetText 메서드에 Article 1을 획득했다고 알림.
 						SaveData->CollectArchives.Article1 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Article1", "Article dated January 4th\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Article1", "Article dated January 4th\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안되기 때문에 break로 탈출.
@@ -97,7 +80,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// SaveData에 저장시키고(true로 변경), Player의 SetArchiveGetText 메서드에 Article 2를 획득했다고 알림.
 						SaveData->CollectArchives.Article2 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Article2", "Article dated December 7th\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Article2", "Article dated December 7th\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안되기 때문에 break로 탈출.
@@ -109,7 +92,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// Save Data에 저장시키고(true로 변경), Player의 SetArchiveGetText 메서드에 Article 3을 획득했다고 알림.
 						SaveData->CollectArchives.Article3 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Article3", "Article dated December 18th\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Article3", "Article dated December 18th\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안되기 때문에 break로 탈출.
@@ -121,7 +104,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// Save Data에 저장시키고(true로 변경), Player의 SetArchiveGetText 메서드에 Article 4를 획득했다고 알림.
 						SaveData->CollectArchives.Article4 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Article4", "Article dated January 11th\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Article4", "Article dated January 11th\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안되기 때문에 break로 탈출.
@@ -133,7 +116,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// Save Data에 저장시키고(true로 변경), Player의 SetArchiveGetText 메서드에 Article 5를 획득했다고 알림.
 						SaveData->CollectArchives.Article5 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Article5", "Article dated February 6th\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Article5", "Article dated February 6th\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안되기 때문에 break로 탈출.
@@ -163,7 +146,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// Save Data에 저장시키고(true로 변경), Player의 SetArchiveGetText 메서드에 Diary 1을 획득했다고 알림.
 						SaveData->CollectArchives.Diary1 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Diary1", "Diary dated November 4th\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Diary1", "Diary dated November 4th\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안되기 때문에 break로 탈출.
@@ -175,7 +158,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// Save Data에 저장시키고(true로 변경), Player의 SetArchiveGetText 메서드에 Diary 2를 획득했다고 알림.
 						SaveData->CollectArchives.Diary2 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Diary2", "Someone's Diary\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Diary2", "Someone's Diary\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안되기 때문에 break로 탈출.
@@ -187,7 +170,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// Save Data에 저장시키고 (true로 변경), Player의 SetArchiveGetText 메서드에 Diary 3을 획득했다고 알림,
 						SaveData->CollectArchives.Diary3 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Diary3", "Diary dated January 3rd\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Diary3", "Diary dated January 3rd\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안되기 때문에 break로 탈출.
@@ -199,7 +182,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// Save Data에 저장시키고(true로 변경), Player의 SetArchiveGetText 메서드에 Diary 4를 획득했다고 알림.
 						SaveData->CollectArchives.Diary4 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Diary4", "Diary dated December 17th\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Diary4", "Diary dated December 17th\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안되기 때문에 break로 탈출.
@@ -211,7 +194,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// Save Data에 저장시키고(true로 변경), Player의 SetArchiveGetText 메서드에 Diary 5를 획득했다고 알림.
 						SaveData->CollectArchives.Diary5 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Diary5", "Diary dated February 6th\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Diary5", "Diary dated February 6th\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안 되기 때문에 break로 탈출.
@@ -242,7 +225,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// Save Data에 저장시키고(true로 변경), Player의 SetArchiveGetText 메서드에 Letter 1 From Berith 1을 획득했다고 알림.
 						SaveData->CollectArchives.Letter1_Berith1 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter1", "Natty's Letter 1\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Letter1", "Natty's Letter 1\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안 되기 때문에 break로 탈출.
@@ -254,7 +237,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// Save Data에 저장시키고, Player의 SetArchiveGetText 메서드에 Letter 2 from Berith 2를 획득했다고 알림.
 						SaveData->CollectArchives.Letter2_Berith2 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter2", "Natty's Letter 2\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Letter2", "Natty's Letter 2\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안되기 때문에 break로 탈출.
@@ -266,7 +249,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// Save Data에 저장시키고, Player의 SetArchiveGetText 메서드에 Letter 3 from Berith 3를 획득했다고 알림.
 						SaveData->CollectArchives.Letter3_Berith3 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter3", "Natty's Letter 3\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Letter3", "Natty's Letter 3\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안 되기 때문에 break로 탈출.
@@ -278,7 +261,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// Save Data에 저장시키고, Player의 SetArchiveGetText 메서드에 Letter 4 from Berith 4를 획득했다고 알림.
 						SaveData->CollectArchives.Letter4_Berith4 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter4", "Natty's Letter 4\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Letter4", "Natty's Letter 4\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안 되기 때문에 break로 탈출.
@@ -290,7 +273,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// Save Data에 저장시키고, Player의 SetArchiveGetText 메서드에 Letter 5 from Berith 5를 획득했다고 알림.
 						SaveData->CollectArchives.Letter5_Berith5 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter5", "Natty's Letter 5\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Letter5", "Natty's Letter 5\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안 되기 때문에 break로 탈출.
@@ -302,7 +285,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// Save Data에 저장시키고, Player의 SetArchiveGetText 메서드에 Letter 6 from Berith 6를 획득했다고 알림.
 						SaveData->CollectArchives.Letter6_Berith6 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter6", "Natty's Letter 6\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Letter6", "Natty's Letter 6\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안 되기 때문에 break로 탈출.
@@ -314,7 +297,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// Save Data에 저장시키고, Player의 SetArchiveGetText 메서드에 Letter 7 from Gamigin 1을 획득했다고 알림.
 						SaveData->CollectArchives.Letter7_Gamigin1 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter7", "Hongsul's Letter 1\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Letter7", "Hongsul's Letter 1\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안 되기 때문에 break로 탈출.
@@ -326,7 +309,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// Save Data에 저장시키고, Player의 SetArchiveGetText 메서드에 Letter 8 from Gamigin 2를 획득했다고 알림.
 						SaveData->CollectArchives.Letter8_Gamigin2 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter8", "Hongsul's Letter 2\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Letter8", "Hongsul's Letter 2\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안 되기 때문에 break로 탈출.
@@ -338,7 +321,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// Save Data에 저장시키고, Player의 SetArchiveGetText 메서드에 Letter 9 from Gamigin 3을 획득했다고 알림.
 						SaveData->CollectArchives.Letter9_Gamigin3 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter9", "Hongsul's Letter 3\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Letter9", "Hongsul's Letter 3\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안 되기 때문에 break로 탈출.
@@ -350,7 +333,7 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 					{
 						// Save Data에 저장시키고, Player의 SetArchiveGetText 메서드에 Letter 10 from Berith 4를 획득했다고 알림.
 						SaveData->CollectArchives.Letter10_Gamigin4 = true;
-						Player->SetArchiveGetText(NSLOCTEXT("APaper", "Get_Letter10", "Hongsul's Letter 4\nis added in archive"));
+						OnInteractionMessage.Broadcast(NSLOCTEXT("APaper", "Get_Letter10", "Hongsul's Letter 4\nis added in archive"));
 					}
 
 					break; // 이 함수에서 나가면 안 되기 때문에 break로 탈출.

@@ -73,34 +73,4 @@ void UBTService_Stuning::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* Node
 			BruteAI->GetBlackboard()->SetValueAsBool(AAIController_Brute::Stunned, bIsStunned);
 		}
 	}
-
-	/*if(ReaperAI)
-		Reaper = Cast<AReaper_cpp>(ReaperAI->GetPawn());
-
-	if(RunnerAI)
-		Runner = Cast<ARunner_cpp>(RunnerAI->GetPawn());
-
-	bool bIsStunned = false;
-	bool bCurrentStatus = false;
-	
-	if (Reaper)
-	{
-		bIsStunned = Reaper->GetIsStunned();
-		bCurrentStatus = ReaperAI->GetBlackboard()->GetValueAsBool(ACreatureAI::Stunned);
-	}
-
-	if (Runner)
-	{
-		bIsStunned = Runner->GetIsStunned();
-		bCurrentStatus = RunnerAI->GetBlackboard()->GetValueAsBool(AAIController_Runner::Stunned);
-	}
-
-	if (bIsStunned != bCurrentStatus)
-	{
-		if(ReaperAI)
-			ReaperAI->GetBlackboard()->SetValueAsBool(ACreatureAI::Stunned, bIsStunned);
-
-		if(RunnerAI)
-			RunnerAI->GetBlackboard()->SetValueAsBool(AAIController_Runner::Stunned, bIsStunned);
-	}*/
 }

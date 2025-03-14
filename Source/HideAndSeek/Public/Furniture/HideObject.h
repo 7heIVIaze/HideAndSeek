@@ -5,12 +5,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
-#include "Resource/HideInterface.h"
+#include "Resource/InteractInterface.h"
+//#include "Resource/HideInterface.h"
 #include "Components/TimelineComponent.h"
 #include "HideObject.generated.h"
 
 UCLASS()
-class HIDEANDSEEK_API AHideObject : public AActor, public IHideInterface
+class HIDEANDSEEK_API AHideObject : public AActor, public IInteractInterface //, public IHideInterface
 {
 	GENERATED_BODY()
 	
@@ -34,13 +35,13 @@ public:
 	TObjectPtr<class UCameraComponent> Camera;
 
 	UPROPERTY(EditDefaultsOnly, Category = Light)
-	TObjectPtr<class UPointLightComponent> CigarLight;
+	TObjectPtr<UChildActorComponent> CigarlighterComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = Light)
-	TObjectPtr<class USpotLightComponent> FlashLight;
+	TObjectPtr<UChildActorComponent> FlashlightComp;
 
 	UPROPERTY(EditDefaultsOnly, Category = Light)
-	TObjectPtr<UChildActorComponent> Lantern;
+	TObjectPtr<UChildActorComponent> LanternComp;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Sound)
 	TObjectPtr<class UAudioComponent> Sound;
@@ -100,21 +101,24 @@ public:
 	virtual void OnInteract(class AHorrorGameCharacter* PlayerCharacter) override;
 
 	UFUNCTION(BlueprintCallable)
+	virtual bool UseInteract(class AHorrorGameCharacter* PlayerCharacter) override;
+
+	UFUNCTION(BlueprintCallable)
 	void ToggleHide(class AHorrorGameCharacter* PlayerCharacter);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void SetFlashLightOn();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void SetCigarLightOn();
 	
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void SetLanternOn();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void MoveCamera();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void BreakHideObject();
 
 	UFUNCTION(BlueprintCallable)
@@ -123,4 +127,7 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "CameraNoise")
 	void SetCameraComponentNoise(int32 WhichStatus); // 0: 노이즈 해제, 1: 근처에 있음, 2: 추격 시작
 
+	// Change the currently held item (enable child actor visibility of the currently held item)
+	UFUNCTION(BlueprintCallable)
+	void SwitchItem(const FHorrorGameItemData& CurrentItemData, int32 CurrentItemIndex);
 };

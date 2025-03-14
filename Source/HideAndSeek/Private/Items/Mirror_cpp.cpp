@@ -54,7 +54,7 @@ void AMirror_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	Super::OnInteract(Player);
 
 	// 플레이어의 거울을 얻는 메서드를 호출함.
-	Player->AddMirror();
+	//Player->AddMirror();
 
 	// 위 메서드를 통해 플레이어가 아이템을 얻을 수 있는 상태이면
 	if (Player->bCanItemGet)
@@ -85,7 +85,7 @@ void AMirror_cpp::OnInteract(class AHorrorGameCharacter* Player)
 }
 
 // 플레이어가 청동 방울 아이템을 사용하려 할 때 작동할 함수.
-void AMirror_cpp::UseInteract(class AHorrorGameCharacter* Player)
+bool AMirror_cpp::UseInteract(class AHorrorGameCharacter* Player)
 {
 	Super::UseInteract(Player);
 
@@ -112,4 +112,5 @@ void AMirror_cpp::UseInteract(class AHorrorGameCharacter* Player)
 
 	// 그 후 플레이어가 소유한 거울 개수 감소.
 	Player->MirrorCount--;
+	return false;
 }

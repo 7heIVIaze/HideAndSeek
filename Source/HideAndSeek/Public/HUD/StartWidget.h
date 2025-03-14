@@ -16,72 +16,64 @@ class HIDEANDSEEK_API UStartWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-//public:
-//	UStartWidget(const FObjectInitializer& ObjectInitializer);
-
 protected:
 	virtual void NativeConstruct() override;
 
-	UFUNCTION()
-		void OnClickStartButton();
+	UFUNCTION(BlueprintCallable)
+	void OnClickStartButton();
 
-	UFUNCTION()
-		void OnClickOptionButton();
+	UFUNCTION(BlueprintCallable)
+	void OnClickOptionButton();
 
-	UFUNCTION()
-		void OnClickExitButton();
+	UFUNCTION(BlueprintCallable)
+	void OnClickExitButton();
 
-	UFUNCTION()
-		void OnClickArchiveButton();
+	UFUNCTION(BlueprintCallable)
+	void OnClickArchiveButton();
 
-	UFUNCTION()
-		void OnHoveredStartButton();
+	UFUNCTION(BlueprintCallable)
+	void OnHoveredStartButton();
 
-	UFUNCTION()
-		void OnHoveredOptionButton();
+	UFUNCTION(BlueprintCallable)
+	void OnHoveredOptionButton();
 
-	UFUNCTION()
-		void OnHoveredExitButton();
+	UFUNCTION(BlueprintCallable)
+	void OnHoveredExitButton();
 
-	UFUNCTION()
-		void OnHoveredArchiveButton();
+	UFUNCTION(BlueprintCallable)
+	void OnHoveredArchiveButton();
 
-	UFUNCTION()
-		void UpdateButtonSlate();
+	UFUNCTION(BlueprintCallable)
+	void UpdateButtonSlate();
 
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 
 public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UButton* StartButton;
+	class UButton* StartButton;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UButton* OptionButton;
+	class UButton* OptionButton;
 	 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UButton* ExitButton;
+	class UButton* ExitButton;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UButton* ArchiveBtn;
+	class UButton* ArchiveBtn;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UVerticalBox* Menu;
+	class UVerticalBox* Menu;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	TObjectPtr<class USoundCue> ButtonClickSound;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
+	TObjectPtr<class USoundCue> ButtonMoveSound;
 
 private:
 	UPROPERTY()
-		int32 MenuNavigationIndex = 0;
+	int32 MenuNavigationIndex = 0;
 
 	UPROPERTY()
-		int32 MenuNumber;
-
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-		TObjectPtr<class USoundCue> ButtonClickSound;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-		TObjectPtr<class USoundCue> ButtonMoveSound;
-
-//public:
-//	UPROPERTY()
-//		TSubclassOf<UUserWidget> WidgetClass;
+	int32 MenuNumber;
 };

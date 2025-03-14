@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+// #include "GameFramework/Actor.h"
+#include "Furniture/LightingClass.h"
 #include "Components/TimelineComponent.h"
 #include "Lamp_cpp.generated.h"
 
 UCLASS()
-class HIDEANDSEEK_API ALamp_cpp : public AActor
+class HIDEANDSEEK_API ALamp_cpp : public ALightingClass //public AActor
 {
 	GENERATED_BODY()
 	
@@ -24,27 +25,14 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintCallable)
-		void OnInteract();
+	/*UFUNCTION(BlueprintCallable)
+	virtual void OnInteract(class AHorrorGameCharacter* Player) override;*/
 
-	UFUNCTION(BlueprintCallable)
-		void BoxOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherIndexBody, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION(BlueprintCallable)
-		void BoxOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherIndexBody);
-
-	UFUNCTION(BlueprintCallable)
-		void NearBoxOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherIndexBody, bool bFromSweep, const FHitResult& SweepResult);
-
-	UFUNCTION(BlueprintCallable)
-		void NearBoxOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherIndexBody);
-
-	UFUNCTION(BlueprintCallable)
-		void LightFlicker(float value);
+	virtual void LightFlicker(float value) override;
 
 
 public:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LightMesh")
+	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LightMesh")
 		TObjectPtr<USceneComponent> RootComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LightMesh")
@@ -66,25 +54,25 @@ public:
 		bool bIsPlayerIn;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LightBoolean")
-		bool bIsLightBlink;
+		bool bIsLightBlink;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LightBoolean")
 		bool bIsNaturalFlick;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LightBoolean")
-		int32 CreatureNearNum;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LightBoolean")
+	//	int32 CreatureNearNum;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LightBoolean")
-		int32 CreatureNum;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LightBoolean")
+	//	int32 CreatureNum;
 
-	UPROPERTY(VisibleAnywhere, Category = "LightAnim")
-		FTimeline FlickeringLight;
+	//UPROPERTY(VisibleAnywhere, Category = "LightAnim")
+	//	FTimeline FlickeringLight;
+
+	//UPROPERTY(EditAnywhere, Category = "LightAnim")
+	//	UCurveFloat* CurveFloat;
 
 	UPROPERTY(EditAnywhere, Category = "LightAnim")
-		UCurveFloat* CurveFloat;
-
-	UPROPERTY(EditAnywhere, Category = "LightAnim")
-		UCurveFloat* NaturalCurveFloat;
+	UCurveFloat* NaturalFlickeringCurveFloat;
 
 	float Intensity = 8000.f;
 };

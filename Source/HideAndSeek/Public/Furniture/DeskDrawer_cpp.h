@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+//#include "GameFramework/Actor.h"
 //#include "Components/TimelineComponent.h"
 #include "Furniture/DrawerClass.h"
 #include "DeskDrawer_cpp.generated.h"
@@ -26,25 +26,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 public:
-	//UPROPERTY(VisibleAnywhere, Category = "Drawer")
-	//	TObjectPtr<UStaticMeshComponent> Drawer;
-
-	///** Please add a variable description */
-	//UPROPERTY(VisibleAnywhere, Category = "Drawer")
-	//	TObjectPtr<USceneComponent> DefaultSceneRoot;
-	///** Please add a variable description */
-	//UPROPERTY(VisibleAnywhere, Category = "Drawer")
-	//	FTimeline OpenAndClose; // Create TimeLine 
-
-	//UPROPERTY(EditAnywhere)
-	//	UCurveFloat* CurveFloat; // Timeline Curve
-
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drawer")
-	//	float DrawerOpenMove;
-
-	//bool bIsDrawerClosed = true;
-
 	UPROPERTY(EditDefaultsOnly, Category = "Sound")
 		class USoundCue* DrawerOpenSound;
 
@@ -52,7 +33,7 @@ public:
 		class USoundCue* DrawerCloseSound;
 public:
 	//UFUNCTION(BlueprintCallable, Category = "Interaction")
-		virtual void OnInteract() override;
+		virtual void OnInteract(class AHorrorGameCharacter* Player) override;
 
 	//UFUNCTION(BlueprintCallable, Category = "Drawer")
 		virtual void OpenDrawer(float Value) override;

@@ -1,7 +1,6 @@
 // CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "Furniture/Shelf.h"
-#include "Items/Items.h"
 
 // Sets default values
 AShelf::AShelf()
@@ -119,124 +118,6 @@ void AShelf::BeginPlay()
 		{
 			int32 randIdx = FMath::RandRange(0, Decorators.Num() - 1);
 			Lower_Deco_Right->SetChildActorClass(Decorators[randIdx]);
-		}
-	}
-}
-
-// Deprecated
-void AShelf::SetUpperItem()
-{
-	float RandomValue = FMath::FRandRange(0.0f, 1.0f);
-	int idx = -1;
-
-	if (RandomValue > fNoItemProbability)
-	{
-		float fTotalProbability = 1.0f - fNoItemProbability;
-		RandomValue = FMath::FRandRange(0.0f, fTotalProbability);
-		
-		for (int i = 0; i < ItemProbability.Num(); ++i)
-		{
-			if (i > 0)
-			{
-				if (RandomValue < ItemProbability[i] && RandomValue >= ItemProbability[i - 1])
-				{
-					idx = i;
-					break;
-				}
-			}
-			else
-			{
-				if (RandomValue < ItemProbability[i] && RandomValue >= 0)
-				{
-					idx = i;
-					break;
-				}
-			}
-		}
-
-		if (idx >= 0)
-		{
-			Upper_Item->SetChildActorClass(Items[idx]);
-		}
-	}
-}
-
-// Deprecated
-void AShelf::SetMiddleItem()
-{
-	
-	float RandomValue = FMath::FRandRange(0.0f, 1.0f);
-	
-	int idx = -1;
-
-	if (RandomValue > fNoItemProbability)
-	{
-		float fTotalProbability = 1.0f - fNoItemProbability;
-		RandomValue = FMath::FRandRange(0.0f, fTotalProbability);
-		
-		for (int i = 0; i < ItemProbability.Num(); ++i)
-		{
-			if (i > 0)
-			{
-				if (RandomValue < ItemProbability[i] && RandomValue >= ItemProbability[i - 1])
-				{
-					idx = i;
-					break;
-				}
-			}
-			else
-			{
-				if (RandomValue < ItemProbability[i] && RandomValue >= 0)
-				{
-					idx = i;
-					break;
-				}
-			}
-		}
-
-		if (idx >= 0)
-		{
-			Middle_Item->SetChildActorClass(Items[idx]);
-		}
-	}
-}
-
-// Deprecated
-void AShelf::SetLowerItem()
-{
-	
-	float RandomValue = FMath::FRandRange(0.0f, 1.0f);
-	
-	int idx = -1;
-
-	if (RandomValue > fNoItemProbability)
-	{
-		float fTotalProbability = 1.0f - fNoItemProbability;
-		RandomValue = FMath::FRandRange(0.0f, fTotalProbability);
-		
-		for (int i = 0; i < ItemProbability.Num(); ++i)
-		{
-			if (i > 0)
-			{
-				if (RandomValue < ItemProbability[i] && RandomValue >= ItemProbability[i - 1])
-				{
-					idx = i;
-					break;
-				}
-			}
-			else
-			{
-				if (RandomValue < ItemProbability[i] && RandomValue >= 0)
-				{
-					idx = i;
-					break;
-				}
-			}
-		}
-
-		if (idx >= 0)
-		{
-			Lower_Item->SetChildActorClass(Items[idx]);
 		}
 	}
 }

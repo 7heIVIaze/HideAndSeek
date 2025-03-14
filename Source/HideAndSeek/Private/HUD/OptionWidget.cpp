@@ -27,13 +27,6 @@ void UOptionWidget::NativeConstruct()
 
 	this->SetKeyboardFocus();
 
-	//PlaySettingButton = Cast<UButton>(GetWidgetFromName(TEXT("PlayOptionBtn")));
-	//GraphicsSettingButton = Cast<UButton>(GetWidgetFromName(TEXT("GraphicOptionBtn")));
-	////KeyMappingButton = Cast<UButton>(GetWidgetFromName(TEXT("KeyMappingBtn")));
-	//BackButton = Cast<UButton>(GetWidgetFromName(TEXT("BackToMainBtn")));
-	//MenuBox = Cast<UVerticalBox>(GetWidgetFromName(TEXT("OptionSelectBox")));
-	//MenuLine = Cast<UBorder>(GetWidgetFromName(TEXT("Line")));
-
 	// 각 버튼 별로 클릭, 마우스 호버 시 작동할 함수를 바인딩해줌.
 	if (nullptr != PlaySettingButton)
 	{
@@ -46,12 +39,6 @@ void UOptionWidget::NativeConstruct()
 		GraphicsSettingButton->OnClicked.AddDynamic(this, &UOptionWidget::OnClickGraphicsSettingButton);
 		GraphicsSettingButton->OnHovered.AddDynamic(this, &UOptionWidget::OnHoveredGraphicsSettingButton);
 	}
-
-	/*if (nullptr != KeyMappingButton)
-	{
-		KeyMappingButton->OnClicked.AddDynamic(this, &UOptionWidget::OnClickKeyMappingButton);
-		KeyMappingButton->OnHovered.AddDynamic(this, &UOptionWidget::OnHoveredKeyMappingButton);
-	}*/
 
 	if (nullptr != BackButton)
 	{
@@ -210,6 +197,7 @@ void UOptionWidget::UpdateButtonSlate()
 			break;
 		}
 		/*
+		* 키 매핑 설정이 생기면 활성화.
 		case 3:
 		{
 			PlaySettingButton->SetColorAndOpacity(FLinearColor(0.4f, 0.4f, 0.4f, 1.f));
@@ -229,12 +217,6 @@ void UOptionWidget::UpdateButtonSlate()
 		}
 	}
 }
-
-// DEPRECATED
-//void UOptionWidget::SetCurrentMode(OptionType ModeType)
-//{
-//	CurrentMode = ModeType;
-//}
 
 // 키보드 입력을 받았을 때 수행할 함수.
 FReply UOptionWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent)

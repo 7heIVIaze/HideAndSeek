@@ -28,6 +28,24 @@ void ALevelManager::BeginPlay()
 {
 	Super::BeginPlay();
 
+	AHorrorGamePlayerController* PlayerController = Cast<AHorrorGamePlayerController>(GetWorld()->GetFirstPlayerController());
+
+	if (PlayerController)
+	{
+		LevelStartDelegate.AddDynamic(PlayerController, &AHorrorGamePlayerController::ShowMainUI);
+		AHorrorGameCharacter* Player = Cast<AHorrorGameCharacter>(PlayerController->GetPawn());
+		if (Player)
+		{
+			LevelStartDelegate.AddDynamic(Player, &AHorrorGameCharacter::LevelStart);
+		}
+	}
+		
+	AHorrorGameGameMode* GameMode = Cast<AHorrorGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
+	if (GameMode)
+	{
+		LevelStartDelegate.AddDynamic(GameMode, &AHorrorGameGameMode::StartBackGroundMusic);
+	}
+
 	World = GetWorld();
 	count = 0;
 }
@@ -82,11 +100,12 @@ bool ALevelManager::Check()
 		return false;
 	}
 
+	LevelStartDelegate.Broadcast();
 	// 플레이어 컨트롤러 클래스를 가져와 레벨이 시작되었다고 알리고, 메인 UI도 호출시키며 BGM을 재생함.
-	AHorrorGamePlayerController* PlayerController = Cast<AHorrorGamePlayerController>(GetWorld()->GetFirstPlayerController());
-	Cast<AHorrorGameCharacter>(PlayerController->GetPawn())->LevelStart();
-	PlayerController->ShowMainUI();
-	Cast<AHorrorGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->StartBackGroundMusic();
+	//AHorrorGamePlayerController* PlayerController = Cast<AHorrorGamePlayerController>(GetWorld()->GetFirstPlayerController());
+	//Cast<AHorrorGameCharacter>(PlayerController->GetPawn())->LevelStart();
+	//PlayerController->ShowMainUI();
+	//Cast<AHorrorGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->StartBackGroundMusic();
 	
 	return true;
 }

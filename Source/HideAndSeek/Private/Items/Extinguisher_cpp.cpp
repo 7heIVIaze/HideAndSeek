@@ -37,7 +37,7 @@ void AExtinguisher_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	Super::OnInteract(Player);
 
 	// 플레이어의 소화기를 얻는 메서드를 호출함.
-	Player->AddExtinguisher();
+	//Player->AddExtinguisher();
 
 	// 위 메서드를 통해 플레이어가 아이템을 얻을 수 있는 상태이면
 	if (Player->bCanItemGet)
@@ -58,7 +58,8 @@ void AExtinguisher_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	}
 }
 
-void AExtinguisher_cpp::UseInteract(class AHorrorGameCharacter* Player)
+bool AExtinguisher_cpp::UseInteract(class AHorrorGameCharacter* Player)
 {
 	Super::UseInteract(Player);
+	return false;
 }

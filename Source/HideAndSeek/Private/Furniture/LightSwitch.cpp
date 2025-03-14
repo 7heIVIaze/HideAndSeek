@@ -42,8 +42,10 @@ void ALightSwitch::BeginPlay()
 }
 
 // 플레이어가 상호작용할 때 작동할 함수.
-void ALightSwitch::OnInteract()
+void ALightSwitch::OnInteract(class AHorrorGameCharacter* Player)
 {
+	Super::OnInteract(Player);
+
 	// 스위치 음을 재생하고, 스위치 상태를 설정함.
 	if (LightSound)
 	{

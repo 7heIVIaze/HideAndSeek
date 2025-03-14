@@ -20,20 +20,15 @@ public:
 	ATimerProjectile_cpp();
 
 public: // Properties
-	UPROPERTY(VisibleDefaultsOnly, Category = "Projectile")
-	TObjectPtr<USceneComponent> RootComp;
-
-	/*UPROPERTY(VisibleDefaultsOnly, Category = "Projectile")
-		UBoxComponent* Collision;*/
 
 	UPROPERTY(VisibleAnywhere, Category = "Timer")
-		UStaticMeshComponent* TimerMesh;
+	UStaticMeshComponent* TimerMesh;
 
-	/*UPROPERTY(VisibleAnywhere, Category = "Sound")
-		UAudioComponent* TimerSound;*/
+	UPROPERTY(VisibleAnywhere, Category = "Sound")
+	UAudioComponent* TimerSound;
 
 	UPROPERTY(VisibleAnywhere, Category = "Movement")
-		UProjectileMovementComponent* ProjectileMovement;
+	UProjectileMovementComponent* ProjectileMovement;
 
 	bool bIsHit;
 	float count = 0;
@@ -46,12 +41,18 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 	
-	// Function
-	/*UFUNCTION()
-		void RangEnd();*/
+	UFUNCTION(BlueprintCallable)
+	void RingingStart(const FHitResult& ImpactResult);
 
-	UFUNCTION()
-		void FireInDirection(const FVector& ShootDirection);
+	UFUNCTION(BlueprintCallable)
+	void RingingEnd();
+
+	UFUNCTION(BlueprintCallable)
+	void FireInDirection(const FVector& ShootDirection);
+
+	// 소리가 울리고 있는지 여부를 리턴하는 함수.
+	UFUNCTION(BlueprintCallable)
+	bool GetIsSoundPlaying();
 
 	/*UFUNCTION()
 		void SetPlaySound(bool bValue);
@@ -70,7 +71,7 @@ public:
 //		bool bPlaySound = false;
 	
 public:
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Timer)
-		TSubclassOf<class AThrownTimer_cpp> Timer;
+	UPROPERTY(BlueprintReadWrite, Category = Boolean)
+	bool bIsSoundPlaying = false;
 		//TSubclassOf<class ATimerProjectile_cpp> Timer;
 };

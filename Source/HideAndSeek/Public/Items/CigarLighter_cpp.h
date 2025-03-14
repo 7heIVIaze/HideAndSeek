@@ -35,9 +35,9 @@ public:
 		bool bIsCigarLightOn;*/
 
 public:
-	void OnInteract(class AHorrorGameCharacter* Player) override;
+	virtual void OnInteract(class AHorrorGameCharacter* Player) override;
 
-	void UseInteract(class AHorrorGameCharacter* Player) override;
+	virtual bool UseInteract(class AHorrorGameCharacter* Player) override;
 
 	//UFUNCTION(BlueprintCallable)
 	//void CigarLightOn();

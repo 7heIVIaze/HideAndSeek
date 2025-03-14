@@ -10,28 +10,33 @@
 class AHorrorGameCharacter;
 
 UENUM(BlueprintType)
-enum EItemType
+enum class EItemType : uint8
 {
-	ITEM_None UMETA(DisplayName = "None"),
-	ITEM_Useable UMETA(DisplayName = "Useable"),
-	ITEM_Passive UMETA(DisplayName = "Passive"),
+	ITEM_NONE UMETA(DisplayName = "None"), // Nothing
+	ITEM_Consumable UMETA(DisplayName = "Consumable"), // 소비형 아이템
+	ITEM_Lighting UMETA(DisplayName = "Light"), // 조명 아이템
+	ITEM_Passive UMETA(DisplayName = "Passive"), // 패시브(장비형) 아이템
+	ITEM_Unique UMETA(DisplayName = "Unique"), // 특수 아이템(나침반, 환혼석 등)
 };
 
-// 사용형 아이템 번호
+// 소비형 아이템 번호
 UENUM(BlueprintType)
-enum class Active_Item_Num : uint8
+enum class EItemNumber : uint8
 {
-	CigetLighter UMETA(DisplayName = "CigarLighter"),
-	FlashLight UMETA(DisplayName = "FlashLight"),
-	Key UMETA(DisplayName = "Key"),
-	Timer UMETA(DisplayName = "Timer"),
-	Sword UMETA(DisplayName = "Sword"),
-	Bell UMETA(DisplayName = "Bell"),
-	Mirror UMETA(DisplayName = "Mirror"),
-	Extinguisher UMETA(DisplayName = "Extinguisher"),
-	Cutter UMETA(DisplayName = "Cutter"),
-	SoulLantern UMETA(DisplayName = "SoulLantern"),
-	GlowStick UMETA(DisplayName = "GlowStick")
+	ITEM_None UMETA(DisplayName = "None"),
+	ITEM_CigarLighter UMETA(DisplayName = "CigarLighter"), // 라이터
+	ITEM_FlashLight UMETA(DisplayName = "FlashLight"), // 손전등
+	ITEM_Key UMETA(DisplayName = "Key"), // 열쇠
+	ITEM_Timer UMETA(DisplayName = "Timer"), // 어그로 아이템
+	ITEM_Sword UMETA(DisplayName = "Sword"), // 청동 검
+	ITEM_Bell UMETA(DisplayName = "Bell"), // 청동 방울
+	ITEM_Mirror UMETA(DisplayName = "Mirror"), // 청동 거울
+	ITEM_Extinguisher UMETA(DisplayName = "Extinguisher"), // 소화기
+	ITEM_Cutter UMETA(DisplayName = "Cutter"), // 절단기
+	ITEM_Lantern UMETA(DisplayName = "Lantern"), // 영혼 랜턴
+	ITEM_Glowstick UMETA(DisplayName = "Glowstick"), // 야광봉
+	ITEM_Compass UMETA(DisplayName = "Compass"), // 나침반
+	ITEM_ResurrectionStone UMETA(DisplayName = "ResurrectionStone"), // 환혼석
 };
 
 USTRUCT(BlueprintType)
@@ -41,34 +46,44 @@ struct FHorrorGameItemData : public FTableRowBase
 
 public:
 	// 정렬을 하기 위해서 아이템 번호를 11보다 큰 12로 설정함.
-	FHorrorGameItemData() : ItemNumber(12), ItemName(NSLOCTEXT("FHorrorGameItemData", "NULL", "")), ItemCount(0), ItemIcon(nullptr), Type(EItemType::ITEM_None), ItemPath(TEXT("")), ItemDetail(NSLOCTEXT("FHorrorGameItemData", "NULL", "")) {}
+	FHorrorGameItemData() : ItemNumber(EItemNumber::ITEM_None), ItemName(NSLOCTEXT("FHorrorGameItemData", "NULL", "")), ItemType(EItemType::ITEM_NONE), ItemCount(0), Durability(0), ItemIcon(nullptr), ItemBPClass(nullptr), ItemDescription(NSLOCTEXT("FHorrorGameItemData", "NULL", "")) {}
 
 	void Clear();
 	void Use(AHorrorGameCharacter* Player);
 	//void Initialize();
 
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	int32 ItemNumber;
+	// Item Number
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Data)
+	EItemNumber ItemNumber;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	// Item Name
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Data)
 	FText ItemName;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	int32 ItemCount;
+	// Item Type : Useable / Lighting / Equipment
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Data)
+	EItemType ItemType;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
+	// Item Count(Amount) : For Inventory
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Data)
+	int ItemCount;
+
+	// Durability : For Inventory
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Data)
+	int Durability;
+
+	// Item Icon : For Inventory
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Data)
 	UTexture2D* ItemIcon;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	TEnumAsByte<EItemType> Type;
+	// Item Path
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Data)
+	TSubclassOf<class AItemClass> ItemBPClass;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	FString ItemPath;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-	FText ItemDetail;
-
+	// Description of item : For Archive Widget 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Data)
+	FText ItemDescription;
 };
 UCLASS()
 class HIDEANDSEEK_API ACustomDataTables : public AActor

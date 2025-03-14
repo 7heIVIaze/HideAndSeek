@@ -453,7 +453,7 @@ void UArchiveDocsWidget::OnArchive1ButtonClick()
 			FHorrorGameItemData* CigarLightData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(1), TEXT(""));
 			FText ItemName = CigarLightData->ItemName;
 			UTexture2D* Texture = CigarLightData->ItemIcon;
-			FText ItemDetail = CigarLightData->ItemDetail;
+			FText ItemDescription = CigarLightData->ItemDescription;
 			
 			// 위젯 상태는 세부 내역 상태로 바꿈
 			ArchiveState = EArchiveStates::AS_Detail;
@@ -461,7 +461,7 @@ void UArchiveDocsWidget::OnArchive1ButtonClick()
 			// 아이템 패널의 이미지와 텍스트에 가져온 정보를 입력시킴.
 			ItemImage->SetBrushFromTexture(Texture, true);
 			Title->SetText(ItemName);
-			Detail->SetText(ItemDetail);
+			Detail->SetText(ItemDescription);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -582,7 +582,7 @@ void UArchiveDocsWidget::OnArchive2ButtonClick()
 			FHorrorGameItemData* FlashLightData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(2), TEXT(""));
 			FText ItemName = FlashLightData->ItemName;
 			UTexture2D* Texture = FlashLightData->ItemIcon;
-			FText ItemDetail = FlashLightData->ItemDetail;
+			FText ItemDescription = FlashLightData->ItemDescription;
 
 			// 위젯 상태를 세부 내역 상태로 변경함.
 			ArchiveState = EArchiveStates::AS_Detail;
@@ -590,7 +590,7 @@ void UArchiveDocsWidget::OnArchive2ButtonClick()
 			// 아이템 패널의 이미지와 텍스트에 가져온 정보를 입력시킴.
 			ItemImage->SetBrushFromTexture(Texture, true);
 			Title->SetText(ItemName);
-			Detail->SetText(ItemDetail);
+			Detail->SetText(ItemDescription);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -712,7 +712,7 @@ void UArchiveDocsWidget::OnArchive3ButtonClick()
 			FHorrorGameItemData* KeyData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(3), TEXT(""));
 			FText ItemName = KeyData->ItemName;
 			UTexture2D* Texture = KeyData->ItemIcon;
-			FText ItemDetail = KeyData->ItemDetail;
+			FText ItemDescription = KeyData->ItemDescription;
 
 			// 위젯 상태를 세부 내역 상태로 변경함.
 			ArchiveState = EArchiveStates::AS_Detail;
@@ -720,7 +720,7 @@ void UArchiveDocsWidget::OnArchive3ButtonClick()
 			// 아이템 패널의 이미지와 텍스트에 가져온 정보를 입력시킴.
 			ItemImage->SetBrushFromTexture(Texture, true);
 			Title->SetText(ItemName);
-			Detail->SetText(ItemDetail);
+			Detail->SetText(ItemDescription);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -842,7 +842,7 @@ void UArchiveDocsWidget::OnArchive4ButtonClick()
 			FHorrorGameItemData* TimerData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(4), TEXT(""));
 			FText ItemName = TimerData->ItemName;
 			UTexture2D* Texture = TimerData->ItemIcon;
-			FText ItemDetail = TimerData->ItemDetail;
+			FText ItemDescription = TimerData->ItemDescription;
 
 			// 위젯의 상태를 세부 내역 상태로 변경함.
 			ArchiveState = EArchiveStates::AS_Detail;
@@ -850,7 +850,7 @@ void UArchiveDocsWidget::OnArchive4ButtonClick()
 			// 아이템 패널의 이미지와 텍스트에 가져온 정보를 입력함.
 			ItemImage->SetBrushFromTexture(Texture, true);
 			Title->SetText(ItemName);
-			Detail->SetText(ItemDetail);
+			Detail->SetText(ItemDescription);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -973,7 +973,7 @@ void UArchiveDocsWidget::OnArchive5ButtonClick()
 			FHorrorGameItemData* BronzeSwordData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(5), TEXT(""));
 			FText ItemName = BronzeSwordData->ItemName;
 			UTexture2D* Texture = BronzeSwordData->ItemIcon;
-			FText ItemDetail = BronzeSwordData->ItemDetail;
+			FText ItemDescription = BronzeSwordData->ItemDescription;
 
 			// 위젯의 상태를 세부 내역 상태로 변경함.
 			ArchiveState = EArchiveStates::AS_Detail;
@@ -981,7 +981,7 @@ void UArchiveDocsWidget::OnArchive5ButtonClick()
 			// 아이템 패널의 이미지와 텍스트에 가져온 정보를 입력함.
 			ItemImage->SetBrushFromTexture(Texture, true);
 			Title->SetText(ItemName);
-			Detail->SetText(ItemDetail);
+			Detail->SetText(ItemDescription);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -1104,7 +1104,7 @@ void UArchiveDocsWidget::OnArchive6ButtonClick()
 			FHorrorGameItemData* BronzeBellData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(6), TEXT(""));
 			FText ItemName = BronzeBellData->ItemName;
 			UTexture2D* Texture = BronzeBellData->ItemIcon;
-			FText ItemDetail = BronzeBellData->ItemDetail;
+			FText ItemDescription = BronzeBellData->ItemDescription;
 
 			// 위젯의 상태를 세부 내역 상태로 변경함.
 			ArchiveState = EArchiveStates::AS_Detail;
@@ -1112,7 +1112,7 @@ void UArchiveDocsWidget::OnArchive6ButtonClick()
 			// 아이템 패널의 이미지와 텍스트에 가져온 정보를 입력함.
 			ItemImage->SetBrushFromTexture(Texture, true);
 			Title->SetText(ItemName);
-			Detail->SetText(ItemDetail);
+			Detail->SetText(ItemDescription);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -1235,7 +1235,7 @@ void UArchiveDocsWidget::OnArchive7ButtonClick()
 			FHorrorGameItemData* BronzeMirrorData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(7), TEXT(""));
 			FText ItemName = BronzeMirrorData->ItemName;
 			UTexture2D* Texture = BronzeMirrorData->ItemIcon;
-			FText ItemDetail = BronzeMirrorData->ItemDetail;
+			FText ItemDescription = BronzeMirrorData->ItemDescription;
 
 			// 위젯의 상태를 세부 내역 상태로 변경함.
 			ArchiveState = EArchiveStates::AS_Detail;
@@ -1243,7 +1243,7 @@ void UArchiveDocsWidget::OnArchive7ButtonClick()
 			// 아이템 패널의 이미지와 텍스트에 가져온 정보를 입력함.
 			ItemImage->SetBrushFromTexture(Texture, true);
 			Title->SetText(ItemName);
-			Detail->SetText(ItemDetail);
+			Detail->SetText(ItemDescription);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -1366,7 +1366,7 @@ void UArchiveDocsWidget::OnArchive8ButtonClick()
 			FHorrorGameItemData* ExtinguisherData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(8), TEXT(""));
 			FText ItemName = ExtinguisherData->ItemName;
 			UTexture2D* Texture = ExtinguisherData->ItemIcon;
-			FText ItemDetail = ExtinguisherData->ItemDetail;
+			FText ItemDescription = ExtinguisherData->ItemDescription;
 
 			// 위젯의 상태를 세부 내역 상태로 변경함.
 			ArchiveState = EArchiveStates::AS_Detail;
@@ -1374,7 +1374,7 @@ void UArchiveDocsWidget::OnArchive8ButtonClick()
 			// 아이템 패널의 이미지와 텍스트에 가져온 정보를 입력함.
 			ItemImage->SetBrushFromTexture(Texture, true);
 			Title->SetText(ItemName);
-			Detail->SetText(ItemDetail);
+			Detail->SetText(ItemDescription);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -1497,7 +1497,7 @@ void UArchiveDocsWidget::OnArchive9ButtonClick()
 			FHorrorGameItemData* CutterData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(9), TEXT(""));
 			FText ItemName = CutterData->ItemName;
 			UTexture2D* Texture = CutterData->ItemIcon;
-			FText ItemDetail = CutterData->ItemDetail;
+			FText ItemDescription = CutterData->ItemDescription;
 
 			// 위젯의 상태를 세부 내역 상태로 변경함.
 			ArchiveState = EArchiveStates::AS_Detail;
@@ -1505,7 +1505,7 @@ void UArchiveDocsWidget::OnArchive9ButtonClick()
 			// 아이템 패널의 이미지와 텍스트에 가져온 정보를 입력함.
 			ItemImage->SetBrushFromTexture(Texture, true);
 			Title->SetText(ItemName);
-			Detail->SetText(ItemDetail);
+			Detail->SetText(ItemDescription);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -1628,7 +1628,7 @@ void UArchiveDocsWidget::OnArchive10ButtonClick()
 			FHorrorGameItemData* SoulLanternData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(10), TEXT(""));
 			FText ItemName = SoulLanternData->ItemName;
 			UTexture2D* Texture = SoulLanternData->ItemIcon;
-			FText ItemDetail = SoulLanternData->ItemDetail;
+			FText ItemDescription = SoulLanternData->ItemDescription;
 
 			// 위젯의 상태를 세부 내역 상태로 변경함.
 			ArchiveState = EArchiveStates::AS_Detail;
@@ -1636,7 +1636,7 @@ void UArchiveDocsWidget::OnArchive10ButtonClick()
 			// 아이템 패널의 이미지와 텍스트에 가져온 정보를 입력함.
 			ItemImage->SetBrushFromTexture(Texture, true);
 			Title->SetText(ItemName);
-			Detail->SetText(ItemDetail);
+			Detail->SetText(ItemDescription);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}
@@ -1759,7 +1759,7 @@ void UArchiveDocsWidget::OnArchive11ButtonClick()
 			FHorrorGameItemData* GlowStickData = ItemData->FindRow<FHorrorGameItemData>(*FString::FromInt(11), TEXT(""));
 			FText ItemName = GlowStickData->ItemName;
 			UTexture2D* Texture = GlowStickData->ItemIcon;
-			FText ItemDetail = GlowStickData->ItemDetail;
+			FText ItemDescription = GlowStickData->ItemDescription;
 
 			// 위젯의 상태를 세부 내역 상태로 변경함.
 			ArchiveState = EArchiveStates::AS_Detail;
@@ -1767,7 +1767,7 @@ void UArchiveDocsWidget::OnArchive11ButtonClick()
 			// 아이템 패널의 이미지와 텍스트에 가져온 정보를 입력함.
 			ItemImage->SetBrushFromTexture(Texture, true);
 			Title->SetText(ItemName);
-			Detail->SetText(ItemDetail);
+			Detail->SetText(ItemDescription);
 			ItemPanel->SetVisibility(ESlateVisibility::Visible);
 			Exit->SetVisibility(ESlateVisibility::Collapsed);
 		}

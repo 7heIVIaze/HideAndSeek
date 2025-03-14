@@ -26,28 +26,9 @@ void UStageSelectWidget::NativeConstruct()
 		ClearData = GameInstance->GetAllClearData(); // 구조체 형태의 클리어 데이터 값을 가져옴
 	}
 
-	// 블루프린트 클래스로부터 ChapterPanel이라는 위젯 오브젝트를 가져와 MenuBox에 할당함.
-	//MenuBox = Cast<UVerticalBox>(GetWidgetFromName(TEXT("ChapterPanel")));
-
 	// 플레이어가 선택 가능한 메뉴의 개수는 현재는 3개.
 	MenuNumber = 3;
 	
-	/*
-	// 삭제해도 됨. 선택가능한 메뉴를 나타내기 위한 배열 변수임.
-	CanButtonSelect.Init(false, MenuNumber); 
-
-	for (int i = 0; i < ButtonNum; ++i)
-	{
-		CanButtonSelect[i] = true;
-	}
-	CanButtonSelect[MenuNumber - 1] = true;
-	*/
-
-	/*ChapOneButton = Cast<UButton>(GetWidgetFromName(TEXT("ChapOneBtn")));
-	ChapTwoButton = Cast<UButton>(GetWidgetFromName(TEXT("ChapTwoBtn")));
-	BackButton = Cast<UButton>(GetWidgetFromName(TEXT("BackBtn")));
-	LevelImg = Cast<UImage>(GetWidgetFromName(TEXT("StageSampleImg")));*/
-
 	// 각 버튼 별로 클릭, 마우스 호버 시 작동할 함수를 바인딩 해줌.
 	if (nullptr != ChapOneButton) // ChapOneButton이 null이 아니면, 콜백 함수 바인드 시킴
 	{
@@ -63,11 +44,11 @@ void UStageSelectWidget::NativeConstruct()
 		// 챕터가 열려 있는 경우, 챕터명을 설정하고, 아닐 경우 ???로 설정함.
 		if (ClearData[1].bIsOpened)
 		{
-			ChapTwoText->SetText(NSLOCTEXT("UStageSelectWidget", "ChapTwoText", "School of Labyrinth"));
+			ChapTwoText->SetText(NSLOCTEXT("WidgetText", "ChapTwoText", "School of Labyrinth"));
 		}
 		else
 		{
-			ChapTwoText->SetText(NSLOCTEXT("UStageSelectWidget", "ChapUnLock", "???"));
+			ChapTwoText->SetText(NSLOCTEXT("WidgetText", "ChapUnLock", "???"));
 		}
 	}
 
@@ -305,14 +286,6 @@ void UStageSelectWidget::OnMoveChapFive()
 }
 
 */
-
-// Deprecated
-//void UStageSelectWidget::OnMoveBack()
-//{
-//	auto GameMode = Cast<AStartGameMode>(UGameplayStatics::GetGameMode(GetWorld()));
-//
-//	GameMode->ChangeWidget(WidgetType::StartWidget);
-//}
 
 // Chapter One 버튼에 마우스가 호버되었을 때 호출할 콜백 함수
 void UStageSelectWidget::OnHoveredChapOneButton()

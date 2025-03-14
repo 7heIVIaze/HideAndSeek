@@ -128,7 +128,8 @@ void ACreatureAI::OnTargetDetected(AActor* Actor, FAIStimulus const Stimulus)
 				}
 				else
 				{
-					if (player->bIsCigarLightOn || player->bIsFlashLightOn) // 라이터든 플래시든 켰을 때만 감지
+					//if (player->bIsCigarLightOn || player->bIsFlashLightOn) // 라이터든 플래시든 켰을 때만 감지
+					if (player->bIsLightOn) // 라이터든 플래시든 켰을 때만 감지
 					{
 						// GetBlackboard()->SetValueAsBool(CanSeePlayer, true);
 						GetBlackboard()->SetValueAsObject(TargetKey, player);

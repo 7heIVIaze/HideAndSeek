@@ -3,11 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+//#include "GameFramework/Actor.h"
+#include "Furniture/InteractableActor.h"
 #include "LightSwitch.generated.h"
 
 UCLASS()
-class HIDEANDSEEK_API ALightSwitch : public AActor
+class HIDEANDSEEK_API ALightSwitch : public AInteractableActor
 {
 	GENERATED_BODY()
 	
@@ -16,22 +17,23 @@ public:
 	ALightSwitch();
 
 	UPROPERTY(VisibleAnywhere, Category = "Switch")
-		TObjectPtr<USceneComponent> RootComp;
+	TObjectPtr<USceneComponent> RootComp;
 
 	UPROPERTY(VisibleAnywhere, Category = "Switch")
-		TObjectPtr<UStaticMeshComponent> MainMesh;
+	TObjectPtr<UStaticMeshComponent> MainMesh;
 
 	UPROPERTY(VisibleAnywhere, Category = "Switch")
-		TObjectPtr<UStaticMeshComponent> SwitchMesh;
+	TObjectPtr<UStaticMeshComponent> SwitchMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Switch")
-		TArray<class ASchoolLight*> Lights;
+	TArray<class ASchoolLight*> Lights;
 
 	UPROPERTY(VisibleAnywhere, Category = "Switch")
-		bool bIsSwitchOn;
+	bool bIsSwitchOn;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
-		class USoundCue* LightSound;
+	TObjectPtr<class USoundCue> LightSound;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -40,11 +42,11 @@ public:
 	// Called every frame
 	/*virtual void Tick(float DeltaTime) override;*/
 	UFUNCTION(BlueprintCallable)
-		void OnInteract();
+	virtual void OnInteract(class AHorrorGameCharacter* Player) override;
 
 	UFUNCTION(BlueprintCallable)
-		void SetSwitchStatus();
+	void SetSwitchStatus();
 
 	UFUNCTION(BlueprintCallable)
-		void SetLightsStatus();
+	void SetLightsStatus();
 };

@@ -16,15 +16,15 @@ class HIDEANDSEEK_API UChapterTitleWidget : public UUserWidget
 	
 public:
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
-		TObjectPtr<class UTextBlock> TitleText;
+	TObjectPtr<class UTextBlock> TitleText;
 
 	UPROPERTY(VisibleAnywhere, meta = (BindWidget))
-		TObjectPtr<class UTextBlock> ExplainText;
+	TObjectPtr<class UTextBlock> ExplainText;
 
 public:
 	UFUNCTION(BlueprintCallable)
-		void SetTitleText();
+	void SetTitleText();
 
 	UFUNCTION(BlueprintCallable)
-		void SetExplainText();
+	void SetExplainText();
 };

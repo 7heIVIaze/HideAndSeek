@@ -59,17 +59,24 @@ public:
 	static const FName LockerTargetKey; // AI 캐릭터가 본 플레이어가 불을 켠 캐비닛/옷장을 담을 Object 데이터
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float AISightRadius = 1200.f;
+	float AISightRadius = 1200.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float AISightAge = 0.5f;
+	float AISightAge = 0.5f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float AILoseSightRadius = 1700.f;
+	float AILoseSightRadius = 1700.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float AIFieldOfView = 60.0f;
+	float AIFieldOfView = 60.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float AILastSeenLocation = 2000.f;
+	float AILastSeenLocation = 2000.f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		float NoLightSightRadius = 800.f;
+	float NoLightSightRadius = 800.f;
+
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AIHearingRange = 2400.f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AIHearingAge = 0.5f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float AIHearingRangeAfterDetected = 2800.f;*/
 
 private:
 	/*void OnRepeatTimer();
@@ -79,6 +86,7 @@ private:
 
 	class UBlackboardComponent* BlackboardComp;
 	class UAISenseConfig_Sight* SightConfig;
+	//class UAISenseConfig_Hearing* HearingConfig;
 
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = "AI", meta = (AllowPrivateAccess = "true"))
 		class UBehaviorTreeComponent* Behavior_Tree_Component;

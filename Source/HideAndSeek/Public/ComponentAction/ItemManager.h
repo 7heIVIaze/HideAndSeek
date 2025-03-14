@@ -35,7 +35,7 @@ public:
 		void ItemSetting();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-		TArray<TSubclassOf<class AItems>> Items; // 배치될 아이템들(블루프린트에서 담을 것)
+		TArray<TSubclassOf<class AItemClass>> Items; // 배치될 아이템들(블루프린트에서 담을 것)
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
 		TArray<int32> ItemNumbers; // 배치될 아이템의 개수(Items와 동일한 인덱스임)

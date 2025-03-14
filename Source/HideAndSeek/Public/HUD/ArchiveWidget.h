@@ -19,81 +19,81 @@ protected:
 
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 public:
-	UFUNCTION()
-		void OnExitButtonClick();
+	UFUNCTION(BlueprintCallable)
+	void OnExitButtonClick();
 
-	UFUNCTION()
-		void OnItemButtonClick();
+	UFUNCTION(BlueprintCallable)
+	void OnItemButtonClick();
 
-	UFUNCTION()
-		void OnDocumentButtonClick();
+	UFUNCTION(BlueprintCallable)
+	void OnDocumentButtonClick();
 
-	UFUNCTION()
-		void OnLetterButtonClick();
+	UFUNCTION(BlueprintCallable)
+	void OnLetterButtonClick();
 
-	UFUNCTION()
-		void OnHintButtonClick();
+	UFUNCTION(BlueprintCallable)
+	void OnHintButtonClick();
 
-	UFUNCTION()
-		void OnExitButtonHovered();
+	UFUNCTION(BlueprintCallable)
+	void OnExitButtonHovered();
 
-	UFUNCTION()
-		void OnItemButtonHovered();
+	UFUNCTION(BlueprintCallable)
+	void OnItemButtonHovered();
 
-	UFUNCTION()
-		void OnDocumentButtonHovered();
+	UFUNCTION(BlueprintCallable)
+	void OnDocumentButtonHovered();
 
-	UFUNCTION()
-		void OnLetterButtonHovered();
+	UFUNCTION(BlueprintCallable)
+	void OnLetterButtonHovered();
 
-	UFUNCTION()
-		void OnHintButtonHovered();
+	UFUNCTION(BlueprintCallable)
+	void OnHintButtonHovered();
 
-	UFUNCTION()
-		void UpdateButtonSlate();
+	UFUNCTION(BlueprintCallable)
+	void UpdateButtonSlate();
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-		class UButton* Item;
+	class UButton* Item;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-		class UButton* Document;
+	class UButton* Document;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-		class UButton* Letter;
+	class UButton* Letter;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-		class UButton* Hint;
+	class UButton* Hint;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidget))
-		class UButton* Exit;
+	class UButton* Exit;
 
-	UPROPERTY()
-		int32 CurrentIndex;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 CurrentIndex;
 
-	UPROPERTY()
-		int32 NavIndex;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 NavIndex;
 
-	UPROPERTY()
-		int32 ItemIndex; // 현재 확인하려는 아이템의 번호
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 ItemIndex; // 현재 확인하려는 아이템의 번호
 
-	UPROPERTY()
-		int32 LanguageIndex; // 현재 언어 설정
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 LanguageIndex; // 현재 언어 설정
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
-		TSubclassOf<UUserWidget> DetailWidget;
+	TSubclassOf<UUserWidget> DetailWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
-		TSubclassOf<UUserWidget> PauseWidget;
+	TSubclassOf<UUserWidget> PauseWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
-		TSubclassOf<UUserWidget> HintWidget;
+	TSubclassOf<UUserWidget> HintWidget;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-		TObjectPtr<class USoundCue> ButtonClickSound;
+	TObjectPtr<class USoundCue> ButtonClickSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-		TObjectPtr<class USoundCue> ButtonMoveSound;
+	TObjectPtr<class USoundCue> ButtonMoveSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
 	bool bIsStartGameMode = true;

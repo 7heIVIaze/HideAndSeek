@@ -31,41 +31,29 @@ protected:
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 
 public:
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnClickLanguageButton();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnHoveredLanguageButton();
 
-	/*UFUNCTION()
-	void OnUnhoveredLanguageButton();*/
-
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnClickEnglishButton();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnHoveredEnglishButton();
 
-	//UFUNCTION()
-	//void OnUnhoveredEnglishButton();
-
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnClickKoreanButton();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnHoveredKoreanButton();
 
-	//UFUNCTION()
-	//void OnUnhoveredKoreanButton();
-
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnClickVolumeButton();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnHoveredVolumeButton();
-
-	/*UFUNCTION()
-	void OnUnhoveredVolumeButton();*/
 
 	UFUNCTION(BlueprintCallable)
 	void OnChangeGlobalVolume(float inValue);
@@ -73,50 +61,38 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnClickTimerButton();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnHoveredTimerButton();
-
-	/*UFUNCTION()
-	void OnUnhoveredTimerButton();*/
 
 	UFUNCTION(BlueprintCallable)
 	void OnClickCrossHairButton();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnHoveredCrossHairButton();
 
-	/*UFUNCTION()
-	void OnUnhoveredCrossHairButton();*/
-
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnClickMouseSensitiveButton();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnHoveredMouseSensitiveButton();
-
-	/*UFUNCTION()
-	void OnUnhoveredMouseSensitiveButton();*/
 
 	UFUNCTION(BlueprintCallable)
 	void OnChangeMouseSensitive(float inValue);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void UpdateButtonSlate();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void SetCurrentMode(CurrentType ModeType);
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void AnimationFinished();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnClickBackButton();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnHoveredBackButton();
-
-	/*UFUNCTION()
-	void OnUnhoveredBackButton();*/
 
 public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -161,19 +137,19 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* BackButton;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int32 MenuNavIndex = 0;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int32 SubMenuNavIndex = 0;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int32 MenuNumber;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	CurrentType CurrentMode;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	FWidgetAnimationDynamicEvent EndDelegate;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
@@ -189,12 +165,6 @@ public:
 	TObjectPtr<class USoundClass> SoundClass;
 
 private:
-	bool bIsEnglish;
-	bool bIsKorean;
-	bool bIsTimerOn;
-	bool bIsCrossHairOn;
-
-	float Volume;
-	float Sensitive;
+	UPROPERTY()
 	FOptionSettings OptionSetting;
 };

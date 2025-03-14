@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "LevelManager.generated.h"
 
+// 레벨이 시작되었다고 알릴 델리게이트 이벤트.
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnLevelStartDelegate);
 
 UCLASS()
@@ -25,32 +26,26 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	USceneComponent* RootComp;
 
-	UPROPERTY()
-		TArray<bool> PatrolPoint;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TArray<bool> PatrolPoint;
+
+	UPROPERTY(EditAnywhere, Category = "Default")
+	TArray<class ACreatureSpawner*> Spawners;
+
+	UPROPERTY(EditAnywhere, Category = "Default")
+		TObjectPtr<class AAltar_cpp> Altar;
+
+	UPROPERTY(BlueprintAssignable, Category = Event)
+	FOnLevelStartDelegate LevelStartDelegate;
 
 private:
 	UWorld* World;
-	// bool IsAllLoaded[25] = { false, };
-	
 
 	bool Check();
 
 	bool bIsCalled = false;
 	int count = 0;
-	// TArray<class APatrolPoint_cpp> PatrolArray;
-
-public:
-	UPROPERTY(EditAnywhere, Category = "Default")
-		TArray<class ACreatureSpawner*> Spawners;
-
-	UPROPERTY(EditAnywhere, Category = "Default")
-		TObjectPtr<class AAltar_cpp> Altar;
-
-	/*UPROPERTY(EditAnywhere, Category = "Default")
-		TObjectPtr<class APlayerSpawner> PlayerSpawner;*/
-
-	FOnLevelStartDelegate LevelStartDelegate;
 };

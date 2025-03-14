@@ -40,11 +40,11 @@ void ASwitchLever::BeginPlay()
 	Super::BeginPlay();
 	
 	// 타임라인 커브 값이 있다면 타임라인에 할당하고, 재생될 때 실행할 콜백 함수도 바인딩함.
-	if (CurveFloat)
+	if (UpAndDownCurveFloat)
 	{
 		FOnTimelineFloat TimelineProgress;
 		TimelineProgress.BindDynamic(this, &ASwitchLever::ChangeLeverRotation);
-		UpAndDown.AddInterpFloat(CurveFloat, TimelineProgress);
+		UpAndDownTimeline.AddInterpFloat(UpAndDownCurveFloat, TimelineProgress);
 	}
 }
 
@@ -53,12 +53,14 @@ void ASwitchLever::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	UpAndDown.TickTimeline(DeltaTime);
+	UpAndDownTimeline.TickTimeline(DeltaTime);
 }
 
 // 플레이어가 상호작용할 때 작동할 함수.
 void ASwitchLever::OnInteract(class AHorrorGameCharacter* Player)
 {
+	Super::OnInteract(Player);
+
 	// 레버 효과음을 재생함.
 	if (LeverSound)
 	{
@@ -68,12 +70,12 @@ void ASwitchLever::OnInteract(class AHorrorGameCharacter* Player)
 	// 만약 레버가 내려가있는 상태라면 레버를 올리고(타임라인 역재생) 작동해제
 	if (bIsLeverOn)
 	{
-		UpAndDown.Reverse();
+		UpAndDownTimeline.Reverse();
 	}
 	// 레버가 올라가 있는 상태면 레버를 내리고(타임라인 재생) 작동
 	else 
 	{
-		UpAndDown.Play();
+		UpAndDownTimeline.Play();
 	}
 
 	// 레버의 상태값을 반전시킴.

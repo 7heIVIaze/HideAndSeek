@@ -3,11 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Items/Items.h"
+#include "Items/ItemClass.h"
 #include "Bell_cpp.generated.h"
 
 UCLASS()
-class HIDEANDSEEK_API ABell_cpp : public AItems
+class HIDEANDSEEK_API ABell_cpp : public AItemClass
 {
 	GENERATED_BODY()
 	
@@ -20,11 +20,11 @@ protected:
 	virtual void BeginPlay() override;
 
 public: // UPROPERTY
-	UPROPERTY(VisibleAnywhere, Category = "Root")
+	/*UPROPERTY(VisibleAnywhere, Category = "Root")
 		TObjectPtr<USceneComponent> DefaultSceneRoot;
 
 	UPROPERTY(VisibleAnywhere, Category = "Bell")
-		TObjectPtr<UStaticMeshComponent> Bell;
+		TObjectPtr<UStaticMeshComponent> Bell;*/
 
 	UPROPERTY(VisibleAnywhere, Category = "Altar")
 		class AAltar_cpp* Altar;
@@ -35,5 +35,5 @@ public: // UPROPERTY
 public: // UFUNCTION
 	void OnInteract(class AHorrorGameCharacter* Player) override;
 
-	void UseInteract(class AHorrorGameCharacter* Player) override;
+	bool UseInteract(class AHorrorGameCharacter* Player) override;
 };

@@ -13,10 +13,6 @@ void UStartWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	this->SetKeyboardFocus();
-	/*StartButton = Cast<UButton>(GetWidgetFromName(TEXT("StartBtn")));
-	OptionButton = Cast<UButton>(GetWidgetFromName(TEXT("OptionBtn")));
-	ExitButton = Cast<UButton>(GetWidgetFromName(TEXT("ExitBtn")));
-	Menu = Cast<UVerticalBox>(GetWidgetFromName(TEXT("MenuPanel")));*/
 
 	// 각 버튼 별로 클릭 및 마우스 호버 이벤트 시 작동할 콜백 함수를 바인딩해줌.
 	if (nullptr != StartButton)

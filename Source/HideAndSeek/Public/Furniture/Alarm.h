@@ -3,12 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
-#include "Resource/InteractInterface.h"
+//#include "GameFramework/Actor.h"
+//#include "Resource/InteractInterface.h"
+#include "Furniture/InteractableActor.h"
 #include "Alarm.generated.h"
 
 UCLASS()
-class HIDEANDSEEK_API AAlarm : public AActor //, public IInteractInterface
+class HIDEANDSEEK_API AAlarm : public AInteractableActor //public AActor , public IInteractInterface
 {
 	GENERATED_BODY()
 	
@@ -39,17 +40,16 @@ public:
 public:	
 	// Called every frame
 	// virtual void Tick(float DeltaTime) override;
-	UFUNCTION(BlueprintCallable, Category = "Interaction")
-	void OnInteract();
+
+	virtual void OnInteract(class AHorrorGameCharacter* Player) override;
 	//virtual void OnInteract() override;
 
-	UFUNCTION(BlueprintCallable, Category = "Interaction")
-	void UseInteract();
+	virtual bool UseInteract(class AHorrorGameCharacter* Player) override;
 	//virtual void UseInteract() override;
 
 	UFUNCTION(BlueprintCallable)
-		void AIInteract();
+	virtual void AIInteract();
 
 	UFUNCTION(BlueprintCallable)
-		void SetAlarmRing();
+	void SetAlarmRing();
 };

@@ -25,7 +25,7 @@ void AGlowStick_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	Super::OnInteract(Player);
 
 	// 플레이어의 야광봉을 얻는 메서드를 호출함.
-	Player->AddGlowStick();
+	//Player->AddGlowStick();
 
 	// 위 메서드를 통해 플레이어가 아이템을 얻을 수 있는 상태이면
 	if (Player->bCanItemGet)
@@ -47,7 +47,7 @@ void AGlowStick_cpp::OnInteract(class AHorrorGameCharacter* Player)
 }
 
 // 플레이어가 야광봉을 사용할 때 작동할 함수.
-void AGlowStick_cpp::UseInteract(class AHorrorGameCharacter* Player)
+bool AGlowStick_cpp::UseInteract(class AHorrorGameCharacter* Player)
 {
 	Super::UseInteract(Player);
 
@@ -62,4 +62,5 @@ void AGlowStick_cpp::UseInteract(class AHorrorGameCharacter* Player)
 	MaterialInstance = MeshComp->CreateDynamicMaterialInstance(1, Material);
 
 	MaterialInstance->SetScalarParameterValue(TEXT("Glow"), 1.0f);
+	return false;
 }

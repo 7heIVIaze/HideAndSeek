@@ -3,11 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+//#include "GameFramework/Actor.h"
+//#include "Resource/InteractInterface.h"
+#include "Furniture/InteractableActor.h"
 #include "Paper.generated.h"
 
+// 문서가 추가되었다는 델리게이트 이벤트.
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDocumentMessage, FText, Message);
+
 UCLASS()
-class HIDEANDSEEK_API APaper : public AActor
+class HIDEANDSEEK_API APaper : public AInteractableActor //public AActor, public IInteractInterface
 {
 	GENERATED_BODY()
 	
@@ -16,32 +21,28 @@ public:
 	APaper();
 
 	UPROPERTY(VisibleAnywhere, Category = Defaults)
-		TObjectPtr<USceneComponent> RootComp;
+	TObjectPtr<USceneComponent> RootComp;
 
 	UPROPERTY(VisibleAnywhere, Category = Mesh)
-		TObjectPtr<UStaticMeshComponent> PaperMesh;
+	TObjectPtr<UStaticMeshComponent> PaperMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Text, meta = (MultiLine = true))
-		FText text;
+	FText text;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Text)
-		int DocumentIndex;
+	int DocumentIndex;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Text)
-		class UDataTable* ArchiveData;
+	class UDataTable* ArchiveData;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Text)
-	//	FString DocumentType;
+	/*UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Event)
+	FOnDocumentMessage OnInteractionMessage;*/
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	//virtual void Tick(float DeltaTime) override;
-
-	UFUNCTION(BlueprintCallable)
-		void OnInteract(class AHorrorGameCharacter* Player);
+	virtual void OnInteract(class AHorrorGameCharacter* Player) override;
 
 };

@@ -39,7 +39,14 @@ void UClearWidget::NativeConstruct()
 		BackToMainButton->OnHovered.AddDynamic(this, &UClearWidget::OnHoveredBackToMain);
 	}
 
-	if (CurrentLevel != "Level1")
+	// 현재 챕터가 Level1(마지막 챕터)일 경우, 안 보이게 설정하고 버튼 개수도 1개로 줄임.
+	if (CurrentLevel == LastLevel)
+	{
+		NextStageButton->SetVisibility(ESlateVisibility::Hidden);
+		MenuNumber = 1;
+		bHaveNextLevel = false;
+	}
+	else
 	{
 		if (NextStageButton)
 		{
@@ -48,13 +55,6 @@ void UClearWidget::NativeConstruct()
 			MenuNumber = 2;
 			bHaveNextLevel = true;
 		}
-	}
-	// 현재 챕터가 Level1(마지막 챕터)일 경우, 안 보이게 설정하고 버튼 개수도 1개로 줄임.
-	else
-	{
-		NextStageButton->SetVisibility(ESlateVisibility::Hidden);
-		MenuNumber = 1;
-		bHaveNextLevel = false;
 	}
 
 	UpdateButtonSlate();

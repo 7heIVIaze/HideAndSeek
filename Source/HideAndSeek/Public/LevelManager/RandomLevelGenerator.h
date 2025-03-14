@@ -26,12 +26,13 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FName> QuadNames = { TEXT("/Game/Levels/Level1/Quad1"), TEXT("/Game/Levels/Level1/Quad2") , TEXT("/Game/Levels/Level1/Quad3") , TEXT("/Game/Levels/Level1/Quad4"), TEXT("/Game/Levels/Level1/Quad5"),
 	TEXT("/Game/Levels/Level1/Quad6"), TEXT("/Game/Levels/Level1/Quad7"), TEXT("/Game/Levels/Level1/Quad8"), TEXT("/Game/Levels/Level1/Quad9"), TEXT("/Game/Levels/Level1/Quad10"), TEXT("/Game/Levels/Level1/Quad11") };
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FName>  TripleNames = { TEXT("/Game/Levels/Level1/Triple1"), TEXT("/Game/Levels/Level1/Triple2") , TEXT("/Game/Levels/Level1/Triple3"), TEXT("/Game/Levels/Level1/Triple4"), TEXT("/Game/Levels/Level1/Triple5"),
 	TEXT("/Game/Levels/Level1/Triple6"), TEXT("/Game/Levels/Level1/Triple7"), TEXT("/Game/Levels/Level1/Triple8"), TEXT("/Game/Levels/Level1/Triple9"), TEXT("/Game/Levels/Level1/Triple10") };
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FName>  DoubleNames = { TEXT("/Game/Levels/Level1/Double1"), TEXT("/Game/Levels/Level1/Double2"), TEXT("/Game/Levels/Level1/Double3"), TEXT("/Game/Levels/Level1/Double4") };
-	
 	
 	/*UPROPERTY(EditAnywhere, Category = "Levels")
 	FName QuadNames[11];

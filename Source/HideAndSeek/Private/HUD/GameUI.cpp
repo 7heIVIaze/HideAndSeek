@@ -1,19 +1,20 @@
 // CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "HUD/GameUI.h"
-#include "HUD/Inventory_cpp.h"
-#include "HUD/CutterWidget.h"
+#include "HUD/InventoryWidget.h"
 #include "HUD/InteractDot_cpp.h"
 #include "HUD/StaminaWidget.h"
-#include "HUD/BatteryWidget_cpp.h"
-#include "HUD/CutterWidget.h"
-#include "HUD/ExtinguisherWidget.h"
+#include "HUD/StatWidget.h"
+#include "HUD/MessageManagerWidget.h"
 #include "HUD/ObjectWidget.h"
 #include "HUD/ExplainWidget_cpp.h"
 #include "Kismet/GameplayStatics.h"
 #include "HUD/PatienceWidget.h"
 #include "HUD/CrosshairWidget.h"
 #include "HUD/TimerWidget.h"
+#include "Player/HorrorGameCharacter.h"
+#include "Player/InventoryComponent.h"
+#include "Player/PlayerStatComponent.h"
 #include "Components/Image.h"
 #include "Components/TextBlock.h"
 #include "Components/Overlay.h"
@@ -22,17 +23,25 @@
 void UGameUI::NativeConstruct()
 {
 	Super::NativeConstruct();
-	//DiedWidget = Cast<UDiedWidget>(GetWidgetFromName(TEXT("DiedWidget_BP")));
-	/*StaminaWidget = Cast<UStaminaWidget>(GetWidgetFromName(TEXT("Stamina_HUD_BP")));
-	InteractDotState = Cast<UInteractDot_cpp>(GetWidgetFromName(TEXT("UI_InteractDot")));
-	BatteryWidget = Cast<UBatteryWidget_cpp>(GetWidgetFromName(TEXT("BatteryWidget_BP")));
-	CutterWidget = Cast<UCutterWidget>(GetWidgetFromName("Cutter_HUD_BP"));
-	ExtWidget = Cast<UExtinguisherWidget>(GetWidgetFromName("Extinguisher_HUD_BP"));
-	ObjWidget = Cast<UObjectWidget>(GetWidgetFromName("Object_UI_BP"));
-	ExpWidget = Cast< UExplainWidget_cpp>(GetWidgetFromName("BP_ExplainWidget"));
-	PatienceWidget = Cast<UPatienceWidget>(GetWidgetFromName("Patience_UI_BP"));*/
-
+	
 	MainInterface->SetVisibility(ESlateVisibility::Collapsed);
+
+	// 뷰포트에 출력이 될 때, 플레이어가 잡힌 경우
+	if (AHorrorGameCharacter* PlayerCharacter = Cast<AHorrorGameCharacter>(GetOwningPlayerPawn()))
+	{
+		UInventoryComponent* InventoryComp = PlayerCharacter->GetInventoryComponent();
+		if (InventoryComp)
+		{
+			InitializeInventoryWidget(InventoryComp);
+		}
+
+		UPlayerStatComponent* PlayerStatComp = PlayerCharacter->GetStatComponent();
+		if (PlayerStatComp)
+		{
+			InitializeStatWidget(PlayerStatComp);
+			PlayerStatComp->OnDeath.AddDynamic(TimerWidget, &UTimerWidget::StopTimer);
+		}
+	}
 }
 //
 void UGameUI::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
@@ -50,38 +59,38 @@ void UGameUI::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 		StaminaWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
 	}
 
-	// 플레이어가 플래시 라이트를 선택한 상태라면, 배터리 위젯을 보이게 함.
-	if (BatteryVisible)
-	{
-		BatteryWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
-	}
-	// 아니라면 안 보이게 함.
-	else
-	{
-		BatteryWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
+	//// 플레이어가 플래시 라이트를 선택한 상태라면, 배터리 위젯을 보이게 함.
+	//if (BatteryVisible)
+	//{
+	//	BatteryWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
+	//}
+	//// 아니라면 안 보이게 함.
+	//else
+	//{
+	//	BatteryWidget->SetVisibility(ESlateVisibility::Collapsed);
+	//}
 
-	// 플레이어가 절단기를 선택한 상태라면, 절단기 위젯을 보이게 함.
-	if (CutterVisible)
-	{
-		CutterWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
-	}
-	// 아니라면 안 보이게 함.
-	else
-	{
-		CutterWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
+	//// 플레이어가 절단기를 선택한 상태라면, 절단기 위젯을 보이게 함.
+	//if (CutterVisible)
+	//{
+	//	CutterWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
+	//}
+	//// 아니라면 안 보이게 함.
+	//else
+	//{
+	//	CutterWidget->SetVisibility(ESlateVisibility::Collapsed);
+	//}
 
-	// 플레이어가 소화기를 선택한 상태라면, 소화기 위젯을 보이게 함.
-	if (ExtVisible)
-	{
-		ExtWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
-	}
-	// 아니라면 안 보이게 함.
-	else
-	{
-		ExtWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
+	//// 플레이어가 소화기를 선택한 상태라면, 소화기 위젯을 보이게 함.
+	//if (ExtVisible)
+	//{
+	//	ExtWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
+	//}
+	//// 아니라면 안 보이게 함.
+	//else
+	//{
+	//	ExtWidget->SetVisibility(ESlateVisibility::Collapsed);
+	//}
 }
 
 // 모든 위젯 초기화하는 함수.
@@ -90,39 +99,85 @@ void UGameUI::AllWidgetInit()
 	// 모든 위젯을 초기화 해줌.
 	MainInterface->SetVisibility(ESlateVisibility::HitTestInvisible);
 	Init();
-	SetInteractDotText(NSLOCTEXT("UGameUI", "InteractDotText", ""));
-	SetInteractDotErrorText(NSLOCTEXT("UGameUI", "InteractDotErrorText", ""));
-	SetInteractDotExplainText(NSLOCTEXT("UGameUI", "InteractDotExplainText", ""));
+	SetInteractDotText(NSLOCTEXT("UGameUI", "None", ""));
+	SetInteractDotErrorText(NSLOCTEXT("UGameUI", "None", ""));
+	SetInteractDotExplainText(NSLOCTEXT("UGameUI", "None", ""));
 	SetInteractDot(false);
 	//GameUIWidget->SetBaseInterface(true);
 	SetStaminaHUD(400);
-	SetBatteryWidget(false);
-	SetCutterHUD(5);
+	//SetBatteryWidget(false);
+	/*SetCutterHUD(5);
 	SetCutterWidget(false);
 	SetExtHUD(100);
 	SetExtWidget(false);
 	SetObjectCount(1, 0);
 	SetObjectCount(2, 0);
-	SetObjectCount(3, 0);
+	SetObjectCount(3, 0);*/
 	SetPatience(0);
-	TimerWidget->Init();
+	//TimerWidget->Init();
 
 	// 그와중에 프롤로그 챕터라면 오브젝트 위젯은 안 보이게 설정함.
 	if (UGameplayStatics::GetCurrentLevelName(GetWorld()).Contains(TEXT("Prologue")))
 	{
-		ObjWidget->SetRenderOpacity(0.f);
+		ObjectWidget->SetRenderOpacity(0.f);
 	}
 }
 
-// 인벤토리를 초기화하는 함수.
+// 내부의 위젯들을 초기화하는 함수.
 void UGameUI::Init()
 {
 	// 인벤토리 위젯이 존재하면, 플레이어를 할당하고, 해당 위젯을 초기화함,
-	if (Inventory)
+	if (InventoryWidget)
 	{
-		Inventory->Player = this->Player;
-		Inventory->Init();
+		InventoryWidget->Player = this->Player;
+		InventoryWidget->Init();
 	}
+
+	if (ObjectWidget)
+	{
+		ObjectWidget->Init();
+	}
+
+	if (TimerWidget)
+	{
+		TimerWidget->Init();
+	}
+}
+
+bool UGameUI::InitializeStatWidget(UPlayerStatComponent* StatComponent)
+{
+	if (StatWidget)
+	{
+		StatWidget->InitializeWidget(StatComponent);
+
+		return true;
+	}
+
+	return false;
+}
+
+bool UGameUI::InitializeInventoryWidget(UInventoryComponent* InventoryComponent)
+{
+	if (InventoryWidget)
+	{
+		InventoryWidget->InitializeWidget(InventoryComponent);
+
+		return true;
+	}
+
+	return false;
+}
+
+bool UGameUI::InitializeObjectWidget(UInventoryComponent* InventoryComponent)
+{
+	if (ObjectWidget)
+	{
+		ObjectWidget->InitializeWidget(InventoryComponent);
+
+		return true;
+	}
+
+	return false;
 }
 
 // 조준점 위젯을 설정하는 함수.
@@ -215,56 +270,56 @@ void UGameUI::SetStaminaHUD(int32 iValue)
 	}
 }
 
-// 배터리 위젯의 배터리 잔량을 설정할 함수.
-void UGameUI::SetBatteryHUD(int32 iValue)
-{
-	if (IsValid(BatteryWidget))
-	{
-		BatteryWidget->SetBatteryPercent(iValue);
-	}
-}
+//// 배터리 위젯의 배터리 잔량을 설정할 함수.
+//void UGameUI::SetBatteryHUD(int32 iValue)
+//{
+//	if (IsValid(BatteryWidget))
+//	{
+//		BatteryWidget->SetBatteryPercent(iValue);
+//	}
+//}
 
-void UGameUI::SetBatteryWidget(bool value)
-{
-	BatteryVisible = value;
-}
+//void UGameUI::SetBatteryWidget(bool value)
+//{
+//	BatteryVisible = value;
+//}
 
-// 절단기 위젯의 절단기 내구도를 설정할 함수.
-void UGameUI::SetCutterHUD(int32 iValue)
-{
-	if (IsValid(CutterWidget))
-	{
-		CutterWidget->SetCutterPercent(iValue);
-	}
-}
+//// 절단기 위젯의 절단기 내구도를 설정할 함수.
+//void UGameUI::SetCutterHUD(int32 iValue)
+//{
+//	if (IsValid(CutterWidget))
+//	{
+//		CutterWidget->SetCutterPercent(iValue);
+//	}
+//}
+//
+//void UGameUI::SetCutterWidget(bool value)
+//{
+//	CutterVisible = value;
+//}
+//
+//// 소화기 위젯의 분말 잔량을 설정할 함수.
+//void UGameUI::SetExtHUD(int32 value)
+//{
+//	if (IsValid(ExtWidget))
+//	{
+//		ExtWidget->SetExtinguisherPercent(value);
+//	}
+//}
+//
+//void UGameUI::SetExtWidget(bool value)
+//{
+//	ExtVisible = value;
+//}
 
-void UGameUI::SetCutterWidget(bool value)
-{
-	CutterVisible = value;
-}
-
-// 소화기 위젯의 분말 잔량을 설정할 함수.
-void UGameUI::SetExtHUD(int32 value)
-{
-	if (IsValid(ExtWidget))
-	{
-		ExtWidget->SetExtinguisherPercent(value);
-	}
-}
-
-void UGameUI::SetExtWidget(bool value)
-{
-	ExtVisible = value;
-}
-
-// 오브젝트 위젯의 수집한 오브젝트의 양을 설정할 함수.
-void UGameUI::SetObjectCount(unsigned int idx, int32 value)
-{
-	if (IsValid(ObjWidget))
-	{
-		ObjWidget->SetObjectCount(idx, value);
-	}
-}
+//// 오브젝트 위젯의 수집한 오브젝트의 양을 설정할 함수.
+//void UGameUI::SetObjectCount(unsigned int idx, int32 value)
+//{
+//	if (IsValid(ObjectWidget))
+//	{
+//		ObjectWidget->SetObjectCount(idx, value);
+//	}
+//}
 
 // 패닉게이지 위젯의 착란의 양을 설정할 함수.
 void UGameUI::SetPatience(int32 value)
@@ -325,4 +380,12 @@ void UGameUI::SetArchiveGetText(FText inText)
 	}
 
 	ArchiveGetText->SetText(inText);
+}
+
+void UGameUI::ShowMessage(FText Message)
+{
+	if (MessageWidget)
+	{
+		MessageWidget->AddMessage(Message);
+	}
 }

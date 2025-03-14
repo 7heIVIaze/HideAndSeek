@@ -51,7 +51,7 @@ void AAlarm::BeginPlay()
 }
 
 // 플레이어가 상호작용할 때 작동할 함수.
-void AAlarm::OnInteract()
+void AAlarm::OnInteract(class AHorrorGameCharacter* Player)
 {
 	// 알람이 안 울릴 때 작동함.
 	if (!bIsAlarmRing)
@@ -62,9 +62,9 @@ void AAlarm::OnInteract()
 	}
 }
 
-void AAlarm::UseInteract()
+bool AAlarm::UseInteract(class AHorrorGameCharacter* Player)
 {
-	
+	return false;
 }
 
 // 요괴가 상호작용할 때 작동할 함수.

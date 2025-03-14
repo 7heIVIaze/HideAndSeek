@@ -26,8 +26,6 @@ void ACreatureSpawner::BeginPlay()
 	world = GetWorld();
 	spawnLocation = GetActorLocation();
 	rotator = FRotator(0.f, 0.f, 0.f);
-	//path = TEXT("/Game/Assets/AI/BP_Reaper");
-	//ObjectToSpawn = Cast<UBlueprint>(StaticLoadObject(UBlueprint::StaticClass(), NULL, *path.ToString()));
 	
 	// 생성할 적 개체가 있는지 판별함.
 	for (int i = 0; i < ObjectToSpawn.Num(); ++i)

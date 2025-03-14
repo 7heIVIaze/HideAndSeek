@@ -21,12 +21,12 @@ protected:
 
 protected:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UProgressBar* StaminaBar;
+	class UProgressBar* StaminaBar;
 
 public:
-	UFUNCTION()
-		void SetStamina(int32 iValue);
+	UFUNCTION(BlueprintCallable)
+	void SetStamina(int32 iValue);
 	
-	UFUNCTION()
-		float GetStamina();
+	UFUNCTION(BlueprintCallable)
+	float GetStamina();
 };

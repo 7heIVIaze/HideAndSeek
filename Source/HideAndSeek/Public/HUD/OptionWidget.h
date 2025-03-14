@@ -8,16 +8,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "OptionWidget.generated.h"
 
-// Deprecated
-//UENUM(BlueprintType)
-//enum class OptionType : uint8
-//{
-//	None UMETA(DisplayName = "None"),
-//	PlayerSetting UMETA(DisplayName = "PlayerSetting"),
-//	GraphicSetting UMETA(DisplayName = "GraphicSetting"),
-//	KeySetting UMETA(DisplayName = "KeySetting"),
-//};
-
 /**
  * 
  */
@@ -32,35 +22,26 @@ protected:
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 
 public:
-	UFUNCTION()
-		void OnClickPlaySettingButton();
+	UFUNCTION(BlueprintCallable)
+	void OnClickPlaySettingButton();
 	
-	UFUNCTION()
-		void OnClickGraphicsSettingButton();
+	UFUNCTION(BlueprintCallable)
+	void OnClickGraphicsSettingButton();
 
-	//UFUNCTION()
-	//	void OnClickKeyMappingButton();
+	UFUNCTION(BlueprintCallable)
+	void OnClickBackButton();
 
-	UFUNCTION()
-		void OnClickBackButton();
+	UFUNCTION(BlueprintCallable)
+	void OnHoveredPlaySettingButton();
 
-	UFUNCTION()
-		void OnHoveredPlaySettingButton();
+	UFUNCTION(BlueprintCallable)
+	void OnHoveredGraphicsSettingButton();
 
-	UFUNCTION()
-		void OnHoveredGraphicsSettingButton();
-
-	/*UFUNCTION()
-		void OnHoveredKeyMappingButton();*/
-
-	UFUNCTION()
-		void OnHoveredBackButton();
+	UFUNCTION(BlueprintCallable)
+	void OnHoveredBackButton();
 		
-	UFUNCTION()
-		void UpdateButtonSlate();
-
-	/*UFUNCTION()
-		void SetCurrentMode(OptionType ModeType);*/
+	UFUNCTION(BlueprintCallable)
+	void UpdateButtonSlate();
 
 public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
@@ -68,9 +49,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* GraphicsSettingButton;
-
-	//UPROPERTY()
-	//	class UButton* KeyMappingButton;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* BackButton;
@@ -87,23 +65,16 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
 	class UWidgetAnimation* BackOptionAnim;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int32 MenuNavIndex = 0;
 
-	/*UPROPERTY()
-		int32 SettingNavIndex = 0;*/
-
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int32 MenuNumber;
-
-	/*UPROPERTY()
-	OptionType CurrentMode;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 	TObjectPtr<class USoundCue> ButtonClickSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 	TObjectPtr<class USoundCue> ButtonMoveSound;
-
 };
 

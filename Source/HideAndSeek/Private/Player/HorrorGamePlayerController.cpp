@@ -122,7 +122,7 @@ void AHorrorGamePlayerController::BeginPlay()
 			// 또한 플레이어의 메인 UI를 출력한 UI로 설정해주고, 레벨이 시작했다고 알림.
 			if (AHorrorGameCharacter* PlayerCharacter = Cast<AHorrorGameCharacter>(GetPawn()))
 			{
-				if (PlayerCharacter->PlayerStatus == Player_Status::Hiding)
+				if (PlayerCharacter->GetPlayerStatus() == EPlayerStatus::Hiding)
 				{
 					return;
 				}
@@ -148,7 +148,7 @@ void AHorrorGamePlayerController::BeginPlay()
 			//ChangeInputMode(true);
 			if (AHorrorGameCharacter* PlayerCharacter = Cast<AHorrorGameCharacter>(GetPawn()))
 			{
-				if (PlayerCharacter->PlayerStatus == Player_Status::Hiding)
+				if (PlayerCharacter->GetPlayerStatus() == EPlayerStatus::Hiding)
 				{
 					return;
 				}
@@ -179,6 +179,14 @@ void AHorrorGamePlayerController::ChangeInputMode(bool bGameMode)
 		SetInputMode(UIInputMode);
 		bShowMouseCursor = true;
 	}
+}
+
+void AHorrorGamePlayerController::OnDeath()
+{
+	DisableInput(this);
+	ShowDeadUI();
+	bEnableClickEvents = true;
+	bEnableMouseOverEvents = true;
 }
 
 // 사망 UI를 보여주는 함수.
@@ -217,10 +225,10 @@ void AHorrorGamePlayerController::ShowMainUI()
 		// 인게임 Input으로 변경하고, 플레이어에게 레벨이 시작되었다고 알림.
 		ChangeInputMode(true);
 
-		if (AHorrorGameCharacter* PlayerCharacter = Cast<AHorrorGameCharacter>(GetPawn()))
+		/*if (AHorrorGameCharacter* PlayerCharacter = Cast<AHorrorGameCharacter>(GetPawn()))
 		{
 			PlayerCharacter->LevelStart();
-		}
+		}*/
 	}
 }
 

@@ -8,13 +8,13 @@
 void UInventory_cpp::Init()
 {
 	// 인벤토리 9칸을 확인해 아무것도 없는 상태면 빈 아이콘으로 초기화함.
-	for (int i = 0; i < 9; i++)
+	/*for (int i = 0; i < 9; i++)
 	{
 		if (Player->Inventory[i].Type == EItemType::ITEM_None)
 		{
 			Player->Inventory[i].ItemIcon = DefaultTexture;
 		}
-	}
+	}*/
 
 	// 슬롯을 초기화함.
 	Slots.Init(nullptr, 9);
@@ -30,7 +30,7 @@ void UInventory_cpp::Init()
 			
 		if (!slot) continue;
 		slot->Player = this->Player;
-		slot->SetType(ESlotType::SLOT_Item);
+		slot->SetType(ESlotsType::SLOT_Item);
 		slot->Init();
 		Slots[slot->SlotNum] = slot;
 	}

@@ -7,6 +7,7 @@
 #include "Engine/LevelStreaming.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/GameplayStatics.h"
+#include "Player/HorrorGameCharacter.h"
 
 // Sets default values
 ARandomLevelGenerator::ARandomLevelGenerator()
@@ -101,9 +102,12 @@ void ARandomLevelGenerator::BeginPlay()
 			FVector LevelOffset = FVector(i * LevelSize + 5200.0f, j * LevelSize - 10400.0f, 0.0f);
 			FQuat fq = FRotator(0.0f, RotateDeg, 0.f).Quaternion();
 
-			ULevelStreamingDynamic* StreamingLevel = static_cast<ULevelStreamingDynamic*>(
-				StaticConstructObject_Internal(ULevelStreamingDynamic::StaticClass(), GetWorld(), NAME_None, RF_NoFlags, EInternalObjectFlags::None));
-			
+
+			/*ULevelStreamingDynamic* StreamingLevel = static_cast<ULevelStreamingDynamic*>(
+				StaticConstructObject_Internal(ULevelStreamingDynamic::StaticClass(), GetWorld(), NAME_None, RF_NoFlags, EInternalObjectFlags::None));*/
+			ULevelStreamingDynamic* StreamingLevel = NewObject<ULevelStreamingDynamic>(GetWorld(), ULevelStreamingDynamic::StaticClass(), NAME_None, RF_NoFlags);
+
+
 			if (StreamingLevel)
 			{
 				StreamingLevel->SetShouldBeLoaded(true);

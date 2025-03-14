@@ -28,12 +28,12 @@ void AWardrobeDrawer_cpp::BeginPlay()
 	Super::BeginPlay();
 	
 	// 타임라인 커브 값이 있다면 타임라인에 할당하고, 재생될 때 실행할 콜백 함수도 바인딩함.
-	if (CurveFloat)
+	/*if (CurveFloat)
 	{
 		FOnTimelineFloat TimelineProgress;
 		TimelineProgress.BindDynamic(this, &AWardrobeDrawer_cpp::OpenDrawer);
 		OpenAndClose.AddInterpFloat(CurveFloat, TimelineProgress);
-	}
+	}*/
 }
 
 // Called every frame
@@ -41,7 +41,7 @@ void AWardrobeDrawer_cpp::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	OpenAndClose.TickTimeline(DeltaTime);
+	//OpenAndClose.TickTimeline(DeltaTime);
 }
 
 // 타임라인이 재생될 때 호출될 콜백 함수.
@@ -56,7 +56,7 @@ void AWardrobeDrawer_cpp::OpenDrawer(float Value)
 }
 
 // 플레이어가 상호작용할 때 작동할 함수.
-void AWardrobeDrawer_cpp::OnInteract()
+void AWardrobeDrawer_cpp::OnInteract(class AHorrorGameCharacter* Player)
 {
 	// 서랍이 닫혀있을 경우
 	if (bIsDrawerClosed)
@@ -79,5 +79,5 @@ void AWardrobeDrawer_cpp::OnInteract()
 	}
 
 	// 그 후 부모 클래스의 메서드를 호출함(타임라인 재생임).
-	Super::OnInteract();
+	Super::OnInteract(Player);
 }

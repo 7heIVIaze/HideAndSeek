@@ -19,61 +19,60 @@ class HIDEANDSEEK_API UPauseWidget : public UUserWidget
 protected:
 	virtual void NativeConstruct() override;
 
-	UFUNCTION()
-		void OnClickResumeButton();
+	UFUNCTION(BlueprintCallable)
+	void OnClickResumeButton();
 
-	UFUNCTION()
-		void OnClickArchiveButton();
+	UFUNCTION(BlueprintCallable)
+	void OnClickArchiveButton();
 
-	UFUNCTION()
-		void OnClickRetryButton();
+	UFUNCTION(BlueprintCallable)
+	void OnClickRetryButton();
 
-	UFUNCTION()
-		void OnClickQuitButton();
+	UFUNCTION(BlueprintCallable)
+	void OnClickQuitButton();
 
-	UFUNCTION()
-		void OnHoveredResumeButton();
+	UFUNCTION(BlueprintCallable)
+	void OnHoveredResumeButton();
 
-	UFUNCTION()
-		void OnHoveredArchiveButton();
+	UFUNCTION(BlueprintCallable)
+	void OnHoveredArchiveButton();
 
-	UFUNCTION()
-		void OnHoveredRetryButton();
+	UFUNCTION(BlueprintCallable)
+	void OnHoveredRetryButton();
 
-	UFUNCTION()
-		void OnHoveredQuitButton();
+	UFUNCTION(BlueprintCallable)
+	void OnHoveredQuitButton();
 
-	UFUNCTION()
-		void UpdateButtonSlate();
+	UFUNCTION(BlueprintCallable)
+	void UpdateButtonSlate();
 
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-		TObjectPtr<class USoundCue> ButtonClickSound;
+	TObjectPtr<class USoundCue> ButtonClickSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
-		TObjectPtr<class USoundCue> ButtonMoveSound;
+	TObjectPtr<class USoundCue> ButtonMoveSound;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widget")
-		TSubclassOf<UUserWidget> ArchiveWidget;
-
-public:
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UButton* ResumeButton;
+	TSubclassOf<UUserWidget> ArchiveWidget;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UButton* ArchiveButton;
+	class UButton* ResumeButton;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UButton* RetryButton;
+	class UButton* ArchiveButton;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UButton* QuitButton;
+	class UButton* RetryButton;
 
-	UPROPERTY()
-		int32 MenuNavIndex = 0;
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	class UButton* QuitButton;
 
-	UPROPERTY()
-		int32 MenuNum = 4;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 MenuNavIndex = 0;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	int32 MenuNum = 4;
 };

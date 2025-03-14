@@ -8,9 +8,11 @@
 #include "BehaviorTree/BlackboardData.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Player/HorrorGameCharacter.h"
+#include "Items/TimerProjectile_cpp.h"
 
 // 블랙보드 데이터를 블루프린트로부터 읽어올 수 있도록 바인딩해줌.
 const FName AAIController_Brute::PatrolTargetKey(TEXT("PatrolTarget"));
@@ -93,51 +95,124 @@ void AAIController_Brute::OnTargetDetected(AActor* Actor, FAIStimulus const Stim
 	// 플레이어의 감지가 끝났을 때 5초간 그 값을 유지하기 위해 사용할 타이머 변수
 	FTimerHandle Timer;
 
-	if (Stimulus.WasSuccessfullySensed()) // AI Perception을 통해 감지했을 경우
+	// 시각을 통해 감지되었던 경우
+	if (Stimulus.Type == SightConfig->GetSenseID())
 	{
-		// 감지된 액터가 플레이어일 경우
-		if (auto const Player = Cast<AHorrorGameCharacter>(Actor))
+		if (Stimulus.WasSuccessfullySensed()) // AI Perception을 통해 감지했을 경우
 		{
+			// 감지된 액터가 플레이어일 경우
+			if (auto const Player = Cast<AHorrorGameCharacter>(Actor))
+			{
 			
-			// 거리 비교를 위해 감지한 플레이어와의 거리를 가져옴.
-			float Distance = this->GetPawn()->GetDistanceTo(Player);
+				// 거리 비교를 위해 감지한 플레이어와의 거리를 가져옴.
+				float Distance = this->GetPawn()->GetDistanceTo(Player);
 
-			if (Player->GetIsHiding()) // 플레이어를 감지했는데 숨은 경우에는
-			{
-				// Target Key에 null 포인터를 저장시킴.
-				GetBlackboard()->SetValueAsObject(TargetKey, nullptr);
-			}
-			// 그것이 아닌 경우엔 감지된 것으로 확정
-			else
-			{
-				if (Player->bIsFlashLightOn || Player->bIsCigarLightOn) // AI의 감지 범위가 1200이므로 불을 켰는지 체크
+				if (Player->GetIsHiding()) // 플레이어를 감지했는데 숨은 경우에는
 				{
-					// GetBlackboard()->SetValueAsBool(CanSeePlayer, true);
-					
-					// 불을 켠 경우 최대 감지 범위까지 감지가 가능하므로 TargetKey에 플레이어를 저장시킴.
-					GetBlackboard()->SetValueAsObject(TargetKey, Player);
-					GetBlackboard()->SetValueAsVector(TargetLocation, Player->GetActorLocation());
+					// Target Key에 null 포인터를 저장시킴.
+					GetBlackboard()->SetValueAsObject(TargetKey, nullptr);
 				}
-
-				else // 아닐 경우 거리를 비교해서 400 이내에 있을 때만 감지
+				// 그것이 아닌 경우엔 감지된 것으로 확정
+				else
 				{
-					if (Distance <= NoLightSightRadius)
+					//if (Player->bIsFlashLightOn || Player->bIsCigarLightOn) // AI의 감지 범위가 1200이므로 불을 켰는지 체크
+					if (Player->bIsLightOn) // AI의 감지 범위가 1200이므로 불을 켰는지 체크
 					{
 						// GetBlackboard()->SetValueAsBool(CanSeePlayer, true);
+					
+						// 불을 켠 경우 최대 감지 범위까지 감지가 가능하므로 TargetKey에 플레이어를 저장시킴.
 						GetBlackboard()->SetValueAsObject(TargetKey, Player);
 						GetBlackboard()->SetValueAsVector(TargetLocation, Player->GetActorLocation());
+					}
+
+					else // 아닐 경우 거리를 비교해서 400 이내에 있을 때만 감지
+					{
+						if (Distance <= NoLightSightRadius)
+						{
+							// GetBlackboard()->SetValueAsBool(CanSeePlayer, true);
+							GetBlackboard()->SetValueAsObject(TargetKey, Player);
+							GetBlackboard()->SetValueAsVector(TargetLocation, Player->GetActorLocation());
+						}
 					}
 				}
 			}
 		}
-	}
 
-	else // 플레이어 감지가 끝난 경우
-	{
-		GetWorld()->GetTimerManager().SetTimer(Timer, FTimerDelegate::CreateLambda([&]() {
-			GetBlackboard()->SetValueAsObject(TargetKey, nullptr);
-		}), 1.f, false, 5.f);
+		else // 플레이어 감지가 끝난 경우
+		{
+			GetWorld()->GetTimerManager().SetTimer(Timer, FTimerDelegate::CreateLambda([&]() {
+				GetBlackboard()->SetValueAsObject(TargetKey, nullptr);
+			}), 1.f, false, 5.f);
+		}
 	}
+	// 청각을 통해 감지된 경우
+	//else if (Stimulus.Type == HearingConfig->GetSenseID())
+	//{
+	//	if (Stimulus.WasSuccessfullySensed()) // AI Perception을 통해 감지했을 경우
+	//	{
+	//		// 감지된 액터가 플레이어일 경우
+	//		if (auto const Player = Cast<AHorrorGameCharacter>(Actor))
+	//		{
+	//			// 플레이어가 뛰는 소리를 들은 경우
+	//			if (Player->bIsSprinting)
+	//			{
+	//				GetBlackboard()->SetValueAsObject(TargetKey, Player);
+	//				GetBlackboard()->SetValueAsVector(TargetLocation, Player->GetActorLocation());
+	//			}
+	//			// 플레이어가 걷는 소리를 들은 경우
+	//			else if (Player->bIsMove)
+	//			{
+	//				// 소리를 감지되지 않은 경우
+	//				if (!GetBlackboard()->GetValueAsBool(NoiseDetected))
+	//				{
+	//					// 플레이어가 웅크린 상태에선 감지 못하게 함.
+	//					if (!Player->bIsCrouch)
+	//					{
+	//						// 이전에 감지된 경우, 추격 시작.
+	//						if (GetBlackboard()->GetValueAsBool(ChangeDetectRange))
+	//						{
+	//							GetBlackboard()->SetValueAsObject(TargetKey, Player);
+	//							GetBlackboard()->SetValueAsVector(TargetLocation, Player->GetActorLocation());
+	//						}
+	//						else
+	//						{
+	//							HearingConfig->HearingRange = AIHearingRangeAfterDetected;
+	//							// Target Key에 null 포인터를 저장시킴.
+	//							GetBlackboard()->SetValueAsBool(ChangeDetectRange, true);
+	//						}
+	//					}
+	//				}
+	//			}
+	//		}
+	//		// 감지된 액터가 소음체인 경우
+	//		else if (auto const NoiseObject = Cast<ATimerProjectile_cpp>(Actor))
+	//		{
+	//			if (GetBlackboard()->GetValueAsBool(ChangeDetectRange))
+	//			{
+	//				HearingConfig->HearingRange = AIHearingRange;
+	//				GetBlackboard()->SetValueAsBool(ChangeDetectRange, false);
+	//			}
+
+	//			GetBlackboard()->SetValueAsBool(NoiseDetected, true);
+	//			GetBlackboard()->SetValueAsVector(TargetLocation, NoiseObject->GetActorLocation());
+	//			GetBlackboard()->SetValueAsObject(NoiseTargetKey, NoiseObject);
+	//		}
+	//	}
+
+	//	//else // 플레이어 감지가 끝난 경우
+	//	//{
+	//	//	GetWorld()->GetTimerManager().SetTimer(Timer, FTimerDelegate::CreateLambda([&]() {
+	//	//		GetBlackboard()->SetValueAsObject(TargetKey, nullptr);
+	//	//	}), 1.f, false, 5.f);
+	//	//}
+	//}
+	//else // 플레이어 감지가 끝난 경우
+	//{
+	//	HearingConfig->HearingRange = AIHearingRange;
+	//	GetWorld()->GetTimerManager().SetTimer(Timer, FTimerDelegate::CreateLambda([&]() {
+	//		GetBlackboard()->SetValueAsObject(TargetKey, nullptr);
+	//	}), 1.f, false, 5.f);
+	//}
 }
 
 // AI Perception 설정하는 함수. Constructor에서 호출할 것
@@ -160,10 +235,25 @@ void AAIController_Brute::SetPerception()
 	SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
 	SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 
-	// AI Perception의 주 감각을 시각(Sight Config)으로 설정하고, 감지될 때마다 수행할 콜백 함수를 바인딩해줌.
+	//// AI Perception의 기능 중 Hearing Config(청각 감지) 컴포넌트를 생성함.
+	//HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("Hearing Config"));
+	//
+	//// 생성한 Hearing Config Object를 초기화해줌.
+	//HearingConfig->HearingRange = AIHearingRange;
+	//HearingConfig->SetMaxAge(AIHearingAge);
+	//
+	//// // AI가 적, 중립, 동맹 관계없이 청각으로 감지할 수 있도록 설정해줌.
+	//// 팀 설정을 안 해놨음. 해놓을지 고민 중
+	//HearingConfig->DetectionByAffiliation.bDetectEnemies = true;
+	//HearingConfig->DetectionByAffiliation.bDetectNeutrals = true;
+	//HearingConfig->DetectionByAffiliation.bDetectFriendlies = true;
+
+	// AI Perception의 주 감각을 청각(Hearing Config)으로 설정하고, 감지될 때마다 수행할 콜백 함수를 바인딩해줌.
 	GetPerceptionComponent()->SetDominantSense(*SightConfig->GetSenseImplementation());
+	//GetPerceptionComponent()->SetDominantSense(*HearingConfig->GetSenseImplementation());
 	GetPerceptionComponent()->OnTargetPerceptionUpdated.AddDynamic(this, &AAIController_Brute::OnTargetDetected);
 	GetPerceptionComponent()->ConfigureSense(*SightConfig);
+	//GetPerceptionComponent()->ConfigureSense(*HearingConfig);
 }
 
 void AAIController_Brute::SetStunned(bool value)

@@ -3,11 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+//#include "GameFramework/Actor.h"
+#include "Furniture/InteractableActor.h"
 #include "Altar_cpp.generated.h"
 
+// 클리어 델리게이트 이벤트
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnClear);
+
+//// 클리어 불가 이벤트
+//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnClearMessage, FText, Message);
+
 UCLASS()
-class HIDEANDSEEK_API AAltar_cpp : public AActor
+class HIDEANDSEEK_API AAltar_cpp : public AInteractableActor
 {
 	GENERATED_BODY()
 	
@@ -21,14 +28,14 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Altar")
 		TObjectPtr<UStaticMeshComponent> Altar;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Object")
+	/*UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Object")
 		TObjectPtr<UStaticMeshComponent> Sword;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Object")
 		TObjectPtr<UStaticMeshComponent> Mirror;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Object")
-		TObjectPtr<UStaticMeshComponent> Bell;
+		TObjectPtr<UStaticMeshComponent> Bell;*/
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SpawnPoint")
 		TObjectPtr<UStaticMeshComponent> SpawnPoint;
@@ -51,14 +58,26 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Object)
 		int32 UnSealedItemNum; // 플레이어가 봉인 해제한 오브젝트 아이템의 개수
 
-	UPROPERTY()
+	// 클리어하기 위해 필요한 오브젝트 수.
+	UPROPERTY(VisibleAnywhere, Category = Object)
+	int32 ObjectAmountNeeded;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Object")
 		float RespawnTimer;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Object")
 		bool bIsLevelStart;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Object")
 	bool bHasLevelGimmick;
+
+	// 클리어 델리게이트 이벤트.
+	UPROPERTY(BlueprintAssignable, Category = Event)
+	FOnClear OnClear;
+
+	//// 클리어 메시지 델리게이트 이벤트.
+	//UPROPERTY(BlueprintAssignable, Category = Event)
+	//FOnClearMessage OnClearMessage;
 
 protected:
 	// Called when the game starts or when spawned

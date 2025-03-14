@@ -3,7 +3,6 @@
 #include "HUD/TimerWidget.h"
 #include "Components/TextBlock.h"
 
-// 게임 플레이 타이머 위젯 생성자.
 void UTimerWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
@@ -12,21 +11,20 @@ void UTimerWidget::NativeConstruct()
 	Hour->SetVisibility(ESlateVisibility::Collapsed);
 
 }
-//
-//void UTimerWidget::NativeTick(const FGeometry& MyGeometry, float inDeltaTime)
-//{
-//	Super::NativeTick(MyGeometry, inDeltaTime);
-//	
-//}
 
-// 타이머 시작 함수.
+void UTimerWidget::NativeDestruct()
+{
+	Super::NativeDestruct();
+
+	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+}
+
 void UTimerWidget::Init()
 {
 	// 타이머 핸들을 이용해 게임 플레이 시간을 측정함.
 	GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &UTimerWidget::StartTimer, 0.01f, true);
 }
 
-// 게임 플레이 시간을 측정하는 함수.
 void UTimerWidget::StartTimer()
 {
 	// 타이머 핸들을 이용해 0.01초마다 반복되기 때문에 밀리 세컨드를 계속 1씩 더함.
@@ -70,13 +68,11 @@ void UTimerWidget::StartTimer()
 	Hour->SetText(FText::FromString(FormatHours));
 }
 
-// 타이머를 정지하는 함수로, 작동한 타이머 핸들을 제거함.
 void UTimerWidget::StopTimer()
 {
 	GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 }
 
-// String 타입으로 클리어 시간을 가져올 함수
 FString UTimerWidget::GetClearTime()
 {
 	// 1 시간 이상 플레이 한 경우, 시간도 붙이고, 아닐 경우, 분까지만 붙여서 리턴함.
@@ -93,7 +89,6 @@ FString UTimerWidget::GetClearTime()
 	return FormatClearTime;
 }
 
-// float 타입으로 클리어 시간을 가져올 함수.(함수 명에 int는 숫자 타입이라는 것으로 표기하기 위함임...)
 float UTimerWidget::GetIntClearTime()
 {
 	// 클리어 타임을 초의 형태로 변환하여 리턴함.

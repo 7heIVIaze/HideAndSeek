@@ -136,7 +136,7 @@ void ADoor_cpp::OnInteract(class AHorrorGameCharacter* Player)
 		// 문이 잠겼을 때, 잠겼다고 플레이어에게 알려줌.
 		else
 		{
-			Player->SetErrorText(NSLOCTEXT("ADoor_cpp", "When_Door_Locked", "Locked"), 3);
+			//Player->SetErrorText(NSLOCTEXT("ADoor_cpp", "When_Door_Locked", "Locked"), 3);
 		}
 	}
 }

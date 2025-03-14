@@ -35,5 +35,5 @@ public:
 	virtual void OnInteract(class AHorrorGameCharacter* Player) override;
 
 	UFUNCTION(BlueprintCallable)
-	virtual void UseInteract(class AHorrorGameCharacter* Player) override;
+	virtual bool UseInteract(class AHorrorGameCharacter* Player) override;
 };

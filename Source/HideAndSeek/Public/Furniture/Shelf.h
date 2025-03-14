@@ -16,58 +16,49 @@ public:
 	AShelf();
 
 	UPROPERTY(VisibleAnywhere, Category = "Shelf")
-		TObjectPtr<USceneComponent> RootComp;
+	TObjectPtr<USceneComponent> RootComp;
 
 	UPROPERTY(VisibleAnywhere, Category = "Shelf")
-		TObjectPtr<UStaticMeshComponent> ShelfMesh;
+	TObjectPtr<UStaticMeshComponent> ShelfMesh;
 
 	UPROPERTY(VisibleAnywhere, Category = "Shelf")
-		TObjectPtr<UChildActorComponent> Upper_Item;
+	TObjectPtr<UChildActorComponent> Upper_Item;
 
 	UPROPERTY(VisibleAnywhere, Category = "Shelf")
-		TObjectPtr<UChildActorComponent> Upper_Deco_Left;
+	TObjectPtr<UChildActorComponent> Upper_Deco_Left;
 	
 	UPROPERTY(VisibleAnywhere, Category = "Shelf")
-		TObjectPtr<UChildActorComponent> Upper_Deco_Right;
+	TObjectPtr<UChildActorComponent> Upper_Deco_Right;
 
 	UPROPERTY(VisibleAnywhere, Category = "Shelf")
-		TObjectPtr<UChildActorComponent> Middle_Item;
+	TObjectPtr<UChildActorComponent> Middle_Item;
 
 	UPROPERTY(VisibleAnywhere, Category = "Shelf")
-		TObjectPtr<UChildActorComponent> Middle_Deco_Left;
+	TObjectPtr<UChildActorComponent> Middle_Deco_Left;
 
 	UPROPERTY(VisibleAnywhere, Category = "Shelf")
-		TObjectPtr<UChildActorComponent> Middle_Deco_Right;
+	TObjectPtr<UChildActorComponent> Middle_Deco_Right;
 
 	UPROPERTY(VisibleAnywhere, Category = "Shelf")
-		TObjectPtr<UChildActorComponent> Lower_Item;
+	TObjectPtr<UChildActorComponent> Lower_Item;
 
 	UPROPERTY(VisibleAnywhere, Category = "Shelf")
-		TObjectPtr<UChildActorComponent> Lower_Deco_Left;
+	TObjectPtr<UChildActorComponent> Lower_Deco_Left;
 
 	UPROPERTY(VisibleAnywhere, Category = "Shelf")
-		TObjectPtr<UChildActorComponent> Lower_Deco_Right;
+	TObjectPtr<UChildActorComponent> Lower_Deco_Right;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-		TArray<TSubclassOf<class AItems>> Items;
+	TArray<TSubclassOf<AActor>> Decorators;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-		TArray<TSubclassOf<AActor>> Decorators;
+	bool bIsUpperItemSpawned;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-		TArray<float> ItemProbability;
+	bool bIsMiddleItemSpawned;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-		float fNoItemProbability = 0.5f; // 아이템이 안 나올 확률
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-		bool bIsUpperItemSpawned;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-		bool bIsMiddleItemSpawned;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-		bool bIsLowerItemSpawned;
+	bool bIsLowerItemSpawned;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -88,12 +79,4 @@ public:
 	UFUNCTION(BlueprintCallable)
 		bool GetIsLowerItemSpawned();
 
-	UFUNCTION(BlueprintCallable)
-		void SetUpperItem();
-
-	UFUNCTION(BlueprintCallable)
-		void SetMiddleItem();
-
-	UFUNCTION(BlueprintCallable)
-		void SetLowerItem();
 };

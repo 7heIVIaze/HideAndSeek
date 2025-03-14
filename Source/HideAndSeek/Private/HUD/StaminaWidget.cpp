@@ -7,7 +7,6 @@
 void UStaminaWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-//	Stamina = Cast<UProgressBar>(GetWidgetFromName(TEXT("StaminaBar")));
 }
 
 void UStaminaWidget::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)

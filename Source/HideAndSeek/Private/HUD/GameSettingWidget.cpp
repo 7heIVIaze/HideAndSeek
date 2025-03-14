@@ -32,32 +32,17 @@ void UGameSettingWidget::NativeConstruct()
 		OptionSetting.Language = GameInstance->GetCurrentLanguage();
 	}
 
-	// 위젯의 오브젝트 가져오기
-	/*LanguageButton = Cast<UButton>(GetWidgetFromName(TEXT("Language")));
-	EnglishButton = Cast<UButton>(GetWidgetFromName(TEXT("EnglishBtn")));
-	KoreanButton = Cast<UButton>(GetWidgetFromName(TEXT("KoreanBtn")));
-	VolumeButton = Cast<UButton>(GetWidgetFromName(TEXT("VolumeBtn")));
-	VolumeSettingBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("VolumeBar")));
-	TimerButton = Cast<UButton>(GetWidgetFromName(TEXT("TimerBtn")));
-	TimerOnCheckBox = Cast<UCheckBox>(GetWidgetFromName(TEXT("TimerCheckBox")));
-	CrossHairButton = Cast<UButton>(GetWidgetFromName(TEXT("CrossHairBtn")));
-	CrossHairOnCheckBox = Cast<UCheckBox>(GetWidgetFromName(TEXT("CrossHairCheckBox")));
-	MouseSensitiveButton = Cast<UButton>(GetWidgetFromName(TEXT("MouseSensitiveBtn")));
-	SensitiveSettingBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("SensitiveBar")));*/
-
 	// 각 버튼 별로, 클릭, 마우스 호버 시 작동할 함수를 바인딩 해줌.
 	if (LanguageButton != nullptr)
 	{
 		LanguageButton->OnClicked.AddDynamic(this, &UGameSettingWidget::OnClickLanguageButton);
 		LanguageButton->OnHovered.AddDynamic(this, &UGameSettingWidget::OnHoveredLanguageButton);
-		//LanguageButton->OnUnhovered.AddDynamic(this, &UGameSettingWidget::OnUnhoveredLanguageButton);
 	}
 
 	if (EnglishButton != nullptr)
 	{
 		EnglishButton->OnClicked.AddDynamic(this, &UGameSettingWidget::OnClickEnglishButton);
 		EnglishButton->OnHovered.AddDynamic(this, &UGameSettingWidget::OnHoveredEnglishButton);
-		//EnglishButton->OnUnhovered.AddDynamic(this, &UGameSettingWidget::OnUnhoveredEnglishButton);
 		
 		// 저장된 언어 설정이 영어면, 버튼 색을 붉지만 살짝 투명하게 설정함.
 		if (OptionSetting.Language == ELanguage::LANG_En)
@@ -70,7 +55,6 @@ void UGameSettingWidget::NativeConstruct()
 	{
 		KoreanButton->OnClicked.AddDynamic(this, &UGameSettingWidget::OnClickKoreanButton);
 		KoreanButton->OnHovered.AddDynamic(this, &UGameSettingWidget::OnHoveredKoreanButton);
-		//KoreanButton->OnUnhovered.AddDynamic(this, &UGameSettingWidget::OnUnhoveredKoreanButton);
 		
 		// 저장된 언어 설정이 한국어이면, 버튼 색을 붉지만 살짝 투명하게 설정함.
 		if (OptionSetting.Language == ELanguage::LANG_Ko)
@@ -83,36 +67,32 @@ void UGameSettingWidget::NativeConstruct()
 	{
 		VolumeButton->OnClicked.AddDynamic(this, &UGameSettingWidget::OnClickVolumeButton);
 		VolumeButton->OnHovered.AddDynamic(this, &UGameSettingWidget::OnHoveredVolumeButton);
-		//VolumeButton->OnUnhovered.AddDynamic(this, &UGameSettingWidget::OnUnhoveredVolumeButton);
 	}
 
 	if (TimerButton != nullptr)
 	{
 		TimerButton->OnClicked.AddDynamic(this, &UGameSettingWidget::OnClickTimerButton);
 		TimerButton->OnHovered.AddDynamic(this, &UGameSettingWidget::OnHoveredTimerButton);
-		//TimerButton->OnUnhovered.AddDynamic(this, &UGameSettingWidget::OnUnhoveredTimerButton);
 	}
 
 	if (CrossHairButton != nullptr)
 	{
 		CrossHairButton->OnClicked.AddDynamic(this, &UGameSettingWidget::OnClickCrossHairButton);
 		CrossHairButton->OnHovered.AddDynamic(this, &UGameSettingWidget::OnHoveredCrossHairButton);
-		//CrossHairButton->OnUnhovered.AddDynamic(this, &UGameSettingWidget::OnUnhoveredCrossHairButton);
 	}
 
 	if (MouseSensitiveButton != nullptr)
 	{
 		MouseSensitiveButton->OnClicked.AddDynamic(this, &UGameSettingWidget::OnClickMouseSensitiveButton);
 		MouseSensitiveButton->OnHovered.AddDynamic(this, &UGameSettingWidget::OnHoveredMouseSensitiveButton);
-		//MouseSensitiveButton->OnUnhovered.AddDynamic(this, &UGameSettingWidget::OnUnhoveredMouseSensitiveButton);
 	}
 
 	if (BackButton != nullptr)
 	{
 		BackButton->OnClicked.AddDynamic(this, &UGameSettingWidget::OnClickBackButton);
 		BackButton->OnHovered.AddDynamic(this, &UGameSettingWidget::OnHoveredBackButton);
-		//BackButton->OnUnhovered.AddDynamic(this, &UGameSettingWidget::OnUnhoveredBackButton);
 	}
+
 	TimerOnCheckBox->SetIsChecked(OptionSetting.bIsTimerOn);
 	CrossHairOnCheckBox->SetIsChecked(OptionSetting.bIsCrossHairOn);
 	SensitiveSettingBar->SetPercent(OptionSetting.MouseSensitive / 5.f);
@@ -153,14 +133,8 @@ void UGameSettingWidget::OnHoveredLanguageButton()
 		// 현재 버튼 인덱스를 0으로 설정하고, 버튼의 상태를 업데이트 함.
 		MenuNavIndex = 0;
 		UpdateButtonSlate();
-		// LanguageButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 	}
 }
-
-//void UGameSettingWidget::OnUnhoveredLanguageButton()
-//{
-//	LanguageButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//}
 
 // 영어 설정 버튼을 클릭했을 때 작동할 함수.
 void UGameSettingWidget::OnClickEnglishButton()

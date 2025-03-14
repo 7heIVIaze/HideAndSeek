@@ -4,10 +4,10 @@
 
 #define OnLog(x, ...)  if(_OnDeleLog.IsBound() == true)\
                               {\
-                                FString log = FString::Printf(TEXT(x), __VA_ARGS__);\
+                                FString log = FString::Printf(TEXT(x), ##__VA_ARGS__);\
                                 _OnDeleLog.ExecuteIfBound(log);\
                               }\
-                              UE_LOG(LogTemp, Log, TEXT(x), __VA_ARGS__);\
+                              UE_LOG(LogTemp, Log, TEXT(x), ##__VA_ARGS__);\
 
 //Versions less then v2.4.1
 //FStoveResult UMyStoveSDKObject::StoveSDKInit(FStoveConfig fConfig)

@@ -8,9 +8,6 @@
 #include "GameFramework/Actor.h"
 #include "ClassroomDoors_cpp.generated.h"
 
-class USceneComponent;
-class AClassroomDoorActor_cpp;
-class UStaticMeshComponent;
 UCLASS()
 class HIDEANDSEEK_API AClassroomDoors_cpp : public AActor
 {
@@ -22,28 +19,28 @@ public:
 
 public: // properties
 	UPROPERTY(EditAnywhere, Category = "Root")
-		USceneComponent* DefaultSceneRoot;
+	TObjectPtr<USceneComponent> DefaultSceneRoot;
 
 	UPROPERTY(EditAnywhere, Category = "Door")
-		TObjectPtr<UChildActorComponent> LeftDoorActor;
+	TObjectPtr<UChildActorComponent> LeftDoorActor;
 
 	UPROPERTY(EditAnywhere, Category = "Door")
-		TObjectPtr<UChildActorComponent> RightDoorActor;
+	TObjectPtr<UChildActorComponent> RightDoorActor;
 
 	UPROPERTY(EditAnywhere, Category = "Door")
-		AClassroomDoorActor_cpp* LeftDoor;
+	TObjectPtr<class ADoorSlide> LeftDoor;
 
 	UPROPERTY(EditAnywhere, Category = "Door")
-		AClassroomDoorActor_cpp* RightDoor;
+	TObjectPtr<class ADoorSlide> RightDoor;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Door")
-		TObjectPtr<class UBoxComponent> PlayerOverlapBox;
+	TObjectPtr<class UBoxComponent> PlayerOverlapBox;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Door")
-		TSubclassOf<class AActor> GC_Door;
+	TSubclassOf<class AActor> GC_Door;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
-		class USoundCue* DoorBreakSound;
+	class USoundCue* DoorBreakSound;
 
 	UPROPERTY(EditAnywhere, Category = "Lock")
 		bool bIsLocked;

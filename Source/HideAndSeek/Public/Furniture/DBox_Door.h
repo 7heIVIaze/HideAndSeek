@@ -3,13 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+//#include "GameFramework/Actor.h"
+//#include "Resource/DoorInterface_cpp.h"
+#include "Furniture/InteractableActor.h"
 #include "Components/TimelineComponent.h"
-#include "Resource/DoorInterface_cpp.h"
 #include "DBox_Door.generated.h"
 
 UCLASS()
-class HIDEANDSEEK_API ADBox_Door : public AActor, public IDoorInterface_cpp
+class HIDEANDSEEK_API ADBox_Door : public AInteractableActor //public AActor, public IDoorInterface_cpp
 {
 	GENERATED_BODY()
 	
@@ -18,31 +19,31 @@ public:
 
 	// Sets default values for this actor's properties
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Mesh)
-		TObjectPtr<USceneComponent> RootComp;
+	TObjectPtr<USceneComponent> RootComp;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Mesh)
-		TObjectPtr<UStaticMeshComponent> BoxMesh;
+	TObjectPtr<UStaticMeshComponent> DoorMesh;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Sound)
-		TObjectPtr<class UAudioComponent> OpenSound;
+	TObjectPtr<class USoundCue> DoorOpenSound;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Sound)
-		TObjectPtr<class UAudioComponent> CloseSound;
+	TObjectPtr<class USoundCue> DoorCloseSound;
 
 	UPROPERTY(VisibleAnywhere, Category = "Door")
-		FTimeline OpenAndClose; // Create TimeLine 
+		FTimeline OpenAndCloseTimeline; // Create TimeLine 
 
 	UPROPERTY(EditAnywhere)
-		UCurveFloat* CurveFloat; // Timeline Curve
+		UCurveFloat* OpenAndCloseCurveFloat; // Timeline Curve
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
-		float DoorRotateAngle = 90.0f;
+	float DoorRotateAngle = 90.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
-		bool bIsDoorClosed = true;
+	bool bIsDoorClosed = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
-		bool bIsDoorLocked = true;
+	bool bIsDoorLocked = true;
 
 protected:
 	// Called when the game starts or when spawned
@@ -52,12 +53,11 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION()
-		virtual void OnInteract(class AHorrorGameCharacter* Player) override;
+	virtual void OnInteract(class AHorrorGameCharacter* Player) override;
 
-	UFUNCTION()
-		virtual void UseInteract(class AHorrorGameCharacter* Player) override;
+	virtual bool UseInteract(class AHorrorGameCharacter* Player) override;
 
-	UFUNCTION()
-		void OpenDoor(float Value);
+	virtual void DoorOpen(float inOpenAndCloseCurveFloat);
+	/*UFUNCTION()
+		void OpenDoor(float Value);*/
 };

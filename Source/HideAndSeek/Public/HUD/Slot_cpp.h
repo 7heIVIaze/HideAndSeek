@@ -12,7 +12,7 @@ class UBorder;
 class FRelpy;
 
 UENUM(BlueprintType)
-enum ESlotType
+enum ESlotsType
 {
 	SLOT_None	UMETA(DisplayName = "None"),
 	SLOT_Item	UMETA(DisplayName = "Item"),
@@ -28,7 +28,7 @@ class HIDEANDSEEK_API USlot_cpp : public UCustomUI
 public:
 	void Init() override;
 	
-	void SetType(ESlotType type);
+	void SetType(ESlotsType type);
 	
 	void SetTexture(UTexture2D* texture);
 
@@ -42,7 +42,7 @@ public:
 		int Count;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-		TEnumAsByte<ESlotType> Type;
+		TEnumAsByte<ESlotsType> Type;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
 		UImage* Icon;

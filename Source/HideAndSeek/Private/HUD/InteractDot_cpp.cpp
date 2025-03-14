@@ -8,9 +8,6 @@ void UInteractDot_cpp::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	/*InteractDot = Cast<UImage>(GetWidgetFromName(TEXT("InteractCrosshair")));
-	InteractText = Cast<UTextBlock>(GetWidgetFromName(TEXT("Interact_Text")));
-	ErrorText = Cast<UTextBlock>(GetWidgetFromName(TEXT("Interact_Error")));*/
 }
 
 // 상호작용 텍스트 설정 함수.

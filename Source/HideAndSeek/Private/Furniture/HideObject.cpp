@@ -9,7 +9,9 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Sound/SoundCue.h"
 #include "Player/HorrorGameCharacter.h"
-#include "Items/Soul_Lantern_cpp.h"
+#include "Player/InventoryComponent.h"
+#include "Player/PlayerStatComponent.h"
+#include "Items/SoulLantern.h"
 
 // Sets default values
 AHideObject::AHideObject()
@@ -31,23 +33,27 @@ AHideObject::AHideObject()
 	Camera->SetupAttachment(RootComp);
 
 	// 플레이어처럼 라이터 켜기용 컴포넌트
-	CigarLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("CigarLight"));
+	CigarlighterComp = CreateDefaultSubobject<UChildActorComponent>(TEXT("Cigarlighter"));
+	CigarlighterComp->SetupAttachment(Camera);
+	/*CigarLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("CigarLight"));
 	CigarLight->SetupAttachment(Camera);
 	CigarLight->SetVisibility(false);
 	CigarLight->SetIntensity(800.0f);
-	CigarLight->SetLightFColor(FColor(255.0f, 188.0f, 124.0f));
+	CigarLight->SetLightFColor(FColor(255.0f, 188.0f, 124.0f));*/
 
 	// 플레이어처럼 플래시 켜기 용 컴포넌트
-	FlashLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("FlashLight"));
+	FlashlightComp = CreateDefaultSubobject<UChildActorComponent>(TEXT("Flashlight"));
+	FlashlightComp->SetupAttachment(Camera);
+	/*FlashLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("FlashLight"));
 	FlashLight->SetupAttachment(Camera);
 	FlashLight->SetVisibility(false);
 	FlashLight->SetIntensity(800.0f);
 	FlashLight->SetInnerConeAngle(15.0f);
-	FlashLight->SetOuterConeAngle(30.0f);
+	FlashLight->SetOuterConeAngle(30.0f);*/
 
 	// 플레이어의 영혼 랜턴
-	Lantern = CreateDefaultSubobject<UChildActorComponent>(TEXT("SoulLantern"));
-	Lantern->SetupAttachment(Camera);
+	LanternComp = CreateDefaultSubobject<UChildActorComponent>(TEXT("SoulLantern"));
+	LanternComp->SetupAttachment(Camera);
 
 	// 숨을 때 낼 소리
 	Sound = CreateDefaultSubobject<UAudioComponent>(TEXT("HidingSound"));
@@ -91,22 +97,40 @@ void AHideObject::Tick(float DeltaTime)
 		// 플레이어에 대한 정보도 있고, 숨어있는 것으로 판별될 때
 		if (bIsHiding)
 		{
-			// 플레이어가 라이터를 켰는데 라이터를 켠 상태가 아닐 경우 라이터를 켬
-			if (bIsCigarLightOn != Player->bIsCigarLightOn)
+			//// 플레이어가 라이터를 켰는데 라이터를 켠 상태가 아닐 경우 라이터를 켬
+			//if (bIsCigarLightOn != Player->bIsCigarLightOn)
+			// 플레이어가 불은 켠 상태인 경우
+			if (Player->bIsLightOn)
 			{
-				SetCigarLightOn();
+				EItemNumber CurrentSelectedLightingItem = Player->GetInventoryComponent()->Lighting_Inventory[Player->GetInventoryComponent()->CurrentLightingItemIndex].ItemNumber;
+
+				// 현재 선택 중인 아이템이 라이터인 경우 라이터를 켜게 함.
+				if(CurrentSelectedLightingItem == EItemNumber::ITEM_CigarLighter)
+				{
+					if (!bIsCigarLightOn)
+					{
+						SetCigarLightOn();
+					}
+				}
+				// 현재 선택 중인 아이템이 손전등인 경우, 손전등을 켜게 함.
+				else if (CurrentSelectedLightingItem == EItemNumber::ITEM_FlashLight)
+				{
+					if (!bIsFlashLightOn)
+					{
+						SetFlashLightOn();
+					}
+				}
 			}
 
-			// 플레이어가 플래시를 켰는데 플래시를 켠 상태가 아닐 경우, 플래시를 켬
-			if (bIsFlashLightOn != Player->bIsFlashLightOn)
-			{
-				SetFlashLightOn();
-			}
+			//// 플레이어가 플래시를 켰는데 플래시를 켠 상태가 아닐 경우, 플래시를 켬
+			//if (bIsFlashLightOn != Player->bIsFlashLightOn)
+			//{
+			//	SetFlashLightOn();
+			//}
 
 			// 플레이어가 랜턴을 켰는데 랜턴을 켠 상태가 아닐 경우, 랜턴을 켬
-			if (bIsLanternOn != Player->bLanternOn)
+			if (bIsLanternOn != Player->bIsLanternOn)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("HideObject: bIsLanternOn is not equal with Player's"));
 				SetLanternOn();
 			}
 
@@ -121,14 +145,14 @@ void AHideObject::Tick(float DeltaTime)
 				FlickeringLight.Stop();
 			}
 
-			if (Player->GetCurrentItemNumber() == 10)
+			/*if (Player->GetInventoryComponent()-> == 10)
 			{
 				Lantern->SetVisibility(true);
 			}
 			else
 			{
 				Lantern->SetVisibility(false);
-			}
+			}*/
 		}
 	}
 }
@@ -153,10 +177,11 @@ void AHideObject::ToggleHide(class AHorrorGameCharacter* PlayerCharacter)
 	if (bIsHiding) // Hide on Cabinet
 	{	// True
 		// 숨었다는 정보를 없애고, 숨었을 때의 로직을 반대로 구현함.
-		Player->bIsHiding = false;
+		Player->GetStatComponent()->SetCurrentPlayerStates(EPlayerStatus::Survive);
+		//Player->bIsHiding = false;
 		bIsHiding = false;
 		Player->SetActorLocation(PlayerOutPoint->GetComponentLocation());
-		
+		Player->GetInventoryComponent()->OnItemSwitch.RemoveDynamic(this, &AHideObject::SwitchItem);
 		Player->SetActorHiddenInGame(false);
 
 		// 메인 카메라를 캐비닛 카메라에서 플레이어의 카메라로 전환함.
@@ -169,32 +194,43 @@ void AHideObject::ToggleHide(class AHorrorGameCharacter* PlayerCharacter)
 		FRotator NewRotation = Camera->GetComponentRotation();
 		NewRotation.Yaw += 90.0f;
 		UE_LOG(LogTemp, Warning, TEXT("NewRotationt: %s"), *NewRotation.ToString());
-		// New Rotation의 Yaw가 90일 때
-		//-176.95 °
 
-		//PlayerCharacter->SetActorRotation(NewRotation);
-		//PlayerController->AddYawInput(NewRotation.Yaw);
-		// 후 Player의 결과는 48.05 °이었다.
-		//PlayerController->AddPitchInput(OriginRotation.Pitch);
-		//PlayerController->AddYawInput(NewRotation.Yaw);
 
 		PlayerCharacter->SetActorRotation(Camera->GetComponentRotation());
 		PlayerController->SetControlRotation(Camera->GetComponentRotation());
 
 		// 모든 변수와 컴포넌트의 상태를 다 초기화함
 		FlickeringLight.Stop();
-		FlashLight->SetVisibility(false);
-		CigarLight->SetVisibility(false);
+		if (ALightItem* Flashlight = Cast<ALightItem>(FlashlightComp->GetChildActor()))
+		{
+			if (Flashlight->bIsLightOn)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("HideObject: Casting Success"));
+				Flashlight->TurnOff();
+			}
+		}
+		FlashlightComp->SetVisibility(false);
+
+		if (ALightItem* Cigarlighter = Cast<ALightItem>(CigarlighterComp->GetChildActor()))
+		{
+			if (Cigarlighter->bIsLightOn)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("HideObject: Casting Success"));
+				Cigarlighter->TurnOff();
+			}
+		}
+		CigarlighterComp->SetVisibility(false);
 		
-		if (ASoul_Lantern_cpp* SoulLantern = Cast<ASoul_Lantern_cpp>(Lantern->GetChildActor()))
+		if (ALightItem* SoulLantern = Cast<ALightItem>(LanternComp->GetChildActor()))
 		{
 			if (SoulLantern->bIsLightOn)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("HideObject: Casting Success"));
-				SoulLantern->HideInteract(Player);
+				SoulLantern->TurnOff();
 			}
 		}
-		Lantern->SetVisibility(false);
+		LanternComp->SetVisibility(false);
+
 		bIsFlashLightOn = false;
 		bIsCigarLightOn = false;
 		bIsLanternOn = false;
@@ -210,7 +246,11 @@ void AHideObject::ToggleHide(class AHorrorGameCharacter* PlayerCharacter)
 		}
 
 		// 숨었다는 상태로 만듦.
-		Player->bIsHiding = true;
+		Player->GetStatComponent()->SetCurrentPlayerStates(EPlayerStatus::Hiding);
+
+		Player->GetInventoryComponent()->OnItemSwitch.AddDynamic(this, &AHideObject::SwitchItem);
+
+		//Player->bIsHiding = true;
 		bIsHiding = true;
 		UE_LOG(LogTemp, Warning, TEXT("Player Rotation Input: Roll-%f Pitch-%f Yaw-%f"), PlayerController->RotationInput.Roll, PlayerController->RotationInput.Pitch, PlayerController->RotationInput.Yaw);
 		UE_LOG(LogTemp, Warning, TEXT("Player Rotation Input: %s"), *PlayerController->RotationInput.ToString());
@@ -243,6 +283,15 @@ void AHideObject::ToggleHide(class AHorrorGameCharacter* PlayerCharacter)
 	}
 }
 
+bool AHideObject::UseInteract(class AHorrorGameCharacter* PlayerCharacter)
+{
+	if (bIsHiding)
+	{
+
+	}
+	return false;
+}
+
 // 플래시를 켜는 함수
 void AHideObject::SetFlashLightOn()
 {
@@ -250,17 +299,35 @@ void AHideObject::SetFlashLightOn()
 	if (Player)
 	{
 		// 플레이어가 플래시를 켠 상태면 똑같이 켬
-		if (Player->bIsFlashLightOn)
+		if (ALightItem* Flashlight = Cast<ALightItem>(FlashlightComp->GetChildActor()))
 		{
-			bIsFlashLightOn = true;
-			FlashLight->SetVisibility(true);
+			UE_LOG(LogTemp, Warning, TEXT("HideObject: Casting Success"));
+			if (Player->bIsLightOn)
+			{
+				bIsFlashLightOn = true;
+				Flashlight->TurnOn();
+			}
+			else
+			{
+				bIsFlashLightOn = false;
+				Flashlight->TurnOff();
+			}
 		}
-		// 아니라면 똑같이 끔
 		else
 		{
-			bIsFlashLightOn = false;
-			FlashLight->SetVisibility(false);
+			UE_LOG(LogTemp, Warning, TEXT("HideObject: Casting Error"));
 		}
+		//if (Player->bIsLightOn)
+		//{
+		//	bIsFlashLightOn = true;
+		//	FlashLight->SetVisibility(true);
+		//}
+		//// 아니라면 똑같이 끔
+		//else
+		//{
+		//	bIsFlashLightOn = false;
+		//	FlashLight->SetVisibility(false);
+		//}
 	}
 }
 
@@ -272,17 +339,35 @@ void AHideObject::SetCigarLightOn()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("HideObject: SetCigarLightOn Called"));
 		// 플레이어가 라이터를 켠 상태면 똑같이 켬
-		if (Player->bIsCigarLightOn)
+		if (ALightItem* Cigarlighter = Cast<ALightItem>(CigarlighterComp->GetChildActor()))
 		{
-			bIsCigarLightOn = true;
-			CigarLight->SetVisibility(true);
+			UE_LOG(LogTemp, Warning, TEXT("HideObject: Casting Success"));
+			if (Player->bIsLightOn)
+			{
+				bIsCigarLightOn = true;
+				Cigarlighter->TurnOn();
+			}
+			else
+			{
+				bIsCigarLightOn = false;
+				Cigarlighter->TurnOff();
+			}
 		}
-		// 아니라면 똑같이 끔
 		else
 		{
-			bIsCigarLightOn = false;
-			CigarLight->SetVisibility(false);
+			UE_LOG(LogTemp, Warning, TEXT("HideObject: Casting Error"));
 		}
+		//if (Player->bIsLightOn)
+		//{
+		//	bIsCigarLightOn = true;
+		//	CigarLight->SetVisibility(true);
+		//}
+		//// 아니라면 똑같이 끔
+		//else
+		//{
+		//	bIsCigarLightOn = false;
+		//	CigarLight->SetVisibility(false);
+		//}
 	}
 }
 
@@ -294,12 +379,19 @@ void AHideObject::SetLanternOn()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("HideObject: SetLanternOn Called"));
 		// 플레이어가 라이터를 켠 상태면 똑같이 켬
-		bIsLanternOn = Player->bLanternOn;
+		bIsLanternOn = Player->bIsLanternOn;
 
-		if (ASoul_Lantern_cpp* SoulLantern = Cast<ASoul_Lantern_cpp>(Lantern->GetChildActor()))
+		if (ALightItem* SoulLantern = Cast<ALightItem>(LanternComp->GetChildActor()))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("HideObject: Casting Success"));
-			SoulLantern->HideInteract(Player);
+			if (bIsLanternOn)
+			{
+				SoulLantern->TurnOn();
+			}
+			else
+			{
+				SoulLantern->TurnOff();
+			}
 		}
 		else
 		{
@@ -350,14 +442,23 @@ void AHideObject::LightFlicker(float value)
 	// 라이터가 켜진 경우엔 라이터 불을 깜빡이게 함.
 	if (bIsCigarLightOn)
 	{
-		CigarLight->SetIntensity(LightIntense);
+		Cast<ALightItem>(CigarlighterComp->GetChildActor())->LightComponent->SetIntensity(LightIntense);
 	}
 
 	// 플래시가 켜진 경우엔 플레시 불을 깜빡이게 함.
 	if (bIsFlashLightOn)
 	{
-		FlashLight->SetIntensity(LightIntense);
+		Cast<ALightItem>(FlashlightComp->GetChildActor())->LightComponent->SetIntensity(LightIntense);
 	}
+	//if (bIsCigarLightOn)
+	//{
+	//	CigarLight->SetIntensity(LightIntense);
+	//}
+
+	//if (bIsFlashLightOn)
+	//{
+	//	FlashLight->SetIntensity(LightIntense);
+	//}
 }
 
 // 카메라 노이즈를 관리할 함수.
@@ -386,4 +487,74 @@ void AHideObject::SetCameraComponentNoise(int32 WhichStatus)
 		Camera->PostProcessSettings.bOverride_VignetteIntensity = false;
 		Camera->PostProcessSettings.bOverride_FilmGrainIntensity = false;
 	}
+}
+
+void AHideObject::SwitchItem(const FHorrorGameItemData& CurrentItemData, int32 CurrentItemIndex)
+{
+	switch (CurrentItemData.ItemType)
+	{
+		case EItemType::ITEM_Lighting:
+		{
+			auto Cigarlighter = Cast<ALightItem>(CigarlighterComp->GetChildActor());
+			auto Flashlight = Cast<ALightItem>(FlashlightComp->GetChildActor());
+			auto Lantern = Cast<ALightItem>(LanternComp->GetChildActor());
+			//CigarlighterComp->SetHiddenInGame(true);
+			if (Cigarlighter)
+			{
+				Cigarlighter->SetItemVisibility(true);
+			}
+
+			//FlashlightComp->SetHiddenInGame(true);
+			if (Flashlight)
+			{
+				Flashlight->SetItemVisibility(true);
+			}
+
+			//LanternComp->SetHiddenInGame(true);
+			if (Lantern)
+			{
+				Lantern->SetItemVisibility(true);
+			}
+
+			switch (CurrentItemData.ItemNumber)
+			{
+				case EItemNumber::ITEM_CigarLighter:
+				{
+					//CigarlighterComp->SetHiddenInGame(false);
+					if (Cigarlighter)
+					{
+						Cigarlighter->SetItemVisibility(false);
+					}
+					return;
+				}
+				case EItemNumber::ITEM_FlashLight:
+				{
+					//FlashlightComp->SetHiddenInGame(false);
+
+					// Durability synchronization
+					if (Flashlight)
+					{
+						Flashlight->SetItemVisibility(false);
+						Flashlight->SetupDurability(CurrentItemData.Durability);
+					}
+
+					return;
+				}
+				case EItemNumber::ITEM_Lantern:
+				{
+					//LanternComp->SetHiddenInGame(false);
+
+					if (Lantern)
+					{
+						Lantern->SetItemVisibility(false);
+					}
+					return;
+				}
+			}
+
+			return;
+		}
+	}
+
+	return;
 }

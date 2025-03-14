@@ -1,9 +1,10 @@
 // CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "Furniture/ClassroomDoors_cpp.h"
-#include "Furniture/ClassroomDoorActor_cpp.h"
+#include "Furniture/DoorSlide.h"
 #include "Components/BoxComponent.h"
 #include "AI/CreatureClass.h"
+#include "Player/HorrorGameCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
 
@@ -37,8 +38,8 @@ void AClassroomDoors_cpp::BeginPlay()
 	Super::BeginPlay();
 
 	// 차일드액터로부터 원본 액터들을 캐스팅하여 CD Maanger를 자신으로 설정함.
-	LeftDoor = Cast<AClassroomDoorActor_cpp>(LeftDoorActor->GetChildActor());
-	RightDoor = Cast<AClassroomDoorActor_cpp>(RightDoorActor->GetChildActor());
+	LeftDoor = Cast<ADoorSlide>(LeftDoorActor->GetChildActor());
+	RightDoor = Cast<ADoorSlide>(RightDoorActor->GetChildActor());
 
 	LeftDoor->CD_Manager = this;
 	RightDoor->CD_Manager = this;
@@ -178,7 +179,7 @@ void AClassroomDoors_cpp::BreakDoor()
 		{
 			GetWorld()->SpawnActor<AActor>(GC_Door, RightDoor->GetActorLocation(), GetActorRotation());
 		}*/
-		RightDoor->DestructionEndCallback();
+		RightDoor->DestructionFinished();
 	}
 	if (RightDoor->bIsDoorBroken)
 	{
@@ -186,7 +187,7 @@ void AClassroomDoors_cpp::BreakDoor()
 		{
 			GetWorld()->SpawnActor<AActor>(GC_Door, LeftDoor->GetActorLocation(), GetActorRotation());
 		}*/
-		LeftDoor->DestructionEndCallback();
+		LeftDoor->DestructionFinished();
 	}
 
 	if (GC_Door)

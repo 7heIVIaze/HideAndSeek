@@ -37,7 +37,7 @@ void AKey_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	Super::OnInteract(Player);
 	
 	// 플레이어의 열쇠를 얻는 메서드를 호출함.
-	Player->AddKey();
+	//Player->AddKey();
 
 	// 위 메서드를 통해 플레이어가 아이템을 얻을 수 있는 상태이면
 	if (Player->bCanItemGet)
@@ -58,7 +58,7 @@ void AKey_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	}
 }
 
-void AKey_cpp::UseInteract(class AHorrorGameCharacter* Player)
+bool AKey_cpp::UseInteract(class AHorrorGameCharacter* Player)
 {
-	Super::UseInteract(Player);
+	return Super::UseInteract(Player);
 }

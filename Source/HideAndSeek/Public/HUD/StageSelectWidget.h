@@ -16,41 +16,35 @@ UCLASS()
 class HIDEANDSEEK_API UStageSelectWidget : public UUserWidget
 {
 	GENERATED_BODY()
-
-//public:
-//	UStageSelectWidget(const FObjectInitializer& ObjectInitializer);
 	
 protected:
 	virtual void NativeConstruct() override;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnClickChapOneButton();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnClickChapTwoButton();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnClickBackButton();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnMoveChapOne();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnMoveChapTwo();
 
-	/*UFUNCTION()
-	void OnMoveBack();*/
-
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnHoveredChapOneButton();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnHoveredChapTwoButton();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void OnHoveredBackButton();
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void UpdateButtonSlate();
 
 	virtual FReply NativeOnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
@@ -68,31 +62,27 @@ public:
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UButton* BackButton;
 
-	/*UPROPERTY()
-	TArray<bool> CanButtonSelect;*/
-
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UImage* StageSampleImage;
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	class UVerticalBox* ChapterPanel;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int32 MenuNavigationIndex = 0;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int32 MenuNumber;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	bool bIsButtonClicked; // 버튼 클릭 후, 다른 버튼으로 변경하지 못하도록 하기 위한 변수.
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	int32 ClearedChapter;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
 	TArray<FClearData> ClearData;
 
-public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Level_Image")
 	TArray<UTexture2D*> LevelSample;
 
@@ -108,5 +98,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (BindWidgetAnim), Transient)
 	class UWidgetAnimation* Fadeout;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sound")
 	FWidgetAnimationDynamicEvent FadeoutWidgetAnimationEvent;
 };

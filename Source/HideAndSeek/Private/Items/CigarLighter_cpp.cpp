@@ -69,7 +69,7 @@ void ACigarLighter_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	Super::OnInteract(Player);
 
 	// 플레이어의 라이터를 얻는 메서드를 호출함.
-	Player->AddCigarLight();
+	//Player->AddCigarLight();
 
 	// 위 메서드를 통해 플레이어가 아이템을 얻을 수 있는 상태이면
 	if (Player->bCanItemGet)
@@ -90,7 +90,7 @@ void ACigarLighter_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	}
 }
 
-void ACigarLighter_cpp::UseInteract(class AHorrorGameCharacter* Player)
+bool ACigarLighter_cpp::UseInteract(class AHorrorGameCharacter* Player)
 {
 	Super::UseInteract(Player);
 
@@ -105,6 +105,7 @@ void ACigarLighter_cpp::UseInteract(class AHorrorGameCharacter* Player)
 		CigarLightOnSound->Play();
 	}*/
 	// Player->CurrentItem();
+	return false;
 }
 
 // Deprecated

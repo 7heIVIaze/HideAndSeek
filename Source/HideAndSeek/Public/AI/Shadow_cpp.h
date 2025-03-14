@@ -15,19 +15,19 @@ class HIDEANDSEEK_API AShadow_cpp : public ACreatureClass
 	GENERATED_BODY()
 	
 public:
-	// 얼굴 부분에 빛을 낼 포인트라이트
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Light")
-	TObjectPtr<class UPointLightComponent> DetectSight;
+	//// 얼굴 부분에 빛을 낼 포인트라이트
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Light")
+	//TObjectPtr<class UPointLightComponent> DetectSight;
 
-	// 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
-	TObjectPtr<class UBoxComponent> BoxCollision;
+	//// 
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
+	//TObjectPtr<class UBoxComponent> BoxCollision;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact")
-	TObjectPtr<class USphereComponent> KillSphere;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact")
+	//TObjectPtr<class USphereComponent> KillSphere;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PatrolPointList")
-	TArray<class APatrolPoint_cpp*> PatrolPointList;
+	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "PatrolPointList")
+	//TArray<class APatrolPoint_cpp*> PatrolPointList;
 
 public:
 	// Constructor
@@ -37,16 +37,16 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-private:
-	bool bIsDied = false;
-	// 현재 향하고 있는 순찰 지점
-	class APatrolPoint_cpp* CurrentPatrolPoint;
+//private:
+	//bool bIsDied = false;
+	//// 현재 향하고 있는 순찰 지점
+	//class APatrolPoint_cpp* CurrentPatrolPoint;
 
 	//// 플레이어를 추격 중인 요괴들 배열을 관리하기 위한 포인터 변수
 	//class AHorrorGameCharacter* Player;
 
-	// 플레이어가 숨어있는 캐비닛/옷장
-	class AHideObject* PlayerHidingObject;
+	//// 플레이어가 숨어있는 캐비닛/옷장
+	//class AHideObject* PlayerHidingObject;
 
 public:
 	// Called every frame
@@ -59,7 +59,7 @@ public:
 	
 	virtual void DissolveFinish() override;
 
-	UFUNCTION(BlueprintCallable)
+	/*UFUNCTION(BlueprintCallable)
 	void OpenDoor();
 
 	UFUNCTION(BlueprintCallable)
@@ -120,37 +120,37 @@ public:
 	void SetIsStop(bool inIsStop);
 
 	UFUNCTION(BlueprintCallable)
-	bool GetIsStop();
+	bool GetIsStop();*/
 
 public:
-	// 패트롤 여부
-	UPROPERTY()
-	bool bIsPatrolSuccess = false;
-
-	// 추격 여부
-	UPROPERTY()
-	bool bIsChase = false;
-
-	// 플레이어를 잡았는지 여부
-	UPROPERTY()
-	bool bIsCatch = false;
-
-	// 플레이어가 숨은 곳을 잡았는지 여부
-	UPROPERTY()
-	bool bIsHidingCatch = false;
-
-	// 공격 애니메이션 종료 여부
-	UPROPERTY()
-	bool bAnimFinish = false;
-
-	// 플레이어가 청동 거울을 사용했는지 여부
-	UPROPERTY()
-	bool bIsTimeStop = false;
-
-private:
-	// 시간 정지된 동안 흐르는 시간
-	float TimeStopElapsedTime = 0;
-
-	UPROPERTY()
-	bool bIsStop = false; // 문을 여는 동작으로 인하여 멈추는지 확인
+//	// 패트롤 여부
+//	UPROPERTY()
+//	bool bIsPatrolSuccess = false;
+//
+//	// 추격 여부
+//	UPROPERTY()
+//	bool bIsChase = false;
+//
+//	// 플레이어를 잡았는지 여부
+//	UPROPERTY()
+//	bool bIsCatch = false;
+//
+//	// 플레이어가 숨은 곳을 잡았는지 여부
+//	UPROPERTY()
+//	bool bIsHidingCatch = false;
+//
+//	// 공격 애니메이션 종료 여부
+//	UPROPERTY()
+//	bool bAnimFinish = false;
+//
+//	// 플레이어가 청동 거울을 사용했는지 여부
+//	UPROPERTY()
+//	bool bIsTimeStop = false;
+//
+//private:
+//	// 시간 정지된 동안 흐르는 시간
+//	float TimeStopElapsedTime = 0;
+//
+//	UPROPERTY()
+//	bool bIsStop = false; // 문을 여는 동작으로 인하여 멈추는지 확인
 };

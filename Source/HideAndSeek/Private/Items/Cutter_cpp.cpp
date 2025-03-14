@@ -38,14 +38,14 @@ void ACutter_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	Super::OnInteract(Player);
 
 	// 플레이어의 절단기를 얻는 메서드를 호출함.
-	Player->AddCutter();
+	//Player->AddCutter();
 	
 	// 위 메서드를 통해 플레이어가 아이템을 얻을 수 있는 상황이면
 	if (Player->bCanItemGet)
 	{
 		// 절단기의 남은 내구도를 이 절단기의 내구도로 복구함.
-		Player->CutterDurability = Durability;
-		Player->CurrentItem();
+		//Player->CutterDurability = Durability;
+		//Player->CurrentItem();
 
 		// 절단기를 처음 얻은 상태라면 절단기 문서를 세이브 데이터에 영구히 저장함.
 		if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
@@ -63,7 +63,8 @@ void ACutter_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	}
 }
 
-void ACutter_cpp::UseInteract(class AHorrorGameCharacter* Player)
+bool ACutter_cpp::UseInteract(class AHorrorGameCharacter* Player)
 {
 	Super::UseInteract(Player);
+	return false;
 }

@@ -17,29 +17,71 @@ class HIDEANDSEEK_API UObjectWidget : public UCustomUI
 protected:
 	virtual void NativeConstruct() override;
 
+//public:
+//	UFUNCTION()
+//		void SetObjectCount(const unsigned int idx, int32 value);
+//
+//private:
+//	UFUNCTION()
+//		void SetSwordCount(int32 value);
+//
+//	UFUNCTION()
+//		void SetBellCount(int32 value);
+//
+//	UFUNCTION()
+//		void SetMirrorCount(int32 value);
+
 public:
-	UFUNCTION()
-		void SetObjectCount(const unsigned int idx, int32 value);
+	virtual void Init() override;
+
+	// 오브젝트를 얻을 때 리프레시할 함수와 델리게이트를 바인딩해주는 함수.
+	UFUNCTION(BlueprintCallable)
+	bool InitializeWidget(class UInventoryComponent* InventoryComponent);
 
 private:
-	UFUNCTION()
-		void SetSwordCount(int32 value);
+	// 오브젝트를 얻을 때 리프레시할 함수.
+	UFUNCTION(BlueprintCallable)
+	void RefreshObjectCount(int32 ObjectCount);
 
-	UFUNCTION()
-		void SetBellCount(int32 value);
+//protected:
+//	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+//		class UTextBlock* SwordCount;
+//
+//	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+//		class UTextBlock* BellCount;
+//
+//	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+//		class UTextBlock* MirrorCount;
 
-	UFUNCTION()
-		void SetMirrorCount(int32 value);
+public:
+// Object images not yet collected
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Image)
+	TObjectPtr<class UTexture2D>NotCollectedObject;
 
-protected:
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UTextBlock* SwordCount;
+	// Collected object images
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Image)
+	TObjectPtr<class UTexture2D>CollectedObject;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UTextBlock* BellCount;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Image)
+	TArray<TObjectPtr<class UImage>>ObjectImg;
 
-	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-		class UTextBlock* MirrorCount;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UImage> ObjectImg1;
 
-	FString BaseText;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UImage> ObjectImg2;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UImage> ObjectImg3;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UImage> ObjectImg4;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UImage> ObjectImg5;
+
+	// Number of objects to collect.
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = ObjectCount)
+	int ObjectNumber;
+	//FString BaseText;
 };

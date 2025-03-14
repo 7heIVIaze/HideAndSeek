@@ -12,7 +12,7 @@ void AItems::OnInteract(class AHorrorGameCharacter* Player)
 	// Super::OnInteract();
 }
 
-void AItems::UseInteract(class AHorrorGameCharacter* Player)
+bool AItems::UseInteract(class AHorrorGameCharacter* Player)
 {
-
+	return false;
 }

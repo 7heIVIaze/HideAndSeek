@@ -28,7 +28,7 @@ public:
 	
 	virtual void OnInteract(class AHorrorGameCharacter* Player) = 0;
 
-	virtual void UseInteract(class AHorrorGameCharacter* Player) = 0;
+	virtual bool UseInteract(class AHorrorGameCharacter* Player) = 0;
 	// void OnInteract(AHorrorGameCharacter* PlayerCharacter);
 
 	//// Use Item Interact Interface

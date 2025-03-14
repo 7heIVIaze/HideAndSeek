@@ -1,6 +1,7 @@
 // CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 // All Door Class Interact
 
+// 현재는 Deprecated 됨.
 #pragma once
 
 #include "CoreMinimal.h"

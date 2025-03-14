@@ -2,7 +2,6 @@
 
 #include "Furniture/DBox_Door.h"
 #include "Sound/SoundCue.h"
-#include "Components/AudioComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/HorrorGameCharacter.h"
 
@@ -15,18 +14,17 @@ ADBox_Door::ADBox_Door()
 	RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = RootComp;
 
-	BoxMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Door"));
-	BoxMesh->SetupAttachment(RootComp);
+	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Door"));
+	DoorMesh->SetupAttachment(RootComp);
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>SM_DBoxDoor(TEXT("/Game/Assets/Furniture/SM_DistributionBox_Door"));
 	if (SM_DBoxDoor.Succeeded())
 	{
-		BoxMesh->SetStaticMesh(SM_DBoxDoor.Object);
+		DoorMesh->SetStaticMesh(SM_DBoxDoor.Object);
 	}
 	DoorRotateAngle = -90.0f;
 
-	OpenSound = CreateDefaultSubobject<UAudioComponent>(TEXT("DoorOpenSound"));
-
-	CloseSound = CreateDefaultSubobject<UAudioComponent>(TEXT("DoorCloseSound"));
+	//DoorOpenSound = CreateDefaultSubobject<UAudioComponent>(TEXT("DoorOpenSound"));
+	//CloseSound = CreateDefaultSubobject<UAudioComponent>(TEXT("DoorCloseSound"));
 }
 
 // Called when the game starts or when spawned
@@ -35,11 +33,11 @@ void ADBox_Door::BeginPlay()
 	Super::BeginPlay();
 
 	// 문이 열리는 애니메이션을 위해 타임라인을 추가해주고 해당 타임라인에 OpenDoor 함수를 바인딩해줌.
-	if (CurveFloat)
+	if (OpenAndCloseCurveFloat)
 	{
 		FOnTimelineFloat TimelineProgress;
-		TimelineProgress.BindDynamic(this, &ADBox_Door::OpenDoor);
-		OpenAndClose.AddInterpFloat(CurveFloat, TimelineProgress);
+		TimelineProgress.BindDynamic(this, &ADBox_Door::DoorOpen);
+		OpenAndCloseTimeline.AddInterpFloat(OpenAndCloseCurveFloat, TimelineProgress);
 	}
 }
 
@@ -48,52 +46,73 @@ void ADBox_Door::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	OpenAndClose.TickTimeline(DeltaTime);
+	OpenAndCloseTimeline.TickTimeline(DeltaTime);
 }
 
 // 플레이어가 상호작용을 할 때 수행할 함수.
 void ADBox_Door::OnInteract(class AHorrorGameCharacter* Player)
 {
+	Super::OnInteract(Player);
+	// 문이 잠겨 있는 경우에는 잠겼다는 텍스트를 출력해줌.
+	if (bIsDoorLocked)
+	{
+		OnInteractionMessage.Broadcast(NSLOCTEXT("DoorMessage", "DoorLocked", "The door is locked."));
+	}
 	// 문이 잠기지 않은 경우에
-	if (!bIsDoorLocked)
+	else
 	{
 		// 문이 닫혀있으면 열고
 		if (bIsDoorClosed)
 		{
-			OpenSound->Play();
-			OpenAndClose.Play();
+			if (DoorOpenSound)
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, DoorOpenSound, GetActorLocation());
+			}
+
+			OpenAndCloseTimeline.Play();
 		}
 		// 문이 열려있으면 닫음.
 		else
 		{
-			CloseSound->Play();
-			OpenAndClose.Reverse();
+			if (DoorCloseSound)
+			{
+				UGameplayStatics::PlaySoundAtLocation(this, DoorCloseSound, GetActorLocation());
+			}
+
+			OpenAndCloseTimeline.Reverse();
 		}
 
 		bIsDoorClosed = !bIsDoorClosed;
 	}
-	// 문이 잠겨 있는 경우에는 잠겼다는 텍스트를 출력해줌.
-	else
-	{
-		Player->SetErrorText(NSLOCTEXT("ADBox_Door", "When_Box_Door_Locked", "Locked"), 3);
-	}
 }
 
 // 문을 여닫는 효과를 줄 함수
-void ADBox_Door::OpenDoor(float Value)
+//void ADBox_Door::OpenDoor(float Value)
+//{
+//	// 메시가 Yaw 축을 기준으로 최대 90도까지 회전할 수 있도록 설정함
+//	FRotator Rotator = FRotator(0.0f, DoorRotateAngle * Value, 0.0f);
+//	BoxMesh->SetRelativeRotation(Rotator);
+//}
+
+void ADBox_Door::DoorOpen(float inOpenAndCloseCurveFloat)
 {
 	// 메시가 Yaw 축을 기준으로 최대 90도까지 회전할 수 있도록 설정함
-	FRotator Rotator = FRotator(0.0f, DoorRotateAngle * Value, 0.0f);
-	BoxMesh->SetRelativeRotation(Rotator);
+	FRotator Rotator = FRotator(0.0f, DoorRotateAngle * inOpenAndCloseCurveFloat, 0.0f);
+	DoorMesh->SetRelativeRotation(Rotator);
 }
 
 // 문 앞에서 아이템을 사용할 때 작동할 함수.
-void ADBox_Door::UseInteract(class AHorrorGameCharacter* Player)
+bool ADBox_Door::UseInteract(class AHorrorGameCharacter* Player)
 {
+	Super::UseInteract(Player);
+
 	// 문이 잠긴 상태에서만 작동
 	if (bIsDoorLocked)
 	{
 		Player->bIsFinishUnlock = true;
 		bIsDoorLocked = false;
+		return true;
 	}
+
+	return false;
 }

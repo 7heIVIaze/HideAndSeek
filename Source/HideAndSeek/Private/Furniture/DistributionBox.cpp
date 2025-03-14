@@ -4,6 +4,7 @@
 #include "Player/HorrorGameCharacter.h"
 #include "AI/Reaper_cpp.h"
 #include "Furniture/DBox_Door.h"
+#include "HUD/GameUI.h"
 
 // Sets default values
 ADistributionBox::ADistributionBox()
@@ -37,13 +38,20 @@ void ADistributionBox::BeginPlay()
 // 플레이어가 분전함과 상호작용 시 수행할 함수.
 void ADistributionBox::OnInteract(class AHorrorGameCharacter* Player)
 {
+	if (Player->GameUIWidget)
+	{
+		if (!OnInteractionMessage.IsAlreadyBound(Player->GameUIWidget, &UGameUI::ShowMessage))
+		{
+			OnInteractionMessage.AddDynamic(Player->GameUIWidget, &UGameUI::ShowMessage);
+		}
+	}
 	// 문이 있는 경우에 작동함
 	if (BoxDoor != nullptr)
 	{
 		// 문이 잠긴 상태면, 문이 잠겼다는 텍스트를 출력함
 		if (BoxDoor->bIsDoorLocked)
 		{
-			Player->SetErrorText(NSLOCTEXT("ADistributionBox", "BoxDoorLocked", "Distribution box door is locked"), 3);
+			OnInteractionMessage.Broadcast(NSLOCTEXT("ErrorMessage", "BoxDoorLocked", "The distribution box door is locked."));
 		}
 		// 잠기지 않은 상태면
 		else
@@ -51,7 +59,7 @@ void ADistributionBox::OnInteract(class AHorrorGameCharacter* Player)
 			// 문이 닫힌 상태면, 문이 닫혀있다는 텍스트룰 출력함.
 			if (BoxDoor->bIsDoorClosed)
 			{
-				Player->SetErrorText(NSLOCTEXT("ADistributionBox", "BoxDoorClosed", "Distribution box door is closed"), 3);
+				OnInteractionMessage.Broadcast(NSLOCTEXT("ErrorMessage", "BoxDoorClosed", "The distribution box door is closed."));
 			}
 			// 그게 아니라면
 			else
@@ -85,7 +93,7 @@ void ADistributionBox::OnInteract(class AHorrorGameCharacter* Player)
 						if (Reaper)
 						{
 							Reaper->bIsCollectMode = false;
-							Reaper->SetCurrentStatus(4);
+							Reaper->SetCurrentStatus(6);
 						}
 					}
 				}
@@ -93,4 +101,6 @@ void ADistributionBox::OnInteract(class AHorrorGameCharacter* Player)
 		}
 
 	}
+
+	OnInteractionMessage.Clear();
 }

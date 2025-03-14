@@ -3,13 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+//#include "GameFramework/Actor.h"
+#include "Furniture/InteractableActor.h"
 #include "Components/TimelineComponent.h"
-#include "Items/Items.h"
 #include "DrawerClass.generated.h"
 
 UCLASS()
-class HIDEANDSEEK_API ADrawerClass : public AActor
+class HIDEANDSEEK_API ADrawerClass : public AInteractableActor //public AActor
 {
 	GENERATED_BODY()
 	
@@ -27,65 +27,43 @@ public:
 
 public:
 	UPROPERTY(VisibleAnywhere, Category = "Drawer")
-		TObjectPtr<UChildActorComponent> Item;
-
-	/*UPROPERTY(VisibleAnywhere, Category = "Drawer")
-		TObjectPtr<UChildActorComponent> Deco_Left;
+	TObjectPtr<UChildActorComponent> Item;
 
 	UPROPERTY(VisibleAnywhere, Category = "Drawer")
-		TObjectPtr<UChildActorComponent> Deco_Right;*/
-
-	UPROPERTY(VisibleAnywhere, Category = "Drawer")
-		TObjectPtr<UStaticMeshComponent> Drawer;
+	TObjectPtr<UStaticMeshComponent> Drawer;
 
 	/** Please add a variable description */
 	UPROPERTY(VisibleAnywhere, Category = "Drawer")
-		TObjectPtr<USceneComponent> DefaultSceneRoot;
+	TObjectPtr<USceneComponent> RootComp;
 
 	UPROPERTY(EditAnywhere, Category = "Drawer")
-		TArray<TObjectPtr<UStaticMesh>> DrawerMeshes;
-
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
-	//	TObjectPtr<UAudioComponent> DrawerSound;
+	TArray<TObjectPtr<UStaticMesh>> DrawerMeshes;
 
 	UPROPERTY(VisibleAnywhere, Category = "Drawer")
-		FTimeline OpenAndClose; // Create TimeLine 
+	FTimeline OpenAndCloseTimeline; // Create TimeLine 
 
-	UPROPERTY(EditAnywhere)
-		UCurveFloat* CurveFloat; // Timeline Curve
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drawer")
-		float DrawerOpenMove = 80.0f;
+	UPROPERTY(VisibleAnywhere, Category = Drawer)
+	UCurveFloat* OpenAndCloseCurveFloat; // Timeline Curve
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drawer")
-		float fNoItemProbability = 0.5f; // 아이템이 안 나올 확률
+	float DrawerOpenMove = 80.0f;
 
-	bool bIsDrawerClosed = true;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Drawer")
-		bool bIsFirstOpen = false;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drawer")
-		TArray<TSubclassOf<class AItems>> Items;
-
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drawer")
-		TArray<TSubclassOf<AActor>> Decorators;*/
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drawer")
-		TArray<float> ItemProbability;
+	bool bIsDrawerClosed = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-		bool bIsItemSpawned;
+	bool bIsItemSpawned;
 
 public:
 	UFUNCTION(BlueprintCallable, Category = "Interaction")
-		virtual void OnInteract();
+	virtual void OnInteract(class AHorrorGameCharacter* Player) override;
 
 	UFUNCTION(BlueprintCallable, Category = "Drawer")
-		virtual void OpenDrawer(float Value);
+	virtual void OpenDrawer(float Value);
 
 	UFUNCTION(BlueprintCallable)
-		bool SetSpawnItem(TSubclassOf<AActor> inItem);
+	virtual bool SetSpawnItem(TSubclassOf<AActor> inItem);
 
 	UFUNCTION(BlueprintCallable)
-		bool GetIsItemSpawned();
+	virtual bool GetIsItemSpawned();
 };

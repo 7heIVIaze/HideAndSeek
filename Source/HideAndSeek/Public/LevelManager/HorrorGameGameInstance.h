@@ -87,6 +87,9 @@ public:
 		float GetBrightGamma();
 
 	UFUNCTION(BlueprintCallable)
+	void ApplyBrightness();
+
+	UFUNCTION(BlueprintCallable)
 		bool GetMotionBlur();
 
 	UFUNCTION(BlueprintCallable)
@@ -120,11 +123,41 @@ public:
 		TArray<FClearData> GetAllClearData();
 
 	UFUNCTION(BlueprintCallable)
-		bool ChapterClearSaveLogic(int32 inClearedChapter, float inClearTime, int32 inNextChapter);
+	bool ChapterClearSaveLogic(int32 inClearedChapter, float inClearTime, int32 inNextChapter);
+
+	UFUNCTION(BlueprintCallable)
+	bool GetIsItemFirstAcquired(const EItemNumber ItemNumber);
+
+	UFUNCTION(BlueprintCallable)
+	void SaveItemArchives(const EItemNumber ItemNumber);
+
+	UFUNCTION(BlueprintCallable)
+	UHorrorGameSaveGame* GetSaveData();
+
+	// This function will be called, when player selects difficulty at chapter select widget.
+	UFUNCTION(BlueprintCallable)
+	void SetLevelDifficulty(int32 inSelectedDifficulty);
+
+	// Returns the number of objects to collect depending on the difficulty level
+	UFUNCTION(BlueprintCallable)
+	int GetObjectCountToCollect() const;
+
+	// Get the HP Loss rate
+	UFUNCTION(BlueprintCallable)
+	float GetHPLossRate() const;
+
+	// Public Variables
+public:
+	// 레벨 난이도. 0: Easy, 1: Normal(default), 2: Hard, 3: Nightmare
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Chapter)
+	int32 LevelDifficulty;
 
 private:
 	UPROPERTY()
 	UDataTable* HorrorGameTable;
+
+	UPROPERTY()
+	TObjectPtr<class UHorrorGameSaveGame> SaveData;
 
 	UPROPERTY()
 		class UUserWidget* LoadingWidget;

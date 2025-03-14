@@ -35,172 +35,107 @@ void UGraphicsOption::NativeConstruct()
 	EndDelegate.BindDynamic(this, &UGraphicsOption::AnimationFinished);
 	BindToAnimationFinished(BackOptionAnim, EndDelegate);
 
-	/*ResolutionButton = Cast<UButton>(GetWidgetFromName(TEXT("Resolution")));
-	WindowModeButton = Cast<UButton>(GetWidgetFromName(TEXT("WindowMode")));
-	BrightnessBtn = Cast<UButton>(GetWidgetFromName(TEXT("BrightButton")));
-	AntiAliasingBtn = Cast<UButton>(GetWidgetFromName(TEXT("AntiAliasingButton")));
-	ShadowBtn = Cast<UButton>(GetWidgetFromName(TEXT("ShadowButton")));
-	MotionBlurBtn = Cast<UButton>(GetWidgetFromName(TEXT("MotionBlurButton")));
-	Resolution1Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution1Button")));
-	Resolution2Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution2Button")));
-	Resolution3Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution3Button")));
-	Resolution4Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution4Button")));
-	Resolution5Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution5Button")));
-	Resolution6Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution6Button")));
-	Resolution7Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution7Button")));
-	Resolution8Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution8Button")));
-	//Resolution9Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution9Button")));
-	//Resolution10Btn = Cast<UButton>(GetWidgetFromName(TEXT("Resolution10Button")));
-	WindowedBtn = Cast<UButton>(GetWidgetFromName(TEXT("WindowButton")));
-	// WinFullBtn = Cast<UButton>(GetWidgetFromName(TEXT("WindowFullButton")));
-	FullScreenBtn = Cast<UButton>(GetWidgetFromName(TEXT("FullScreenButton")));
-	AntiAliasBox = Cast<UCheckBox>(GetWidgetFromName(TEXT("AntiCheckbox")));
-	ShadowBox = Cast<UCheckBox>(GetWidgetFromName(TEXT("ShadowCheckbox")));
-	MotionBlurBox = Cast<UCheckBox>(GetWidgetFromName(TEXT("MotionBlurCheckbox")));
-	BrightnessBar = Cast<UProgressBar>(GetWidgetFromName(TEXT("BrightBar")));
-
-	MainBox = Cast<UVerticalBox>(GetWidgetFromName(TEXT("GraphicsSettingPanel")));
-	ResolutionPanel = Cast<UUniformGridPanel>(GetWidgetFromName(TEXT("ResolutionType")));
-	WindowModeBox = Cast<UHorizontalBox>(GetWidgetFromName(TEXT("WindowModePanel")));*/
-
 	// 각 버튼 별로 클릭과 마우스 호버 시 작동할 함수를 바인딩해줌.
 	if (IsValid(ResolutionButton))
 	{
 		ResolutionButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolutionButton);
 		ResolutionButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolutionButton);
-		// Resolution->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolutionButton);
 	}
 
 	if (IsValid(ScreenSettingButton))
 	{
 		ScreenSettingButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickScreenSettingButton);
 		ScreenSettingButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredScreenSettingButton);
-		// WindowMode->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredWindowModeButton);
 	}
 
 	if (IsValid(BrightButton))
 	{
 		BrightButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickBrightButton);
 		BrightButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredBrightButton);
-		// BrightButton->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredBrightButton);
 	}
 
 	if (IsValid(AntiAliasingButton))
 	{
 		AntiAliasingButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickAntiAliasingButton);
 		AntiAliasingButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredAntiAliasingButton);
-		// AntiAliasingButton->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredAntiAliasingButton);
 	}
 
 	if (IsValid(ShadowButton))
 	{
 		ShadowButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickShadowButton);
 		ShadowButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredShadowButton);
-		// ShadowButton->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredShadowButton);
 	}
 
 	if (IsValid(MotionBlurButton))
 	{
 		MotionBlurButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickMotionBlurButton);
 		MotionBlurButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredMotionBlurButton);
-		// MotionBlurButton->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredMotionBlurButton);
 	}
 
 	if (IsValid(Resolution1Button))
 	{
 		Resolution1Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution1Button);
 		Resolution1Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution1Button);
-		// Resolution1Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution1Button);
 	}
 
 	if (IsValid(Resolution2Button))
 	{
 		Resolution2Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution2Button);
 		Resolution2Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution2Button);
-		// Resolution2Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution2Button);
 	}
 
 	if (IsValid(Resolution3Button))
 	{
 		Resolution3Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution3Button);
 		Resolution3Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution3Button);
-		// Resolution3Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution3Button);
 	}
 
 	if (IsValid(Resolution4Button))
 	{
 		Resolution4Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution4Button);
 		Resolution4Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution4Button);
-		// Resolution4Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution4Button);
 	}
 
 	if (IsValid(Resolution5Button))
 	{
 		Resolution5Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution5Button);
 		Resolution5Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution5Button);
-		// Resolution5Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution5Button);
 	}
 
 	if (IsValid(Resolution6Button))
 	{
 		Resolution6Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution6Button);
 		Resolution6Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution6Button);
-		// Resolution6Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution6Button);
 	}
 
 	if (IsValid(Resolution7Button))
 	{
 		Resolution7Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution7Button);
 		Resolution7Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution7Button);
-		// Resolution7Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution7Button);
 	}
 
 	if (IsValid(Resolution8Button))
 	{
 		Resolution8Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution8Button);
 		Resolution8Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution8Button);
-		// Resolution8Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution8Button);
 	}
-
-	/*if (IsValid(Resolution9Button))
-	{
-		Resolution9Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution9Button);
-		Resolution9Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution9Button);
-		Resolution9Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution9Button);
-	}
-	if (IsValid(Resolution10Button))
-	{
-		Resolution10Button->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickResolution10Button);
-		Resolution10Button->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredResolution10Button);
-		Resolution10Button->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredResolution10Button);
-	}*/
 
 	if (IsValid(WindowButton))
 	{
 		WindowButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickWindowedButton);
 		WindowButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredWindowedButton);
-		// WindowButton->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredWindowedButton);
 	}
-
-	/*if (IsValid(WinFullButton))
-	{
-		WinFullButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickWinFullButton);
-		WinFullButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredWinFullButton);
-		WinFullButton->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredWinFullButton);
-	}*/
 
 	if (IsValid(FullScreenButton))
 	{
 		FullScreenButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickFullScreenButton);
 		FullScreenButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredFullScreenButton);
-		// 	FullScreenButton->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredFullScreenButton);
 	}
 
 	if (BackButton != nullptr)
 	{
 		BackButton->OnClicked.AddDynamic(this, &UGraphicsOption::OnClickBackButton);
 		BackButton->OnHovered.AddDynamic(this, &UGraphicsOption::OnHoveredBackButton);
-		// BackButton->OnUnhovered.AddDynamic(this, &UGraphicsOption::OnUnhoveredBackButton);
 	}
 
 	// 버튼의 개수는 그래픽 설정 패널의 버튼 개수로 설정.
@@ -313,12 +248,6 @@ void UGraphicsOption::OnHoveredResolutionButton()
 	}
 }
 
-// Deprecated
-//void UGraphicsOption::OnUnhoveredResolutionButton()
-//{
-//	Resolution->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//}
-
 // 화면 설정 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickScreenSettingButton()
 {
@@ -364,12 +293,6 @@ void UGraphicsOption::OnHoveredScreenSettingButton()
 	}
 }
 
-// Deprecated
-//void UGraphicsOption::OnUnhoveredWindowModeButton()
-//{
-//	WindowMode->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//}
-
 // 밝기 설정 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickBrightButton()
 {
@@ -405,12 +328,6 @@ void UGraphicsOption::OnHoveredBrightButton()
 		UpdateButtonSlate();
 	}
 }
-
-// Deprecated
-//void UGraphicsOption::OnUnhoveredBrightButton()
-//{
-//	BrightButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//}
 
 // 안티 앨리어싱 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickAntiAliasingButton()
@@ -463,12 +380,6 @@ void UGraphicsOption::OnHoveredAntiAliasingButton()
 	}
 }
 
-// Deprecated
-//void UGraphicsOption::OnUnhoveredAntiAliasingButton()
-//{
-//	AntiAliasingButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//}
-
 // 그림자 설정 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickShadowButton()
 {
@@ -519,12 +430,6 @@ void UGraphicsOption::OnHoveredShadowButton()
 		UpdateButtonSlate();
 	}
 }
-
-// Deprecated
-//void UGraphicsOption::OnUnhoveredShadowButton()
-//{
-//	ShadowButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//}
 
 // 모션블러 설정 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickMotionBlurButton()
@@ -589,12 +494,6 @@ void UGraphicsOption::OnHoveredMotionBlurButton()
 	}
 }
 
-// deprecated
-//void UGraphicsOption::OnUnhoveredMotionBlurButton()
-//{
-//	MotionBlurButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//}
-
 // Resolution Menu
 // 1번 해상도(854x450) 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickResolution1Button()
@@ -618,14 +517,6 @@ void UGraphicsOption::OnClickResolution1Button()
 			UserSetting->ApplyResolutionSettings(true);
 			UserSetting->SaveSettings();
 		}
-		/*bResolution1 = true;
-		bResolution2 = false;
-		bResolution3 = false;
-		bResolution4 = false;
-		bResolution5 = false;
-		bResolution6 = false;
-		bResolution7 = false;
-		bResolution8 = false;*/
 
 		ResolutionValue = EResolution::Resolution1;
 
@@ -652,19 +543,6 @@ void UGraphicsOption::OnHoveredResolution1Button()
 	}
 }
 
-// deprecated
-//void UGraphicsOption::OnUnhoveredResolution1Button()
-//{
-//	if (bResolution1)
-//	{
-//		Resolution1Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-//	}
-//	else
-//	{
-//		Resolution1Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//	}
-//}
-
 // 2번 해상도(1366x768) 설정 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickResolution2Button()
 {
@@ -687,14 +565,6 @@ void UGraphicsOption::OnClickResolution2Button()
 			UserSetting->ApplyResolutionSettings(true);
 			UserSetting->SaveSettings();
 		}
-		/*bResolution1 = false;
-		bResolution2 = true;
-		bResolution3 = false;
-		bResolution4 = false;
-		bResolution5 = false;
-		bResolution6 = false;
-		bResolution7 = false;
-		bResolution8 = false;*/
 
 		ResolutionValue = EResolution::Resolution2;
 
@@ -721,19 +591,6 @@ void UGraphicsOption::OnHoveredResolution2Button()
 	}
 }
 
-// Deprecated
-//void UGraphicsOption::OnUnhoveredResolution2Button()
-//{
-//	if (bResolution2)
-//	{
-//		Resolution2Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-//	}
-//	else
-//	{
-//		Resolution2Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//	}
-//}
-
 // 3번 해상도(1600x900) 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickResolution3Button()
 {
@@ -756,14 +613,6 @@ void UGraphicsOption::OnClickResolution3Button()
 			UserSetting->ApplyResolutionSettings(true);
 			UserSetting->SaveSettings();
 		}
-		/*bResolution1 = false;
-		bResolution2 = false;
-		bResolution3 = true;
-		bResolution4 = false;
-		bResolution5 = false;
-		bResolution6 = false;
-		bResolution7 = false;
-		bResolution8 = false;*/
 
 		ResolutionValue = EResolution::Resolution3;
 
@@ -790,19 +639,6 @@ void UGraphicsOption::OnHoveredResolution3Button()
 	}
 }
 
-// Deprecated
-//void UGraphicsOption::OnUnhoveredResolution3Button()
-//{
-//	if (bResolution3)
-//	{
-//		Resolution3Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-//	}
-//	else
-//	{
-//		Resolution3Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//	}
-//}
-
 // 4번 해상도(1920x1080) 버튼을 클릭했을 때 적용할 함수.
 void UGraphicsOption::OnClickResolution4Button()
 {
@@ -825,15 +661,6 @@ void UGraphicsOption::OnClickResolution4Button()
 			UserSetting->ApplyResolutionSettings(true);
 			UserSetting->SaveSettings();
 		}
-
-		/*bResolution1 = false;
-		bResolution2 = false;
-		bResolution3 = false;
-		bResolution4 = true;
-		bResolution5 = false;
-		bResolution6 = false;
-		bResolution7 = false;
-		bResolution8 = false;*/
 
 		ResolutionValue = EResolution::Resolution4;
 
@@ -860,19 +687,6 @@ void UGraphicsOption::OnHoveredResolution4Button()
 	}
 }
 
-// Deprecated
-//void UGraphicsOption::OnUnhoveredResolution4Button()
-//{
-//	if (bResolution4)
-//	{
-//		Resolution4Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-//	}
-//	else
-//	{
-//		Resolution4Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//	}
-//}
-
 // 5번 해상도(1280x800) 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickResolution5Button()
 {
@@ -895,15 +709,6 @@ void UGraphicsOption::OnClickResolution5Button()
 			UserSetting->ApplyResolutionSettings(true);
 			UserSetting->SaveSettings();
 		}
-
-		/*bResolution1 = false;
-		bResolution2 = false;
-		bResolution3 = false;
-		bResolution4 = false;
-		bResolution5 = true;
-		bResolution6 = false;
-		bResolution7 = false;
-		bResolution8 = false;*/
 
 		ResolutionValue = EResolution::Resolution5;
 
@@ -930,19 +735,6 @@ void UGraphicsOption::OnHoveredResolution5Button()
 	}
 }
 
-// Deprecated
-//void UGraphicsOption::OnUnhoveredResolution5Button()
-//{
-//	if (bResolution5)
-//	{
-//		Resolution5Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-//	}
-//	else
-//	{
-//		Resolution5Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//	}
-//}
-
 // 6번 해상도(1920x1200) 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickResolution6Button()
 {
@@ -965,15 +757,6 @@ void UGraphicsOption::OnClickResolution6Button()
 			UserSetting->ApplyResolutionSettings(true);
 			UserSetting->SaveSettings();
 		}
-
-		/*bResolution1 = false;
-		bResolution2 = false;
-		bResolution3 = false;
-		bResolution4 = false;
-		bResolution5 = false;
-		bResolution6 = true;
-		bResolution7 = false;
-		bResolution8 = false;*/
 
 		ResolutionValue = EResolution::Resolution6;
 
@@ -1000,19 +783,6 @@ void UGraphicsOption::OnHoveredResolution6Button()
 	}
 }
 
-// Deprecated
-//void UGraphicsOption::OnUnhoveredResolution6Button()
-//{
-//	if (bResolution6)
-//	{
-//		Resolution6Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-//	}
-//	else
-//	{
-//		Resolution6Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//	}
-//}
-
 // 7번 해상도(2560x1080) 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickResolution7Button()
 {
@@ -1035,15 +805,6 @@ void UGraphicsOption::OnClickResolution7Button()
 			UserSetting->ApplyResolutionSettings(true);
 			UserSetting->SaveSettings();
 		}
-
-		/*bResolution1 = false;
-		bResolution2 = false;
-		bResolution3 = false;
-		bResolution4 = false;
-		bResolution5 = false;
-		bResolution6 = false;
-		bResolution7 = true;
-		bResolution8 = false;*/
 
 		ResolutionValue = EResolution::Resolution7;
 
@@ -1070,19 +831,6 @@ void UGraphicsOption::OnHoveredResolution7Button()
 	}
 }
 
-// Deprecated
-//void UGraphicsOption::OnUnhoveredResolution7Button()
-//{
-//	if (bResolution7)
-//	{
-//		Resolution7Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-//	}
-//	else
-//	{
-//		Resolution7Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//	}
-//}
-
 // 8번 해상도(3440x1440) 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickResolution8Button()
 {
@@ -1105,15 +853,6 @@ void UGraphicsOption::OnClickResolution8Button()
 			UserSetting->ApplyResolutionSettings(true);
 			UserSetting->SaveSettings();
 		}
-
-		/*bResolution1 = false;
-		bResolution2 = false;
-		bResolution3 = false;
-		bResolution4 = false;
-		bResolution5 = false;
-		bResolution6 = false;
-		bResolution7 = false;
-		bResolution8 = true;*/
 
 		ResolutionValue = EResolution::Resolution8;
 
@@ -1139,88 +878,6 @@ void UGraphicsOption::OnHoveredResolution8Button()
 		UpdateButtonSlate();
 	}
 }
-
-// Deprecated
-//void UGraphicsOption::OnUnhoveredResolution8Button()
-//{
-//	if (bResolution8)
-//	{
-//		Resolution8Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-//	}
-//	else
-//	{
-//		Resolution8Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//	}
-//}
-
-// DEPRECATED
-//void UGraphicsOption::OnClickResolution9Button()
-//{
-//	int32 x = 1600, y = 900;
-//	UGameUserSettings* UserSetting = nullptr;
-//	if (GEngine)
-//		UserSetting = GEngine->GetGameUserSettings();
-//	if (UserSetting) 
-//	{
-//		UserSetting->SetScreenResolution(FIntPoint(x, y));
-//		UserSetting->ApplyResolutionSettings(true);
-//	}
-//}
-//
-//void UGraphicsOption::OnHoveredResolution9Button()
-//{
-//	if (CurrentMode == GraphicsType::Resolution)
-//	{
-//		SubMenuNavIndex = 8;
-//		UpdateButtonSlate();
-//	}
-//}
-//
-//void UGraphicsOption::OnUnhoveredResolution9Button()
-//{
-//	if (bResolution9)
-//	{
-//		Resolution9Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-//	}
-//	else
-//	{
-//		Resolution9Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//	}
-//}
-//
-//void UGraphicsOption::OnClickResolution10Button()
-//{
-//	int32 x = 1920, y = 1080;
-//	UGameUserSettings* UserSetting = nullptr;
-//	if (GEngine)
-//		UserSetting = GEngine->GetGameUserSettings();
-//	if (UserSetting)
-//	{
-//		UserSetting->SetScreenResolution(FIntPoint(x, y));
-//		UserSetting->ApplyResolutionSettings(true);
-//	}
-//}
-//
-//void UGraphicsOption::OnHoveredResolution10Button()
-//{
-//	if (CurrentMode == GraphicsType::Resolution)
-//	{
-//		SubMenuNavIndex = 9;
-//		UpdateButtonSlate();
-//	}
-//}
-//
-//void UGraphicsOption::OnUnhoveredResolution10Button()
-//{
-//	if (bResolution10)
-//	{
-//		Resolution10Button->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-//	}
-//	else
-//	{
-//		Resolution10Button->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//	}
-//}
 
 // 창모드 설정 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickWindowedButton()
@@ -1265,50 +922,6 @@ void UGraphicsOption::OnHoveredWindowedButton()
 		UpdateButtonSlate();
 	}
 }
-
-// Deprecated
-//void UGraphicsOption::OnUnhoveredWindowedButton()
-//{
-//	if (bWindowed)
-//	{
-//		WindowButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-//	}
-//	else
-//	{
-//		WindowButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//	}
-//}
-
-// DEPRECATED
-//void UGraphicsOption::OnClickWinFullButton()
-//{
-//	UGameUserSettings* UserSetting = nullptr;
-//	if (GEngine)
-//		UserSetting = GEngine->GetGameUserSettings();
-//	if (UserSetting)
-//		UserSetting->SetFullscreenMode(EWindowMode::WindowedFullscreen);
-//}
-//
-//void UGraphicsOption::OnHoveredWinFullButton()
-//{
-//	if (CurrentMode == GraphicsType::Window)
-//	{
-//		SubMenuNavIndex = 1;
-//		UpdateButtonSlate();
-//	}
-//}
-//
-//void UGraphicsOption::OnUnhoveredWinFullButton()
-//{
-//	if (bWinFull)
-//	{
-//		WinFullButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-//	}
-//	else
-//	{
-//		WinFullButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//	}
-//}
 
 // 전체 화면 버튼을 클릭했을 때 작동할 함수.
 void UGraphicsOption::OnClickFullScreenButton()
@@ -1356,19 +969,6 @@ void UGraphicsOption::OnHoveredFullScreenButton()
 	}
 }
 
-// Deprecated
-//void UGraphicsOption::OnUnhoveredFullScreenButton()
-//{
-//	if (bFullScreen)
-//	{
-//		FullScreenButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-//	}
-//	else
-//	{
-//		FullScreenButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//	}
-//}
-
 // 밝기를 설정하는 함수.
 void UGraphicsOption::SetBrightness(float Value)
 {
@@ -1388,7 +988,7 @@ void UGraphicsOption::SetBrightness(float Value)
 	BrightBar->SetPercent(Brightness / 5.f);
 
 	// 밝기 설정 커맨드
-	FString CVarGamma = TEXT("gamma ") + FString::Printf(TEXT("%f"), Brightness);
+	//FString CVarGamma = TEXT("gamma ") + FString::Printf(TEXT("%f"), Brightness);
 
 	// 게임 인스턴스 클래스를 가져옴.
 	if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
@@ -1399,16 +999,7 @@ void UGraphicsOption::SetBrightness(float Value)
 		// 저장에 성공하면, 게임에 적용함.
 		if (Result)
 		{
-			// UGameplayStatics::GetActorOfClass(GetWorld(), APostProcessVolume::StaticClass());
-			APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-			if (PlayerController)
-			{
-				PlayerController->ConsoleCommand(CVarGamma);
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("No Player Controller!"));
-			}
+			
 		}
 		// 저장에 실패할 경우 로직
 		else
@@ -1453,12 +1044,6 @@ void UGraphicsOption::OnHoveredBackButton()
 		UpdateButtonSlate();
 	}
 }
-
-// Deprecated
-//void UGraphicsOption::OnUnhoveredBackButton()
-//{
-//	BackButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//}
 
 // 버튼의 상태를 업데이트하는 함수.
 void UGraphicsOption::UpdateButtonSlate()
@@ -1655,8 +1240,6 @@ void UGraphicsOption::SelectWindowMode(bool bWindowedMode, bool bFullScreenMode,
 	}
 }
 
-//void UGraphicsOption::SelectResolutionMode(bool bResolution1Mode, bool bResolution2Mode, bool bResolution3Mode, bool bResolution4Mode,
-//	bool bResolution5Mode, bool bResolution6Mode, bool bResolution7Mode, bool bResolution8Mode, int32 CurrentIndex)
 // 해상도 설정 값에 따라 버튼의 상태를 업데이트하는 함수.
 void UGraphicsOption::SelectResolutionMode(EResolution inResolutionValue, int32 CurrentIndex)
 {
@@ -1919,15 +1502,6 @@ void UGraphicsOption::SetCurrentMode(GraphicsType ModeType)
 // 현재 해상도를 확인하는 함수.
 void UGraphicsOption::CheckCurrentResolution(const FString ForCheckResolution)
 {
-	/*bResolution1 = false;
-	bResolution2 = false;
-	bResolution3 = false;
-	bResolution4 = false;
-	bResolution5 = false;
-	bResolution6 = false;
-	bResolution7 = false;
-	bResolution8 = false;*/
-
 	// 해당하는 해상도 값에 따라 현재 해상도 값을 설정해줌.
 	if (ForCheckResolution.Equals(TEXT("854x480")))
 	{

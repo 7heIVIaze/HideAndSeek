@@ -37,7 +37,7 @@ void AFlashLight_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	Super::OnInteract(Player);
 
 	// 플레이어의 플래시 라이트를 얻는 메서드를 호출함.
-	Player->AddFlashLight();
+	//Player->AddFlashLight();
 
 	// 위 메서드를 통해 플레이어가 아이템을 얻을 수 있는 상태이면
 	if (Player->bCanItemGet)
@@ -58,7 +58,8 @@ void AFlashLight_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	}
 }
 
-void AFlashLight_cpp::UseInteract(class AHorrorGameCharacter* Player)
+bool AFlashLight_cpp::UseInteract(class AHorrorGameCharacter* Player)
 {
 	Super::UseInteract(Player);
+	return false;
 }

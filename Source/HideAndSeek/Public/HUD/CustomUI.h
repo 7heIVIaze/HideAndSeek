@@ -22,9 +22,14 @@ protected:
 public:
 	//UCustomUI(const FObjectInitializer& ObjectInitializer);
 
+	UFUNCTION(BlueprintCallable)
 	virtual void AllWidgetInit() {};
 
+	UFUNCTION(BlueprintCallable)
 	virtual void Init() {};
+
+	UFUNCTION(BlueprintCallable)
+	virtual void Refresh() {};
 
 public:
 	AHorrorGameCharacter* Player;

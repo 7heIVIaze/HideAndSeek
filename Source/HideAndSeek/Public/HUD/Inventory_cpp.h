@@ -18,7 +18,7 @@ public:
 //	UInventory_cpp(const FObjectInitializer& ObjectInitializer);
 
 	void Init() override;
-	void Use(int index);
+	void Use(int index) {};
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

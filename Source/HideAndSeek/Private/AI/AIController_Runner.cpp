@@ -110,7 +110,8 @@ void AAIController_Runner::OnTargetDetected(AActor* Actor, FAIStimulus const Sti
 			// 그것이 아닌 경우엔 감지된 것으로 확정
 			else
 			{
-				if (player->bIsCigarLightOn || player->bIsFlashLightOn) // 라이터든 플래시든 켰을 때만 감지
+				//if (player->bIsCigarLightOn || player->bIsFlashLightOn) // 라이터든 플래시든 켰을 때만 감지
+				if (player->bIsLightOn) // 라이터든 플래시든 켰을 때만 감지
 				{
 					// GetBlackboard()->SetValueAsBool(CanSeePlayer, true);
 

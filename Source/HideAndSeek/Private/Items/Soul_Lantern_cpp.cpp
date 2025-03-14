@@ -82,7 +82,7 @@ void ASoul_Lantern_cpp::OnInteract(class AHorrorGameCharacter* Player)
 	Super::OnInteract(Player);
 
 	// 플레이어의 랜턴을 얻는 메서드를 호출함.
-	Player->AddLantern();
+	//Player->AddLantern();
 
 	// 위 메서드를 통해 플레이어가 아이템을 얻을 수 있는 상태이면
 	if (Player->bCanItemGet)
@@ -104,13 +104,13 @@ void ASoul_Lantern_cpp::OnInteract(class AHorrorGameCharacter* Player)
 }
 
 // 플레이어가 영혼 랜턴 아이템을 사용할 때 작동할 함수.
-void ASoul_Lantern_cpp::UseInteract(class AHorrorGameCharacter* Player)
+bool ASoul_Lantern_cpp::UseInteract(class AHorrorGameCharacter* Player)
 {
 	Super::UseInteract(Player);
 	
 	// 빛이 나는 지를 현재 값을 반전시켜 저장하고, 플레이어에게도 저장함.
 	bIsLightOn = !bIsLightOn;
-	Player->bLanternOn = bIsLightOn;
+	//Player->bLanternOn = bIsLightOn;
 	UE_LOG(LogTemp, Warning, TEXT("Player: LanternOn : %s"), bIsLightOn ? TEXT("true") : TEXT("false"));
 	
 	// 빛을 낼 경우, 소리를 재생하고 나이아가라 시스템을 활성화함.
@@ -131,6 +131,8 @@ void ASoul_Lantern_cpp::UseInteract(class AHorrorGameCharacter* Player)
 
 	// 그 후 라이트 컴포넌트를 켜거나 끔
 	Light->SetVisibility(bIsLightOn);
+
+	return false;
 }
 
 // 플레이어가 숨어있는 경우, 숨어있는 오브젝트 안에서 호출할 함수.

@@ -51,7 +51,7 @@ void ATimer_cpp::OnInteract(class AHorrorGameCharacter* Player) // Player Click 
 	Super::OnInteract(Player);
 
 	// 플레이어의 타이머를 얻는 메서드를 호출함.
-	Player->AddTimer();
+	//Player->AddTimer();
 
 	// 위 메서드를 통해 플레이어가 아이템을 얻을 수 있는 상태이면
 	if (Player->bCanItemGet)
@@ -72,7 +72,7 @@ void ATimer_cpp::OnInteract(class AHorrorGameCharacter* Player) // Player Click 
 	}
 }
 
-void ATimer_cpp::UseInteract(class AHorrorGameCharacter* Player)
+bool ATimer_cpp::UseInteract(class AHorrorGameCharacter* Player)
 {
-	Super::UseInteract(Player);
+	return Super::UseInteract(Player);
 }
