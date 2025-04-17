@@ -49,15 +49,15 @@ void UGameUI::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 	Super::NativeTick(MyGeometry, InDeltaTime);
 	
 	// 현재 스테미너의 잔량이 100%일 경우, 스태미너 위젯을 안보이게 함.
-	if (StaminaWidget->GetStamina() >= 1.0f)
-	{
-		StaminaWidget->SetVisibility(ESlateVisibility::Collapsed);
-	}
-	// 100%가 아닐 경우, 위젯을 보이게 설정함.
-	else
-	{
-		StaminaWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
-	}
+	//if (StaminaWidget->GetStamina() >= 1.0f)
+	//{
+	//	StaminaWidget->SetVisibility(ESlateVisibility::Collapsed);
+	//}
+	//// 100%가 아닐 경우, 위젯을 보이게 설정함.
+	//else
+	//{
+	//	StaminaWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
+	//}
 
 	//// 플레이어가 플래시 라이트를 선택한 상태라면, 배터리 위젯을 보이게 함.
 	//if (BatteryVisible)
@@ -104,7 +104,7 @@ void UGameUI::AllWidgetInit()
 	SetInteractDotExplainText(NSLOCTEXT("UGameUI", "None", ""));
 	SetInteractDot(false);
 	//GameUIWidget->SetBaseInterface(true);
-	SetStaminaHUD(400);
+	//SetStaminaHUD(400);
 	//SetBatteryWidget(false);
 	/*SetCutterHUD(5);
 	SetCutterWidget(false);
@@ -262,13 +262,13 @@ UTimerWidget* UGameUI::GetTimerWidget() const
 }
 
 // 스테미너 위젯의 스테미너 양을 설정할 함수.
-void UGameUI::SetStaminaHUD(int32 iValue)
-{
-	if (IsValid(StaminaWidget))
-	{
-		StaminaWidget->SetStamina(iValue);
-	}
-}
+//void UGameUI::SetStaminaHUD(int32 iValue)
+//{
+//	if (IsValid(StaminaWidget))
+//	{
+//		StaminaWidget->SetStamina(iValue);
+//	}
+//}
 
 //// 배터리 위젯의 배터리 잔량을 설정할 함수.
 //void UGameUI::SetBatteryHUD(int32 iValue)

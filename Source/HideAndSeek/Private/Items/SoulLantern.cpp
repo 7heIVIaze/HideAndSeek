@@ -73,6 +73,7 @@ void ASoulLantern::SetupLightComponent()
 	LightComponent = CreateDefaultSubobject<UPointLightComponent>(TEXT("LightComponent"));
 
 	UPointLightComponent* PointLight = Cast<UPointLightComponent>(LightComponent);
+	LightComponent->SetupAttachment(RootComp);
 
 	if (PointLight)
 	{

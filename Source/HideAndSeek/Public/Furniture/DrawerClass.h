@@ -39,10 +39,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Drawer")
 	TArray<TObjectPtr<UStaticMesh>> DrawerMeshes;
 
-	UPROPERTY(VisibleAnywhere, Category = "Drawer")
+	UPROPERTY(EditAnywhere, Category = "Drawer")
 	FTimeline OpenAndCloseTimeline; // Create TimeLine 
 
-	UPROPERTY(VisibleAnywhere, Category = Drawer)
+	UPROPERTY(EditAnywhere, Category = Drawer)
 	UCurveFloat* OpenAndCloseCurveFloat; // Timeline Curve
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Drawer")

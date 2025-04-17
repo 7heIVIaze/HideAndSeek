@@ -11,6 +11,7 @@
 #include "Widgets/SCompoundWidget.h"
 #include "LevelManager/PatrolPoint_cpp.h"
 #include "ComponentAction/HorrorGameSaveGame.h"
+#include "AI/CreatureClass.h"
 //#include "OnlineSubsystem.h"
 //#include "SteamNetDriver.h"
 //#include "OnlineSubsystemSteam.h"
@@ -609,4 +610,57 @@ float UHorrorGameGameInstance::GetHPLossRate() const
 			return 1.0f;
 		}
 	}
+}
+
+bool UHorrorGameGameInstance::GetIsYokaiFirstDied(const EYokaiType YokaiType)
+{
+	switch (YokaiType)
+	{
+		case EYokaiType::Reaper:
+		{
+			return SaveData->CollectArchives.CatchedByReaper;
+		}
+		case EYokaiType::Brute:
+		{
+			return SaveData->CollectArchives.CatchedByBrute;
+		}
+		case EYokaiType::Runner:
+		{
+			return SaveData->CollectArchives.CatchedByRunner;
+		}
+		case EYokaiType::Shadow:
+		{
+			return SaveData->CollectArchives.CatchedByShadow;
+		}
+	}
+
+	return false;
+}
+
+void UHorrorGameGameInstance::SaveYokaiArchives(const EYokaiType YokaiType)
+{
+	switch (YokaiType)
+	{
+		case EYokaiType::Reaper:
+		{
+			SaveData->CollectArchives.CatchedByReaper = true;
+			break;
+		}
+		case EYokaiType::Brute:
+		{
+			SaveData->CollectArchives.CatchedByBrute = true;
+			break;
+		}
+		case EYokaiType::Runner:
+		{
+			SaveData->CollectArchives.CatchedByRunner = true;
+			break;
+		}
+		case EYokaiType::Shadow:
+		{
+			SaveData->CollectArchives.CatchedByShadow = true;
+			break;
+		}
+	}
+	SaveData->SaveData();
 }

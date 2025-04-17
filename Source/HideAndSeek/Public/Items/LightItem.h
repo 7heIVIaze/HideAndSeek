@@ -48,6 +48,9 @@ protected:
 	virtual void SetupLightComponent() PURE_VIRTUAL(ALightItem::LightComponent, );
 
 public:
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Light)
+	TObjectPtr<USceneComponent> RootComp;
+
 	// 조명 컴포넌트로 선언함 : 랜턴/라이터: PointLightComponent, 손전등: SpotLightComponent.
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Light)
 	TObjectPtr<class ULightComponent> LightComponent;
@@ -56,7 +59,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Sound)
 	TObjectPtr<class UAudioComponent> AudioComponent;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Sound)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Sound)
 	TObjectPtr<class USoundCue> TurnoffSoundCue;
 
 	// 조명이 켜져있는가?

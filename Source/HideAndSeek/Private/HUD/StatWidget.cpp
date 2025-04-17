@@ -46,8 +46,12 @@ bool UStatWidget::InitializeWidget(UPlayerStatComponent* StatComponent)
 	{
 		// Bind the delegate.
 		StatComponent->OnHealthPointChanged.AddDynamic(this, &UStatWidget::UpdateHPBar);
+		StatComponent->OnStaminaChanged.AddDynamic(this, &UStatWidget::UpdateStaminaBar);
+		StatComponent->OnPanicChanged.AddDynamic(this, &UStatWidget::UpdatePanicBar);
 
 		UpdateHPBar(StatComponent->CurrentHP);
+		UpdateStaminaBar(StatComponent->Stamina);
+		UpdatePanicBar(StatComponent->ConfusionPoint);
 
 		return true;
 	}
@@ -76,6 +80,24 @@ void UStatWidget::UpdateHPBar(float NewHP)
 		FString HPString = FString::Printf(TEXT("%d/100"), HP);
 
 		HPText->SetText(FText::FromString(HPString));
+	}
+}
+
+void UStatWidget::UpdateStaminaBar(int32 NewStaminaGuage)
+{
+	if (StaminaBar)
+	{
+		float StaminaPercent = (float)NewStaminaGuage / 400.0f; // Max Stamina is 400.0f
+		StaminaBar->SetPercent(StaminaPercent);
+	}
+}
+
+void UStatWidget::UpdatePanicBar(float NewPanicGuage)
+{
+	if (PanicBar)
+	{
+		float PanicPercent = NewPanicGuage / 100.0f; // Max PanicGuage is 100.0f
+		PanicBar->SetPercent(PanicPercent);
 	}
 }
 

@@ -79,6 +79,7 @@ void ACigarLighter::SetupLightComponent()
 	LightComponent->SetupAttachment(RootComponent);
 
 	UPointLightComponent* PointLight = Cast<UPointLightComponent>(LightComponent);
+	LightComponent->SetupAttachment(RootComp);
 
 	if (PointLight)
 	{

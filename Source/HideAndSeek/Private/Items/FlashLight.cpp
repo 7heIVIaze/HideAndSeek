@@ -50,6 +50,7 @@ void AFlashLight::SetupLightComponent()
 	LightComponent->SetupAttachment(RootComponent);
 
 	USpotLightComponent* SpotLight = Cast<USpotLightComponent>(LightComponent);
+	LightComponent->SetupAttachment(RootComp);
 
 	if (SpotLight)
 	{

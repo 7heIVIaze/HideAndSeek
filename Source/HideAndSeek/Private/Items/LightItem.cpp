@@ -17,8 +17,12 @@ ALightItem::ALightItem()
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
+	RootComponent = RootComp;
+
 	LightComponent = nullptr;
 	AudioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComp"));
+	AudioComponent->SetupAttachment(RootComp);
 	bIsLightOn = false;
 }
 

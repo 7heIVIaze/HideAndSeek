@@ -25,29 +25,8 @@
 #include "Components/SpotLightComponent.h"
 #include "HUD/InteractDot_cpp.h"
 #include "AI/CreatureClass.h"
-//#include "AI/Reaper_cpp.h"
-//#include "AI/Runner_cpp.h"
-//#include "AI/Brute_cpp.h"
 #include "Player/HorrorGamePlayerController.h"
 #include "HUD/GameUI.h"
-//#include "Furniture/SwitchLever.h"
-//#include "Furniture/WardrobeDrawer_cpp.h"
-//#include "Furniture/Wardrobe_cpp.h"
-//#include "Furniture/DrawerClass.h"
-//#include "Furniture/Cabinet_cpp.h"
-//#include "Furniture/ClassroomDoorActor_cpp.h"
-//#include "Furniture/ClassroomDoors_cpp.h"
-//#include "Furniture/LockerDoorActor_cpp.h"
-//#include "Furniture/DistributionBox.h"
-//#include "Furniture/Paper.h"
-//#include "Furniture/MetalDoor_cpp.h"
-//#include "Furniture/DeskDrawer_cpp.h"
-//#include "Furniture/End_Mirror.h"
-//#include "Furniture/HangingLight.h"
-//#include "Furniture/Alarm.h"
-//#include "Furniture/DrawerClass.h"
-//#include "Furniture/LightSwitch.h"
-//#include "Furniture/Altar_cpp.h"
 #include "Furniture/HideObject.h"
 #include "Furniture/DoorClass.h"
 #include "Items/ItemClass.h"
@@ -114,14 +93,14 @@ AHorrorGameCharacter::AHorrorGameCharacter()
 	FirstPersonCameraComponent->SetRelativeLocation(FVector(-10.f, 0.f, 60.f)); // Position the camera
 	FirstPersonCameraComponent->bUsePawnControlRotation = true;
 
-	// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
-	Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
-	Mesh1P->SetOnlyOwnerSee(false);
-	Mesh1P->SetupAttachment(FirstPersonCameraComponent);
-	Mesh1P->bCastDynamicShadow = false;
-	Mesh1P->CastShadow = false;
-	//Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
-	Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
+	//// Create a mesh component that will be used when being viewed from a '1st person' view (when controlling this pawn)
+	//Mesh1P = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("CharacterMesh1P"));
+	//Mesh1P->SetOnlyOwnerSee(false);
+	//Mesh1P->SetupAttachment(FirstPersonCameraComponent);
+	//Mesh1P->bCastDynamicShadow = false;
+	//Mesh1P->CastShadow = false;
+	////Mesh1P->SetRelativeRotation(FRotator(0.9f, -19.19f, 5.2f));
+	//Mesh1P->SetRelativeLocation(FVector(-30.f, 0.f, -150.f));
 
 	SpringArmComp = CreateEditorOnlyDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArmComp->SetupAttachment(GetCapsuleComponent());
@@ -146,22 +125,22 @@ AHorrorGameCharacter::AHorrorGameCharacter()
 		MoveAction = IA_Move.Object;
 
 	CigarlighterComp = CreateDefaultSubobject<UChildActorComponent>(TEXT("Cigarlighter"));
-	CigarlighterComp->SetupAttachment(GetMesh());
+	CigarlighterComp->SetupAttachment(FirstPersonCameraComponent);
 
 	FlashlightComp = CreateDefaultSubobject<UChildActorComponent>(TEXT("Flashlight"));
 	FlashlightComp->SetupAttachment(SpringArmComp);
 
 	LanternComp = CreateDefaultSubobject<UChildActorComponent>(TEXT("Lantern"));
-	LanternComp->SetupAttachment(GetMesh());
+	LanternComp->SetupAttachment(FirstPersonCameraComponent);
 
 	MirrorComp = CreateDefaultSubobject<UChildActorComponent>(TEXT("Mirror"));
-	MirrorComp->SetupAttachment(SpringArmComp);
+	MirrorComp->SetupAttachment(FirstPersonCameraComponent);
 
 	SwordComp = CreateDefaultSubobject<UChildActorComponent>(TEXT("Sword"));
-	SwordComp->SetupAttachment(GetMesh());
+	SwordComp->SetupAttachment(GetMesh(), TEXT("hand_r_socket"));
 	
 	FEComp = CreateDefaultSubobject<UChildActorComponent>(TEXT("FireExtinguisher"));
-	FEComp->SetupAttachment(SpringArmComp);
+	FEComp->SetupAttachment(FirstPersonCameraComponent);
 
 	// 스켈레탈 메시의 그림자 여부는 다 없앰.
 	GetMesh()->SetOnlyOwnerSee(false);
@@ -3725,6 +3704,8 @@ void AHorrorGameCharacter::SetPlayerStatus(EPlayerStatus PlayerStatus)
 				{
 					GameUIWidget->SetTimerStop(true);
 				}
+
+				GetStatComponent()->TakeDamage(GetStatComponent()->MaxHP);
 				//HorrorGamePlayerController->ShowDeadUI();
 
 				//if (HorrorGamePlayerController != nullptr)

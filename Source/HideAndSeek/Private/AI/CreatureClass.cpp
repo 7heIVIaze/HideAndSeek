@@ -1,7 +1,6 @@
 // CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 // 이 클래스는 적 개체만을 모아놓기 위한 클래스임.
-
 #include "AI/CreatureClass.h"
 #include "Components/InputComponent.h"
 #include "Components/PointLightComponent.h"
@@ -28,6 +27,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "NiagaraComponent.h"
 #include "ComponentAction/HorrorGameSaveGame.h"
+#include "LevelManager/HorrorGameGameInstance.h"
 
 // Sets default values
 ACreatureClass::ACreatureClass()
@@ -537,15 +537,18 @@ void ACreatureClass::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 					PlayerCharacter->SetPlayerStatus(EPlayerStatus::Catched);
 
 					// 추가로 SaveGame 파일을 불러와서
-					if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
+					//if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
+					if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(GetGameInstance()))
 					{
 						// 플레이어가 처음 Runner에게 잡힌 것이라면
-						if (!SaveData->CollectArchives.CatchedByBrute)
+						//if (!SaveData->CollectArchives.CatchedByBrute)
+						if (!GameInstance->GetIsYokaiFirstDied(YokaiType))
 						{
 							// Runner에게 잡혔다고 설정하고, SetArchiveGetText 메서드를 통해 Runner의 문서가 추가되었다고 알림.
-							SaveData->CollectArchives.CatchedByBrute = true;
+							//SaveData->CollectArchives.CatchedByBrute = true;
+							//SaveData->SaveData();
 							PlayerCharacter->SetArchiveGetText(NSLOCTEXT("ACreatureClass", "Kill_By_Runner", "Runner\nis added in archive"));
-							SaveData->SaveData();
+							GameInstance->SaveYokaiArchives(YokaiType);
 						}
 					}
 

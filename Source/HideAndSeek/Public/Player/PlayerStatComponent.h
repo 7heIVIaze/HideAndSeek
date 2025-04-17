@@ -24,6 +24,8 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, CurrentHeal
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStaminaChanged, int32, CurrentStaminaPoint);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnStaminaOver);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnPanicChanged, float, CurrentPanicPoint);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnPanicStart);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class HIDEANDSEEK_API UPlayerStatComponent : public UActorComponent
@@ -115,4 +117,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Event)
 	FOnStaminaOver OnStaminaOver;
 
+	// 착란 게이지 변화 이벤트
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Event)
+	FOnPanicChanged OnPanicChanged;
+
+	// 착란 시작 이벤트
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Event)
+	FOnPanicStart OnPanicStart;
 };

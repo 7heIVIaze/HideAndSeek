@@ -28,6 +28,8 @@ void AGlowStick::SetLightOn()
 	{
 		UGameplayStatics::PlaySoundAtLocation(this, UseSound, GetActorLocation());
 	}
+
+	GlowLightComp->SetVisibility(true);
 }
 
 //bool AGlowStick::UseItem()

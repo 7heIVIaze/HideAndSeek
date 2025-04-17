@@ -8,6 +8,8 @@
 #include "Components/TimelineComponent.h"
 #include "CreatureClass.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnKillPlayer, FText, Reason);
+
 UENUM(BlueprintType)
 enum class Creature_Status : uint8
 {
@@ -16,6 +18,17 @@ enum class Creature_Status : uint8
 	Catched UMETA(DisplayName = "Catched"),
 	Died UMETA(DisplayName = "Died"),
 };
+
+UENUM(BlueprintType)
+enum class EYokaiType : uint8
+{
+	None UMETA(DisplayName = "None"),
+	Reaper UMETA(DisplayName = "Reaper"),
+	Runner UMETA(DisplayName = "Runner"),
+	Brute UMETA(DisplayName = "Brute"),
+	Shadow UMETA(DisplayName = "Shadow"),
+};
+
 
 UCLASS()
 class HIDEANDSEEK_API ACreatureClass : public ACharacter
@@ -209,6 +222,15 @@ public:
 
 	// 플레이어가 숨어있는 캐비닛/옷장
 	class AHideObject* PlayerHidingObject;
+
+	// 타입
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Type)
+	EYokaiType YokaiType;
+
+	// 처음 플레이어를 처치한 경우, 문서 보관 텍스트를 출력할 이벤트
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Event)
+	FOnKillPlayer OnKillPlayer;
+
 private:
 	UPROPERTY()
 	bool bIsStop = false; // 문을 여는 동작으로 인하여 멈추는지 확인

@@ -55,7 +55,7 @@ void UTP_WeaponComponent::Fire()
 	if (FireAnimation != nullptr)
 	{
 		// Get the animation object for the arms mesh
-		UAnimInstance* AnimInstance = Character->GetMesh1P()->GetAnimInstance();
+		UAnimInstance* AnimInstance = Character->GetMesh()->GetAnimInstance();
 		if (AnimInstance != nullptr)
 		{
 			AnimInstance->Montage_Play(FireAnimation, 1.f);
@@ -73,7 +73,7 @@ void UTP_WeaponComponent::AttachWeapon(AHorrorGameCharacter* TargetCharacter)
 
 	// Attach the weapon to the First Person Character
 	FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
-	AttachToComponent(Character->GetMesh1P(), AttachmentRules, FName(TEXT("GripPoint")));
+	AttachToComponent(Character->GetMesh(), AttachmentRules, FName(TEXT("GripPoint")));
 	
 	// switch bHasRifle so the animation blueprint can switch to another animation set
 	//Character->SetHasRifle(true);

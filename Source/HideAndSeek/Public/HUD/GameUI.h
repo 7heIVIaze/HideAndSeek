@@ -55,8 +55,8 @@ public:
 	//UFUNCTION(BlueprintCallable)
 	//	void SetBaseInterface(bool Value);
 
-	UFUNCTION(BlueprintCallable)
-	void SetStaminaHUD(int32 iValue);
+	//UFUNCTION(BlueprintCallable)
+	//void SetStaminaHUD(int32 iValue);
 
 	//UFUNCTION(BlueprintCallable)
 	//void SetBatteryHUD(int32 iValue);
@@ -100,8 +100,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI", meta = (BindWidget))
 	TObjectPtr<class UInventoryWidget> InventoryWidget;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), meta = (BindWidget))
-	TObjectPtr<class UStaminaWidget> StaminaWidget;
+	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), meta = (BindWidget))
+	//TObjectPtr<class UStaminaWidget> StaminaWidget;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), meta = (BindWidget))
 	TObjectPtr<class UMessageManagerWidget> MessageWidget;

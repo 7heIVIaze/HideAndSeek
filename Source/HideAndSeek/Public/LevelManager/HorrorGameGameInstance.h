@@ -69,67 +69,77 @@ public:
 		bool CrossHairOnSaveLogic(bool inIsCrossHairOn);
 
 	UFUNCTION(BlueprintCallable)
-		bool TimerOnSaveLogic(bool inIsTimerOn);
+	bool TimerOnSaveLogic(bool inIsTimerOn);
 
 	UFUNCTION(BlueprintCallable)
-		bool OptionSettingSaveLogic(FOptionSettings inOptionSetting);
+	bool OptionSettingSaveLogic(FOptionSettings inOptionSetting);
 
 	UFUNCTION(BlueprintCallable)
-		bool CharacteristicsOnSaveLogic();
+	bool CharacteristicsOnSaveLogic();
 
 	UFUNCTION(BlueprintCallable)
-		bool TipsOnSaveLogic();
+	bool TipsOnSaveLogic();
 
 	UFUNCTION(BlueprintCallable)
-		int32 GetClearedChapter();
+	int32 GetClearedChapter();
 
 	UFUNCTION(BlueprintCallable)
-		float GetBrightGamma();
+	float GetBrightGamma();
 
 	UFUNCTION(BlueprintCallable)
 	void ApplyBrightness();
 
 	UFUNCTION(BlueprintCallable)
-		bool GetMotionBlur();
+	bool GetMotionBlur();
 
 	UFUNCTION(BlueprintCallable)
-		float GetVolume();
+	float GetVolume();
 
 	UFUNCTION(BlueprintCallable)
-		float GetMouseSensitive();
+	float GetMouseSensitive();
 
 	UFUNCTION(BlueprintCallable)
-		bool GetIsCrossHairOn();
+	bool GetIsCrossHairOn();
 
 	UFUNCTION(BlueprintCallable)
-		bool GetIsTimerOn();
+	bool GetIsTimerOn();
 
 	UFUNCTION(BlueprintCallable)
-		ELanguage GetCurrentLanguage();
+	ELanguage GetCurrentLanguage();
 
 	UFUNCTION(BlueprintCallable)
-		bool ClearTimeSaveLogic(int32 inClearedChapter, FString inClearTime); // inClearedChapter는 클리어한 챕터, inClearTime은 클리어 시의 시간
+	bool ClearTimeSaveLogic(int32 inClearedChapter, FString inClearTime); // inClearedChapter는 클리어한 챕터, inClearTime은 클리어 시의 시간
 
 	UFUNCTION(BlueprintCallable)
-		FText GetClearTime(int32 inClearedChapter);
+	FText GetClearTime(int32 inClearedChapter);
 
 	UFUNCTION(BlueprintCallable)
-		FString GetCurrentClearTime();
+	FString GetCurrentClearTime();
 
 	UFUNCTION(BlueprintCallable)
-		TArray<FString> GetAllClearedTime();
+	TArray<FString> GetAllClearedTime();
 
 	UFUNCTION(BlueprintCallable)
-		TArray<FClearData> GetAllClearData();
+	TArray<FClearData> GetAllClearData();
 
 	UFUNCTION(BlueprintCallable)
 	bool ChapterClearSaveLogic(int32 inClearedChapter, float inClearTime, int32 inNextChapter);
 
+	// 아이템을 처음 획득한 것인지 알아보는 로직.
 	UFUNCTION(BlueprintCallable)
 	bool GetIsItemFirstAcquired(const EItemNumber ItemNumber);
 
+	// 처음 획득한 아이템의 문서를 저장하는 로직.
 	UFUNCTION(BlueprintCallable)
 	void SaveItemArchives(const EItemNumber ItemNumber);
+
+	// 요괴에게 처음 죽은 것인지 알아보는 로직.
+	UFUNCTION(BlueprintCallable)
+	bool GetIsYokaiFirstDied(const EYokaiType YokaiType);
+
+	// 요괴의 문서를 저장하는 로직.
+	UFUNCTION(BlueprintCallable)
+	void SaveYokaiArchives(const EYokaiType YokaiType);
 
 	UFUNCTION(BlueprintCallable)
 	UHorrorGameSaveGame* GetSaveData();

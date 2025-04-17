@@ -18,7 +18,6 @@ AFireExtinguisher::AFireExtinguisher()
 
 	// Set Meshes default settings.
 	PowderParticle = CreateDefaultSubobject<UParticleSystemComponent>(TEXT("PowderParticle"));
-	// PowderParticle->SetupAttachment(MeshComponent);
 	PowderParticle->SetActive(false);
 
 	PowderCapsule = CreateDefaultSubobject<UCapsuleComponent>(TEXT("PowderCollider"));

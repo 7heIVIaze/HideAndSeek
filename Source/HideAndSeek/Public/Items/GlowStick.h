@@ -3,8 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "Items/ActiveItem.h"
-//#include "Resource/InteractInterface.h"
 #include "Items/ConsumableItemClass.h"
 #include "GlowStick.generated.h"
 

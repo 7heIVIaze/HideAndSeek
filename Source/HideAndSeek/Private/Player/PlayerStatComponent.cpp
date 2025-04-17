@@ -57,6 +57,13 @@ float UPlayerStatComponent::AddConfusionPoint(float inValue)
 
 	ConfusionPoint = FMath::Clamp(ConfusionPoint, 0.0f, 100.0f);
 
+	if (ConfusionPoint == 100.0f)
+	{
+		OnPanicStart.Broadcast();
+	}
+
+	OnPanicChanged.Broadcast(ConfusionPoint);
+
 	return ConfusionPoint;
 }
 

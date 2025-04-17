@@ -22,11 +22,12 @@
 #include "Player/HorrorGameCharacter.h"
 #include "Player/HorrorGamePlayerController.h"
 #include "Player/InventoryComponent.h"
-#include "Furniture/DoorClass.h"
+//#include "Furniture/DoorClass.h"
 #include "Furniture/Alarm.h"
 #include "Animation/AnimSequence.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "NiagaraComponent.h"
+#include "LevelManager/HorrorGameGameInstance.h"
 #include "Materials/MaterialParameterCollection.h"
 #include "Materials/MaterialParameterCollectionInstance.h"
 #include "ComponentAction/HorrorGameSaveGame.h"
@@ -631,92 +632,97 @@ void AReaper_cpp::Exorcism()
 //{
 //	return bAnimFinish;
 //}
-//
-//// Sphere 충돌체에 플레이어가 충돌한 경우 호출할 콜백 함수.
-//void AReaper_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherIndexBody, bool bFromSweep, const FHitResult& SweepResult)
-//{
-//	// ACreatureAI* AIController = Cast<ACreatureAI>(GetController());
-//
-//	// 플레이어가 캐비닛이나 옷장에 숨어있는 걸 알고 있는지, 플레이어의 오브젝트 아이템 획득 수를 파악
-//	bool HideCatch = false;
-//	Sealed CurrentStatus = Sealed::Sealed;
-//	if (ReaperController != nullptr)
-//	{
-//		HideCatch = ReaperController->GetBlackboard()->GetValueAsBool(ACreatureAI::LockerLighting);
-//		CurrentStatus = ReaperController->GetCurrentSealStatus();
-//	}
-//
-//	// Runner가 행동 불능이거나 죽은 상태, 시간 정지 상태가 아니라면 실행함
-//	if (!bIsStunned && !bIsDied && !bIsTimeStop)
-//	{
-//		// 충돌한 액터가 존재할 경우
-//		if (OtherActor != this && OtherActor != nullptr && OtherComp != nullptr)
-//		{
-//			// 그 액터가 숨을 수 있는 액터이면
-//			if (auto HideObject = Cast<AHideObject>(OtherActor))
-//			{
-//				// 현재 추격 중이고 숨어있는 것을 알고 있는 상태에서 잡았다면
-//				if (bIsChase && HideCatch)
-//				{
-//					// 모든 능력이 봉인된 상태가 아니라면
-//					if (CurrentStatus != Sealed::Sealed)
-//					{
-//						// Catch 했음을 알리고 옷장을 잡았다고 함수를 호출함
-//						SetIsCatch(true);
-//						bIsHidingCatch = true;
-//						DetectPlayerHidingObject(HideObject);
-//					}
-//				}
-//			}
-//			// 그 액터가 플레이어면
-//			if (auto PlayerCharacter = Cast<AHorrorGameCharacter>(OtherActor))
-//			{
-//				// 플레이어의 상태가 Survive이거나, 추격 중(Chased)이면서 동시에 숨은 상태가 아닌 경우에만 수행
-//				if ((PlayerCharacter->GetPlayerStatus() == Player_Status::Survive || PlayerCharacter->GetPlayerStatus() == Player_Status::Chased) && !PlayerCharacter->GetIsHiding())
-//				{
-//					// 리퍼의 상태가 봉인된 상태면 패닉 게이지 증가시키고 소멸함
-//					if (CurrentStatus == Sealed::Sealed)
-//					{
-//						PlayerCharacter->CreatureNum--;
-//						PlayerCharacter->AddPatience(20);
-//						Destroy();
-//					}
-//					// 플레이어가 오브젝트 아이템을 하나라도 획득한 이후라면
-//					else
-//					{
-//						// 플레이어의 상태를 Catch로 설정함.
-//						PlayerCharacter->SetPlayerStatus(Player_Status::Catched);
-//
-//						// 추가로 SaveGame 파일을 불러와서						
-//						if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
-//						{
-//							// 플레이어가 처음 Reaper에게 잡힌 것이라면
-//							if (!SaveData->CollectArchives.CatchedByReaper)
-//							{
-//								// Reaper에게 잡혔다고 설정하고, SetArchiveGetText 메서드를 통해 Reaper의 문서가 추가되었다고 알림.
-//								SaveData->CollectArchives.CatchedByReaper = true;
-//								PlayerCharacter->SetArchiveGetText(NSLOCTEXT("AReaper_cpp", "Kill_By_Reaper", "Reaper\nis added in archive"));
-//								SaveData->SaveData();
-//							}
-//						}
-//
-//						// 그 후 플레이어의 카메라를 강제로 워치 포인트를 향하도록 옮기고
-//						PlayerCharacter->OnFocus(WatchPoint->GetComponentLocation());
-//
-//						// 잡았다고 알림.
-//						SetIsCatch(true);
-//					}
-//				}
-//			}
-//			// 그 액터가 경보기일 경우
-//			if (auto Alarm = Cast<AAlarm>(OtherActor))
-//			{
-//				// 상호작용을 수행함.
-//				Alarm->AIInteract();
-//			}
-//		}
-//	}
-//}
+
+// Sphere 충돌체에 플레이어가 충돌한 경우 호출할 콜백 함수.
+void AReaper_cpp::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherIndexBody, bool bFromSweep, const FHitResult& SweepResult)
+{
+	// ACreatureAI* AIController = Cast<ACreatureAI>(GetController());
+
+	// 플레이어가 캐비닛이나 옷장에 숨어있는 걸 알고 있는지, 플레이어의 오브젝트 아이템 획득 수를 파악
+	bool HideCatch = false;
+	Sealed CurrentStatus = Sealed::Sealed;
+	if (ReaperController != nullptr)
+	{
+		HideCatch = ReaperController->GetBlackboard()->GetValueAsBool(ACreatureAI::LockerLighting);
+		CurrentStatus = ReaperController->GetCurrentSealStatus();
+	}
+
+	// Runner가 행동 불능이거나 죽은 상태, 시간 정지 상태가 아니라면 실행함
+	if (!bIsStunned && !bIsDied && !bIsTimeStop)
+	{
+		// 충돌한 액터가 존재할 경우
+		if (OtherActor != this && OtherActor != nullptr && OtherComp != nullptr)
+		{
+			// 그 액터가 숨을 수 있는 액터이면
+			if (auto HideObject = Cast<AHideObject>(OtherActor))
+			{
+				// 현재 추격 중이고 숨어있는 것을 알고 있는 상태에서 잡았다면
+				if (bIsChase && HideCatch)
+				{
+					// 모든 능력이 봉인된 상태가 아니라면
+					if (CurrentStatus != Sealed::Sealed)
+					{
+						// Catch 했음을 알리고 옷장을 잡았다고 함수를 호출함
+						SetIsCatch(true);
+						bIsHidingCatch = true;
+						DetectPlayerHidingObject(HideObject);
+					}
+				}
+			}
+			// 그 액터가 플레이어면
+			if (auto PlayerCharacter = Cast<AHorrorGameCharacter>(OtherActor))
+			{
+				// 플레이어의 상태가 Survive이거나, 추격 중(Chased)이면서 동시에 숨은 상태가 아닌 경우에만 수행
+				if ((PlayerCharacter->GetPlayerStatus() == EPlayerStatus::Survive || PlayerCharacter->GetPlayerStatus() == EPlayerStatus::Chased) && !PlayerCharacter->GetIsHiding())
+				{
+					// 리퍼의 상태가 봉인된 상태면 패닉 게이지 증가시키고 소멸함
+					if (CurrentStatus == Sealed::Sealed)
+					{
+						PlayerCharacter->CreatureNum--;
+						PlayerCharacter->GetStatComponent()->AddConfusionPoint(20);
+						PlayerCharacter->GetStatComponent()->TakeDamage(20);
+						Destroy();
+					}
+					// 플레이어가 오브젝트 아이템을 하나라도 획득한 이후라면
+					else
+					{
+						// 플레이어의 상태를 Catch로 설정함.
+						PlayerCharacter->SetPlayerStatus(EPlayerStatus::Catched);
+						
+						if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(GetGameInstance()))
+						{
+							//GameInstance->Creature
+							// 추가로 SaveGame 파일을 불러와서						
+							if (UHorrorGameSaveGame* SaveData = GameInstance->GetSaveData())
+							{
+								// 플레이어가 처음 Reaper에게 잡힌 것이라면
+								if (!SaveData->CollectArchives.CatchedByReaper)
+								{
+									// Reaper에게 잡혔다고 설정하고, SetArchiveGetText 메서드를 통해 Reaper의 문서가 추가되었다고 알림.
+									SaveData->CollectArchives.CatchedByReaper = true;
+									PlayerCharacter->SetArchiveGetText(NSLOCTEXT("AReaper_cpp", "Kill_By_Reaper", "Reaper\nis added in archive"));
+									SaveData->SaveData();
+								}
+							}
+						}
+
+						// 그 후 플레이어의 카메라를 강제로 워치 포인트를 향하도록 옮기고
+						PlayerCharacter->OnFocus(WatchPoint->GetComponentLocation());
+
+						// 잡았다고 알림.
+						SetIsCatch(true);
+					}
+				}
+			}
+			// 그 액터가 경보기일 경우
+			if (auto Alarm = Cast<AAlarm>(OtherActor))
+			{
+				// 상호작용을 수행함.
+				Alarm->AIInteract();
+			}
+		}
+	}
+}
 
 //bool AReaper_cpp::GetPatrolSuccess()
 //{

@@ -26,6 +26,14 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void UpdateHPBar(float NewHP);
 
+	// Stamina Bar Update Function.
+	UFUNCTION(BlueprintCallable)
+	void UpdateStaminaBar(int32 NewStaminaGuage);
+
+	// Panic Bar Update Function.
+	UFUNCTION(BlueprintCallable)
+	void UpdatePanicBar(float NewPanicGuage);
+
 	UFUNCTION(BlueprintCallable)
 	void ShakeHeathBar();
 
@@ -40,6 +48,12 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
 	TObjectPtr<class UTextBlock> HPText;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UProgressBar> PanicBar;
+
+	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
+	TObjectPtr<class UProgressBar> StaminaBar;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Shake")
 	bool bIsShaking;
