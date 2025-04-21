@@ -69,22 +69,4 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Shake")
 	FVector2D OriginalPosition;
-
-//protected:
-//	virtual void NativeConstruct() override;
-//
-//public:
-////	UUISlot_cpp(const FObjectInitializer& ObjectInitializer);
-//	UFUNCTION()
-//		void SetBatteryPercent(int32 value);
-//
-//	UFUNCTION()
-//		void SetBatteryVisibility(bool value);
-//
-//public:
-//	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-//		class UProgressBar* Battery;
-//		
-//	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-//		class UImage* BatteryImage;
 };

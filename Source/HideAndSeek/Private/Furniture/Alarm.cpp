@@ -75,7 +75,6 @@ void AAlarm::AIInteract()
 	{
 		// 오디오를 종료하고, 알람이 안 울리고 있다고 설정함.
 		AudioComp->Stop();
-		// SetAlarmRing();
 		bIsAlarmRing = false;
 	}
 }
@@ -84,10 +83,3 @@ void AAlarm::SetAlarmRing()
 {
 	bIsAlarmRing = !bIsAlarmRing;
 }
-// Called every frame
-//void AAlarm::Tick(float DeltaTime)
-//{
-//	Super::Tick(DeltaTime);
-//
-//}
-

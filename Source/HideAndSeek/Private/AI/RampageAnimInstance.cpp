@@ -6,15 +6,16 @@
 
 void URampageAnimInstance::NativeInitializeAnimation()
 {
-	Rampage = Cast<ARampage_cpp>(TryGetPawnOwner());
 	// Pawn에 해당하는 인스턴스가 있는지 없는지 상관 없이 해당 객체를 가져와 Rampage_cpp로 변환
+	Rampage = Cast<ARampage_cpp>(TryGetPawnOwner());
 }
 
 void URampageAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
-	Super::NativeUpdateAnimation(DeltaSeconds);
-	// auto Pawn = TryGetPawnOwner();
-	if (IsValid(Rampage)) // Rampage가 NULL인지 체크
+	Super::NativeUpdateAnimation(DeltaSeconds);\
+	
+	// Rampage가 NULL인지 체크
+	if (IsValid(Rampage))
 	{
 		Speed = Rampage->GetVelocity().Size(); // Rampage의 속도 가져옴
 		bIsFalling = Rampage->GetMovementComponent()->IsFalling();

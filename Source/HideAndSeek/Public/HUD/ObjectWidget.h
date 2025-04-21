@@ -17,20 +17,6 @@ class HIDEANDSEEK_API UObjectWidget : public UCustomUI
 protected:
 	virtual void NativeConstruct() override;
 
-//public:
-//	UFUNCTION()
-//		void SetObjectCount(const unsigned int idx, int32 value);
-//
-//private:
-//	UFUNCTION()
-//		void SetSwordCount(int32 value);
-//
-//	UFUNCTION()
-//		void SetBellCount(int32 value);
-//
-//	UFUNCTION()
-//		void SetMirrorCount(int32 value);
-
 public:
 	virtual void Init() override;
 
@@ -42,16 +28,6 @@ private:
 	// 오브젝트를 얻을 때 리프레시할 함수.
 	UFUNCTION(BlueprintCallable)
 	void RefreshObjectCount(int32 ObjectCount);
-
-//protected:
-//	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-//		class UTextBlock* SwordCount;
-//
-//	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-//		class UTextBlock* BellCount;
-//
-//	UPROPERTY(BlueprintReadWrite, meta = (BindWidget))
-//		class UTextBlock* MirrorCount;
 
 public:
 // Object images not yet collected
@@ -83,5 +59,4 @@ public:
 	// Number of objects to collect.
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = ObjectCount)
 	int ObjectNumber;
-	//FString BaseText;
 };

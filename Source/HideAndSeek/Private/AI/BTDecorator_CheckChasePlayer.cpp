@@ -1,9 +1,7 @@
 // CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "AI/BTDecorator_CheckChasePlayer.h"
-#include "AI/CreatureAI.h"
-#include "AI/AIController_Brute.h"
-#include "AI/AIController_Runner.h"
+#include "AI/YokaiAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 // 생성자
@@ -20,17 +18,10 @@ bool UBTDecorator_CheckChasePlayer::CalculateRawConditionValue(UBehaviorTreeComp
 
 	if (AIController)
 	{
-		if (const auto ReaperAI = Cast<ACreatureAI>(AIController))
+		// 요괴 AI의 플레이어를 보았는지 가져와서 갱신시켜줌.
+		if (const auto YokaiAI = Cast<AYokaiAIController>(AIController))
 		{
-			bPlayerChase = ReaperAI->GetBlackboardComponent()->GetValueAsBool(ACreatureAI::CanSeePlayer);
-		}
-		else if (const auto RunnerAI = Cast<AAIController_Runner>(AIController))
-		{
-			bPlayerChase = RunnerAI->GetBlackboardComponent()->GetValueAsBool(AAIController_Runner::CanSeePlayer);
-		}
-		else if (const auto BruteAI = Cast<AAIController_Brute>(AIController))
-		{
-			bPlayerChase = BruteAI->GetBlackboardComponent()->GetValueAsBool(AAIController_Brute::CanSeePlayer);
+			bPlayerChase = YokaiAI->GetBlackboardComponent()->GetValueAsBool(AYokaiAIController::CanSeePlayer);
 		}
 	}
 

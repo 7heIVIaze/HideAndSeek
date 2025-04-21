@@ -44,16 +44,6 @@ void ADoorClass::Tick(float DeltaTime)
 
 void ADoorClass::OnInteract(class AHorrorGameCharacter* Player)
 {
-	//// Execute if only the door is not broken.
-	//if (!bIsDoorBroken)
-	//{
-	//	// If the door is locked.
-	//	if (bIsDoorLocked)
-	//	{
-	//		
-	//	}
-	//}
-
 	// Event Binding
 	UGameUI* GameWidget = Player->GameUIWidget;
 
@@ -88,31 +78,12 @@ void ADoorClass::BreakDoor()
 
 void ADoorClass::AIInteract(class AActor* AICharacter)
 {
-	//// Execute only if the door is not being breaking.
-	//if (bIsDoorBeingBreaking)
-	//{
 
-	//}
-
-	//// if the door is not broken.
-	//if (!bIsDoorBroken)
-	//{
-	//	// if the door is locked.
-	//	
-	//}
 }
 
 void ADoorClass::ChangeCollisionPreset()
 {
-	//// Change collision settings to block the pursuer's path when the door class is closed.
-	//if (bIsDoorClosed)
-	//{
-	//	DoorMesh->SetCollisionProfileName("ClosedDoor");
-	//}
-	//else
-	//{
-	//	DoorMesh->SetCollisionProfileName("OpenedDoor");
-	//}
+
 }
 
 void ADoorClass::DestructionFinished()
@@ -124,11 +95,14 @@ void ADoorClass::DestructionFinished()
 void ADoorClass::SetDoorCollision(bool inIsPlayerNear)
 {
 	bIsPlayerNear = inIsPlayerNear;
-	if (bIsPlayerNear) // true라면 플레이어가 근처에 있는 것이기 때문에 콜리전(물리적 충돌) 활성화
+	
+	// true라면 플레이어가 근처에 있는 것이기 때문에 콜리전(물리적 충돌) 활성화
+	if (bIsPlayerNear)
 	{
 		DoorMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel5, ECollisionResponse::ECR_Block);
 	}
-	else // false라면 근처에 플레이어가 없는 것이기 때문에 콜리전(물리적 충돌) 비활성화
+	// false라면 근처에 플레이어가 없는 것이기 때문에 콜리전(물리적 충돌) 비활성화
+	else
 	{
 		DoorMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel5, ECollisionResponse::ECR_Ignore);
 	}

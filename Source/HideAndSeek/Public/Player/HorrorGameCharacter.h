@@ -21,21 +21,6 @@ class USoundBase;
 class UPointLightComponent;
 class USpotLightComponent;
 
-//UENUM(BlueprintType)
-//enum class Item_Num : uint8
-//{
-//	CigetLighter UMETA(DisplayName = "CigarLighter"),
-//	FlashLight UMETA(DisplayName = "FlashLight"),
-//	Key UMETA(DisplayName = "Key"),
-//	Timer UMETA(DisplayName = "Timer"),
-//	Sword UMETA(DisplayName = "Sword"),
-//	Bell UMETA(DisplayName = "Bell"),
-//	Mirror UMETA(DisplayName = "Mirror"),
-//	Extinguisher UMETA(DisplayName = "Extinguisher"),
-//	Cutter UMETA(DisplayName = "Cutter"),
-//	SoulLantern UMETA(DisplayName = "SoulLantern"),
-//};
-
 UENUM(BlueprintType)
 enum class Player_Status : uint8
 {
@@ -54,10 +39,6 @@ UCLASS(config=Game)
 class AHorrorGameCharacter : public ACharacter
 {
 	GENERATED_BODY()
-
-	/** Pawn mesh: 1st person view (arms; seen only by self) */
-	/*UPROPERTY(VisibleDefaultsOnly, Category=Mesh)
-	USkeletalMeshComponent* Mesh1P;*/
 
 	/** First person camera */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -155,10 +136,6 @@ public: // Unreal Property
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input)
 	class UInputAction* ChangeItemAction;
 
-	///** Bool for AnimBP to switch to another animation set */
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Weapon)
-	//bool bHasRifle;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Sprint", meta = (AllowPrivateAccess = "true"))
 	int32 Stamina;
 
@@ -195,36 +172,12 @@ public: // Unreal Property
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Boolean)
 	bool bIsLightOn;
 
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "FlashLight")
-	bool bIsFlashLightOn;*/
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlashLight")
 	bool bFLIntenseDown;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "CigarLight")
-	//bool bIsCigarLightOn;
-
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sound")
-	bool bisSoundOn;*/
-
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Sound")
-	bool bIsHiding = false;*/
-	
 	// 플레이어가 랜턴 아이템을 켰는지
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Lantern")
 	bool bIsLanternOn = false;
-
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status")
-	Player_Status PlayerStatus = Player_Status::Survive;*/
-
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SoundCue")
-	//class USoundCue* TurnOnSoundCue;
-
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SoundCue")
-	class USoundCue* CigarLightOnSoundCue;*/
-
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "SoundCue")
-	class USoundCue* CigarLightOffSoundCue;*/
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "SoundCue")
 		class USoundCue* KeySoundCue; // 열쇠 사용 소리
@@ -276,7 +229,6 @@ public: // Unreal Property
 	bool bIsBellSoundOn = false;
 
 public: // Unreal Component
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "UI")
 	TArray<FHorrorGameItemData> Inventory;
 
@@ -285,21 +237,6 @@ public: // Unreal Component
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "UI")
 	TObjectPtr<class UGameUI> GameUIWidget;
-
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "CigarLight")
-	TObjectPtr<UPointLightComponent> CigarLight;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "FlashLight")
-	TObjectPtr<USpotLightComponent> FlashLight;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	TObjectPtr<UChildActorComponent> Lantern;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Item")
-	TObjectPtr<UChildActorComponent> Sword;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Item")
-	TObjectPtr<UChildActorComponent> Mirror;*/
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "CurrentItems")
 	TSubclassOf<class AItemClass> ItemActors;
@@ -384,12 +321,9 @@ public: // Unreal Component
 
 	UPROPERTY(EditAnywhere, Category = "LightMesh")
 		class UMaterialInstance* PostProcessMaterial;
-	/*UPROPERTY(EditAnywhere, Category = "PPM")
-		UCurveFloat* PPMFloat;*/ // Timeline Curve -> 거울 사용 시 색상 반전 효과 줄 변수
-
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LightBoolean")
 		int32 CreatureNum = 0; // Creature의 개수(불 깜박임을 위해서)
-
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "RayCast")
 		float TraceLength = 150.f; // Raycast 용 사거리
@@ -413,66 +347,6 @@ public: // Unreal Component
 	bool bIsFinishUnlock = false;
 
 public: // Unreal Function
-
-	/** Setter to set the bool */
-	/*UFUNCTION(BlueprintCallable, Category = Weapon)
-	void SetHasRifle(bool bNewHasRifle);*/
-
-	/** Getter for the bool */
-	/*UFUNCTION(BlueprintCallable, Category = Weapon)
-	bool GetHasRifle();*/
-
-	/*UFUNCTION(BlueprintCallable, Category = "FlashLight")
-	void AddCigarLight();
-
-	UFUNCTION(BlueprintCallable, Category = "FlashLight")
-	void UseCigarLight();
-
-	UFUNCTION()
-	void CigarLightOn();
-
-	UFUNCTION(BlueprintCallable, Category = "FlashLight")
-	void AddFlashLight();
-
-	UFUNCTION(BlueprintCallable, Category = "FlashLight")
-	void UseFlashLight();
-
-	UFUNCTION(BlueprintCallable, Category = "Key")
-	void AddKey();
-
-	UFUNCTION(BlueprintCallable, Category = "Key")
-	void UseKey();
-
-	UFUNCTION(BlueprintCallable, Category = "Timer")
-	void AddTimer();
-
-	UFUNCTION(BlueprintCallable, Category = "Timer")
-	void UseTimer();
-
-	UFUNCTION(BlueprintCallable, Category = "Sword")
-	void AddSword();
-
-	UFUNCTION(BlueprintCallable, Category = "Sword")
-	void UseSword();
-
-	UFUNCTION(BlueprintCallable, Category = "Bell")
-	void AddBell();
-
-	UFUNCTION(BlueprintCallable, Category = "Bell")
-	void UseBell();
-
-	UFUNCTION(BlueprintCallable, Category = "Mirror")
-	void AddMirror();
-
-	UFUNCTION(BlueprintCallable, Category = "Mirror")
-	void UseMirror();
-
-	UFUNCTION(BlueprintCallable, Category = "Extinguisher")
-	void AddExtinguisher();
-
-	UFUNCTION(BlueprintCallable, Category = "Extinguisher")
-	bool UseExtinguisher();*/
-
 	UFUNCTION(BlueprintCallable)
 	FVector GetCameraComponentLocation();
 
@@ -555,35 +429,8 @@ public: // Unreal Function
 	UFUNCTION(BlueprintCallable, Category = "Door")
 		void OnDoorBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
-	// UFUNCTION(BlueprintCallable, Category = "Extinguisher")
-	//void OnSprayOverlap(const TArray<FOverlapResult>& OverlapResults);
-	
-	/*UFUNCTION(BlueprintCallable, Category = "Cutter")
-	void AddCutter();*/
-
 	UFUNCTION(BlueprintCallable, Category = "Cutter")
 	void UseCutter();
-
-	//UFUNCTION(BlueprintCallable, Category = "SoulLantern")
-	//	void AddLantern();
-
-	/*UFUNCTION(BlueprintCallable, Category = "SoulLantern")
-	void UseLantern();*/
-
-	/*UFUNCTION(BlueprintCallable)
-		void AddGlowStick();*/
-
-	/*UFUNCTION(BlueprintCallable)
-		void UseGlowStick();*/
-
-	/*UFUNCTION()
-	void StaminaChange();*/
-	
-	//UFUNCTION()
-	//void FlashLightBatteryChange();
-
-	/*UFUNCTION()
-	void CurrentItem();*/
 
 	// 상태 업데이트용 델리게이트 바인딩 함수.
 	UFUNCTION(BlueprintCallable)
@@ -595,20 +442,8 @@ public: // Unreal Function
 	UFUNCTION(BlueprintCallable)
 	int32 GetStamina();
 
-	/*UFUNCTION(BlueprintCallable)
-	int32 GetFlashLightBattery();*/
-
-	/*UFUNCTION(BlueprintCallable)
-	int32 GetExtinguisherLeft();*/
-
 	UFUNCTION(BlueprintCallable)
 	float GetConfusionPoint();
-
-	/*UFUNCTION(BlueprintCallable)
-	FText GetInteractText();
-
-	UFUNCTION(BlueprintCallable)
-	FText GetErrorInteractText();*/
 
 	UFUNCTION(BlueprintCallable)
 	bool GetIsHiding();
@@ -625,17 +460,8 @@ public: // Unreal Function
 	UFUNCTION(BlueprintCallable)
 	void BellSoundFinish();
 
-	//UFUNCTION(BlueprintCallable)
-	//void BreatheSoundFinish();
-
 	UFUNCTION(BlueprintCallable)
 	void SetExplainText(FText text, int32 time);
-
-	/*UFUNCTION(BlueprintCallable)
-	void SetErrorText(FText text, int32 time);*/
-
-	/*UFUNCTION(BlueprintCallable)
-	void SetMainWidget(UGameUI* inMainWidget);*/
 
 	UFUNCTION(BlueprintCallable)
 	void SetReaperLookPlayer(bool inReaperWatchPlayer);
@@ -646,10 +472,6 @@ public: // Unreal Function
 	UFUNCTION(BlueprintCallable)
 		void SetArchiveGetText(FText inText);
 
-	// 인벤토리의 아이템을 아이템 번호 순으로 정렬하는 함수ㅊ
-	//UFUNCTION(BlueprintCallable)
-	//void InventorySorting();
-
 	UFUNCTION(BlueprintCallable)
 	UInventoryComponent* GetInventoryComponent() const { return InventoryComp; }
 
@@ -657,21 +479,18 @@ public: // Unreal Function
 	UPlayerStatComponent* GetStatComponent() const { return PlayerStatComp; }
 
 private:
-	FTimerHandle _loopLightTimerHandle;// , ArchiveTextTimer;
-	// FTimerHandle _CigarLightTimerHandle;
+	FTimerHandle _loopLightTimerHandle;
 	int32 TextTimer = 0, ErrorTextTimer = 0;
 	float cnt = 0.f, ErrorTextCount = 0.f, StunTimer = 0.f, TimeStopTimer = 0.f, CooldownTimer = 0.f, ArchiveTextTimer = 0.f;
 	float InWaterSpeedDown = 0.6f;
 	float ReaperWatchElapsedTime = 0.f; // 리퍼가 능력을 사용하기 시작한 시간
 	float PixelateIntensity = 0.f; // 리퍼가 능력을 사용해서 시야가 일그러지는 정도
-	//bool bIsPlayerSwordGet = false, bIsPlayerMirrorGet = false, bIsPlayerBellGet = false;
 
 	bool bIsInWater = false, bIsTimeStop = false, bIsTimeStopChange = false, bIsArchiveTextOn = false;
 	bool bShouldAttack = false;
 	bool bNotifyAttackStart = false;
 	bool bReaperWatchPlayer = false; // 리퍼가 능력을 사용하기 시작했는가?
 	
-	//AActor* HitActor;
 	FRotator LookAtRotation;
 	FVector BeforeHideLocation;
 	FRotator BeforeHideRotation;
@@ -722,13 +541,8 @@ protected:
 	// End of APawn interface
 
 public:
-	/** Returns Mesh1P subobject **/
-	//USkeletalMeshComponent* GetMesh1P() const { return Mesh1P; }
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
-
-	/*UFUNCTION(BlueprintCallable, Category = "Interaction")
-	bool GetLineTraceSingle(AActor* &HitActor);*/
 
 	UFUNCTION(BlueprintCallable, Category = "CameraNoise")
 	void SetCameraComponentNoise(int32 WhichStatus); // 0: 노이즈 해제, 1: 근처에 있음, 2: 추격 시작
@@ -736,35 +550,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetPlayerSetting(); // 플레이어가 설정한 세팅
 
-	//UFUNCTION(BlueprintCallable, Category = "Inventory")
-	//	void SelectItem(FKey fkey);
-	
-	/*UFUNCTION(BlueprintCallable, Category = "Inventory")
-	void ScrollUpItem();
-
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	void ScrollDownItem();*/
-
 	UFUNCTION(BlueprintCallable, Category = "Speed")
 	void SetIsInWater(bool value);
 
-	/*UFUNCTION(BlueprintCallable, Category = "Inventory")
-	int32 GetCurrentItemNumber();
-
-	UFUNCTION(BlueprintCallable, Category = "Inventory")
-	FText GetCurrentItemName();*/
-
 	UFUNCTION(BlueprintCallable, Category = "Object")
 	int32 GetObjectNumbers();
-
-	/*UFUNCTION(BlueprintCallable, Category = "Object")
-		int32 GetSwordNumbers();
-
-	UFUNCTION(BlueprintCallable, Category = "Object")
-		int32 GetMirrorNumbers();
-
-	UFUNCTION(BlueprintCallable, Category = "Object")
-		int32 GetBellNumbers();*/
 
 	UFUNCTION(BlueprintCallable, Category = "Boolean")
 	bool GetIsLightOn();

@@ -28,14 +28,8 @@ public: // Properties
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Door")
 	bool bIsOtherDoorClosed = true;
 
-	/*UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sound")
-	class USoundCue* DoorSound;*/
-
 	UPROPERTY(BlueprintReadWrite)
 	class AClassroomDoors_cpp* CD_Manager;
-		
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Door")
-	//	TSubclassOf<class AActor> GC_Door;
 
 protected:
 	// Called when the game starts or when spawned
@@ -53,12 +47,6 @@ public:
 	virtual void AIInteract(AActor* AICharacter) override;
 
 	virtual void DoorOpen(float inCurveFloat) override;
-
-	/*virtual void SetDoorCollision(bool inIsPlayerNear) override;
-
-	virtual void PlayerBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;
-
-	virtual void PlayerBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex) override;*/
 
 	virtual void ChangeCollisionPreset() override;
 

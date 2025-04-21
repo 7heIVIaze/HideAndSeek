@@ -49,5 +49,4 @@ private:
 	class UAudioComponent* AudioComponent;
 	
 	class USoundCue* OpeningCue;
-	//FInputModeUIOnly UIInputMode;
 };

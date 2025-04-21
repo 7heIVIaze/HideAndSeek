@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "GameFramework/Actor.h"
 #include "Furniture/InteractableActor.h"
 #include "Components/TimelineComponent.h"
 #include "LockerDoorActor_cpp.generated.h"
@@ -27,12 +26,6 @@ public: // Properties
 
 	UPROPERTY(VisibleAnywhere, Category = "Locker")
 	TObjectPtr<UStaticMeshComponent> DoorMesh;
-
-	/*UPROPERTY(VisibleAnywhere, Category = "Locker")
-		UStaticMeshComponent* LockerDoorFrame;
-
-	UPROPERTY(VisibleAnywhere, Category = "Locker")
-		UStaticMeshComponent* LockerDoorLock;*/
 
 	UPROPERTY(VisibleAnywhere, Category = "Locker")
 		UStaticMeshComponent* LockerLockMesh;

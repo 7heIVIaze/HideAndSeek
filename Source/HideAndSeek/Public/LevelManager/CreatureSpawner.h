@@ -23,12 +23,9 @@ private:
 	bool Check();
 
 private:
-	// FTimerHandle _spawnTimerHandle;
 	bool IsAllLoaded[25] = { false, };
 
 	USceneComponent* RootComp;
-	//int reaper_cnt = 0;
-	//int count = 0;
 
 	UWorld* world;
 	FVector spawnLocation;

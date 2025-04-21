@@ -28,19 +28,4 @@ public:
 
 	virtual FHorrorGameItemData GetItemData() override;
 
-//public: // Properties
-//	UPROPERTY(VisibleAnywhere, Category = "Root")
-//		USceneComponent* DefaultSceneRoot;
-//
-//	UPROPERTY(VisibleAnywhere, Category = "Cutter")
-//		UStaticMeshComponent* CutterMesh;
-//
-//	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Cutter")
-//		int32 Durability = 5;
-//
-//public:
-//	// Functions
-//	void OnInteract(class AHorrorGameCharacter* Player) override;
-//
-//	void UseInteract(class AHorrorGameCharacter* Player) override;
 };

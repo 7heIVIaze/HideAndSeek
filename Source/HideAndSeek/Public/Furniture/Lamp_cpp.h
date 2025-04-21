@@ -3,13 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-// #include "GameFramework/Actor.h"
 #include "Furniture/LightingClass.h"
 #include "Components/TimelineComponent.h"
 #include "Lamp_cpp.generated.h"
 
 UCLASS()
-class HIDEANDSEEK_API ALamp_cpp : public ALightingClass //public AActor
+class HIDEANDSEEK_API ALamp_cpp : public ALightingClass
 {
 	GENERATED_BODY()
 	
@@ -25,51 +24,12 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	/*UFUNCTION(BlueprintCallable)
-	virtual void OnInteract(class AHorrorGameCharacter* Player) override;*/
-
 	virtual void LightFlicker(float value) override;
 
 
 public:
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LightMesh")
-		TObjectPtr<USceneComponent> RootComp;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LightMesh")
-		TObjectPtr<UStaticMeshComponent> LightComp;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LightMesh")
-		TObjectPtr<class UPointLightComponent> PointLight;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LightMesh")
-		TObjectPtr<class UBoxComponent> BoxCollision;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "LightMesh")
-		TObjectPtr<class UBoxComponent> NearBoxCollision;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LightBoolean")
-		bool bIsLightOn;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LightBoolean")
-		bool bIsPlayerIn;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LightBoolean")
-		bool bIsLightBlink;*/
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LightBoolean")
 		bool bIsNaturalFlick;
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LightBoolean")
-	//	int32 CreatureNearNum;
-
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "LightBoolean")
-	//	int32 CreatureNum;
-
-	//UPROPERTY(VisibleAnywhere, Category = "LightAnim")
-	//	FTimeline FlickeringLight;
-
-	//UPROPERTY(EditAnywhere, Category = "LightAnim")
-	//	UCurveFloat* CurveFloat;
 
 	UPROPERTY(EditAnywhere, Category = "LightAnim")
 	UCurveFloat* NaturalFlickeringCurveFloat;

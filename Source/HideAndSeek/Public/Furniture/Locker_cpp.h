@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "GameFramework/Actor.h"
 #include "Furniture/InteractableActor.h"
 #include "Locker_cpp.generated.h"
 
@@ -35,9 +34,6 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	 // Functions
-	// Called every frame
-	//virtual void Tick(float DeltaTime) override;
-
 	UFUNCTION(BlueprintCallable)
 	bool SetSpawnItem(TSubclassOf<AActor> inItem);
 

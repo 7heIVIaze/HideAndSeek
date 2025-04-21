@@ -10,12 +10,6 @@
 AGlowStick::AGlowStick()
 {
 	// 메시들의 기본 설정을 해줌. (세세한 설정은 블루프린트 클래스에서 수행)
-	/*RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	RootComponent = RootComp;
-
-	MeshComp = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	MeshComp->SetupAttachment(RootComp);
-	*/
 	GlowLightComp = CreateDefaultSubobject<UPointLightComponent>(TEXT("GlowLight"));
 	GlowLightComp->SetupAttachment(RootComp);
 }
@@ -31,15 +25,6 @@ void AGlowStick::SetLightOn()
 
 	GlowLightComp->SetVisibility(true);
 }
-
-//bool AGlowStick::UseItem()
-//{
-//	Super::UseItem();
-//
-//	SetLightOn();
-//
-//	return true;
-//}
 
 void AGlowStick::OnInteract(class AHorrorGameCharacter* Player)
 {

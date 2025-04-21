@@ -3,7 +3,6 @@
 #pragma once
 
 #include "EngineMinimal.h"
-//#include "Items/Items.h"
 #include "GameFramework/Actor.h"
 #include "ActiveItem.generated.h"
 
@@ -48,16 +47,4 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Timer)
 	float Timer = 0.0f;
 
-//
-//public:
-//	UPROPERTY(VisibleAnywhere, Category = "KeyItem")
-//		USceneComponent* DefaultSceneRoot;
-//
-//	UPROPERTY(VisibleAnywhere, Category = "KeyItem")
-//		UStaticMeshComponent* KeyMesh;
-//
-//public:
-//	void OnInteract(class AHorrorGameCharacter* Player) override;
-//
-//	void UseInteract(class AHorrorGameCharacter* Player) override;
 };

@@ -47,8 +47,6 @@ void UPlayerStatComponent::TickComponent(float DeltaTime, ELevelTick TickType, F
 void UPlayerStatComponent::SetPlayerStatus(EPlayerStatus inPlayerStatus)
 {
 	PlayerStatus = inPlayerStatus;
-
-	//OwnerCharacter->SetPlayerStatus(PlayerStatus);
 }
 
 float UPlayerStatComponent::AddConfusionPoint(float inValue)

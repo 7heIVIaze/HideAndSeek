@@ -32,12 +32,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
 		FText Detail_EN;
-
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data")
-		FText Detail_KR;*/
-
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Data", meta = (MultiLine = true))
-		FText FirstGetText;*/
 };
 
 USTRUCT(BlueprintType)

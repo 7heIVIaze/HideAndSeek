@@ -103,8 +103,6 @@ void ARandomLevelGenerator::BeginPlay()
 			FQuat fq = FRotator(0.0f, RotateDeg, 0.f).Quaternion();
 
 
-			/*ULevelStreamingDynamic* StreamingLevel = static_cast<ULevelStreamingDynamic*>(
-				StaticConstructObject_Internal(ULevelStreamingDynamic::StaticClass(), GetWorld(), NAME_None, RF_NoFlags, EInternalObjectFlags::None));*/
 			ULevelStreamingDynamic* StreamingLevel = NewObject<ULevelStreamingDynamic>(GetWorld(), ULevelStreamingDynamic::StaticClass(), NAME_None, RF_NoFlags);
 
 

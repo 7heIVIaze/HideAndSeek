@@ -203,20 +203,6 @@ bool ADoorPush::UseInteract(class AHorrorGameCharacter* Player)
 	return false;
 }
 
-// 문의 충돌 여부를 설정하는 함수.
-//void ADoorPush::SetDoorCollision(bool inIsPlayerNear)
-//{ 
-//	bIsPlayerNear = inIsPlayerNear;
-//	if (bIsPlayerNear) // true라면 플레이어가 근처에 있는 것이기 때문에 콜리전(물리적 충돌) 활성화
-//	{
-//		DoorMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel5, ECollisionResponse::ECR_Block);
-//	}
-//	else // false라면 근처에 플레이어가 없는 것이기 때문에 콜리전(물리적 충돌) 비활성화
-//	{
-//		DoorMesh->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel5, ECollisionResponse::ECR_Ignore);
-//	}
-//}
-
 void ADoorPush::ChangeCollisionPreset()
 {
 	if (bIsDoorClosed)
@@ -255,30 +241,6 @@ void ADoorPush::BreakDoor()
 		}
 	}
 }
-
-//void ADoorPush::PlayerBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-//{
-//	if (OtherActor != nullptr && OtherComp != nullptr && OtherActor != this)
-//	{
-//		if (AHorrorGameCharacter* Character = Cast<AHorrorGameCharacter>(OtherActor)) // 접촉된 액터가 플레이어여야지만 발동
-//		{
-//			PlayerCharacter = Character;
-//			SetDoorCollision(true);
-//		}
-//	}
-//}
-//
-//void ADoorPush::PlayerBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-//{
-//	if (OtherActor != nullptr && OtherComp != nullptr && OtherActor != this)
-//	{
-//		if (OtherActor->IsA<AHorrorGameCharacter>()) // 접촉된 액터가 플레이어여야지만 발동
-//		{
-//			PlayerCharacter = nullptr;
-//			SetDoorCollision(false);
-//		}
-//	}
-//}
 
 void ADoorPush::DestructionFinished()
 {

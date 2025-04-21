@@ -3,8 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "GameFramework/Actor.h"
-//#include "Components/TimelineComponent.h"
 #include "Furniture/DrawerClass.h"
 #include "DeskDrawer_cpp.generated.h"
 
@@ -32,9 +30,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Sound")
 		class USoundCue* DrawerCloseSound;
 public:
-	//UFUNCTION(BlueprintCallable, Category = "Interaction")
-		virtual void OnInteract(class AHorrorGameCharacter* Player) override;
+	virtual void OnInteract(class AHorrorGameCharacter* Player) override;
 
-	//UFUNCTION(BlueprintCallable, Category = "Drawer")
-		virtual void OpenDrawer(float Value) override;
+	virtual void OpenDrawer(float Value) override;
 };

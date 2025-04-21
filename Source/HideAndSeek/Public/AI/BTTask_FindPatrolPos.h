@@ -25,17 +25,4 @@ public:
 private:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Search", meta = (AllowPrivateAccess = "true"))
 		float SearchRadius = 1500.0f;
-
-//public:
-//	// Reaper Controller And Reaper Pawn
-//	class ACreatureAI* ReaperAI;
-//	class AReaper_cpp* Reaper;
-//
-//	// Runner Controller And Runner Pawn
-//	class AAIController_Runner* RunnerAI;
-//	class ARunner_cpp* Runner;
-//
-//	// Brute Controller And Brute Pawn
-//	class AAIController_Brute* BruteAI;
-//	class ABrute_cpp* Brute;
 };

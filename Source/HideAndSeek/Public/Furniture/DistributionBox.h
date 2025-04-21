@@ -3,13 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "GameFramework/Actor.h"
-//#include "Resource/InteractInterface.h"
 #include "Furniture/InteractableActor.h"
 #include "DistributionBox.generated.h"
 
 UCLASS()
-class HIDEANDSEEK_API ADistributionBox : public AInteractableActor //public AActor, public IInteractInterface
+class HIDEANDSEEK_API ADistributionBox : public AInteractableActor
 {
 	GENERATED_BODY()
 	
@@ -46,8 +44,5 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	// virtual void Tick(float DeltaTime) override;
-
 	virtual void OnInteract(class AHorrorGameCharacter* Player) override;
 };

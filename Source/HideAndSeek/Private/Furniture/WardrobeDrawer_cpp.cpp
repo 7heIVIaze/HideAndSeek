@@ -27,13 +27,6 @@ void AWardrobeDrawer_cpp::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// 타임라인 커브 값이 있다면 타임라인에 할당하고, 재생될 때 실행할 콜백 함수도 바인딩함.
-	/*if (CurveFloat)
-	{
-		FOnTimelineFloat TimelineProgress;
-		TimelineProgress.BindDynamic(this, &AWardrobeDrawer_cpp::OpenDrawer);
-		OpenAndClose.AddInterpFloat(CurveFloat, TimelineProgress);
-	}*/
 }
 
 // Called every frame
@@ -41,7 +34,6 @@ void AWardrobeDrawer_cpp::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//OpenAndClose.TickTimeline(DeltaTime);
 }
 
 // 타임라인이 재생될 때 호출될 콜백 함수.

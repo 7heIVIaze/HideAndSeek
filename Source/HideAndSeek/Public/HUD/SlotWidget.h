@@ -67,16 +67,4 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
 	class UProgressBar* DurabilityBar;
-
-	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	//	UBorder* Select_Border_Top;
-
-	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	//	UBorder* Select_Border_Left;
-
-	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	//	UBorder* Select_Border_Bottom;
-
-	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
-	//	UBorder* Select_Border_Right;
 };

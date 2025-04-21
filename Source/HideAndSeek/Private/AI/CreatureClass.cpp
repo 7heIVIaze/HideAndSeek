@@ -10,7 +10,7 @@
 #include "Components/SphereComponent.h"
 #include "Sound/SoundCue.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "AI/AIController_Runner.h"
+#include "AI/YokaiAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "LevelManager/PatrolPoint_cpp.h"
 #include "EngineUtils.h"
@@ -18,9 +18,6 @@
 #include "Player/HorrorGameCharacter.h"
 #include "Player/HorrorGamePlayerController.h"
 #include "Items/LightItem.h"
-//#include "Furniture/ClassroomDoorActor_cpp.h"
-//#include "Furniture/Door_cpp.h"
-//#include "Furniture/MetalDoor_cpp.h"
 #include "Furniture/DoorClass.h"
 #include "Furniture/Alarm.h"
 #include "Animation/AnimSequence.h"
@@ -59,10 +56,8 @@ ACreatureClass::ACreatureClass()
 
 	WatchPoint = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("PlayerWatchPoint"));
 
-	//AIControllerClass = AAIController_Runner::StaticClass();
 	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
 
-	//GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ACreatureClass::CheckBoxBeginOverlap);
 	GetMesh()->SetCollisionProfileName("AICharacters");
 	bIsCollectMode = true;
 }
@@ -95,6 +90,7 @@ void ACreatureClass::BeginPlay()
 		DissolveTimeline.SetTimelineFinishedFunc(TimelineFinish);
 		DissolveTimeline.SetLooping(false);
 	}
+
 }
 
 // Called every frame
@@ -122,7 +118,7 @@ void ACreatureClass::Tick(float DeltaTime)
 			KillSphere->OnComponentBeginOverlap.AddDynamic(this, &ACreatureClass::CatchBeginOverlap);
 
 			// AI Controller가 다시 감각을 사용할 수 있도록 설정 
-			AAIController_Runner* controller = Cast<AAIController_Runner>(GetController());
+			AYokaiAIController* controller = Cast<AYokaiAIController>(GetController());
 			controller->SetStunned(bIsStunned);
 			CurrentStunnedTime = 0;
 		}
@@ -145,72 +141,12 @@ void ACreatureClass::Tick(float DeltaTime)
 			KillSphere->OnComponentBeginOverlap.AddDynamic(this, &ACreatureClass::CatchBeginOverlap);
 
 			// AI Controller가 다시 감각을 사용할 수 있도록 설정
-			AAIController_Runner* controller = Cast<AAIController_Runner>(GetController());
+			AYokaiAIController* controller = Cast<AYokaiAIController>(GetController());
 			controller->SetStunned(bIsTimeStop);
 			TimeStopElapsedTime = 0;
 		}
 	}
-
-	//if (AAIController_Runner* RunnerController = Cast<AAIController_Runner>(GetController()))
-	//{
-	//	RunnerController->SetControlRotation(GetActorRotation());
-	//}
 }
-
-// Called to bind functionality to input
-//void ACreatureClass::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-//{
-//	Super::SetupPlayerInputComponent(PlayerInputComponent);
-//
-//}
-//
-//void ACreatureClass::Move(const FInputActionValue& Value)
-//{
-//	FVector2D MovementVector = Value.Get<FVector2D>();
-//
-//	if (Controller != nullptr)
-//	{
-//		const FRotator Rotation = Controller->GetControlRotation();
-//		const FRotator YawRotation(0, Rotation.Yaw, 0);
-//
-//		// get Foward Vector
-//		const FVector FowardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-//
-//		// get Right Vector
-//		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-//
-//		AddMovementInput(FowardDirection, MovementVector.Y);
-//		AddMovementInput(RightDirection, MovementVector.X);
-//	}
-//}
-//
-//void ACreatureClass::Look(const FInputActionValue& Value)
-//{
-//	FVector2D LookAxisVector = Value.Get<FVector2D>();
-//
-//	if (Controller != nullptr)
-//	{
-//		AddControllerYawInput(LookAxisVector.X);
-//		AddControllerPitchInput(LookAxisVector.Y);
-//	}
-//}
-//
-//void ACreatureClass::PossessedBy(AController* NewController)
-//{
-//	Super::PossessedBy(NewController);
-//
-//	if (IsPlayerControlled())
-//	{
-//		//	SetControlMode();
-//		GetCharacterMovement()->MaxWalkSpeed = 180.f;
-//	}
-//	else
-//	{
-//		//	SetControlMode();
-//		if (bIsChase) GetCharacterMovement()->MaxWalkSpeed = 330.f;
-//		else GetCharacterMovement()->MaxWalkSpeed = 100.f;
-//	}
-//}
 
 // 추격 시작을 알리는 함수
 void ACreatureClass::StartChase()
@@ -239,7 +175,7 @@ void ACreatureClass::EndChase()
 	if (bIsChase)
 	{
 		// 추격이 끝났음을 설정하고, 속도를 100(default)로 줄임.
-		AAIController_Runner* AIController = Cast<AAIController_Runner>(GetController());
+		AYokaiAIController* AIController = Cast<AYokaiAIController>(GetController());
 		if (AIController != nullptr)
 		{
 			AIController->EndChase();
@@ -380,7 +316,7 @@ void ACreatureClass::SoundEndOverlap(UPrimitiveComponent* OverlappedComp, AActor
 // 비헤이비어 트리의 태스크 노드의 PatrolMove와 FindPatrolPos에서 호출할 현재 목표 지점 설정 함수
 FVector ACreatureClass::GetPatrolPoint()
 {
-	AAIController_Runner* AIController = Cast<AAIController_Runner>(GetController());
+	AYokaiAIController* AIController = Cast<AYokaiAIController>(GetController());
 
 	// 0에서 PatrolPointList의 마지막 인덱스까지 중 랜덤 숫자 하나 뽑기
 	int randIdx = FMath::RandRange(0, PatrolPointList.Num() - 1);
@@ -388,7 +324,7 @@ FVector ACreatureClass::GetPatrolPoint()
 	// 뽑아온 랜덤 인덱스의 순찰 지역을 목표 지점으로 설정하고 해당 지점의 위치를 리턴함
 	CurrentPatrolPoint = PatrolPointList[randIdx];
 	FVector ResultLocation = CurrentPatrolPoint->GetActorLocation();
-	AIController->GetBlackboard()->SetValueAsObject(AAIController_Runner::PatrolTargetKey, CurrentPatrolPoint);
+	AIController->GetBlackboardComponent()->SetValueAsObject(AYokaiAIController::PatrolTargetKey, CurrentPatrolPoint);
 
 	return ResultLocation;
 }
@@ -412,14 +348,6 @@ void ACreatureClass::Exorcism()
 
 	// 사망한 것으로 설정
 	bIsDied = true;
-
-	//// 나이아가라 시스템을 활성화하고, Dissolve 머티리얼 효과를 줘서 서서히 사라지는 듯한 연출을 함 
-	//DissolveParticleSystem->Activate(true);
-	//UMaterialInterface* Material = GetMesh()->GetMaterial(0);
-	////MaterialInstance = GetMesh()->CreateDynamicMaterialInstance(0, Material);
-	////MaterialInstance->SetTextureParameterValue(TEXT("Texture"), Texture);
-	//DissolveParticleSystem->SetVariableTexture(TEXT("Texture"), Texture);
-	//DissolveTimeline.PlayFromStart();
 }
 
 // 순찰 성공 여부를 설정하는 함수
@@ -460,7 +388,7 @@ void ACreatureClass::Stunning(float dist)
 		KillSphere->OnComponentBeginOverlap.RemoveDynamic(this, &ACreatureClass::CatchBeginOverlap);
 
 		// AI Controller가 행동 불능된 동안에는 감각을 사용하지 못하게 알림.
-		AAIController_Runner* controller = Cast<AAIController_Runner>(GetController());
+		AYokaiAIController* controller = Cast<AYokaiAIController>(GetController());
 		controller->SetStunned(bIsStunned);
 	}
 }
@@ -478,7 +406,7 @@ void ACreatureClass::SetStun()
 	KillSphere->OnComponentBeginOverlap.RemoveDynamic(this, &ACreatureClass::CatchBeginOverlap);
 
 	// 그동안 컨트롤러가 아무것도 감지하지 못하게 하기 위해 시간 정지 장태로 알림.
-	AAIController_Runner* controller = Cast<AAIController_Runner>(GetController());
+	AYokaiAIController* controller = Cast<AYokaiAIController>(GetController());
 	controller->SetStunned(bIsTimeStop);
 }
 
@@ -502,11 +430,11 @@ void ACreatureClass::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 {
 	UE_LOG(LogTemp, Warning, TEXT("Something Catch"));
 	// 플레이어가 캐비닛이나 옷장에 숨어있는 걸 알고 있는지 파악
-	AAIController_Runner* AIController = Cast<AAIController_Runner>(GetController());
+	AYokaiAIController* AIController = Cast<AYokaiAIController>(GetController());
 	bool HideCatch = false;
 	if (AIController != nullptr)
 	{
-		HideCatch = AIController->GetBlackboard()->GetValueAsBool(AAIController_Runner::LockerLighting);
+		HideCatch = AIController->GetBlackboardComponent()->GetValueAsBool(AYokaiAIController::LockerLighting);
 	}
 
 	// Runner가 행동 불능이거나 죽은 상태, 시간 정지 상태가 아니라면 실행함
@@ -537,7 +465,6 @@ void ACreatureClass::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 					PlayerCharacter->SetPlayerStatus(EPlayerStatus::Catched);
 
 					// 추가로 SaveGame 파일을 불러와서
-					//if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 					if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(GetGameInstance()))
 					{
 						// 플레이어가 처음 Runner에게 잡힌 것이라면
@@ -545,10 +472,9 @@ void ACreatureClass::CatchBeginOverlap(UPrimitiveComponent* OverlappedComp, AAct
 						if (!GameInstance->GetIsYokaiFirstDied(YokaiType))
 						{
 							// Runner에게 잡혔다고 설정하고, SetArchiveGetText 메서드를 통해 Runner의 문서가 추가되었다고 알림.
-							//SaveData->CollectArchives.CatchedByBrute = true;
-							//SaveData->SaveData();
-							PlayerCharacter->SetArchiveGetText(NSLOCTEXT("ACreatureClass", "Kill_By_Runner", "Runner\nis added in archive"));
+							OnKillPlayer.Broadcast(FText::Format(YokaiName, NSLOCTEXT("DeathReason", "Kill_By_Message", " is added in archive.")));
 							GameInstance->SaveYokaiArchives(YokaiType);
+							YokaiName.ToString();
 						}
 					}
 
@@ -597,34 +523,6 @@ bool ACreatureClass::GetIsStop()
 	return bIsStop;
 }
 
-//// Exorcism될 때 Dissolve Material을 구현하기 위한 타임라인 콜백 함수.
-//void ACreatureClass::ChangeMaterialInstance(float inValue)
-//{
-//	//Super::ChangeMaterialInstance(inValue);
-//
-//	// 1에서 0으로 서서히 Curve Float에 따라 감소하면서 머티리얼의 파라미터와 나이아가라 파티클의 파라미터를 변경함.
-//	//float Amount = FMath::Lerp(1.0f, 0.0f, inValue);
-//	////float MI_Amount = FMath::Lerp(1.0f, 0.0f, inValue);
-//
-//	//MaterialInstance->SetScalarParameterValue(TEXT("Amount"), Amount);
-//
-//	////float NC_Amount = FMath::Lerp(1.0f, .0f, inValue);
-//	//DissolveParticleSystem->SetVariableFloat(TEXT("Amount"), Amount);
-//}
-//
-//// 타임라인 종료 후 호출할 콜백 함수.
-//void ACreatureClass::DissolveFinish()
-//{
-////	Super::DissolveFinish();
-//
-//	// 파티클을 비활성화시키고 해당 캐릭터를 제거함
-//	DissolveParticleSystem->SetVariableFloat(TEXT("Width"), 0.0f);
-//
-//	DissolveParticleSystem->Deactivate();
-//
-//	Destroy();
-//}
-
 // 문을 여는 동작을 수행할 함수
 void ACreatureClass::OpenDoor()
 {
@@ -655,20 +553,6 @@ void ACreatureClass::OpenDoor()
 			{
 				Door->AIInteract(this);
 			}
-			//if (ADoor_cpp* Door = Cast<ADoor_cpp>(HitActor))
-			//{
-			//	Door->AIInteract(this);
-			//}
-			//// Cast된 액터가 교실문이면 교실문과 상호 작용을 수행함.
-			//else if (AClassroomDoorActor_cpp* ClassroomDoor = Cast<AClassroomDoorActor_cpp>(HitActor))
-			//{
-			//	ClassroomDoor->AIInteract(this);
-			//}
-			//// Cast된 액터가 철문이면 철문과 상호 작용을 수행함.
-			//else if (AMetalDoor_cpp* MetalDoor = Cast <AMetalDoor_cpp>(HitActor))
-			//{
-			//	MetalDoor->AIInteract(this);
-			//}
 		}
 	}
 }

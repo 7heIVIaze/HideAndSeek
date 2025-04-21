@@ -6,15 +6,16 @@
 
 void URunnerAnimInstance::NativeInitializeAnimation()
 {
-	Runner = Cast<ARunner_cpp>(TryGetPawnOwner());
 	// Pawn에 해당하는 인스턴스가 있는지 없는지 상관 없이 해당 객체를 가져와 Runner_cpp로 변환
+	Runner = Cast<ARunner_cpp>(TryGetPawnOwner());
 }
 
 void URunnerAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 {
-	Super::NativeUpdateAnimation(DeltaSeconds);
-	// auto Pawn = TryGetPawnOwner();
-	if (IsValid(Runner)) // Runner가 NULL인지 체크
+	Super::NativeUpdateAnimation(DeltaSeconds);\
+	
+	// Runner가 NULL인지 체크
+	if (IsValid(Runner))
 	{
 		Speed = Runner->GetVelocity().Size(); // Runner의 속도 가져옴
 		bIsFalling = Runner->GetMovementComponent()->IsFalling();

@@ -40,18 +40,8 @@ public:
 
 	EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory);
 
-	//void OnDoorOpened(UBehaviorTreeComponent& OwnerComp, AAIController* AIController);
-
-	//UFUNCTION()
-	//	class AActor* GetClosestDoor(AAIController* AIController);
-
-	//UFUNCTION()
-	//	bool IsFacingDoor(AAIController* AIController, AActor* DoorActor);
 protected:
 	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
-
-	// EBTNodeResult::Type PerformMoveTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory);
-
 
 private:
 	FTimerHandle TimerHandle_WaitForDoor;

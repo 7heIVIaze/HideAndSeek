@@ -33,7 +33,6 @@ void ARandomSpawnGenerator::BeginPlay()
 	ULevelStreaming* SpawnedLevel = temp->CreateInstance(FString::FromInt(numX) + "x" + FString::FromInt(numY) + "Spawn");
 
 	SpawnedLevel->LevelTransform = UKismetMathLibrary::MakeTransform(UKismetMathLibrary::MakeVector(numX * LevelSize, numY * LevelSize, 0.0f), UKismetMathLibrary::MakeRotator(0.0f, 0.0f, 0.0f));
-	//temp->LevelTransform.SetComponents(FQuat(FRotator(0.0f, 0.0f, 90.0f * RotateDeg)), FVector(numX * LevelSize, numY * LevelSize, 0.0f), FVector(1.0f, 1.0f, 1.0f));
 	
 	SpawnedLevel->SetShouldBeLoaded(true);
 	SpawnedLevel->SetShouldBeVisible(true);

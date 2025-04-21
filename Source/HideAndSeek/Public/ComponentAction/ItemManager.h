@@ -6,7 +6,6 @@
 #include "GameFramework/Actor.h"
 #include "ItemManager.generated.h"
 
-//DECLARE_MULTICAST_DELEGATE_OneParam(FItemProbabilityDelegate, int32, SpawnedItemProbability);
 UCLASS()
 class HIDEANDSEEK_API AItemManager : public AActor
 {
@@ -22,10 +21,6 @@ protected:
 
 public:	
 	// Called every frame
-	// virtual void Tick(float DeltaTime) override;
-
-	//FItemProbabilityDelegate ItemProbabilityDelegate;
-
 	bool bIsBinded = false;
 
 	UFUNCTION(BlueprintCallable, Category = "ItemProbability")

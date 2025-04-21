@@ -27,14 +27,6 @@ void ADeskDrawer_cpp::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	//// 타임라인 커브 값이 있다면 타임라인에 할당하고, 재생될 때 실행할 콜백 함수도 바인딩함.
-	//if (CurveFloat)
-	//{
-	//	FOnTimelineFloat TimelineProgress;
-	//	TimelineProgress.BindDynamic(this, &ADeskDrawer_cpp::OpenDrawer);
-	//	OpenAndClose.AddInterpFloat(CurveFloat, TimelineProgress);
-	//}
-
 	// 서랍 메시들 중 하나를 선택해 메시를 변경함.
 	if (DrawerMeshes.Num() > 0)
 	{
@@ -48,7 +40,6 @@ void ADeskDrawer_cpp::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	//OpenAndClose.TickTimeline(DeltaTime);
 }
 
 // 타임라인이 재생될 때 호출될 콜백 함수.

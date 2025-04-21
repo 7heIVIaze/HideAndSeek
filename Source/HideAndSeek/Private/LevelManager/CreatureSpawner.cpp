@@ -47,12 +47,6 @@ void ACreatureSpawner::CreatureSpawn()
 {
 	FActorSpawnParameters SpawnParams;
 	
-	//for (int i = 0; i < 2; ++i)
-	//{
-		// AReaper_cpp* reaper = world->SpawnActor<AReaper_cpp>(ObjectToSpawn[0], spawnLocation, rotator, spawnParams);
-	//}
-
-	// 러너와 브루트를 하나씩 스폰함.
 	ARunner_cpp* runner = world->SpawnActor<ARunner_cpp>(ObjectToSpawn[0], spawnLocation, rotator, SpawnParams);
 	ABrute_cpp* brute = world->SpawnActor<ABrute_cpp>(ObjectToSpawn[1], spawnLocation, rotator, SpawnParams);
 }

@@ -6,9 +6,6 @@
 #include "Kismet/GameplayStatics.h"
 #include "Components/CapsuleComponent.h"
 #include "AI/CreatureClass.h"
-#include "AI/Reaper_cpp.h"
-#include "AI/Brute_cpp.h"
-#include "AI/Runner_cpp.h"
 #include "Player/HorrorGameCharacter.h"
 #include "LevelManager/HorrorGameGameMode.h"
 
@@ -16,26 +13,7 @@
 ASword::ASword()
 {
 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	//PrimaryActorTick.bCanEverTick = false;
-	//FVector fDefaultLoc(0.0f, 0.0f, 0.0f);
-	//FVector fDefaultScale(1.0f, 1.0f, 1.0f);
-
-	//// 메시들의 기본 설정을 해줌. (세세한 설정은 블루프린트 클래스에서 수행)
-	//DefaultSceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	//DefaultSceneRoot->SetWorldLocation(fDefaultLoc);
-	//RootComponent = DefaultSceneRoot;
-
-	//Sword = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Sword"));
-	//Sword->SetupAttachment(DefaultSceneRoot);
-	//static ConstructorHelpers::FObjectFinder<UStaticMesh>SwordMesh(TEXT("/Game/Assets/Items/Sword"));
-	//if (SwordMesh.Succeeded())
-	//{
-	//	Sword->SetStaticMesh(SwordMesh.Object);
-	//}
-	//Sword->SetRelativeLocation(fDefaultLoc);
-	//Sword->SetRelativeScale3D(fDefaultScale);
-	//Sword->SetCollisionProfileName(TEXT("ItemObjects"));
-
+	
 	CapsuleComp = CreateDefaultSubobject<UCapsuleComponent>(TEXT("HitBox"));
 	CapsuleComp->SetupAttachment(MeshComponent);
 }
@@ -49,21 +27,6 @@ void ASword::BeginPlay()
 	SetOnCollision(false);
 }
 
-// 플레이어가 청동 검을 사용할 때 작동할 함수.
-//void ASword::UseInteract(class AHorrorGameCharacter* Player)
-//{
-//	// 공격 음을 재생함.
-//	if (AttackSound)
-//	{
-//		UGameplayStatics::PlaySoundAtLocation(this, AttackSound, GetActorLocation());
-//	}
-//
-//	// 소유자를 지정해줌.
-//	if (OwnerPlayer == nullptr)
-//	{
-//		OwnerPlayer = Player;
-//	}
-//}
 bool ASword::UseItem()
 {
 	Super::UseItem();
@@ -115,91 +78,6 @@ void ASword::OnSwordBeginOverlap(class UPrimitiveComponent* OverlappedComp, clas
 			// 처치했다고 설정함.
 			bHadExorcism = true;
 		}
-
-		//// 그 액터가 리퍼인 경우
-		//if (AReaper_cpp* Reaper = Cast<AReaper_cpp>(OtherActor))
-		//{
-		//	// 처리 효과음을 재생함.
-		//	if (ExorcismSound)
-		//	{
-		//		UGameplayStatics::PlaySoundAtLocation(this, ExorcismSound, GetActorLocation());
-		//	}
-
-		//	// 리퍼를 처치하고 충돌체를 비활성화함.
-		//	Reaper->Exorcism();
-		//	SetOnCollision(false);
-
-		//	// 추격 중이었다면 추격 BGM을 종료함.
-		//	if(AHorrorGameGameMode* GameMode = Cast<AHorrorGameGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
-		//	{
-		//		GameMode->StopChaseBackGroundMusic();
-		//		
-		//		// 플레이어 근처에 요괴가 없다면 긴장 BGM도 종료함.
-		//		if (OwnerPlayer->CreatureNum <= 0)
-		//		{
-		//			GameMode->StopNervousBackGroundMusic();
-		//		}
-		//	}
-
-		//	// 처치했다고 설정함.
-		//	bHadExorcism = true;
-		//}
-		//// 그 액터가 브루트인 경우
-		//else if (ABrute_cpp* Brute = Cast<ABrute_cpp>(OtherActor))
-		//{
-		//	// 처리 효과음을 재생함.
-		//	if (ExorcismSound)
-		//	{
-		//		UGameplayStatics::PlaySoundAtLocation(this, ExorcismSound, GetActorLocation());
-		//	}
-
-		//	// 브루트를 처치하고 충돌체를 비활성화함.
-		//	Brute->Exorcism();
-		//	SetOnCollision(false);
-
-		//	// 추격 중이었다면 추격 BGM을 종료함.
-		//	if (AHorrorGameGameMode* GameMode = Cast<AHorrorGameGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
-		//	{
-		//		GameMode->StopChaseBackGroundMusic();
-
-		//		// 플레이어 근처에 요괴가 없다면 긴장 BGM도 종료함.
-		//		if (OwnerPlayer->CreatureNum <= 0)
-		//		{
-		//			GameMode->StopNervousBackGroundMusic();
-		//		}
-		//	}
-
-		//	// 처치했다고 설정함.
-		//	bHadExorcism = true;
-		//}
-		//// 그 액터가 러너인 경우
-		//else if (ARunner_cpp* Runner = Cast<ARunner_cpp>(OtherActor))
-		//{
-		//	// 처리 효과음을 재생함.
-		//	if (ExorcismSound)
-		//	{
-		//		UGameplayStatics::PlaySoundAtLocation(this, ExorcismSound, GetActorLocation());
-		//	}
-
-		//	// 러너를 처치하고 충돌체를 비활성화함.
-		//	Runner->Exorcism();
-		//	SetOnCollision(false);
-
-		//	// 추격 중이었다면 추격 BGM을 종료함.
-		//	if (AHorrorGameGameMode* GameMode = Cast<AHorrorGameGameMode>(UGameplayStatics::GetGameMode(GetWorld())))
-		//	{
-		//		GameMode->StopChaseBackGroundMusic();
-
-		//		// 플레이어 근처에 요괴가 없다면 긴장 BGM도 종료함.
-		//		if (OwnerPlayer->CreatureNum <= 0)
-		//		{
-		//			GameMode->StopNervousBackGroundMusic();
-		//		}
-		//	}
-
-		//	// 처치했다고 설정함.
-		//	bHadExorcism = true;
-		//}
 	}
 }
 

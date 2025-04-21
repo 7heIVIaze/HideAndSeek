@@ -8,7 +8,6 @@
 #include "Components/AudioComponent.h"
 #include "Sound/SoundCue.h"
 #include "Player/HorrorGamePlayerController.h"
-#include "AI/CreatureAI.h"
 #include "UObject/ConstructorHelpers.h"
 
 AHorrorGameGameMode::AHorrorGameGameMode()
@@ -17,12 +16,7 @@ AHorrorGameGameMode::AHorrorGameGameMode()
 	// set default pawn class to our Blueprinted character
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/FirstPerson/Blueprints/BP_FirstPersonCharacter"));
 	DefaultPawnClass = PlayerPawnClassFinder.Class;
-	//DefaultPawnClass = AHorrorGameCharacter::StaticClass();
 	PlayerControllerClass = AHorrorGamePlayerController::StaticClass();
-
-	// set default hud class to our Blueprinted HUD
-	//static ConstructorHelpers::FClassFinder<AHUD> PlayerHUDClassFinder(TEXT("/Game/Assets/BluePrints/UI/Player_HUD"));
-	//HUDClass = PlayerHUDClassFinder.Class;
 
 	static ConstructorHelpers::FClassFinder<UGameUI>MainWidgetClass(TEXT("/Game/Assets/BluePrints/UI/BasicInterface"));
 	if (MainWidgetClass.Succeeded())
@@ -83,7 +77,6 @@ void AHorrorGameGameMode::BeginPlay()
 	Super::BeginPlay();
 
 	AudioComponent->SetSound(MainCue);
-	//AudioComponent->Play();
 	AudioComponent->SetAutoActivate(false);
 
 	NervousAudioComponent->SetSound(NervousCue);

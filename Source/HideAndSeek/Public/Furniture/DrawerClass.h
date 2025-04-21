@@ -3,13 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "GameFramework/Actor.h"
 #include "Furniture/InteractableActor.h"
 #include "Components/TimelineComponent.h"
 #include "DrawerClass.generated.h"
 
 UCLASS()
-class HIDEANDSEEK_API ADrawerClass : public AInteractableActor //public AActor
+class HIDEANDSEEK_API ADrawerClass : public AInteractableActor
 {
 	GENERATED_BODY()
 	

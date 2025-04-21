@@ -57,21 +57,7 @@ void AClassroomDoors_cpp::BeginPlay()
 void AClassroomDoors_cpp::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//if (!LeftDoor->bIsDoorLocked || !RightDoor->bIsDoorLocked) // if one of them is false
-	//{
-	//	
-	//	if (LeftDoor->bIsDoorLocked)
-	//	{
-	//		LeftDoor->SetDoorUnlock();
-	//	}
-	//	if (RightDoor->bIsDoorLocked)
-	//	{
-	//		RightDoor->SetDoorUnlock();
-	//	}
-	//}
-
-	//RightDoor->SetKnowOtherDoorOpen(LeftDoor->bIsDoorClosed);
-	//LeftDoor->SetKnowOtherDoorOpen(RightDoor->bIsDoorClosed);
+	
 }
 
 // 양쪽 문의 충돌 여부를 설정하는 함수.
@@ -175,18 +161,10 @@ void AClassroomDoors_cpp::BreakDoor()
 	// 반대쪽 문도 부수는 작업을 실행함.
 	if (LeftDoor->bIsDoorBroken)
 	{
-		/*if (GC_Door)
-		{
-			GetWorld()->SpawnActor<AActor>(GC_Door, RightDoor->GetActorLocation(), GetActorRotation());
-		}*/
 		RightDoor->DestructionFinished();
 	}
 	if (RightDoor->bIsDoorBroken)
 	{
-		/*if (GC_Door)
-		{
-			GetWorld()->SpawnActor<AActor>(GC_Door, LeftDoor->GetActorLocation(), GetActorRotation());
-		}*/
 		LeftDoor->DestructionFinished();
 	}
 

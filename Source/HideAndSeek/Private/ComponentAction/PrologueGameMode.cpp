@@ -16,12 +16,7 @@ APrologueGameMode::APrologueGameMode()
 	// set default pawn class to our Blueprinted character
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnClassFinder(TEXT("/Game/FirstPerson/Blueprints/BP_FirstPersonCharacter"));
 	DefaultPawnClass = PlayerPawnClassFinder.Class;
-	//DefaultPawnClass = AHorrorGameCharacter::StaticClass();
 	PlayerControllerClass = AHorrorGamePlayerController::StaticClass();
-
-	// set default hud class to our Blueprinted HUD
-	//static ConstructorHelpers::FClassFinder<AHUD> PlayerHUDClassFinder(TEXT("/Game/Assets/BluePrints/UI/Player_HUD"));
-	//HUDClass = PlayerHUDClassFinder.Class;
 
 	static ConstructorHelpers::FClassFinder<UGameUI>MainWidgetClass(TEXT("/Game/Assets/BluePrints/UI/BasicInterface"));
 	if (MainWidgetClass.Succeeded())

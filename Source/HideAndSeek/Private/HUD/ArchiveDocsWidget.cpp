@@ -21,7 +21,8 @@ void UArchiveDocsWidget::NativeConstruct()
 
 	EndDelegate.BindDynamic(this, &UArchiveDocsWidget::AnimationFinished);
 	BindToAnimationFinished(RemoveAnim, EndDelegate);
-	
+
+	// 일단 초기 세이브 데이터의 구조체 변수들 초기화.(게임 시작할 때)
 	CollectedData.Article1 = false;
 	CollectedData.Article2 = false;
 	CollectedData.Article3 = false;
@@ -57,41 +58,6 @@ void UArchiveDocsWidget::NativeConstruct()
 	CollectedData.Diary4 = false;
 	CollectedData.Diary5 = false;
 
-	/*Item1_CigarLighter = false;
-	Item2_FlashLight = false;
-	Item3_Key = false;
-	Item4_Timer = false;
-	Item5_BronzeSword = false;
-	Item6_BronzeBell = false;
-	Item7_BronzeMirror = false;
-	Item8_Extinguisher = false;
-	Item9_Cutter = false;
-	Item10_SoulLantern = false;
-	Item11_GlowStick = false;
-
-	Article1 = false;
-	Article2 = false;
-	Article3 = false;
-	Article4 = false;
-	Article5 = false;
-	
-	Letter1_Berith1 = false;
-	Letter2_Berith2 = false;
-	Letter3_Berith3 = false;
-	Letter4_Berith4 = false;
-	Letter5_Berith5 = false;
-	Letter6_Berith6 = false;
-	Letter7_Gamigin1 = false;
-	Letter8_Gamigin2 = false;
-	Letter9_Gamigin3 = false;
-	Letter10_Gamigin4 = false;
-
-	Diary1 = false;
-	Diary2 = false;
-	Diary3 = false;
-	Diary4 = false;
-	Diary5 = false;*/
-
 	Archive1Text->SetText(NSLOCTEXT("UArchiveDocsWidget", "ArchiveNone", "???"));
 	Archive2Text->SetText(NSLOCTEXT("UArchiveDocsWidget", "ArchiveNone", "???"));
 	Archive3Text->SetText(NSLOCTEXT("UArchiveDocsWidget", "ArchiveNone", "???"));
@@ -112,11 +78,11 @@ void UArchiveDocsWidget::NativeConstruct()
 	Article->SetVisibility(ESlateVisibility::Collapsed);
 	Letter->SetVisibility(ESlateVisibility::Collapsed);
 
+	// 세이브 데이터 가져와서 재지정.
 	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 	{
 		if (ArchiveMode == EArchiveModes::AM_Item)
 		{
-		//	GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Archive Mode: AM_Item")));
 			NavIndex = 12;
 
 			if (SaveData->CollectArchives.Item1_CigarLighter)
@@ -190,7 +156,6 @@ void UArchiveDocsWidget::NativeConstruct()
 		}
 		else if (ArchiveMode == EArchiveModes::AM_Document)
 		{
-			//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Archive Mode: AM_Document")));
 			NavIndex = 11;
 
 			if (SaveData->CollectArchives.Article1)
@@ -257,7 +222,6 @@ void UArchiveDocsWidget::NativeConstruct()
 		}
 		else if (ArchiveMode == EArchiveModes::AM_Letter)
 		{
-		//GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Green, FString::Printf(TEXT("Archive Mode: AM_Letter")));
 			NavIndex = 11;
 
 			if (SaveData->CollectArchives.Letter1_Berith1)
@@ -375,7 +339,6 @@ void UArchiveDocsWidget::OnExitButtonClick()
 	// 이 위젯을 뷰포트에 출력하기 이전의 위젯을 가져와 뷰포트에 출력시킴.
 	UArchiveWidget* FromWidget = CreateWidget<UArchiveWidget>(GetWorld(), ParentWidget);
 	FromWidget->AddToViewport();
-	//FromWidget->bIsFocusable = true;
 	auto Controller = UGameplayStatics::GetPlayerController(GetWorld(), 0);
 	FromWidget->SetUserFocus(Controller);
 	FromWidget->SetKeyboardFocus();

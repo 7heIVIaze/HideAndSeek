@@ -34,13 +34,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FName>  DoubleNames = { TEXT("/Game/Levels/Level1/Double1"), TEXT("/Game/Levels/Level1/Double2"), TEXT("/Game/Levels/Level1/Double3"), TEXT("/Game/Levels/Level1/Double4") };
 	
-	/*UPROPERTY(EditAnywhere, Category = "Levels")
-	FName QuadNames[11];
-	UPROPERTY(EditAnywhere, Category = "Levels")
-	FName TripleNames[10];
-	UPROPERTY(EditAnywhere, Category = "Levels")
-	FName DoubleNames[4];*/
-	
 	float LevelSize = 5200.0f;
 	int numX = 5;
 	int numY = 5;

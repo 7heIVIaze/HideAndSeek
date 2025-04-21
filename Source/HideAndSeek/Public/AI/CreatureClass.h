@@ -58,9 +58,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Sound)
 	class USoundCue* PatrolSound;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Interact)
-	//	class UBoxComponent* InteractBox;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Interact")
 	TObjectPtr<class USphereComponent> KillSphere;
 
@@ -69,9 +66,6 @@ public:
 
 	UPROPERTY(EditAnywhere, Category = "Dissolve")
 	UCurveFloat* DissolveCurveFloat; // Timeline Curve -> Dissolve 타임라인을 위한 float 변수
-
-	/*UPROPERTY(VisibleAnywhere, Category = "Dissolve")
-	UMaterialInstanceDynamic* MaterialInstance;*/
 
 	UPROPERTY(VisibleAnywhere, Category = "Dissolve")
 	TArray<UMaterialInstanceDynamic*> MaterialInstances;
@@ -98,11 +92,6 @@ public:
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	//virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
-	//virtual void PossessedBy(AController* NewController) override;
 
 	/* Called for Sprint Input */
 	UFUNCTION(BlueprintCallable)
@@ -226,6 +215,10 @@ public:
 	// 타입
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Type)
 	EYokaiType YokaiType;
+
+	// 이름(이 방법이 더 보편적일거 같음.)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Name)
+	FText YokaiName;
 
 	// 처음 플레이어를 처치한 경우, 문서 보관 텍스트를 출력할 이벤트
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Event)

@@ -52,26 +52,12 @@ void AEnd_Mirror::OnInteract(class AHorrorGameCharacter* Player)
 		// 기본 BGM을 제거함.
 		Cast<AHorrorGameGameMode>(UGameplayStatics::GetGameMode(GetWorld()))->StopBackGroundMusic();
 
-		//// 플레이어가 사신의 물품을 각각 1개 씩 더 챙긴 상태에서 인터랙트할 경우에,
-		//if (Player->GetSwordNumbers() >= 1 && Player->GetMirrorNumbers() >= 1 && Player->GetBellNumbers() >= 1)
-		//{
-		//	// 다른 순간이동 위치로 순간이동시킴.
-		//	if (HiddenTeleportPosition)
-		//	{
-		//		FVector TeleportPosition = HiddenTeleportPosition->GetComponentLocation();
-		//		Player->SetActorLocation(TeleportPosition);
-		//	}
-		//}
-		// 그게 아닐 경우
-		//else
-		//{
-			// 원래 순간 이동 위치로 순간이동 시킴.
-			if (CommonTeleportPosition)
-			{
-				FVector TeleportPosition = CommonTeleportPosition->GetComponentLocation();
-				Player->SetActorLocation(TeleportPosition);
-			}
-		//}
+		// 원래 순간 이동 위치로 순간이동 시킴.
+		if (CommonTeleportPosition)
+		{
+			FVector TeleportPosition = CommonTeleportPosition->GetComponentLocation();
+			Player->SetActorLocation(TeleportPosition);
+		}
 	}
 }
 

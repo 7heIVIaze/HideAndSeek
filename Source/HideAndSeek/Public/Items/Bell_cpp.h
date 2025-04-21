@@ -20,12 +20,6 @@ protected:
 	virtual void BeginPlay() override;
 
 public: // UPROPERTY
-	/*UPROPERTY(VisibleAnywhere, Category = "Root")
-		TObjectPtr<USceneComponent> DefaultSceneRoot;
-
-	UPROPERTY(VisibleAnywhere, Category = "Bell")
-		TObjectPtr<UStaticMeshComponent> Bell;*/
-
 	UPROPERTY(VisibleAnywhere, Category = "Altar")
 		class AAltar_cpp* Altar;
 

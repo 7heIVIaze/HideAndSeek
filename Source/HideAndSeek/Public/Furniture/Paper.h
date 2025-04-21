@@ -3,16 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "GameFramework/Actor.h"
-//#include "Resource/InteractInterface.h"
 #include "Furniture/InteractableActor.h"
 #include "Paper.generated.h"
 
-// 문서가 추가되었다는 델리게이트 이벤트.
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDocumentMessage, FText, Message);
-
 UCLASS()
-class HIDEANDSEEK_API APaper : public AInteractableActor //public AActor, public IInteractInterface
+class HIDEANDSEEK_API APaper : public AInteractableActor
 {
 	GENERATED_BODY()
 	
@@ -34,9 +29,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Text)
 	class UDataTable* ArchiveData;
-
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Event)
-	FOnDocumentMessage OnInteractionMessage;*/
 
 protected:
 	// Called when the game starts or when spawned

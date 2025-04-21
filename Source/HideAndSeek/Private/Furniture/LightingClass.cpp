@@ -7,7 +7,7 @@
 #include "Player/HorrorGameCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "Sound/SoundCue.h"
-#include "AI/CreatureAI.h"
+#include "AI/YokaiAIController.h"
 #include "AI/CreatureClass.h"
 
 // Sets default values

@@ -77,31 +77,4 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Timer)
 	float Timer = 0.0f;
 
-//	
-//public:	
-//	// Sets default values for this actor's properties
-//	ALightItem();
-//
-//protected:
-//	// Called when the game starts or when spawned
-//	virtual void BeginPlay() override;
-//
-//public:
-//	UPROPERTY(VisibleAnywhere, Category = "Root")
-//		class USceneComponent* DefaultSceneRoot;
-//
-//	UPROPERTY(VisibleAnywhere, Category = "Sword")
-//		TObjectPtr<UStaticMeshComponent> Sword;
-//
-//	UPROPERTY(VisibleAnywhere, Category = "Altar")
-//		class AAltar_cpp* Altar;
-//
-//	UPROPERTY(EditAnywhere, Category = "Sound")
-//		class USoundCue* ObjectSound;
-//
-//
-//public:	
-//	void OnInteract(class AHorrorGameCharacter* Player) override;
-//
-//	void UseInteract(class AHorrorGameCharacter* Player) override;
 };

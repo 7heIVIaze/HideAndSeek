@@ -176,28 +176,8 @@ void UGameSettingWidget::OnHoveredEnglishButton()
 		// 현재 세부 버튼 인덱스를 0으로 설정하고, 버튼의 상태를 업데이트 함.
 		SubMenuNavIndex = 0;
 		UpdateButtonSlate();
-		/*if (OptionSetting.Language == ELanguage::LANG_En)
-		{
-			EnglishButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
-		}
-		else
-		{
-			EnglishButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-		}*/
 	}
 }
-
-//void UGameSettingWidget::OnUnhoveredEnglishButton()
-//{
-//	if (OptionSetting.Language == ELanguage::LANG_En)
-//	{
-//		EnglishButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-//	}
-//	else
-//	{
-//		EnglishButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//	}
-//}
 
 // 한국어 설정 버튼을 클릭했을 때 작동할 함수.
 void UGameSettingWidget::OnClickKoreanButton()
@@ -239,28 +219,8 @@ void UGameSettingWidget::OnHoveredKoreanButton()
 		// 현재 세부 버튼 인덱스를 0으로 설정하고, 버튼의 상태를 업데이트 함.
 		SubMenuNavIndex = 1;
 		UpdateButtonSlate();
-		/*if (OptionSetting.Language == ELanguage::LANG_Ko)
-		{
-			KoreanButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 1.f));
-		}
-		else
-		{
-			KoreanButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
-		}*/
 	}
 }
-
-//void UGameSettingWidget::OnUnhoveredKoreanButton()
-//{
-//	if (OptionSetting.Language == ELanguage::LANG_Ko)
-//	{
-//		KoreanButton->SetColorAndOpacity(FLinearColor(1.f, 0.f, 0.f, 0.8f));
-//	}
-//	else
-//	{
-//		KoreanButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//	}
-//}
 
 // 볼륨 설정 버튼을 클릭했을 때 작동할 함수.
 void UGameSettingWidget::OnClickVolumeButton()
@@ -294,14 +254,8 @@ void UGameSettingWidget::OnHoveredVolumeButton()
 		// 현재 버튼 인덱스를 1로 변경하고, 버튼의 상태를 업데이트 함.
 		MenuNavIndex = 1;
 		UpdateButtonSlate();
-		// VolumeButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 	}
 }
-
-//void UGameSettingWidget::OnUnhoveredVolumeButton()
-//{
-//	VolumeButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//}
 
 // 타이머 설정 버튼을 클릭했을 때 작동할 함수.
 void UGameSettingWidget::OnClickTimerButton()
@@ -351,14 +305,8 @@ void UGameSettingWidget::OnHoveredTimerButton()
 		// 현재 버튼 인덱스를 2로 설정하고, 버튼의 상태를 업데이트 함.
 		MenuNavIndex = 2;
 		UpdateButtonSlate();
-		// TimerButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 	}
 }
-
-//void UGameSettingWidget::OnUnhoveredTimerButton()
-//{
-//	TimerButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//}
 
 // 조준점 설정 버튼을 클릭하면 작동할 함수.
 void UGameSettingWidget::OnClickCrossHairButton()
@@ -408,14 +356,8 @@ void UGameSettingWidget::OnHoveredCrossHairButton()
 		// 현재 버튼 인덱스를 3으로 설정하고, 버튼의 상태를 업데이트 함.
 		MenuNavIndex = 3;
 		UpdateButtonSlate();
-		// CrossHairButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 	}
 }
-
-//void UGameSettingWidget::OnUnhoveredCrossHairButton()
-//{
-//	CrossHairButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//}
 
 // 마우스 민감도 버튼을 클릭하면 작동할 함수.
 void UGameSettingWidget::OnClickMouseSensitiveButton()
@@ -449,14 +391,8 @@ void UGameSettingWidget::OnHoveredMouseSensitiveButton()
 		// 현재 버튼 인덱스를 4로 설정하고, 버튼의 상태를 업데이트 함.
 		MenuNavIndex = 4;
 		UpdateButtonSlate();
-		// MouseSensitiveButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 	}
 }
-
-//void UGameSettingWidget::OnUnhoveredMouseSensitiveButton()
-//{
-//	MouseSensitiveButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//}
 
 // 현재 위젯의 모드를 설정하는 함수.
 void UGameSettingWidget::SetCurrentMode(CurrentType ModeType)
@@ -550,14 +486,8 @@ void UGameSettingWidget::OnHoveredBackButton()
 		// 현재 버튼 인덱스를 5로 설정하고, 버튼의 상태를 업데이트함.
 		MenuNavIndex = 5;
 		UpdateButtonSlate();
-		// BackButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 1.f));
 	}
 }
-
-//void UGameSettingWidget::OnUnhoveredBackButton()
-//{
-//	BackButton->SetColorAndOpacity(FLinearColor(1.f, 1.f, 1.f, 0.6f));
-//}
 
 // 애니메이션이 끝났을 때 작동할 함수.
 void UGameSettingWidget::AnimationFinished()

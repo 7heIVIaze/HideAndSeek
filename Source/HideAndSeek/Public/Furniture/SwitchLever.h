@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "GameFramework/Actor.h"
 #include "Furniture/InteractableActor.h"
 #include "Components/TimelineComponent.h"
 #include "SwitchLever.generated.h"

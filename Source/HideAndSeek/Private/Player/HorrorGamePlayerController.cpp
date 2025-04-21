@@ -224,11 +224,6 @@ void AHorrorGamePlayerController::ShowMainUI()
 		
 		// 인게임 Input으로 변경하고, 플레이어에게 레벨이 시작되었다고 알림.
 		ChangeInputMode(true);
-
-		/*if (AHorrorGameCharacter* PlayerCharacter = Cast<AHorrorGameCharacter>(GetPawn()))
-		{
-			PlayerCharacter->LevelStart();
-		}*/
 	}
 }
 

@@ -28,8 +28,3 @@ void APlayerSpawner::SpawnPlayer()
 {
 
 }
-
-//void APlayerSpawner::TeleportPlayer(AActor* Player)
-//{
-//	Player->SetActorLocation(GetActorLocation());
-//}

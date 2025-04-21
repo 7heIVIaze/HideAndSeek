@@ -21,10 +21,8 @@ ADBox_Door::ADBox_Door()
 	{
 		DoorMesh->SetStaticMesh(SM_DBoxDoor.Object);
 	}
-	DoorRotateAngle = -90.0f;
 
-	//DoorOpenSound = CreateDefaultSubobject<UAudioComponent>(TEXT("DoorOpenSound"));
-	//CloseSound = CreateDefaultSubobject<UAudioComponent>(TEXT("DoorCloseSound"));
+	DoorRotateAngle = -90.0f;
 }
 
 // Called when the game starts or when spawned
@@ -85,14 +83,6 @@ void ADBox_Door::OnInteract(class AHorrorGameCharacter* Player)
 		bIsDoorClosed = !bIsDoorClosed;
 	}
 }
-
-// 문을 여닫는 효과를 줄 함수
-//void ADBox_Door::OpenDoor(float Value)
-//{
-//	// 메시가 Yaw 축을 기준으로 최대 90도까지 회전할 수 있도록 설정함
-//	FRotator Rotator = FRotator(0.0f, DoorRotateAngle * Value, 0.0f);
-//	BoxMesh->SetRelativeRotation(Rotator);
-//}
 
 void ADBox_Door::DoorOpen(float inOpenAndCloseCurveFloat)
 {

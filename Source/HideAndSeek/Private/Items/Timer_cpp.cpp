@@ -38,20 +38,10 @@ void ATimer_cpp::BeginPlay()
 
 }
 
-// Called every frame
-//void ATimer_cpp::Tick(float DeltaTime)
-//{
-//	Super::Tick(DeltaTime);
-//
-//}
-
 // 플레이어가 타이머 아이템을 습득하려 할 때 작동할 함수.
 void ATimer_cpp::OnInteract(class AHorrorGameCharacter* Player) // Player Click Event
 {
 	Super::OnInteract(Player);
-
-	// 플레이어의 타이머를 얻는 메서드를 호출함.
-	//Player->AddTimer();
 
 	// 위 메서드를 통해 플레이어가 아이템을 얻을 수 있는 상태이면
 	if (Player->bCanItemGet)

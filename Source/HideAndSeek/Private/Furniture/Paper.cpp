@@ -53,7 +53,6 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 	if (UHorrorGameSaveGame* SaveData = UHorrorGameSaveGame::LoadObject(this, TEXT("Player"), 0))
 	{
 		// Document Data 구조체의 Type 값이 Article일 경우 아래의 코드를 수행함.
-		//if (Type.Equals("Article")) // 해당 문서의 타입이 기사면
 		if(DocumentData->Type == EDocumentType::DOCS_Article)
 		{
 			Type = TEXT("Article"); // 문서의 타입을 Article이라고 할당함.
@@ -124,17 +123,9 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 			}
 		}
 		// Document Data 구조체의 Type 값이 Diary일 경우, 아래의 코드를 수행함.
-		//else if (Type.Equals("Diary")) // 해당 문서의 타입이 일기장이면
 		else if (DocumentData->Type == EDocumentType::DOCS_Diary)
 		{
 			Type = TEXT("Diary"); // Type이 Diary라고 할당함.
-
-			/*while (SaveData->Diary.Num() < Number)
-			{
-				SaveData->Diary.Add(TEXT("???"));
-			}
-			SaveData->Diary[Number - 1] = text.ToString();*/
-			//switch (Number)
 
 			// 문서 번호에 따라 아래의 경우를 수행함.
 			switch (DocumentData->Number)
@@ -202,17 +193,9 @@ void APaper::OnInteract(class AHorrorGameCharacter* Player)
 			}
 		}
 		// Document Data 구조체의 Type 값이 Letter일 경우, 아래의 코드를 수행함.
-		//else if (Type.Equals("Letter")) // 해당 문서의 타입이 메시지면
 		else if (DocumentData->Type == EDocumentType::DOCS_Letter)
 		{
 			Type = TEXT("Letter"); // 타입값을 Letter로 설정함.
-
-			/*while (SaveData->Message.Num() < Number)
-			{
-				SaveData->Message.Add(TEXT("???"));
-			}
-			SaveData->Message[Number - 1] = text.ToString();*/
-			//switch (Number)
 
 			// 문서 번호에 따라 아래의 경우를 수행함.
 			switch (DocumentData->Number)

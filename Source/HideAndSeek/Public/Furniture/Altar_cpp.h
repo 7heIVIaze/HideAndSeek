@@ -10,9 +10,6 @@
 // 클리어 델리게이트 이벤트
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnClear);
 
-//// 클리어 불가 이벤트
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnClearMessage, FText, Message);
-
 UCLASS()
 class HIDEANDSEEK_API AAltar_cpp : public AInteractableActor
 {
@@ -27,15 +24,6 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Altar")
 		TObjectPtr<UStaticMeshComponent> Altar;
-
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Object")
-		TObjectPtr<UStaticMeshComponent> Sword;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Object")
-		TObjectPtr<UStaticMeshComponent> Mirror;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Object")
-		TObjectPtr<UStaticMeshComponent> Bell;*/
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "SpawnPoint")
 		TObjectPtr<UStaticMeshComponent> SpawnPoint;
@@ -74,10 +62,6 @@ public:
 	// 클리어 델리게이트 이벤트.
 	UPROPERTY(BlueprintAssignable, Category = Event)
 	FOnClear OnClear;
-
-	//// 클리어 메시지 델리게이트 이벤트.
-	//UPROPERTY(BlueprintAssignable, Category = Event)
-	//FOnClearMessage OnClearMessage;
 
 protected:
 	// Called when the game starts or when spawned

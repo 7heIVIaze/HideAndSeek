@@ -3,14 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "GameFramework/Actor.h"
-//#include "Resource/InteractInterface.h"
 #include "Furniture/InteractableActor.h"
 #include "Components/TimelineComponent.h"
 #include "DoorClass.generated.h"
 
 UCLASS()
-class HIDEANDSEEK_API ADoorClass : public AInteractableActor //public AActor, public IInteractInterface
+class HIDEANDSEEK_API ADoorClass : public AInteractableActor
 {
 	GENERATED_BODY()
 	

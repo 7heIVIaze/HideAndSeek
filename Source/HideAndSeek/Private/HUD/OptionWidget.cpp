@@ -50,7 +50,6 @@ void UOptionWidget::NativeConstruct()
 	MenuNumber = 3;
 	
 	UpdateButtonSlate();
-	// SetCurrentMode(OptionType::None);
 }
 
 // 게임 플레이 설정 버튼을 클릭했을 때 작동할 함수.
@@ -111,30 +110,6 @@ void UOptionWidget::OnHoveredGraphicsSettingButton()
 	UpdateButtonSlate();
 }
 
-// 현재는 Deprecated.
-//void UOptionWidget::OnClickKeyMappingButton()
-//{
-//	if (IsValid(ButtonClickSound))
-//	{
-//		UGameplayStatics::PlaySound2D(GetWorld(), ButtonClickSound);
-//	}
-//	if (GEngine)
-//		GEngine->AddOnScreenDebugMessage(-1, 15.f, FColor::Yellow, TEXT("KeyMapping Click"));
-//	//PlayAnimation(NewOptionAnim);
-//	// SetCurrentMode(OptionType::KeySetting);
-//}
-
-// 현재는 Deprecated.
-//void UOptionWidget::OnHoveredKeyMappingButton()
-//{
-//	if (IsValid(ButtonMoveSound))
-//	{
-//		UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
-//	}
-//	MenuNavIndex = 2;
-//	UpdateButtonSlate();
-//}
-
 // 뒤로 가기 버튼을 클릭했을 때 작동할 함수.
 void UOptionWidget::OnClickBackButton()
 {
@@ -157,7 +132,6 @@ void UOptionWidget::OnHoveredBackButton()
 	{
 		UGameplayStatics::PlaySound2D(GetWorld(), ButtonMoveSound);
 	}
-	//MenuNavIndex = 3;
 
 	// 현재 버튼 인덱스를 2로 설정하고, 버튼의 상태를 업데이트 함.
 	MenuNavIndex = 2;

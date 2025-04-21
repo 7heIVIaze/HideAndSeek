@@ -13,9 +13,6 @@ void UDiedWidget::NativeConstruct()
 
 	this->SetKeyboardFocus();
 
-	// RestartButton = Cast<UButton>(GetWidgetFromName(TEXT("RestartBtn")));
-	// ExitButton = Cast<UButton>(GetWidgetFromName(TEXT("ExitBtn")));
-
 	// 각 버튼 별로 클릭과 마우스 호버 시 호출할 콜백 함수를 바인딩해줌,
 	if (nullptr != RestartButton)
 	{
@@ -44,7 +41,6 @@ void UDiedWidget::OnClickRestartButton()
 	// 현재 레벨을 재시작함.
 	auto playerController = Cast<AHorrorGamePlayerController>(GetOwningPlayer());
 	playerController->RestartLevel();
-	//UGameplayStatics::OpenLevel(GetWorld(), TEXT("Start"));
 }
 
 // 메인 화면으로 버튼을 클릭했을 때 호출할 함수.

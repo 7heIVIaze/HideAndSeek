@@ -53,25 +53,8 @@ public:
 	// 소리가 울리고 있는지 여부를 리턴하는 함수.
 	UFUNCTION(BlueprintCallable)
 	bool GetIsSoundPlaying();
-
-	/*UFUNCTION()
-		void SetPlaySound(bool bValue);
-
-	UFUNCTION()
-		bool GetPlaySound();*/
-
-	/*UFUNCTION()
-		void OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);*/
-
-	/*UFUNCTION(BlueprintCallable)
-	void OnBeginOverlap();*/
-
-//private:
-//	UPROPERTY()
-//		bool bPlaySound = false;
 	
 public:
 	UPROPERTY(BlueprintReadWrite, Category = Boolean)
 	bool bIsSoundPlaying = false;
-		//TSubclassOf<class ATimerProjectile_cpp> Timer;
 };

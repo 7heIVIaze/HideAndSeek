@@ -15,8 +15,6 @@ ALockerDoorActor_cpp::ALockerDoorActor_cpp()
 	// 메시들의 기본 설정을 해줌. (세세한 설정은 블루프린트 클래스에서 수행)
 	RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	RootComponent = RootComp;
-	//RootComp->SetWorldLocation(DefaultPos);
-	//RootComp->SetWorldScale3D(DefaultScale);
 
 	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LockerDoor"));
 	DoorMesh->SetupAttachment(RootComp);
@@ -25,31 +23,7 @@ ALockerDoorActor_cpp::ALockerDoorActor_cpp()
 	{
 		DoorMesh->SetStaticMesh(Locker_Door.Object);
 	}
-	//DoorMesh->SetRelativeLocation(FVector(41.f, 45.f, -50.f));
-	//DoorMesh->SetRelativeScale3D(DefaultScale);
 
-	//LockerDoorFrame = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LockerDoorFrame"));
-	//LockerDoorFrame->SetupAttachment(DoorMesh);
-	//static ConstructorHelpers::FObjectFinder<UStaticMesh>Locker_Frame(TEXT("/Game/Assets/Furniture/Loker_LockerFrame"));
-	//if (Locker_Frame.Succeeded())
-	//{
-	//	LockerDoorFrame->SetStaticMesh(Locker_Frame.Object);
-	//}
-	//LockerDoorFrame->SetRelativeLocation(FVector(-41.f, -45.f, 50.f));
-	//LockerDoorFrame->SetRelativeScale3D(DefaultScale);
-	//LockerDoorFrame->SetRelativeRotation(FRotator(0.f, 180.f, 0.f));
-
-	//LockerDoorLock = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("LockerDoorLock"));
-	//LockerDoorLock->SetupAttachment(DoorMesh);
-	//static ConstructorHelpers::FObjectFinder<UStaticMesh>Locker_Lock(TEXT("/Game/Assets/Furniture/Loker_LockerLock"));
-	//if (Locker_Lock.Succeeded())
-	//{
-	//	LockerDoorLock->SetStaticMesh(Locker_Lock.Object);
-	//}
-	//LockerDoorLock->SetRelativeLocation(FVector(-41.f, -45.f, 50.f));
-	//LockerDoorLock->SetRelativeScale3D(DefaultScale);
-	//LockerDoorLock->SetRelativeRotation(FRotator(0.f, 180.f, 0.f));
-	//
 	LockerLockMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Lock"));
 	LockerLockMesh->SetupAttachment(DoorMesh);
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>Locker_LockObj(TEXT("/Game/Assets/Furniture/Lock"));
@@ -57,17 +31,6 @@ ALockerDoorActor_cpp::ALockerDoorActor_cpp()
 	{
 		LockerLockMesh->SetStaticMesh(Locker_LockObj.Object);
 	}
-	/*LockerLockMesh->SetRelativeLocation(FVector(-77.f, 7.f, 49.f));
-	LockerLockMesh->SetRelativeScale3D(DefaultScale * 2);
-	LockerLockMesh->SetRelativeRotation(FRotator(0.f, 90.f, 0.f));*/
-
-	//LockerSound = CreateDefaultSubobject<UAudioComponent>(TEXT("CloseSound"));
-	//LockerSound->SetupAttachment(RootComp);
-
-	//LockerOpenSound = CreateDefaultSubobject<UAudioComponent>(TEXT("OpenSound"));
-	//LockerOpenSound->SetupAttachment(RootComp);
-	//LockerSound->SetAutoActivate(false);
-	//LockerOpenSound->SetAutoActivate(false);
 }
 
 // Called when the game starts or when spawned

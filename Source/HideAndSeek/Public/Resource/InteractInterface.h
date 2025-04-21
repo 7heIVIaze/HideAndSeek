@@ -29,15 +29,4 @@ public:
 	virtual void OnInteract(class AHorrorGameCharacter* Player) = 0;
 
 	virtual bool UseInteract(class AHorrorGameCharacter* Player) = 0;
-	// void OnInteract(AHorrorGameCharacter* PlayerCharacter);
-
-	//// Use Item Interact Interface
-	//UFUNCTION(BlueprintCallable, Category = "Interaction")
-	//void UseInteract(AHorrorGameCharacter* PlayerCharacter);
-
-	/*UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
-	void StartFocus();
-
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Interaction")
-	void EndFocus();*/
 };

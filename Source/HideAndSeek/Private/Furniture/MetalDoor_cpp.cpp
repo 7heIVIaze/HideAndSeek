@@ -4,9 +4,6 @@
 #include "Sound/SoundCue.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/HorrorGameCharacter.h"
-#include "AI/Reaper_cpp.h"
-#include "AI/Runner_cpp.h"
-#include "AI/Brute_cpp.h"
 #include "AI/CreatureClass.h"
 #include "Components/BoxComponent.h"
 #include "Components/AudioComponent.h"
@@ -18,29 +15,12 @@ AMetalDoor_cpp::AMetalDoor_cpp()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// 메시들의 기본 설정을 해줌. (세세한 설정은 블루프린트 클래스에서 수행)
-	/*RootComp = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	RootComponent = RootComp;
-
-	DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Door"));
-	DoorMesh->SetupAttachment(RootComp);*/
 	static ConstructorHelpers::FObjectFinder<UStaticMesh>SM_Door(TEXT("/Game/Assets/Furniture/basementDoor"));
 	if (SM_Door.Succeeded())
 	{
 		DoorMesh->SetStaticMesh(SM_Door.Object);
 
 	}
-	/*PlayerOverlapBox = CreateDefaultSubobject<UBoxComponent>(TEXT("PlayerOverlapBox"));
-	PlayerOverlapBox->SetupAttachment(RootComp);
-	PlayerOverlapBox->OnComponentBeginOverlap.AddDynamic(this, &AMetalDoor_cpp::PlayerBoxBeginOverlap);
-	PlayerOverlapBox->OnComponentEndOverlap.AddDynamic(this, &AMetalDoor_cpp::PlayerBoxEndOverlap);*/
-
-	/*CreatureOverlapBox = CreateDefaultSubobject<UBoxComponent>(TEXT("CreatureOverlapBox"));
-	CreatureOverlapBox->SetupAttachment(RootComp);
-	CreatureOverlapBox->OnComponentBeginOverlap.AddDynamic(this, &AMetalDoor_cpp::CreatureBoxBeginOverlap);*/
-
-	//DestructionAudio = CreateDefaultSubobject<UAudioComponent>(TEXT("DestructionAudio"));
-	//DestructionAudio->SetupAttachment(Door);
-	//DestructionAudio->SetAutoActivate(false);*/
 
 	DestructionAudio->OnAudioFinished.AddDynamic(this, &AMetalDoor_cpp::DestructionFinished);
 
@@ -198,20 +178,6 @@ void AMetalDoor_cpp::AIInteract(AActor* AICharacter)
 		}
 	}
 }
-//
-//// 문의 충돌 여부를 설정하는 함수.
-//void AMetalDoor_cpp::SetDoorCollision(bool inIsPlayerNear)
-//{
-//	bIsPlayerNear = inIsPlayerNear;
-//	if (bIsPlayerNear) // true라면 플레이어가 근처에 있는 것이기 때문에 콜리전(물리적 충돌) 활성화
-//	{
-//		Door->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel5, ECollisionResponse::ECR_Block);
-//	}
-//	else // false라면 근처에 플레이어가 없는 것이기 때문에 콜리전(물리적 충돌) 비활성화
-//	{
-//		Door->SetCollisionResponseToChannel(ECollisionChannel::ECC_GameTraceChannel5, ECollisionResponse::ECR_Ignore);
-//	}
-//}
 
 // 타임라인이 재생될 때 호출될 콜백 함수.
 void AMetalDoor_cpp::DoorOpen(float Value)
@@ -274,30 +240,6 @@ void AMetalDoor_cpp::BreakDoor()
 		}
 	}
 }
-
-//void AMetalDoor_cpp::PlayerBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-//{
-//	if (OtherActor != nullptr && OtherComp != nullptr && OtherActor != this)
-//	{
-//		if (AHorrorGameCharacter* Character = Cast<AHorrorGameCharacter>(OtherActor)) // 접촉된 액터가 플레이어여야지만 발동
-//		{
-//			PlayerCharacter = Character;
-//			SetDoorCollision(true);
-//		}
-//	}
-//}
-//
-//void AMetalDoor_cpp::PlayerBoxEndOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-//{
-//	if (OtherActor != nullptr && OtherComp != nullptr && OtherActor != this)
-//	{
-//		if (OtherActor->IsA<AHorrorGameCharacter>()) // 접촉된 액터가 플레이어여야지만 발동
-//		{
-//			PlayerCharacter = nullptr;
-//			SetDoorCollision(false);
-//		}
-//	}
-//}
 
 void AMetalDoor_cpp::DestructionFinished()
 {

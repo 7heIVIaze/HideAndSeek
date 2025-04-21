@@ -33,6 +33,15 @@ UInventoryComponent::UInventoryComponent()
 	PassiveItemNumber = 0;
 	bDoHaveCompass = false;
 	bIsExtinguisherSpraying = false;
+
+	// 소비형 아이템 인벤토리 슬롯의 개수는 기본적으로 5개로 설정.
+	Consumable_Inventory.Init(FHorrorGameItemData::FHorrorGameItemData(), ConsumableInventoryMaxSize);
+
+	// 조명 아이템 인벤토리 슬롯의 개수는 기본적으로 2개로 설정.
+	Lighting_Inventory.Init(FHorrorGameItemData::FHorrorGameItemData(), LightingInventoryMaxSize);
+
+	// 패시브(장비형) 아이템 인벤토리의 슬롯의 개수는 기본적으로 1개로 설정,
+	Passive_Inventory.Init(FHorrorGameItemData::FHorrorGameItemData(), PassiveInventoryMaxSize);
 	// ...
 }
 
@@ -1159,7 +1168,6 @@ int UInventoryComponent::AddKey(class AItemClass* Item, int IndexToInsert, class
 		return 0;
 	}
 
-	//Consumable_Inventory[ConsumableInventoryNumber++] = Item->GetItemData();
 	Consumable_Inventory[IndexToInsert] = Item->GetItemData();
 
 	// If this is the first item the player obtain, register the item in Quick Items.
@@ -1231,14 +1239,11 @@ bool UInventoryComponent::UseKey(class AHorrorGameCharacter* Player)
 	{
 		// Reduce the key.
 		Consumable_Inventory[UsedItemIndex].ItemCount -= 1;
-		//Consumable_Inventory[CurrentConsumableItemIndex].ItemCount -= 1;
 
 		// When all keys are used up
 		if (Consumable_Inventory[UsedItemIndex].ItemCount <= 0)
-			//if (Consumable_Inventory[CurrentConsumableItemIndex].ItemCount <= 0)
 		{
 			Consumable_Inventory.RemoveAt(UsedItemIndex);
-			//Consumable_Inventory.RemoveAt(0);
 			ConsumableInventoryNumber--;
 
 
@@ -1294,7 +1299,6 @@ int UInventoryComponent::AddTimer(class AItemClass* Item, int IndexToInsert, cla
 		return 0;
 	}
 
-	//Consumable_Inventory[ConsumableInventoryNumber++] = Item->GetItemData();
 	Consumable_Inventory[IndexToInsert] = Item->GetItemData();
 
 	// If this is the first item the player obtain, register the item in Quick Items.
@@ -1334,7 +1338,6 @@ int UInventoryComponent::ChangeTimer(class AItemClass* ChangedItem, int IndexToI
 		}
 	}
 
-	//Consumable_Inventory[ConsumableInventoryNumber++] = Item->GetItemData();
 	Consumable_Inventory[IndexToInsert] = ChangedItem->GetItemData();
 
 	OnItemAcquired.Broadcast(Consumable_Inventory[CurrentConsumableItemIndex], CurrentConsumableItemIndex);
@@ -1416,7 +1419,6 @@ int UInventoryComponent::AddMirror(class AItemClass* Item, int IndexToInsert, cl
 		return 0;
 	}
 
-	//Consumable_Inventory[ConsumableInventoryNumber++] = Item->GetItemData();
 	Consumable_Inventory[IndexToInsert] = Item->GetItemData();
 
 
@@ -1444,7 +1446,6 @@ int UInventoryComponent::AddMirror(class AItemClass* Item, int IndexToInsert, cl
 
 int UInventoryComponent::ChangeMirror(class AItemClass* ChangedItem, int IndexToInsert, class AHorrorGameCharacter* Player)
 {
-	//Consumable_Inventory[ConsumableInventoryNumber++] = Item->GetItemData();
 	Consumable_Inventory[IndexToInsert] = ChangedItem->GetItemData();
 
 	OnItemAcquired.Broadcast(Consumable_Inventory[CurrentConsumableItemIndex], CurrentConsumableItemIndex);
@@ -1454,17 +1455,6 @@ int UInventoryComponent::ChangeMirror(class AItemClass* ChangedItem, int IndexTo
 
 bool UInventoryComponent::UseMirror(class AHorrorGameCharacter* Player)
 {
-	/*AActor* HitActor = Player->GetActorToInteract();
-
-	if (HitActor->IsA<ADoorClass>())
-	{
-		if (HitActor->GetClass()->ImplementsInterface(UInteractInterface::StaticClass()))
-		{
-			auto ActorInterface = Cast<IInteractInterface>(HitActor);
-			ActorInterface->UseInteract(Player);
-		}
-	}*/
-
 	OnItemConsumed.Broadcast(Consumable_Inventory[CurrentConsumableItemIndex], CurrentConsumableItemIndex);
 
 	return false;
@@ -1494,7 +1484,6 @@ int UInventoryComponent::AddSword(class AItemClass* Item, int IndexToInsert, cla
 		return 0;
 	}
 
-	//Consumable_Inventory[ConsumableInventoryNumber++] = Item->GetItemData();
 	Consumable_Inventory[IndexToInsert] = Item->GetItemData();
 
 	// If this is the first item the player obtain, register the item in Quick Items.
@@ -1520,7 +1509,6 @@ int UInventoryComponent::AddSword(class AItemClass* Item, int IndexToInsert, cla
 
 int UInventoryComponent::ChangeSword(class AItemClass* ChangedItem, int IndexToInsert, class AHorrorGameCharacter* Player)
 {
-	//Consumable_Inventory[ConsumableInventoryNumber++] = Item->GetItemData();
 	Consumable_Inventory[IndexToInsert] = ChangedItem->GetItemData();
 
 	OnItemAcquired.Broadcast(Consumable_Inventory[CurrentConsumableItemIndex], CurrentConsumableItemIndex);
@@ -2029,15 +2017,6 @@ bool UInventoryComponent::UseLantern(class AHorrorGameCharacter* Player)
 	{
 		result = Player->SetLanternOn(true);
 	}
-	// if lantern on
-
-	// else
-	// result = Player->SetLanternOn(true);
-
-	//if (result)
-	//{
-	//	// broadcast to stat component for reducing the player's health point.
-	//}
 
 	return result;
 }

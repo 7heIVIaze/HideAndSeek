@@ -10,7 +10,7 @@
  * 빛을 내는 아이템. 길 찾는 용도로 사용가능하도록 설정할 것 
  */
 UCLASS()
-class HIDEANDSEEK_API AGlowStick : public AConsumableItemClass //public AActiveItem, public IInteractInterface
+class HIDEANDSEEK_API AGlowStick : public AConsumableItemClass
 {
 	GENERATED_BODY()
 	
@@ -18,12 +18,6 @@ public:
 	AGlowStick();
 
 public: // Properties
-	/*UPROPERTY(VisibleAnywhere, Category = Root)
-	TObjectPtr<USceneComponent> RootComp;*/
-
-	/*UPROPERTY(VisibleAnywhere, Category = Mesh)
-		TObjectPtr<UStaticMeshComponent> MeshComp;*/
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Light)
 	class USoundCue* UseSound;
 
@@ -34,7 +28,6 @@ public: // Functions
 	UFUNCTION(BlueprintCallable)
 	void SetLightOn();
 
-	//virtual bool UseItem() override;
 	virtual void OnInteract(class AHorrorGameCharacter* Player) override;
 
 	virtual bool UseInteract(class AHorrorGameCharacter* Player) override;

@@ -15,9 +15,6 @@ void UClearWidget::NativeConstruct()
 
 	this->SetKeyboardFocus();
 
-	//NextStageButton = Cast<UButton>(GetWidgetFromName(TEXT("NextStage")));
-	//BackToMainButton = Cast<UButton>(GetWidgetFromName(TEXT("BackToMain")));
-
 	// 현재 레벨을 가져오고, 기록 갱신 텍스트는 안 보이게 생성함.
 	CurrentLevel = UGameplayStatics::GetCurrentLevelName(GetWorld());
 	RecordBreakingText->SetVisibility(ESlateVisibility::Collapsed);
@@ -27,7 +24,6 @@ void UClearWidget::NativeConstruct()
 	{
 		if (UHorrorGameGameInstance* GameInstance = Cast<UHorrorGameGameInstance>(UGameplayStatics::GetGameInstance(GetWorld())))
 		{
-			//FText ClearedTime = GameInstance->GetClearTime(ClearedChapter);
 			ClearTime->SetText(ClearedTime);
 		}
 	}

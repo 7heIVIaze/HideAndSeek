@@ -24,17 +24,4 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void SetupLightComponent() override;
-//
-//public:
-//	// Sets FlashLight Actor
-//	UPROPERTY(VisibleAnywhere, Category = "Root")
-//		USceneComponent* DefaultSceneRoot;
-//
-//	UPROPERTY(VisibleAnywhere, Category = "Mesh")
-//		UStaticMeshComponent* FlashLightMesh;
-//
-//public:	
-//	void OnInteract(class AHorrorGameCharacter* Player) override;
-//
-//	void UseInteract(class AHorrorGameCharacter* Player) override;
 };

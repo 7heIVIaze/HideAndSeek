@@ -20,7 +20,6 @@ protected:
 	virtual void NativeTick(const FGeometry& MyGeometry, float InDeltaTime);
 
 public:
-//	UGameUI(const FObjectInitializer& ObjectInitializer);
 	void AllWidgetInit() override;
 
 	void Init() override;
@@ -52,36 +51,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	class UTimerWidget* GetTimerWidget() const;
 
-	//UFUNCTION(BlueprintCallable)
-	//	void SetBaseInterface(bool Value);
-
-	//UFUNCTION(BlueprintCallable)
-	//void SetStaminaHUD(int32 iValue);
-
-	//UFUNCTION(BlueprintCallable)
-	//void SetBatteryHUD(int32 iValue);
-
-	//UFUNCTION(BlueprintCallable)
-	//void SetBatteryWidget(bool value);
-
-	/*UFUNCTION(BlueprintCallable)
-	void SetCutterHUD(int32 iValue);
-
-	UFUNCTION(BlueprintCallable)
-	void SetCutterWidget(bool value);
-
-	UFUNCTION(BlueprintCallable)
-	void SetExtHUD(int32 value);
-
-	UFUNCTION(BlueprintCallable)
-	void SetExtWidget(bool value);*/
-
-	//UFUNCTION(BlueprintCallable)
-	//	void SetObjectCount(unsigned int idx, int32 value); // idx: 1(Sword), 2(Bell), 3(Mirror)
-
-	UFUNCTION(BlueprintCallable)
-	void SetPatience(int32 value);
-
 	UFUNCTION(BlueprintCallable)
 	void SetTimerWidget(bool value);
 
@@ -100,9 +69,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "UI", meta = (BindWidget))
 	TObjectPtr<class UInventoryWidget> InventoryWidget;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), meta = (BindWidget))
-	//TObjectPtr<class UStaminaWidget> StaminaWidget;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, meta = (AllowPrivateAccess = "true"), meta = (BindWidget))
 	TObjectPtr<class UMessageManagerWidget> MessageWidget;
 
@@ -112,17 +78,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), meta = (BindWidget))
 	TObjectPtr<class UStatWidget> StatWidget;
 
-	//UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), meta = (BindWidget))
-	//	class UExtinguisherWidget* ExtWidget;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), meta = (BindWidget))
 		class UObjectWidget* ObjectWidget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), meta = (BindWidget))
 		class UExplainWidget_cpp* ExpWidget;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"), meta = (BindWidget))
-		class UPatienceWidget* PatienceWidget;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (BindWidget))
 		class UTimerWidget* TimerWidget;
@@ -135,18 +95,5 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
 		class UOverlay* MainInterface;
-
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "UI", meta = (BindWidget))
-		class UUserWidget* LoadingWidget;*/
-
-//private:
-//	bool BatteryVisible = false;
-//	bool CutterVisible = false;
-//	bool ExtVisible = false;
-	//bool CrossVisible = true;
-	//bool InteractVisible = false;
-	//bool DotVisible = false;
-	/*UPROPERTY(VisibleAnywhere, BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
-		class UDiedWidget* DiedWidget;*/
 	
 };

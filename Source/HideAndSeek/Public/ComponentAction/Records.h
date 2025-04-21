@@ -35,26 +35,14 @@ public:
 	FClearData() : bIsNormalCleared(false), ChapterNumber(0), NormalClearTime(359640000.f), bIsOpened(false) {}
 
 public:
-	//UPROPERTY(BlueprintReadWrite)
-	//	bool bIsEasyCleared; // 쉬움 난이도를 클리어했는지 여부 확인
-
 	UPROPERTY(BlueprintReadWrite)
 		bool bIsNormalCleared; // 보통 난이도를 클리어했는지 여부 확인
-
-	//UPROPERTY(BlueprintReadWrite)
-	//	bool bIsHardCleared; // 어려움 난이도를 클리어했는지 여부 확인
 
 	UPROPERTY(BlueprintReadWrite)
 		int ChapterNumber; // 챕터 번호
 
-	//UPROPERTY(BlueprintReadWrite)
-	//	float EasyClearTime; // 쉬움 난이도 클리어 타임
-
 	UPROPERTY(BlueprintReadWrite)
 		float NormalClearTime; // 보통 난이도 클리어 타임
-
-	//UPROPERTY(BlueprintReadWrite)
-	//	float NormalClearTime; // 어려움 난이도 클리어 타임
 
 	UPROPERTY(BlueprintReadWrite)
 		bool bIsOpened;

@@ -12,11 +12,8 @@ class HIDEANDSEEK_API UInventoryWidget : public UCustomUI
 {
 	GENERATED_BODY()
 
-	//bool AddItem(class FHorrorGameItemData& Item);
 	
 public:
-//	UInventoryWidget(const FObjectInitializer& ObjectInitializer);
-
 	void Init() override;
 	void Use(int index) {};
 
@@ -36,10 +33,6 @@ public:
 	// type : 0 = Useable, 1 = Lighting, 2 = Equipment
 	UFUNCTION(BlueprintCallable)
 	virtual void SetItemDurability(int type, int Index, int inDurability);
-
-	// Swap
-	//UFUNCTION(BlueprintCallable)
-	//void SwapLightingItemSlot();
 
 	// Initialize the inventory component for delegate binding.
 	UFUNCTION(BlueprintCallable)

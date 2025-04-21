@@ -1,12 +1,10 @@
 // CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
-// 타이머를 던졌을 때 땅에 닫기 전까지 나타날 액터
 
 #include "Items/TimerProjectile_cpp.h"
 #include "Components/BoxComponent.h"
 #include "Components/AudioComponent.h"
 #include "Sound/SoundCue.h"
 #include "GameFramework/ProjectileMovementComponent.h"
-//#include "Items/ThrownTimer_cpp.h"
 
 // Sets default values
 ATimerProjectile_cpp::ATimerProjectile_cpp()
@@ -56,14 +54,6 @@ void ATimerProjectile_cpp::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 }
-
-//void ATimerProjectile_cpp::RangEnd() // Player Use Event
-//{
-//	/*if (GEngine)
-//		GEngine->AddOnScreenDebugMessage(-1, 10.f, FColor::Yellow, FString::Printf(TEXT("Ring End")));*/
-//	bPlaySound = false;
-//	Destroy();
-//}
 
 void ATimerProjectile_cpp::FireInDirection(const FVector& ShootDirection)
 {

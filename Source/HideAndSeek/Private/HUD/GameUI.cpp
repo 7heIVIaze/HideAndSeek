@@ -48,49 +48,6 @@ void UGameUI::NativeTick(const FGeometry& MyGeometry, float InDeltaTime)
 {
 	Super::NativeTick(MyGeometry, InDeltaTime);
 	
-	// 현재 스테미너의 잔량이 100%일 경우, 스태미너 위젯을 안보이게 함.
-	//if (StaminaWidget->GetStamina() >= 1.0f)
-	//{
-	//	StaminaWidget->SetVisibility(ESlateVisibility::Collapsed);
-	//}
-	//// 100%가 아닐 경우, 위젯을 보이게 설정함.
-	//else
-	//{
-	//	StaminaWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
-	//}
-
-	//// 플레이어가 플래시 라이트를 선택한 상태라면, 배터리 위젯을 보이게 함.
-	//if (BatteryVisible)
-	//{
-	//	BatteryWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
-	//}
-	//// 아니라면 안 보이게 함.
-	//else
-	//{
-	//	BatteryWidget->SetVisibility(ESlateVisibility::Collapsed);
-	//}
-
-	//// 플레이어가 절단기를 선택한 상태라면, 절단기 위젯을 보이게 함.
-	//if (CutterVisible)
-	//{
-	//	CutterWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
-	//}
-	//// 아니라면 안 보이게 함.
-	//else
-	//{
-	//	CutterWidget->SetVisibility(ESlateVisibility::Collapsed);
-	//}
-
-	//// 플레이어가 소화기를 선택한 상태라면, 소화기 위젯을 보이게 함.
-	//if (ExtVisible)
-	//{
-	//	ExtWidget->SetVisibility(ESlateVisibility::HitTestInvisible);
-	//}
-	//// 아니라면 안 보이게 함.
-	//else
-	//{
-	//	ExtWidget->SetVisibility(ESlateVisibility::Collapsed);
-	//}
 }
 
 // 모든 위젯 초기화하는 함수.
@@ -103,19 +60,7 @@ void UGameUI::AllWidgetInit()
 	SetInteractDotErrorText(NSLOCTEXT("UGameUI", "None", ""));
 	SetInteractDotExplainText(NSLOCTEXT("UGameUI", "None", ""));
 	SetInteractDot(false);
-	//GameUIWidget->SetBaseInterface(true);
-	//SetStaminaHUD(400);
-	//SetBatteryWidget(false);
-	/*SetCutterHUD(5);
-	SetCutterWidget(false);
-	SetExtHUD(100);
-	SetExtWidget(false);
-	SetObjectCount(1, 0);
-	SetObjectCount(2, 0);
-	SetObjectCount(3, 0);*/
-	SetPatience(0);
-	//TimerWidget->Init();
-
+	
 	// 그와중에 프롤로그 챕터라면 오브젝트 위젯은 안 보이게 설정함.
 	if (UGameplayStatics::GetCurrentLevelName(GetWorld()).Contains(TEXT("Prologue")))
 	{
@@ -259,75 +204,6 @@ UInteractDot_cpp* UGameUI::GetInteractDotWidget() const
 UTimerWidget* UGameUI::GetTimerWidget() const
 {
 	return TimerWidget;
-}
-
-// 스테미너 위젯의 스테미너 양을 설정할 함수.
-//void UGameUI::SetStaminaHUD(int32 iValue)
-//{
-//	if (IsValid(StaminaWidget))
-//	{
-//		StaminaWidget->SetStamina(iValue);
-//	}
-//}
-
-//// 배터리 위젯의 배터리 잔량을 설정할 함수.
-//void UGameUI::SetBatteryHUD(int32 iValue)
-//{
-//	if (IsValid(BatteryWidget))
-//	{
-//		BatteryWidget->SetBatteryPercent(iValue);
-//	}
-//}
-
-//void UGameUI::SetBatteryWidget(bool value)
-//{
-//	BatteryVisible = value;
-//}
-
-//// 절단기 위젯의 절단기 내구도를 설정할 함수.
-//void UGameUI::SetCutterHUD(int32 iValue)
-//{
-//	if (IsValid(CutterWidget))
-//	{
-//		CutterWidget->SetCutterPercent(iValue);
-//	}
-//}
-//
-//void UGameUI::SetCutterWidget(bool value)
-//{
-//	CutterVisible = value;
-//}
-//
-//// 소화기 위젯의 분말 잔량을 설정할 함수.
-//void UGameUI::SetExtHUD(int32 value)
-//{
-//	if (IsValid(ExtWidget))
-//	{
-//		ExtWidget->SetExtinguisherPercent(value);
-//	}
-//}
-//
-//void UGameUI::SetExtWidget(bool value)
-//{
-//	ExtVisible = value;
-//}
-
-//// 오브젝트 위젯의 수집한 오브젝트의 양을 설정할 함수.
-//void UGameUI::SetObjectCount(unsigned int idx, int32 value)
-//{
-//	if (IsValid(ObjectWidget))
-//	{
-//		ObjectWidget->SetObjectCount(idx, value);
-//	}
-//}
-
-// 패닉게이지 위젯의 착란의 양을 설정할 함수.
-void UGameUI::SetPatience(int32 value)
-{
-	if (IsValid(PatienceWidget))
-	{
-		PatienceWidget->SetPatience(value);
-	}
 }
 
 // 게임 플레이 타이머 위젯이 보이게 할 것인지 설정할 함수.

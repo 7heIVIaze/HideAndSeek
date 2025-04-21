@@ -6,12 +6,11 @@
 #include "GameFramework/Actor.h"
 #include "Kismet/GameplayStatics.h"
 #include "Resource/InteractInterface.h"
-//#include "Resource/HideInterface.h"
 #include "Components/TimelineComponent.h"
 #include "HideObject.generated.h"
 
 UCLASS()
-class HIDEANDSEEK_API AHideObject : public AActor, public IInteractInterface //, public IHideInterface
+class HIDEANDSEEK_API AHideObject : public AActor, public IInteractInterface
 {
 	GENERATED_BODY()
 	

@@ -57,7 +57,7 @@ void UInteractionComponent::TickComponent(float DeltaTime, ELevelTick TickType, 
 	// RayCast를 매 Tick마다 실시함.
 	bool bIsHit = GetWorld()->LineTraceSingleByChannel(HitResult, TraceStartVector, TraceEndVector, ECC_Visibility);
 	HitActor = HitResult.GetActor();
-	//DrawDebugLine(GetWorld(), TraceStartVector, TraceEndVector, FColor::Red);
+	
 	// 부딪힌 대상이 있을 때
 	if (bIsHit)
 	{

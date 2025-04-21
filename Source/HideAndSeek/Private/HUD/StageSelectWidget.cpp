@@ -118,105 +118,6 @@ void UStageSelectWidget::OnClickChapTwoButton()
 
 }
 
-/*
-// Chapter Three 버튼을 클릭하였을 때 호출할 콜백 함수.
-void UStageSelectWidget::OnClickChapTrheeButton()
-{
-	if(ClearData[2].bIsOpened) // 칩터가 열려있는 경우에만 수행되도록 설정
-	{
-
-		// 스테이지 선택 사운드가 있다면, 사운드를 재생함.
-		if (IsValid(StageSelectSound))
-		{
-			UGameplayStatics::PlaySound2D(GetWorld(), StageSelectSound);
-		}
-
-		// 기존의 FadeOutWidget 이벤트를 초기화해주고 OnMoveChapThree라는 함수를 바인드 시켜줌.
-		FadeoutWidgetAnimationEvent.Clear();
-		FadeoutWidgetAnimationEvent.BindUFunction(this, FName(FString(TEXT("OnMoveChapThree"))));
-
-		// 바인딩한 콜백 함수를 Fadeout 애니메이션이 종료된 이후 재생되도록 바인딩하고 Fadeout 애니메이션을 재생함.
-		BindToAnimationFinished(Fadeout, FadeoutWidgetAnimationEvent);
-		PlayAnimation(Fadeout);
-
-		// 추가로 버튼을 클릭하고 애니메이션이 재생되는 중간에는 다른 버튼 클릭 및 호버를 할 수 없게 만들어야 함.
-	}
-	// 챕터가 안 열린 경우에 에러 음이 나도록 설정.
-	else
-	{
-		// 에러 음이 존재한다면, 사운드를 재생함.
-		if(IsValid(ButtonErrorSound))
-		{
-			UGameplayStatics::PlaySound2D(GetWorld(), ButtonErrorSound);
-		}
-	}
-}
-
-// Chapter Four 버튼을 클릭했을 때 호출할 콜백 함수.
-void UStageSelectWidget::OnClickChapFourButton()
-{
-	if (ClearData[3].bIsOpened) //챕터가 열려있는 경우에만 수행되도록 설정
-	{
-		// 스테이지 선택 사운드가 있다면, 사운드를 재생함.
-		if (IsValid(StageSelectSound))
-		{
-			UGameplayStatics::PlaySound2D(GetWorld(), StageSelectSound);
-		}
-
-		// 기존의 FadeOutWidget 이벤트를 초기화해주고, OnMoveChapFour라는 함수를 바인딩해줌.
-		FadeoutWidgetAnimationEvent.Clear();
-		FadeoutWidgetAnimationEvent.BindUFunction(this, FName(FString(TEXT("OnMoveChapFour"))));
-
-		// 바인딩한 콜백 함수를 Fadeout 애니메이션이 종료된 이후에 재생되도록 애니메이션과 바인딩하고 Fadeout을 재생함.
-		BindToAnimationFinished(Fadeout, FadeoutWidgetAnimationEvent);
-		PlayAnimation(Fadeout);
-
-		// 버튼을 클릭하고 애니메이션이 재생되는 동안에는 다른 버튼 클릭 및 호버를 불가능하게 설정해야 함.
-	}
-	// 챕터가 안 열린 경우에 에러 음이 나도록 설정.
-	else
-	{
-		// 에러 음이 존재한다면, 사운드를 재생함.
-		if(IsValid(ButtonErrorSound))
-		{
-			UGameplayStatics::PlaySound2D(GetWorld(), ButtonErrorSound);
-		}
-	}
-}
-
-// Chapter Five 버튼을 클릭했을 때 호출할 콜백 함수.
-void UStageSelectWidget::OnClickChapFiveButton()
-{
-	if (ClearData[4].bIsOpened) //챕터가 열려있는 경우에만 수행되도록 설정
-	{
-		// 스테이지 선택 사운드가 있다면, 사운드를 재생함.
-		if (IsValid(StageSelectSound))
-		{
-			UGameplayStatics::PlaySound2D(GetWorld(), StageSelectSound);
-		}
-
-		// 기존의 FadeOutWidget 이벤트를 초기화해주고, OnMoveChapFive라는 함수를 바인딩해줌.
-		FadeoutWidgetAnimationEvent.Clear();
-		FadeoutWidgetAnimationEvent.BindUFunction(this, FName(FString(TEXT("OnMoveChapFive"))));
-
-		// 바인딩한 콜백 함수를 Fadeout 애니메이션이 종료된 이후에 재생되도록 애니메이션과 바인딩하고 Fadeout을 재생함.
-		BindToAnimationFinished(Fadeout, FadeoutWidgetAnimationEvent);
-		PlayAnimation(Fadeout);
-
-		// 버튼을 클릭하고 애니메이션이 재생되는 동안에는 다른 버튼 클릭 및 호버를 불가능하게 설정해야 함.
-	}
-	// 챕터가 안 열린 경우에 에러 음이 나도록 설정.
-	else
-	{
-		// 에러 음이 존재한다면, 사운드를 재생함.
-		if(IsValid(ButtonErrorSound))
-		{
-			UGameplayStatics::PlaySound2D(GetWorld(), ButtonErrorSound);
-		}
-	}
-}
-*/
-
 // Back 버튼을 클릭했을 때 호출할 콜백 함수.
 void UStageSelectWidget::OnClickBackButton()
 {
@@ -260,32 +161,6 @@ void UStageSelectWidget::OnMoveChapTwo()
 		GameInstance->StopSound();*/
 	UGameplayStatics::OpenLevel(GetWorld(), *levelName);
 }
-
-/*
-// Fadeout 애니메이션 종료 후 호출할 콜백 함수.
-void UStageSelectWidget::OnMoveChapThree()
-{
-	// Level2라는 레벨의 상대 주소를 가져와서 해당 레벨을 OpenLevel로 호출함.
-	FString levelName = TEXT("/Game/Levels/GameLevel/Level2");
-	UGameplayStatics::OpenLevel(GetWorld(), *levelName);
-}
-
-// Fadeout 애니메이션 종료 후 호출할 콜백 함수.
-void UStageSelectWidget::OnMoveChapFour()
-{
-	// Level3이라는 레벨의 상대 주소를 가져와서 해당 레벨을 OpenLevel로 호출함.
-	FString levelName = TEXT("/Game/Levels/GameLevel/Level3");
-	UGameplayStatics::OpenLevel(GetWorld(), *levelName);
-}
-// Fadeout 애니메이션 종료 후 호출할 콜백 함수.
-void UStageSelectWidget::OnMoveChapFive()
-{
-	// Level4라는 레벨의 상대 주소를 가져와서 해당 레벨을 OpenLevel로 호출함.
-	FString levelName = TEXT("/Game/Levels/GameLevel/Level4");
-	UGameplayStatics::OpenLevel(GetWorld(), *levelName);
-}
-
-*/
 
 // Chapter One 버튼에 마우스가 호버되었을 때 호출할 콜백 함수
 void UStageSelectWidget::OnHoveredChapOneButton()
@@ -344,9 +219,6 @@ void UStageSelectWidget::OnHoveredBackButton()
 // 버튼 상태를 업데이트할 함수.
 void UStageSelectWidget::UpdateButtonSlate()
 {
-	//if (GEngine)
-	//	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("SelectWidget: MenuNavigation: %d"), MenuNavigationIndex));
-	
 	// 메뉴 인덱스마다 버튼 상태를 업데이트하도록 설정함.
 	switch (MenuNavigationIndex)
 	{
@@ -404,9 +276,6 @@ FReply UStageSelectWidget::NativeOnKeyDown(const FGeometry& InGeometry, const FK
 	FKey KeyCode = InKeyEvent.GetKey();
 	FString KeyType = KeyCode.ToString();
 	
-	/*if (GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("KeyType: %s"), *KeyType));*/
-
 	if (KeyType == "Enter") // 만약 엔터를 입력받은 경우
 	{
 		switch (MenuNavigationIndex) // 현재 메뉴 인덱스를 봄

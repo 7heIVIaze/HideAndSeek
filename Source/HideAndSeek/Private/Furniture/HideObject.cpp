@@ -35,22 +35,11 @@ AHideObject::AHideObject()
 	// 플레이어처럼 라이터 켜기용 컴포넌트
 	CigarlighterComp = CreateDefaultSubobject<UChildActorComponent>(TEXT("Cigarlighter"));
 	CigarlighterComp->SetupAttachment(Camera);
-	/*CigarLight = CreateDefaultSubobject<UPointLightComponent>(TEXT("CigarLight"));
-	CigarLight->SetupAttachment(Camera);
-	CigarLight->SetVisibility(false);
-	CigarLight->SetIntensity(800.0f);
-	CigarLight->SetLightFColor(FColor(255.0f, 188.0f, 124.0f));*/
-
+	
 	// 플레이어처럼 플래시 켜기 용 컴포넌트
 	FlashlightComp = CreateDefaultSubobject<UChildActorComponent>(TEXT("Flashlight"));
 	FlashlightComp->SetupAttachment(Camera);
-	/*FlashLight = CreateDefaultSubobject<USpotLightComponent>(TEXT("FlashLight"));
-	FlashLight->SetupAttachment(Camera);
-	FlashLight->SetVisibility(false);
-	FlashLight->SetIntensity(800.0f);
-	FlashLight->SetInnerConeAngle(15.0f);
-	FlashLight->SetOuterConeAngle(30.0f);*/
-
+	
 	// 플레이어의 영혼 랜턴
 	LanternComp = CreateDefaultSubobject<UChildActorComponent>(TEXT("SoulLantern"));
 	LanternComp->SetupAttachment(Camera);
@@ -97,8 +86,6 @@ void AHideObject::Tick(float DeltaTime)
 		// 플레이어에 대한 정보도 있고, 숨어있는 것으로 판별될 때
 		if (bIsHiding)
 		{
-			//// 플레이어가 라이터를 켰는데 라이터를 켠 상태가 아닐 경우 라이터를 켬
-			//if (bIsCigarLightOn != Player->bIsCigarLightOn)
 			// 플레이어가 불은 켠 상태인 경우
 			if (Player->bIsLightOn)
 			{
@@ -122,12 +109,6 @@ void AHideObject::Tick(float DeltaTime)
 				}
 			}
 
-			//// 플레이어가 플래시를 켰는데 플래시를 켠 상태가 아닐 경우, 플래시를 켬
-			//if (bIsFlashLightOn != Player->bIsFlashLightOn)
-			//{
-			//	SetFlashLightOn();
-			//}
-
 			// 플레이어가 랜턴을 켰는데 랜턴을 켠 상태가 아닐 경우, 랜턴을 켬
 			if (bIsLanternOn != Player->bIsLanternOn)
 			{
@@ -144,15 +125,6 @@ void AHideObject::Tick(float DeltaTime)
 			{
 				FlickeringLight.Stop();
 			}
-
-			/*if (Player->GetInventoryComponent()-> == 10)
-			{
-				Lantern->SetVisibility(true);
-			}
-			else
-			{
-				Lantern->SetVisibility(false);
-			}*/
 		}
 	}
 }
@@ -178,7 +150,6 @@ void AHideObject::ToggleHide(class AHorrorGameCharacter* PlayerCharacter)
 	{	// True
 		// 숨었다는 정보를 없애고, 숨었을 때의 로직을 반대로 구현함.
 		Player->GetStatComponent()->SetCurrentPlayerStates(EPlayerStatus::Survive);
-		//Player->bIsHiding = false;
 		bIsHiding = false;
 		Player->SetActorLocation(PlayerOutPoint->GetComponentLocation());
 		Player->GetInventoryComponent()->OnItemSwitch.RemoveDynamic(this, &AHideObject::SwitchItem);
@@ -190,7 +161,6 @@ void AHideObject::ToggleHide(class AHorrorGameCharacter* PlayerCharacter)
 		Yaw = OriginRotation.Yaw;
 		Camera->SetRelativeRotation(OriginRotation);
 
-		//FRotator NewRotation = Camera->GetComponentRotation() - PlayerRotation;
 		FRotator NewRotation = Camera->GetComponentRotation();
 		NewRotation.Yaw += 90.0f;
 		UE_LOG(LogTemp, Warning, TEXT("NewRotationt: %s"), *NewRotation.ToString());
@@ -250,7 +220,6 @@ void AHideObject::ToggleHide(class AHorrorGameCharacter* PlayerCharacter)
 
 		Player->GetInventoryComponent()->OnItemSwitch.AddDynamic(this, &AHideObject::SwitchItem);
 
-		//Player->bIsHiding = true;
 		bIsHiding = true;
 		UE_LOG(LogTemp, Warning, TEXT("Player Rotation Input: Roll-%f Pitch-%f Yaw-%f"), PlayerController->RotationInput.Roll, PlayerController->RotationInput.Pitch, PlayerController->RotationInput.Yaw);
 		UE_LOG(LogTemp, Warning, TEXT("Player Rotation Input: %s"), *PlayerController->RotationInput.ToString());
@@ -268,7 +237,8 @@ void AHideObject::ToggleHide(class AHorrorGameCharacter* PlayerCharacter)
 			if (PlayerCharacter->Patience > 0)
 			{
 				int32 ReduceValue = PlayerCharacter->Patience / 2;
-				if (ReduceValue < 1) // 만약 감소값이 1 미만으로 떨어지면(즉 0.xxxx 라면)
+				// 만약 감소값이 1 미만으로 떨어지면(즉 0.xxxx 라면)
+				if (ReduceValue < 1)
 				{
 					ReduceValue = 1; // 1로 고정
 				}
@@ -317,17 +287,6 @@ void AHideObject::SetFlashLightOn()
 		{
 			UE_LOG(LogTemp, Warning, TEXT("HideObject: Casting Error"));
 		}
-		//if (Player->bIsLightOn)
-		//{
-		//	bIsFlashLightOn = true;
-		//	FlashLight->SetVisibility(true);
-		//}
-		//// 아니라면 똑같이 끔
-		//else
-		//{
-		//	bIsFlashLightOn = false;
-		//	FlashLight->SetVisibility(false);
-		//}
 	}
 }
 
@@ -357,17 +316,6 @@ void AHideObject::SetCigarLightOn()
 		{
 			UE_LOG(LogTemp, Warning, TEXT("HideObject: Casting Error"));
 		}
-		//if (Player->bIsLightOn)
-		//{
-		//	bIsCigarLightOn = true;
-		//	CigarLight->SetVisibility(true);
-		//}
-		//// 아니라면 똑같이 끔
-		//else
-		//{
-		//	bIsCigarLightOn = false;
-		//	CigarLight->SetVisibility(false);
-		//}
 	}
 }
 
@@ -411,8 +359,6 @@ void AHideObject::MoveCamera()
 	if (bIsHiding)
 	{
 		Camera->SetRelativeRotation(UKismetMathLibrary::MakeRotator(0, Pitch, Yaw));
-		/*GetWorld()->GetTimerManager().SetTimer(_loopCameraTimerHandle, this, &AHideObject::MoveCamera, 0.1f, false);
-		GetWorld()->GetTimerManager().ClearTimer(_loopCameraTimerHandle);*/
 	}
 }
 
@@ -450,15 +396,6 @@ void AHideObject::LightFlicker(float value)
 	{
 		Cast<ALightItem>(FlashlightComp->GetChildActor())->LightComponent->SetIntensity(LightIntense);
 	}
-	//if (bIsCigarLightOn)
-	//{
-	//	CigarLight->SetIntensity(LightIntense);
-	//}
-
-	//if (bIsFlashLightOn)
-	//{
-	//	FlashLight->SetIntensity(LightIntense);
-	//}
 }
 
 // 카메라 노이즈를 관리할 함수.
@@ -468,24 +405,27 @@ void AHideObject::SetCameraComponentNoise(int32 WhichStatus)
 	GetWorldTimerManager().ClearTimer(NoiseTimer);
 	switch (WhichStatus)
 	{
-	case 1: // 근처에 Creature가 있는 상황이면, 카메라에 노이즈 걸 것임
-		Camera->PostProcessSettings.bOverride_VignetteIntensity = true;
-		Camera->PostProcessSettings.VignetteIntensity = 1.f;
-		Camera->PostProcessSettings.bOverride_FilmGrainIntensity = true;
-		Camera->PostProcessSettings.FilmGrainIntensity = 1.f;
-		break;
-	case 2: // 추격 판정이 뜰 경우 노이즈 크게 함
-		Camera->PostProcessSettings.bOverride_VignetteIntensity = true;
-		Camera->PostProcessSettings.VignetteIntensity = 3.f;
-		Camera->PostProcessSettings.bOverride_FilmGrainIntensity = true;
-		Camera->PostProcessSettings.FilmGrainIntensity = 15.f;
-		GetWorldTimerManager().SetTimer(NoiseTimer, FTimerDelegate::CreateLambda([&]() {
-			SetCameraComponentNoise(1); // 0.5초동안 노이즈 크게 하고 다시 1번 상태로 돌릴 것임
-			}), 0.5f, false);
-		break;
-	default: // Creature가 근처에 없다면 카메라에 노이즈 해제함
-		Camera->PostProcessSettings.bOverride_VignetteIntensity = false;
-		Camera->PostProcessSettings.bOverride_FilmGrainIntensity = false;
+		// 근처에 Creature가 있는 상황이면, 카메라에 노이즈 걸 것임
+		case 1:
+			Camera->PostProcessSettings.bOverride_VignetteIntensity = true;
+			Camera->PostProcessSettings.VignetteIntensity = 1.f;
+			Camera->PostProcessSettings.bOverride_FilmGrainIntensity = true;
+			Camera->PostProcessSettings.FilmGrainIntensity = 1.f;
+			break;
+		// 추격 판정이 뜰 경우 노이즈 크게 함
+		case 2:
+			Camera->PostProcessSettings.bOverride_VignetteIntensity = true;
+			Camera->PostProcessSettings.VignetteIntensity = 3.f;
+			Camera->PostProcessSettings.bOverride_FilmGrainIntensity = true;
+			Camera->PostProcessSettings.FilmGrainIntensity = 15.f;
+			GetWorldTimerManager().SetTimer(NoiseTimer, FTimerDelegate::CreateLambda([&]() {
+				SetCameraComponentNoise(1); // 0.5초동안 노이즈 크게 하고 다시 1번 상태로 돌릴 것임
+				}), 0.5f, false);
+			break;
+		// Creature가 근처에 없다면 카메라에 노이즈 해제함
+		default: 
+			Camera->PostProcessSettings.bOverride_VignetteIntensity = false;
+			Camera->PostProcessSettings.bOverride_FilmGrainIntensity = false;
 	}
 }
 
@@ -498,19 +438,17 @@ void AHideObject::SwitchItem(const FHorrorGameItemData& CurrentItemData, int32 C
 			auto Cigarlighter = Cast<ALightItem>(CigarlighterComp->GetChildActor());
 			auto Flashlight = Cast<ALightItem>(FlashlightComp->GetChildActor());
 			auto Lantern = Cast<ALightItem>(LanternComp->GetChildActor());
-			//CigarlighterComp->SetHiddenInGame(true);
+			
 			if (Cigarlighter)
 			{
 				Cigarlighter->SetItemVisibility(true);
 			}
 
-			//FlashlightComp->SetHiddenInGame(true);
 			if (Flashlight)
 			{
 				Flashlight->SetItemVisibility(true);
 			}
 
-			//LanternComp->SetHiddenInGame(true);
 			if (Lantern)
 			{
 				Lantern->SetItemVisibility(true);
@@ -520,7 +458,6 @@ void AHideObject::SwitchItem(const FHorrorGameItemData& CurrentItemData, int32 C
 			{
 				case EItemNumber::ITEM_CigarLighter:
 				{
-					//CigarlighterComp->SetHiddenInGame(false);
 					if (Cigarlighter)
 					{
 						Cigarlighter->SetItemVisibility(false);
@@ -529,9 +466,6 @@ void AHideObject::SwitchItem(const FHorrorGameItemData& CurrentItemData, int32 C
 				}
 				case EItemNumber::ITEM_FlashLight:
 				{
-					//FlashlightComp->SetHiddenInGame(false);
-
-					// Durability synchronization
 					if (Flashlight)
 					{
 						Flashlight->SetItemVisibility(false);
@@ -542,8 +476,6 @@ void AHideObject::SwitchItem(const FHorrorGameItemData& CurrentItemData, int32 C
 				}
 				case EItemNumber::ITEM_Lantern:
 				{
-					//LanternComp->SetHiddenInGame(false);
-
 					if (Lantern)
 					{
 						Lantern->SetItemVisibility(false);

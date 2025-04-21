@@ -7,8 +7,6 @@
 #include "GameFramework/HUD.h"
 #include "HorrorGameGameMode.generated.h"
 
-// DECLARE_DELEGATE(FOnPlayerNearCreatureDelegate)
-
 UCLASS(minimalapi)
 class AHorrorGameGameMode : public AGameModeBase
 {
@@ -69,6 +67,4 @@ private:
 	class USoundCue* DiedCue;
 	class USoundCue* ClearCue;
 	class USoundCue* EndingCue;
-
-	// FOnPlayerNearCreatureDelegate OnPlayerNearCreature;
 };

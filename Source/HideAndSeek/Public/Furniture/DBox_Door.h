@@ -3,14 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "GameFramework/Actor.h"
-//#include "Resource/DoorInterface_cpp.h"
 #include "Furniture/InteractableActor.h"
 #include "Components/TimelineComponent.h"
 #include "DBox_Door.generated.h"
 
 UCLASS()
-class HIDEANDSEEK_API ADBox_Door : public AInteractableActor //public AActor, public IDoorInterface_cpp
+class HIDEANDSEEK_API ADBox_Door : public AInteractableActor
 {
 	GENERATED_BODY()
 	
@@ -58,6 +56,4 @@ public:
 	virtual bool UseInteract(class AHorrorGameCharacter* Player) override;
 
 	virtual void DoorOpen(float inOpenAndCloseCurveFloat);
-	/*UFUNCTION()
-		void OpenDoor(float Value);*/
 };

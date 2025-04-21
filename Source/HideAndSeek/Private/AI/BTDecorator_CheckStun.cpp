@@ -1,9 +1,7 @@
 // CopyrightNotice 2023 Sunggon Kim kimdave205@gmail.com. All Rights Reserved.
 
 #include "AI/BTDecorator_CheckStun.h"
-#include "AI/CreatureAI.h"
-#include "AI/AIController_Brute.h"
-#include "AI/AIController_Runner.h"
+#include "AI/YokaiAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 // 생성자
@@ -20,17 +18,10 @@ bool UBTDecorator_CheckStun::CalculateRawConditionValue(UBehaviorTreeComponent& 
 
 	if (AIController)
 	{
-		if (const auto ReaperAI = Cast<ACreatureAI>(AIController))
+		// 기절했는지 여부를 가져와서 갱신시켜줌.
+		if (const auto YokaiAI = Cast<AYokaiAIController>(AIController))
 		{
-			bStunned = ReaperAI->GetBlackboardComponent()->GetValueAsBool(ACreatureAI::Stunned);
-		}
-		else if (const auto BruteAI = Cast<AAIController_Brute>(AIController))
-		{
-			bStunned = BruteAI->GetBlackboardComponent()->GetValueAsBool(AAIController_Brute::Stunned);
-		}
-		else if (const auto RunnerAI = Cast<AAIController_Runner>(AIController))
-		{
-			bStunned = RunnerAI->GetBlackboardComponent()->GetValueAsBool(AAIController_Runner::Stunned);
+			bStunned = YokaiAI->GetBlackboardComponent()->GetValueAsBool(AYokaiAIController::Stunned);
 		}
 	}
 

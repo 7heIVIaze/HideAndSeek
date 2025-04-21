@@ -18,6 +18,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Debug)
 	bool bIsDebug;
 
+	// 감지된 이후 확장된 감지 범위.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Radius)
+	float ExtendedRadius;
+
+	// 기본 감지 범위
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Radius)
+	float BaseRadius;
+
 public:
 	UBTService_Detect();
 

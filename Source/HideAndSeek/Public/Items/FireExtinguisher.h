@@ -26,14 +26,11 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	// Use Interaction: by right click.
-	//UFUNCTION(BlueprintCallable)
 	virtual bool UseItem() override;
-	// bool UseInteract(class APlayerCharacter* Player);
 
 	// Stop spraying the powder
 	UFUNCTION(BlueprintCallable)
 	bool StopSpraying();
-	// bool StopSpraying(class APlayerCharacter* Player);
 
 	// Capsule Collision.
 	UFUNCTION(BlueprintCallable)
@@ -45,12 +42,6 @@ public:
 	// PROPERTIES //
 	////////////////
 public:
-	/*UPROPERTY(EditDefaultsOnly, Category = Mesh)
-	TObjectPtr<USceneComponent> RootComp;
-
-	UPROPERTY(EditDefaultsOnly, Category = Mesh)
-	TObjectPtr<UStaticMeshComponent> ExtinguisherMesh;*/
-
 	UPROPERTY(EditDefaultsOnly, Category = Mesh)
 	TObjectPtr<class UParticleSystemComponent> PowderParticle;
 
@@ -64,20 +55,4 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = Boolean)
 	bool bIsSpraying;
 
-//	
-//public:	
-//	// Sets default values for this actor's properties
-//	AFireExtinguisher();
-//
-//public: // Properties
-//	UPROPERTY(VisibleAnywhere, Category = "Extinguisher")
-//		TObjectPtr<USceneComponent> DefaultSceneRoot;
-//
-//	UPROPERTY(VisibleAnywhere, Category = "Extinguisher")
-//		TObjectPtr<UStaticMeshComponent> ExtinguisherMesh;
-//
-//public:	// Functions
-//	void OnInteract(class AHorrorGameCharacter* Player) override;
-//
-//	void UseInteract(class AHorrorGameCharacter* Player) override;
 };

@@ -110,30 +110,3 @@ void UStatWidget::ShakeHeathBar()
 		bIsShaking = true;
 	}
 }
-
-//void UStatWidget::NativeConstruct()
-//{
-//	Super::NativeConstruct();
-//	/*Battery = Cast<UProgressBar>(GetWidgetFromName("BatteryUI"));
-//	BatteryImage = Cast<UImage>(GetWidgetFromName("BatteryImg"));*/
-//}
-//
-//// 남은 배터리의 양을 그림으로 보여줄 함수임.
-//void UStatWidget::SetBatteryPercent(int32 value)
-//{
-//	float percent = (float)value / 200.0f;
-//	Battery->SetPercent(percent);
-//}
-//
-//// 플레이어가 플래시 라이트를 선택했을 때 이 위젯을 띄울 함수임. 선택 안하면 안 띄움.
-//void UStatWidget::SetBatteryVisibility(bool value)
-//{
-//	if (value)
-//	{
-//		Battery->SetVisibility(ESlateVisibility::Visible);
-//	}
-//	else
-//	{
-//		Battery->SetVisibility(ESlateVisibility::Collapsed);
-//	}
-//}

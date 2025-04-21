@@ -17,9 +17,6 @@ enum class GraphicsType : uint8
 	Resolution UMETA(DisplayName = "ScreenResolution"),
 	ScreenSetting UMETA(DisplayName = "ScreenSetting"),
 	Brightness UMETA(DisplayName = "Brightness"),
-	/*AntiAliasing UMETA(DisplayName = "AntiAliasing"),
-	ShadowSetting UMETA(DisplayName = "ShadowSetting"),
-	MotionBlur UMETA(DisplayName = "MotionBlur"),*/
 };
 /**
  * 
@@ -164,15 +161,7 @@ public:
 private:
 	bool bWindowed;
 	bool bFullScreen;
-	/*bool bResolution1;
-	bool bResolution2;
-	bool bResolution3;
-	bool bResolution4;
-	bool bResolution5;
-	bool bResolution6;
-	bool bResolution7;
-	bool bResolution8;*/
-
+	
 public:
 	// Main Button Functions
 	UFUNCTION(BlueprintCallable)

@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AI/CreatureAI.h"
+#include "AI/AIController_Reaper.h"
 #include "PrologueCreatureAI.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class HIDEANDSEEK_API APrologueCreatureAI : public ACreatureAI
+class HIDEANDSEEK_API APrologueCreatureAI : public AAIController_Reaper
 {
 	GENERATED_BODY()
 	

@@ -26,13 +26,6 @@ void AItemManager::BeginPlay()
 	
 }
 
-// Called every frame
-//void AItemManager::Tick(float DeltaTime)
-//{
-//	Super::Tick(DeltaTime);
-//
-//}
-
 // Level Manager에 델리게이트를 바인딩할 함수.
 void AItemManager::BindItemSetting(ALevelManager* LevelManager)
 {

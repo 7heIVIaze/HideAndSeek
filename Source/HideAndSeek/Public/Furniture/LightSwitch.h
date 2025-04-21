@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "GameFramework/Actor.h"
 #include "Furniture/InteractableActor.h"
 #include "LightSwitch.generated.h"
 
@@ -40,7 +39,6 @@ protected:
 
 public:	
 	// Called every frame
-	/*virtual void Tick(float DeltaTime) override;*/
 	UFUNCTION(BlueprintCallable)
 	virtual void OnInteract(class AHorrorGameCharacter* Player) override;
 

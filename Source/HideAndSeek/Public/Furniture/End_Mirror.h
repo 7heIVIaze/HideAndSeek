@@ -3,12 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-//#include "GameFramework/Actor.h"
 #include "Furniture/InteractableActor.h"
 #include "End_Mirror.generated.h"
 
 UCLASS()
-class HIDEANDSEEK_API AEnd_Mirror : public AInteractableActor //public AActor
+class HIDEANDSEEK_API AEnd_Mirror : public AInteractableActor
 {
 	GENERATED_BODY()
 	
@@ -42,9 +41,6 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	// virtual void Tick(float DeltaTime) override;
-
 	virtual void OnInteract(class AHorrorGameCharacter* Player) override;
 
 	UFUNCTION(BlueprintCallable)

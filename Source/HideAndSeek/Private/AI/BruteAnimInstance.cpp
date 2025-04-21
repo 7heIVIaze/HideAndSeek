@@ -72,9 +72,6 @@ void UBruteAnimInstance::AnimNotify_BruteChangeRangeStart()
 	if (IsValid(Brute))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Start IsValid Called"));
-		//Brute->SetIsCatch(true);
-		//bIsCatch = true;
-		//UE_LOG(LogTemp, Warning, TEXT("IsCatch = %s"), (bIsCatch == true) ? TEXT("true") : TEXT("false"));
 	}
 }
 

@@ -12,10 +12,6 @@
 #include "LevelManager/PatrolPoint_cpp.h"
 #include "ComponentAction/HorrorGameSaveGame.h"
 #include "AI/CreatureClass.h"
-//#include "OnlineSubsystem.h"
-//#include "SteamNetDriver.h"
-//#include "OnlineSubsystemSteam.h"
-//#include "Serialization/ArchiveSaveCompressedProxy.h"
 
 // 생성자
 UHorrorGameGameInstance::UHorrorGameGameInstance()
@@ -47,7 +43,6 @@ void UHorrorGameGameInstance::Init()
 {
 	Super::Init();
 
-	//GetOnlineSubsystem();
 	// 맵이 로딩 되기 전까지 로딩화면을 출력하도록 함.(근데 생각하던거랑 달라서 필요없는 함수가 됨,)
 	UE_LOG(LogTemp, Warning, TEXT("HorrorGameGameInstance Init!"));
 	FCoreUObjectDelegates::PreLoadMap.AddUObject(this, &UHorrorGameGameInstance::BeginLoadingScreen);
@@ -256,29 +251,6 @@ bool UHorrorGameGameInstance::ChapterClearSaveLogic(int32 inClearedChapter, floa
 					ClearChapter[i].bIsNormalCleared = true;
 					SaveData->ClearChapter[i].bIsNormalCleared = true;
 				}
-
-				// 후에 난이도별로 저장하는 로직도 필요함. 
-
-				//if (SaveData->ClearChapter[i].bIsNormalCleared)
-				//{
-				//	/*TArray<FString>Times;
-				//	float ParsedTime = 0.f;
-				//	SaveData->ClearChapter[i].ClearTime.ParseIntoArray(Times, TEXT(":"), false);
-				//	ParsedTime += FCString::Atof(*Times[0]) * 60 * 60;
-				//	ParsedTime += FCString::Atof(*Times[1]) * 60;
-				//	ParsedTime += FCString::Atof(*Times[2]);*/
-				//	if (SaveData->ClearChapter[i].NormalClearTime > ClearTime) // 이전 기록보다 더 짧은 기록을 냈다면
-				//	{
-				//		SaveData->ClearChapter[i].NormalClearTime = ClearTime; // 기록 갱신
-				//		//bCanUpdate = false;
-				//	}
-				//	//else // 짧은 기록이 아니라면
-				//	//{
-				//	//	bCanUpdate = false; // 갱신 안 되게 설정
-				//	//}
-				//	bIsFirstSave = false;
-				//}
-				//break;
 			}
 
 			// 다음 챕터의 상태를 열림 상태로 바꿈.
@@ -405,7 +377,6 @@ void UHorrorGameGameInstance::BeginLoadingScreen(const FString& MapName)
 		{
 			FLoadingScreenAttributes LoadingScreen;
 			LoadingScreen.bAutoCompleteWhenLoadingCompletes = false;
-			// LoadingScreen.WidgetLoadingScreen = FLoadingScreenAttributes::NewTestLoadingScreenWidget();
 			LoadingWidget = CreateWidget(this, WidgetClass);
 			LoadingScreen.WidgetLoadingScreen = LoadingWidget->TakeWidget();
 
