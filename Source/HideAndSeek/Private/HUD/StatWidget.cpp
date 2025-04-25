@@ -89,6 +89,15 @@ void UStatWidget::UpdateStaminaBar(int32 NewStaminaGuage)
 	{
 		float StaminaPercent = (float)NewStaminaGuage / 400.0f; // Max Stamina is 400.0f
 		StaminaBar->SetPercent(StaminaPercent);
+
+		if (StaminaPercent == 1.0f)
+		{
+			StaminaBar->SetVisibility(ESlateVisibility::Hidden);
+		}
+		else
+		{
+			StaminaBar->SetVisibility(ESlateVisibility::Collapsed);
+		}
 	}
 }
 
