@@ -433,25 +433,27 @@ void AHorrorGameCharacter::Tick(float DeltaTime)
 		PanicSound->Play();
 	}
 	
-	// 현재 웅크리기 중이라면
-	if (bIsCrouch)
-	{
-		PlayerStatComp->IncreaseStamina();
-	}
-	// 웅크리기 중이 아니라면
-	else
-	{
-		// 현재 달리는 중이라면
-		if (bIsSprinting)
-		{
-			PlayerStatComp->DecreaseStamina();
-		}
-		// 달리는 중이 아니라면
-		else
-		{
-			PlayerStatComp->IncreaseStamina();
-		}
-	}
+#pragma region Deprecated stamina
+	//// 현재 웅크리기 중이라면
+	//if (bIsCrouch)
+	//{
+	//	PlayerStatComp->IncreaseStamina();
+	//}
+	//// 웅크리기 중이 아니라면
+	//else
+	//{
+	//	// 현재 달리는 중이라면
+	//	/*if (bIsSprinting)
+	//	{
+	//		PlayerStatComp->DecreaseStamina();
+	//	}*/
+	//	// 달리는 중이 아니라면
+	//	else
+	//	{
+	//		PlayerStatComp->IncreaseStamina();
+	//	}
+	//}
+#pragma endregion
 
 	// 리퍼가 능력을 사용하기 시작했다면
 	if (bReaperWatchPlayer && PlayerStatComp->GetCurrentPlayerStates() != EPlayerStatus::Stunned) 
@@ -593,6 +595,16 @@ void AHorrorGameCharacter::BeginSprint()
 		{
 			// 달리기가 활성화됨.
 			bIsSprinting = true;
+			
+			// 스태미너 회복 타이머 중지
+			if (GetWorldTimerManager().IsTimerActive(PlayerStatComp->StaminaRechargeTimer))
+			{
+				GetWorldTimerManager().ClearTimer(PlayerStatComp->StaminaRechargeTimer);
+			}
+
+			// 스태미너 소모 타이머 시작
+			GetWorld()->GetTimerManger().SetTimer(PlayerStatComp->StaminaReduceTimer, PlayerStatComp.Get(),
+				&UPlayerStatComponent::DecreaseStamina, 0.5f, true);
 
 			// 달리는 중엔 손전등이 흔들리는 속도가 더 빨라지게 설정.
 			FlashlightTimeline->SetPlayRate(2.0f);
@@ -617,6 +629,16 @@ void AHorrorGameCharacter::EndSprint()
 		Sound->Play();
 	}
 	bIsSprinting = false;
+
+	// 스태미너 소모 타이머 중지
+	if (GetWorldTimerManager().IsTimerActive(PlayerStatComp->StaminaReduceTimer))
+	{
+		GetWorldTimerManager().ClearTimer(PlayerStatComp->StaminaReduceTimer);
+	}
+
+	// 스태미너 회복
+	GetWorld()->GetTimerManger().SetTimer(PlayerStatComp->StaminaRechargeTimer, PlayerStatComp.Get(),
+		&UPlayerStatComponent::IncreaseStamina, 0.5f, true);
 
 	FlashlightTimeline->SetPlayRate(1.0f);
 
@@ -648,6 +670,12 @@ void AHorrorGameCharacter::BeginCrouch()
 {
 	// 웅크리기를 활성화함.
 	Crouch();
+
+	// 스태미너 소모 타이머 중지
+	if (GetWorldTimerManager().IsTimerActive(PlayerStatComp->StaminaReduceTimer))
+	{
+		GetWorldTimerManager().ClearTimer(PlayerStatComp->StaminaReduceTimer);
+	}
 	
 	bIsCrouch = true;
 }

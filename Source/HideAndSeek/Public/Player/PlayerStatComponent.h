@@ -79,6 +79,12 @@ public:
 	void IncreaseStamina();
 
 public:
+	UPROPERTY()
+	FTimerHandle StaminaReduceTimer; // 스태미너 소모 타이머
+	
+	UPROPERTY()
+	FTimerHandle StaminaRechargeTimer; // 스태미너 회복 타이머
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Status")
 	EPlayerStatus PlayerStatus;
 

@@ -127,6 +127,9 @@ void UPlayerStatComponent::DecreaseStamina()
 	// 스태미너가 모두 소모된 상태인 경우
 	else
 	{
+		// 더이상 소모하지 않게 스태미너 소모 타이머 종료
+		GetWorld()->GetTimerManager().ClearTimer(StaminaReduceTimer);
+
 		// 스태미너가 전부 소모되었다고 알림.
 		OnStaminaOver.Broadcast();
 	}
@@ -141,5 +144,10 @@ void UPlayerStatComponent::IncreaseStamina()
 		Stamina += 1;
 		
 		OnStaminaChanged.Broadcast(Stamina);
+	}
+	// 스태미너가 풀 충전된 상태면 타이머 핸들 종료함
+	else
+	{
+		GetWorld()->GetTimerManager().ClearTimer(StaminaRechargeTimer);
 	}
 }
