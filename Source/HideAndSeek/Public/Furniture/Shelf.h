@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Resource/ItemInterface.h"
 #include "Shelf.generated.h"
 
 UCLASS()
-class HIDEANDSEEK_API AShelf : public AActor
+class HIDEANDSEEK_API AShelf : public AActor, public IItemInterface
 {
 	GENERATED_BODY()
 	
@@ -65,7 +66,7 @@ protected:
 
 public:	
 	UFUNCTION(BlueprintCallable)
-		bool SetSpawnItem(TSubclassOf<AActor> inItem);
+		virtual bool SetSpawnItem(TSubclassOf<AActor> inItem) override;
 
 	UFUNCTION(BlueprintCallable)
 		bool GetIsUpperItemSpawned();

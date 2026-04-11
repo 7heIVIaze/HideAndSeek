@@ -4,11 +4,7 @@
 #include "LevelManager/LevelManager.h"
 #include "Items/ItemClass.h"
 #include "EngineUtils.h"
-#include "Furniture/Drawer_cpp.h"
-#include "Furniture/DrawerClass.h"
-#include "Furniture/Locker_cpp.h"
-#include "Furniture/WardrobeDrawer_cpp.h"
-#include "Furniture/DeskDrawer_cpp.h"
+#include "Resource/ItemInterface.h"
 #include "Furniture/Shelf.h"
 
 // Sets default values
@@ -62,20 +58,10 @@ void AItemManager::ItemSetting()
 			int32 RandIdx = FMath::RandRange(0, Objects.Num() - 1);
 			bool Result = false;
 			
-			// 해당 인덱스의 오브젝트가 서랍류일 경우, 해당 서랍 류에 배치함.
-			if (ADrawerClass* Drawer = Cast<ADrawerClass>(Objects[RandIdx]))
+			// 아이템 배치가 가능한 인터페이스를 가진 액터일 경우에 아이템을 배치함.
+			if (IItemInterface* ItemInterface = Cast<IItemInterface>(Objects[RandIdx]))
 			{
-				Result = Drawer->SetSpawnItem(Items[i]);
-			}
-			// 해당 인덱스의 오브젝트가 사물함일 경우, 해당 사물함에 배치함.
-			else if (ALocker_cpp* Locker = Cast<ALocker_cpp>(Objects[RandIdx]))
-			{
-				Result = Locker->SetSpawnItem(Items[i]);
-			}
-			// 해당 인덱스의 오브젝트가 선반일 경우, 해당 선반에 배치함.
-			else if (AShelf* Shelf = Cast<AShelf>(Objects[RandIdx]))
-			{
-				Result = Shelf->SetSpawnItem(Items[i]);
+				Result = ItemInterface->SetSpawnItem(Items[i]);
 			}
 
 			// 아이템을 성공적으로 스폰 시켰을 때만 남은 아이템 개수를 하나씩 줄임

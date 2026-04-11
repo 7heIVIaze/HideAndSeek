@@ -4,10 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Furniture/InteractableActor.h"
+#include "Resource/ItemInterface.h"
 #include "Locker_cpp.generated.h"
 
 UCLASS()
-class HIDEANDSEEK_API ALocker_cpp : public AInteractableActor
+class HIDEANDSEEK_API ALocker_cpp : public AInteractableActor, public IItemInterface
 {
 	GENERATED_BODY()
 	
@@ -35,7 +36,7 @@ protected:
 
 public:	 // Functions
 	UFUNCTION(BlueprintCallable)
-	bool SetSpawnItem(TSubclassOf<AActor> inItem);
+	virtual bool SetSpawnItem(TSubclassOf<AActor> inItem) override;
 
 	UFUNCTION(BlueprintCallable)
 	bool GetIsItemSpawned();

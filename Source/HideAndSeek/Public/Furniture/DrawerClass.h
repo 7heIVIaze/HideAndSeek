@@ -5,10 +5,11 @@
 #include "CoreMinimal.h"
 #include "Furniture/InteractableActor.h"
 #include "Components/TimelineComponent.h"
+#include "Resource/ItemInterface.h"
 #include "DrawerClass.generated.h"
 
 UCLASS()
-class HIDEANDSEEK_API ADrawerClass : public AInteractableActor
+class HIDEANDSEEK_API ADrawerClass : public AInteractableActor, public IItemInterface
 {
 	GENERATED_BODY()
 	
@@ -61,7 +62,7 @@ public:
 	virtual void OpenDrawer(float Value);
 
 	UFUNCTION(BlueprintCallable)
-	virtual bool SetSpawnItem(TSubclassOf<AActor> inItem);
+	virtual bool SetSpawnItem(TSubclassOf<AActor> inItem) override;
 
 	UFUNCTION(BlueprintCallable)
 	virtual bool GetIsItemSpawned();
